@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE structures SYSTEM "../../tao/doc/structures.dtd">
+<structures>
+    <structure id='taoMediaManager' name="Media" level="7" group="main">
+        <description>Media Manager extension</description>
+        <icon id="icon-media" src=""/>
+        <sections>
+            <section id="media_manager" name="Manage Media" url="/taoMediaManager/MediaManager/index">
+                <trees>
+                    <tree name="Media Manager"
+                          className="Media"
+                          dataUrl="/taoMediaManager/MediaManager/getOntologyData"
+                          selectClass="manager-index"
+                          selectInstance="media-view"
+                          delete="results-delete"
+                            />
+                </trees>
+                <actions>
+                    <action id="manager-index" name="Index" url="/taoMediaManager/MediaManager/editMediaClass" group="none"
+                            context="class">
+                    </action>
+                    <action id="media-import" name="Import" url="/taoMediaManager/MediaImport/index" group="content"
+                            context="class">
+                        <icon id="icon-import"/>
+                    </action>
+                    <action id="media-export" name="Export" url="/taoMediaManager/MediaExport/index" group="content"
+                            context="class">
+                        <icon id="icon-export"/>
+                    </action>
+                    <action id="media-class-new" name="New class" url="/taoMediaManager/MediaManager/addSubClass" context="class" group="content" binding="subClass">
+                        <icon id="icon-folder-open"/>
+                    </action>
+
+                    <action id="media-view" name="View Media" url="/taoMediaManager/MediaManager/editInstance" group="none"
+                            context="instance">
+                    </action>
+                    <action id="media-upload" name="Upload Media" url="/taoMediaManager/MediaImport/uploadMedia" group="content"
+                            context="instance">
+                        <icon id="icon-upload"/>
+                    </action>
+                    <action id="media-download" name="Download Media" url="/taoMediaManager/MediaExport/downloadMedia" group="content"
+                            context="instance">
+                        <icon id="icon-download"/>
+                    </action>
+                    <action id="results-delete" name="Delete" binding="removeNode" url="/taoMediaManager/MediaManager/delete"
+                            context="resource" group="tree">
+                        <icon id="icon-bin"/>
+                    </action>
+                </actions>
+            </section>
+        </sections>
+    </structure>
+</structures>

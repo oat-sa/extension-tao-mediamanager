@@ -1,0 +1,40 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO v2.5-alpha\n"
+"PO-Revision-Date: 2013-05-15T10:37:41\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: de-DE\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#, tao-public
+msgid "An example extension."
+msgstr ""
+
+msgid "delete"
+msgstr ""
+
+#, tao-public
+msgid "Documents"
+msgstr ""
+
+msgid "Documents library"
+msgstr ""
+
+#, tao-public
+msgid "Manage documents"
+msgstr ""
+
+msgid "My Documents"
+msgstr ""
+
+msgid "The file has been deleted"
+msgstr ""
+
+msgid "This extension enables you to manage your documents library"
+msgstr ""
+
+msgid "You can download the document by right-clicking"
+msgstr ""
+

@@ -80,7 +80,7 @@ class FileImporter implements \tao_models_classes_import_ImportHandler
             $service = MediaService::singleton();
 
             $classUri = $class->getUri();
-            if($this->instanceUri === $classUri){
+            if(is_null($this->instanceUri) || $this->instanceUri === $classUri){
                 $service->createMediaInstance($file["uploaded_file"], $classUri, \tao_helpers_Uri::decode($form->getValue('lang')));
             }
             else{

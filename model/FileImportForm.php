@@ -103,9 +103,11 @@ class FileImportForm extends \tao_helpers_form_FormContainer
         $fileSentElt->setValue(1);
         $this->form->addElement($fileSentElt);
 
-        $instanceElt = \tao_helpers_form_FormFactory::getElement('instanceUri', 'Hidden');
-        $instanceElt->setValue($this->instanceUri);
-        $this->form->addElement($instanceElt);
+        if(!is_null($this->instanceUri)){
+            $instanceElt = \tao_helpers_form_FormFactory::getElement('instanceUri', 'Hidden');
+            $instanceElt->setValue($this->instanceUri);
+            $this->form->addElement($instanceElt);
+        }
 
     }
 }

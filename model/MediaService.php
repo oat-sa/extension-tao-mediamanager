@@ -65,6 +65,21 @@ class MediaService extends \tao_models_classes_GenerisService
 
     }
 
+    public function editMediaInstance($filetmp, $instanceUri, $language){
+        $fileManager = new SimpleFileManagement();
+        $link = $fileManager->storeFile($filetmp);
+
+        if($link !== false){
+            $instance = new \core_kernel_classes_Class($instanceUri);
+            /** @var $instance  \core_kernel_classes_Resource*/
+            if(!is_null($instance) && $instance instanceof \core_kernel_classes_Resource){
+                $instance->editPropertyValues(new \core_kernel_classes_Property(MEDIA_LINK), $link);
+                $instance->editPropertyValues(new \core_kernel_classes_Property(MEDIA_LANGUAGE), $language);
+            }
+        }
+
+    }
+
     public function createTreeFromZip($dirs, $base, $parent){
 
         //create the base class

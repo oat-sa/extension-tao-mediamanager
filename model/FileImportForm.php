@@ -34,6 +34,13 @@ use tao_helpers_form_Form;
  */
 class FileImportForm extends \tao_helpers_form_FormContainer
 {
+    private $instanceUri;
+
+    public function __construct($instanceUri){
+        $this->instanceUri = $instanceUri;
+        parent::__construct();
+
+    }
 
     protected function initForm()
     {
@@ -96,8 +103,9 @@ class FileImportForm extends \tao_helpers_form_FormContainer
         $fileSentElt->setValue(1);
         $this->form->addElement($fileSentElt);
 
-
-
+        $instanceElt = \tao_helpers_form_FormFactory::getElement('instanceUri', 'Hidden');
+        $instanceElt->setValue($this->instanceUri);
+        $this->form->addElement($instanceElt);
 
     }
 }

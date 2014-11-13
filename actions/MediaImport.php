@@ -31,6 +31,8 @@ use oat\taoMediaManager\model\ZipImporter;
  */
 class MediaImport extends \tao_actions_Import {
 
+    private $importHandlers;
+
     public function __construct(){
 
         parent::__construct();
@@ -45,17 +47,29 @@ class MediaImport extends \tao_actions_Import {
      */
     public function index()
     {
+        $this->importHandlers = array(
+            new ZipImporter(),
+            new FileImporter()
+        );
         parent::index();
-
-
 
     }
 
     protected function getAvailableImportHandlers() {
-        return array(
-            new ZipImporter(),
-            new FileImporter()
-        );
+        return $this->importHandlers;
+    }
+
+    public function uploadMedia(){
+        $id = null;
+        if(!$this->hasRequestParameter('instanceUri')){
+            $id = $this->getRequestParameter('id');
+        }
+        else{
+            $id = $this->getRequestParameter('instanceUri');
+        }
+        $this->importHandlers = array(new FileImporter($id));
+        parent::index();
+
     }
 
 

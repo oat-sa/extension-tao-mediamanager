@@ -38,6 +38,10 @@ class FileImporter implements \tao_models_classes_import_ImportHandler
 {
 
 
+    public function __construct($instanceUri = null){
+        $this->instanceUri = $instanceUri;
+    }
+
     /**
      * Returns a textual description of the import format
      *
@@ -57,7 +61,7 @@ class FileImporter implements \tao_models_classes_import_ImportHandler
      */
     public function getForm()
     {
-        $form = new FileImportForm();
+        $form = new FileImportForm($this->instanceUri);
         return $form->getForm();
     }
 
@@ -74,7 +78,14 @@ class FileImporter implements \tao_models_classes_import_ImportHandler
         try{
             $file = $form->getValue('source');
             $service = MediaService::singleton();
-            $service->createMediaInstance($file["uploaded_file"], \tao_helpers_Uri::decode($form->getValue('classUri')), \tao_helpers_Uri::decode($form->getValue('lang')));
+
+            $classUri = $class->getUri();
+            if($this->instanceUri === $classUri){
+                $service->createMediaInstance($file["uploaded_file"], $classUri, \tao_helpers_Uri::decode($form->getValue('lang')));
+            }
+            else{
+                $service->editMediaInstance($file["uploaded_file"], $this->instanceUri, \tao_helpers_Uri::decode($form->getValue('lang')));
+            }
 
             $report = \common_report_Report::createSuccess(__('Media imported successfully'));
             return $report;

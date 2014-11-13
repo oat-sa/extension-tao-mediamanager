@@ -1,58 +1,99 @@
 <?php
+/**
+ * Created by Antoine on 13/11/14
+ * at 16:07
+ */
+
 namespace oat\taoMediaManager\helpers;
 
-class MediaManagerBrowser {
 
-    public static function buildDirectory(\core_kernel_classes_Resource $item, $lang, $relPath = '/', $depth = 1, $filters = array()) {
+use oat\tao\model\media\MediaBrowser;
+use oat\taoMediaManager\model\SimpleFileManagement;
 
-        $baseDir = \taoItems_models_classes_ItemsService::singleton()->getItemFolder($item, $lang);
-        $path = $baseDir.ltrim($relPath, '/');
+class MediaManagerBrowser implements MediaBrowser{
 
-        $data = array(
-            'path' => $relPath
-        );
-        if ($depth > 0 ) {
-            $children = array();
-            if (is_dir($path)) {
-                foreach (new \DirectoryIterator($path) as $fileinfo) {
-                    if (!$fileinfo->isDot()) {
-                        $subPath = rtrim($relPath, '/').'/'.$fileinfo->getFilename();
-                        if ($fileinfo->isDir()) {
-                            $children[] = self::buildDirectory($item, $lang, $subPath, $depth-1, $filters);
-                        } else {
-                            $file = self::buildFile($item, $lang, $subPath, $filters);
-                            if(!is_null($file)){
-                                $children[] = $file;
-                            }
-                        }
-                    }
-                }
-            } else {
-                \common_Logger::w('"'.$path.'" is not a directory');
-            }
-            $data['children'] = $children;
-        } else {
-            $data['url'] = _url('files', 'ItemContent', 'taoItems', array('uri' => $item->getUri(),'lang' => $lang, 'path' => $relPath));
-        }
-        return $data;
+    private $lang;
+
+    public function __construct($datas){
+        $this->lang = (isset($datas['lang'])) ? $datas['lang'] : '';
     }
 
+    /**
+     * @param string $relPath
+     * @param array $acceptableMime
+     * @return array
+     */
+    public function getDirectory($relPath = '/', $acceptableMime = array(), $depth = 1)
+    {
+        if($relPath == '/'){
+            $class = new \core_kernel_classes_Class('http://www.tao.lu/Ontologies/TAOMedia.rdf#Media');
 
-    public static function buildFile(\core_kernel_classes_Resource $item, $lang, $relPath, $filters = array()) {
+        }
+        else{
+            $class = new \core_kernel_classes_Class($relPath);
+        }
+
+        $data = array(
+            'path' => 'mediamanager/'.$relPath,
+            'label' => $class->getLabel()
+        );
+
+        if ($depth > 0 ) {
+            $children = array();
+            foreach ($class->getSubClasses() as $subclass) {
+                $children[] = $this->getDirectory($subclass->getUri(), $acceptableMime, $depth - 1);
+
+            }
+            $class->searchInstances();
+            $filter = array('http://www.tao.lu/Ontologies/TAOMedia.rdf#Language' => $this->lang);
+            \common_Logger::w('lang : '.$this->lang);
+            $fileManagement = new SimpleFileManagement();
+            foreach($class->searchInstances($filter) as $instances){
+                $fullPath = $fileManagement->retrieveFile($instances->getUniquePropertyValue(new \core_kernel_classes_Property('http://www.tao.lu/Ontologies/TAOMedia.rdf#Link'))->__toString());
+                $file = $this->getFileInfo($fullPath, $acceptableMime);
+                if(!is_null($file)){
+                    $children[] = $file;
+                }
+
+            }
+            $data['children'] = $children;
+        }
+        else{
+            $data['url'] = _url('files', 'ItemContent', 'taoItems', array('lang' => $this->lang, 'path' => $relPath));
+        }
+        return $data;
+
+
+    }
+
+    /**
+     * @param string $relPath
+     * @return array
+     */
+    public function getFileInfo($relPath, $acceptableMime)
+    {
         $file = null;
-        $baseDir = \taoItems_models_classes_ItemsService::singleton()->getItemFolder($item, $lang);
-        $path = $baseDir.ltrim($relPath, '/');
-        $mime = \tao_helpers_File::getMimeType($path);
 
-        if(count($filters) == 0 || in_array($mime, $filters)){
+        $mime = \tao_helpers_File::getMimeType($relPath);
+
+        if(count($acceptableMime) == 0 || in_array($mime, $acceptableMime)){
             $file = array(
-                'name' => basename($path),
+                'name' => basename($relPath),
                 'mime' => $mime,
-                'size' => filesize($path),
-                'url' => _url('download', 'ItemContent', 'taoItems', array('uri' => $item->getUri(),'lang' => $lang, 'path' => $relPath))
+                'size' => filesize($relPath),
+                'url' => _url('download', 'ItemContent', 'taoItems', array('lang' => $this->lang, 'path' => $relPath))
             );
         }
         return $file;
+
     }
 
-} 
+    /**
+     * @param string $filename
+     * @return string path of the file to download
+     */
+    public function download($filename)
+    {
+        // TODO: Implement download() method.
+    }
+}

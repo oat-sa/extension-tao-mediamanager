@@ -79,6 +79,7 @@ class MediaManager extends \tao_actions_SaSModule {
         $filePath = $fileManager->retrieveFile($media->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK)));
 
         $fp = fopen($filePath, "r");
+        $test = '';
         if ($fp !== false) {
             $test =  '<embed height="100px" src="data:'.\tao_helpers_File::getMimeType($filePath).';base64,';
             while (!feof($fp))

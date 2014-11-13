@@ -80,7 +80,7 @@ class MediaManager extends \tao_actions_SaSModule {
 
         $fp = fopen($filePath, "r");
         if ($fp !== false) {
-            $test =  '<embed height="100px" src="data:image/gif;base64,';
+            $test =  '<embed height="100px" src="data:'.\tao_helpers_File::getMimeType($filePath).';base64,';
             while (!feof($fp))
             {
                 $test .= base64_encode(fread($fp, filesize($filePath)));

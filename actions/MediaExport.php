@@ -23,6 +23,7 @@
 namespace oat\taoMediaManager\actions;
 
 use oat\taoMediaManager\model\MediaService;
+use oat\taoMediaManager\model\SimpleFileManagement;
 use oat\taoMediaManager\model\ZipExporter;
 
 /**
@@ -41,19 +42,21 @@ class MediaExport extends \tao_actions_Export {
         $uri = $this->getRequestParameter('id');
 
         $media = new \core_kernel_classes_Resource($uri);
-        $filePath = $media->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
+        $link = $media->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
 
+        $fileManager = new SimpleFileManagement();
+        $filePath = $fileManager->retrieveFile($link);
         $fp = fopen($filePath, "r");
         if ($fp !== false) {
-            $test =  '<embed src="data:image/gif;base64,';
+            $embed =  '<embed src="data:'.\tao_helpers_File::getMimeType($filePath).';base64,';
             while (!feof($fp))
             {
-                $test .= base64_encode(fread($fp, filesize($filePath)));
+                $embed .= base64_encode(fread($fp, filesize($filePath)));
             }
-            $test .= '"/>';
+            $embed .= '"/>';
             fclose($fp);
         }
-        echo $test;
+        echo $embed;
     }
 
     /**

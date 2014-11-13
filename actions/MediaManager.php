@@ -16,6 +16,10 @@ use oat\taoMediaManager\model\SimpleFileManagement;
 class MediaManager extends \tao_actions_SaSModule {
 
 
+    public function getOntologyData(){
+        parent::getOntologyData();
+    }
+
     protected function getClassService()
     {
         return MediaService::singleton();

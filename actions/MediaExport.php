@@ -22,8 +22,8 @@
 
 namespace oat\taoMediaManager\actions;
 
-use oat\tao\helpers\FileUploadException;
 use oat\taoMediaManager\model\MediaService;
+use oat\taoMediaManager\model\ZipExporter;
 
 /**
  * This controller provide the actions to import medias
@@ -43,14 +43,12 @@ class MediaExport extends \tao_actions_Export {
         $media = new \core_kernel_classes_Resource($uri);
         $filePath = $media->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
 
-//        flush();
         $fp = fopen($filePath, "r");
         if ($fp !== false) {
             $test =  '<embed src="data:image/gif;base64,';
             while (!feof($fp))
             {
                 $test .= base64_encode(fread($fp, filesize($filePath)));
-//                flush();
             }
             $test .= '"/>';
             fclose($fp);
@@ -65,5 +63,11 @@ class MediaExport extends \tao_actions_Export {
     protected function getRootClass()
     {
         return new \core_kernel_classes_Class(MEDIA_URI);
+    }
+
+    protected function getAvailableExportHandlers() {
+        return array(
+            new ZipExporter()
+        );
     }
 }

@@ -27,9 +27,12 @@ class MediaManagerBrowser implements MediaBrowser{
     {
         if($relPath == '/'){
             $class = new \core_kernel_classes_Class('http://www.tao.lu/Ontologies/TAOMedia.rdf#Media');
-
+            $relPath = '';
         }
         else{
+            if(strpos($relPath,'/') === 0){
+                $relPath = substr($relPath,1);
+            }
             $class = new \core_kernel_classes_Class($relPath);
         }
 
@@ -46,7 +49,6 @@ class MediaManagerBrowser implements MediaBrowser{
             }
             $class->searchInstances();
             $filter = array('http://www.tao.lu/Ontologies/TAOMedia.rdf#Language' => $this->lang);
-            \common_Logger::w('lang : '.$this->lang);
             $fileManagement = new SimpleFileManagement();
             foreach($class->searchInstances($filter) as $instances){
                 $fullPath = $fileManagement->retrieveFile($instances->getUniquePropertyValue(new \core_kernel_classes_Property('http://www.tao.lu/Ontologies/TAOMedia.rdf#Link'))->__toString());

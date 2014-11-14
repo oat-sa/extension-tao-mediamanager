@@ -1,14 +1,27 @@
 <?php
 /**
- * Created by Antoine on 13/11/14
- * at 16:07
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; under version 2
+ * of the License (non-upgradable).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
+ *
+ *
  */
-
-namespace oat\taoMediaManager\helpers;
+namespace oat\taoMediaManager\model;
 
 
 use oat\tao\model\media\MediaBrowser;
-use oat\taoMediaManager\model\SimpleFileManagement;
 
 class MediaManagerBrowser implements MediaBrowser{
 
@@ -16,6 +29,7 @@ class MediaManagerBrowser implements MediaBrowser{
 
     public function __construct($datas){
         $this->lang = (isset($datas['lang'])) ? $datas['lang'] : '';
+        \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager');
     }
 
     /**
@@ -26,7 +40,7 @@ class MediaManagerBrowser implements MediaBrowser{
     public function getDirectory($relPath = '/', $acceptableMime = array(), $depth = 1)
     {
         if($relPath == '/'){
-            $class = new \core_kernel_classes_Class('http://www.tao.lu/Ontologies/TAOMedia.rdf#Media');
+            $class = new \core_kernel_classes_Class(MEDIA_URI);
             $relPath = '';
         }
         else{
@@ -47,11 +61,10 @@ class MediaManagerBrowser implements MediaBrowser{
                 $children[] = $this->getDirectory($subclass->getUri(), $acceptableMime, $depth - 1);
 
             }
-            $class->searchInstances();
-            $filter = array('http://www.tao.lu/Ontologies/TAOMedia.rdf#Language' => $this->lang);
+            $filter = array(MEDIA_LANGUAGE => $this->lang);
             $fileManagement = new SimpleFileManagement();
             foreach($class->searchInstances($filter) as $instances){
-                $fullPath = $fileManagement->retrieveFile($instances->getUniquePropertyValue(new \core_kernel_classes_Property('http://www.tao.lu/Ontologies/TAOMedia.rdf#Link'))->__toString());
+                $fullPath = $fileManagement->retrieveFile($instances->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK))->__toString());
                 $file = $this->getFileInfo($fullPath, $acceptableMime);
                 if(!is_null($file)){
                     $children[] = $file;

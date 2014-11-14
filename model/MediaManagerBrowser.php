@@ -61,7 +61,9 @@ class MediaManagerBrowser implements MediaBrowser{
                 $children[] = $this->getDirectory($subclass->getUri(), $acceptableMime, $depth - 1);
 
             }
-            $filter = array(MEDIA_LANGUAGE => $this->lang);
+            $filter = array(
+            );
+
             $fileManagement = new SimpleFileManagement();
             foreach($class->searchInstances($filter) as $instances){
                 $fullPath = $fileManagement->retrieveFile($instances->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK))->__toString());

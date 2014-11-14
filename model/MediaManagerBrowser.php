@@ -64,10 +64,9 @@ class MediaManagerBrowser implements MediaBrowser{
             $filter = array(
             );
 
-            $fileManagement = new SimpleFileManagement();
-            foreach($class->searchInstances($filter) as $instances){
-                $fullPath = $fileManagement->retrieveFile($instances->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK))->__toString());
-                $file = $this->getFileInfo($fullPath, $acceptableMime);
+            foreach($class->searchInstances($filter) as $instance){
+                $link = $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK))->__toString();
+                $file = $this->getFileInfo($link, $acceptableMime);
                 if(!is_null($file)){
                     $children[] = $file;
                 }
@@ -90,15 +89,16 @@ class MediaManagerBrowser implements MediaBrowser{
     public function getFileInfo($relPath, $acceptableMime)
     {
         $file = null;
-
+        $fileManagement = new SimpleFileManagement();
+        $filePath = $fileManagement->retrieveFile($relPath);
         $mime = \tao_helpers_File::getMimeType($relPath);
 
         if(count($acceptableMime) == 0 || in_array($mime, $acceptableMime)){
             $file = array(
-                'name' => basename($relPath),
+                'name' => basename($filePath),
                 'mime' => $mime,
-                'size' => filesize($relPath),
-                'url' => _url('download', 'ItemContent', 'taoItems', array('lang' => $this->lang, 'path' => $relPath))
+                'size' => filesize($filePath),
+                'url' => _url('download', 'ItemContent', 'taoItems', array('path' => 'mediamanager'.$relPath))
             );
         }
         return $file;
@@ -111,6 +111,6 @@ class MediaManagerBrowser implements MediaBrowser{
      */
     public function download($filename)
     {
-        // TODO: Implement download() method.
+        \tao_helpers_Http::returnFile($filename);
     }
 }

@@ -96,6 +96,7 @@ class MediaManagerBrowser implements MediaBrowser{
         if(count($acceptableMime) == 0 || in_array($mime, $acceptableMime)){
             $file = array(
                 'name' => basename($filePath),
+                'relPath' => $relPath,
                 'mime' => $mime,
                 'size' => filesize($filePath),
                 'url' => _url('download', 'ItemContent', 'taoItems', array('path' => 'mediamanager'.$relPath))

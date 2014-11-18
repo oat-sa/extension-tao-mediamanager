@@ -73,34 +73,9 @@ class MediaManager extends \tao_actions_SaSModule {
         $this->setView('form.tpl', 'tao');
     }
 
-    public function import(){
-
-
-
-
-    }
-
 	public function editInstance(){
         parent::editInstance();
 
-        $uri = ($this->hasRequestParameter('id'))?$this->getRequestParameter('id'):\tao_helpers_Uri::decode($this->getRequestParameter('uri'));
-
-        $media = new \core_kernel_classes_Resource($uri);
-        $fileManager = new SimpleFileManagement();
-        $filePath = $fileManager->retrieveFile($media->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK)));
-
-        $fp = fopen($filePath, "r");
-        $test = '';
-        if ($fp !== false) {
-            $test =  '<embed height="100px" src="data:'.\tao_helpers_File::getMimeType($filePath).';base64,';
-            while (!feof($fp))
-            {
-                $test .= base64_encode(fread($fp, filesize($filePath)));
-            }
-            $test .= '"/>';
-            fclose($fp);
-        }
-        echo $test;
 	}
 		
 	/**

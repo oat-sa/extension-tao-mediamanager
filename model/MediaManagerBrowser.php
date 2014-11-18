@@ -50,8 +50,20 @@ class MediaManagerBrowser implements MediaBrowser{
             $class = new \core_kernel_classes_Class($relPath);
         }
 
+        if($class->getUri() !== MEDIA_URI){
+            $path = array($class->getLabel());
+            foreach($class->getParentClasses(true) as $parent){
+                if($parent->getUri() === MEDIA_URI){
+                    $path[] = 'mediamanger';
+                    break;
+                }
+                $path[] = $parent->getLabel();
+            }
+            $path = array_reverse($path);
+        }
         $data = array(
             'path' => 'mediamanager/'.$relPath,
+            'relPath' => (isset($path))?implode('/',$path):'mediamanager',
             'label' => $class->getLabel()
         );
 
@@ -91,11 +103,12 @@ class MediaManagerBrowser implements MediaBrowser{
         $file = null;
         $fileManagement = new SimpleFileManagement();
         $filePath = $fileManagement->retrieveFile($relPath);
-        $mime = \tao_helpers_File::getMimeType($relPath);
+        $mime = \tao_helpers_File::getMimeType($filePath);
 
         if(count($acceptableMime) == 0 || in_array($mime, $acceptableMime)){
             $file = array(
                 'name' => basename($filePath),
+                'identifier' => 'mediamanager',
                 'relPath' => $relPath,
                 'mime' => $mime,
                 'size' => filesize($filePath),

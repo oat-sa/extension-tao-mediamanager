@@ -74,7 +74,50 @@ class MediaManager extends \tao_actions_SaSModule {
     }
 
 	public function editInstance(){
-        parent::editInstance();
+        $clazz = $this->getCurrentClass();
+        $instance = $this->getCurrentInstance();
+        $myFormContainer = new \tao_actions_form_Instance($clazz, $instance);
+
+        $myForm = $myFormContainer->getForm();
+        if($myForm->isSubmited()){
+            if($myForm->isValid()){
+
+                $values = $myForm->getValues();
+                // save properties
+                $binder = new \tao_models_classes_dataBinding_GenerisFormDataBinder($instance);
+                $instance = $binder->bind($values);
+                $message = __('Instance saved');
+
+                $this->setData('message',$message);
+                $this->setData('reload', true);
+            }
+        }
+
+        $this->setData('formTitle', __('Edit Instance'));
+        $this->setData('myForm', $myForm->render());
+
+
+        $uri = ($this->hasRequestParameter('id'))?$this->getRequestParameter('id'):\tao_helpers_Uri::decode($this->getRequestParameter('uri'));
+        $media = new \core_kernel_classes_Resource($uri);
+        $fileManager = new SimpleFileManagement();
+        $filePath = $fileManager->retrieveFile($media->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK)));
+        $fp = fopen($filePath, "r");
+        $data = '';
+        if ($fp !== false) {
+            while (!feof($fp))
+            {
+                $data .= base64_encode(fread($fp, filesize($filePath)));
+            }
+            fclose($fp);
+        }
+
+
+        $this->setData('mimeType', \tao_helpers_File::getMimeType($filePath));
+        $this->setData('base64Data', $data);
+        $this->setView('form.tpl');
+
+
+
 
 	}
 		

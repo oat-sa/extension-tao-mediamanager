@@ -36,11 +36,18 @@ return array(
     'acl' => array(
         array('grant', 'http://www.tao.lu/Ontologies/TAO.rdf#BackOfficeRole', array('ext'=>'taoMediaManager')),
     ),
-	'install' => array('rdf' => array(
-        dirname(__FILE__). '/model/ontology/taomedia.rdf',
+    'install' => array(
+        'rdf' => array(
+            dirname(__FILE__). '/model/ontology/taomedia.rdf',
+        ),
+        'php' => array(
+            dirname(__FILE__) . '/scripts/install/setMediaManager.php',
         )
     ),
     'uninstall' => array(
+        'php' => array(
+            dirname(__FILE__) . '/scripts/uninstall/unsetMediaManager.php',
+        )
     ),
 	'classLoaderPackages' => array( 
 		dirname(__FILE__).'/actions/',

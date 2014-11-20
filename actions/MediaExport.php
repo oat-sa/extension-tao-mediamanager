@@ -21,8 +21,8 @@
 
 namespace oat\taoMediaManager\actions;
 
+use oat\taoMediaManager\model\FileManager;
 use oat\taoMediaManager\model\MediaService;
-use oat\taoMediaManager\model\SimpleFileManagement;
 use oat\taoMediaManager\model\ZipExporter;
 
 /**
@@ -37,13 +37,16 @@ class MediaExport extends \tao_actions_Export {
     }
 
 
+    /**
+     * Download a media on click on the download button
+     */
     public function downloadMedia(){
         $uri = $this->getRequestParameter('id');
 
         $media = new \core_kernel_classes_Resource($uri);
         $link = $media->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
 
-        $fileManager = new SimpleFileManagement();
+        $fileManager = FileManager::getPermissionModel();
         $filePath = $fileManager->retrieveFile($link);
         $fp = fopen($filePath, "r");
         if ($fp !== false) {
@@ -60,7 +63,7 @@ class MediaExport extends \tao_actions_Export {
 
     /**
      * get the main class
-     * @return core_kernel_classes_Classes
+     * @return \core_kernel_classes_Class
      */
     protected function getRootClass()
     {

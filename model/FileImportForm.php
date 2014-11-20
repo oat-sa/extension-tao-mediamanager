@@ -57,7 +57,6 @@ class FileImportForm extends \tao_helpers_form_FormContainer
      * Used to create the form elements and bind them to the form instance
      *
      * @access protected
-     * @author Cédric Alfonsi, <cedric.alfonsi@tudor.lu>
      * @return mixed
      */
     protected function initElements()
@@ -72,9 +71,6 @@ class FileImportForm extends \tao_helpers_form_FormContainer
             $fileElt->addValidator(\tao_helpers_form_FormFactory::getValidator('NotEmpty', array('message' => '')));
         }
         $fileElt->addValidators(array(
-//                \tao_helpers_form_FormFactory::getValidator('FileMimeType', array('mimetype' => array(
-//                        'application/ogg',
-//                    ), 'extension' => array('rdf', 'rdfs'))),
                 \tao_helpers_form_FormFactory::getValidator('FileSize', array('max' => \tao_helpers_Environment::getFileUploadLimit()))
             ));
 

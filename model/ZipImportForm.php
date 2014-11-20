@@ -45,13 +45,6 @@ class ZipImportForm extends \tao_helpers_form_FormContainer
         $this->form->setActions(array(), 'top');
     }
 
-    /**
-     * Used to create the form elements and bind them to the form instance
-     *
-     * @access protected
-     * @author Cédric Alfonsi, <cedric.alfonsi@tudor.lu>
-     * @return mixed
-     */
     protected function initElements()
     {
         //create file upload form box
@@ -64,7 +57,6 @@ class ZipImportForm extends \tao_helpers_form_FormContainer
             $fileElt->addValidator(\tao_helpers_form_FormFactory::getValidator('NotEmpty', array('message' => '')));
         }
         $fileElt->addValidators(array(
-//                \tao_helpers_form_FormFactory::getValidator('FileMimeType', array('mimetype' => array('text/xml', 'application/rdf+xml', 'application/xml'), 'extension' => array('rdf', 'rdfs'))),
                 \tao_helpers_form_FormFactory::getValidator('FileSize', array('max' => \tao_helpers_Environment::getFileUploadLimit()))
             ));
 

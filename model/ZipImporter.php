@@ -63,8 +63,9 @@ class ZipImporter implements \tao_models_classes_import_ImportHandler
     /**
      * Starts the import based on the form
      *
-     * @param \core_kernel_classes_Class $pClass
-     * @param \tao_helpers_form_Form $pForm
+     * @param \core_kernel_classes_Class $class
+     * @param \tao_helpers_form_Form $form
+     * @return \common_report_Report
      */
     public function import($class, $form)
     {
@@ -156,7 +157,7 @@ class ZipImporter implements \tao_models_classes_import_ImportHandler
 
 
     /**
-     * Unzip archive from icomoon
+     * Unzip archive from the upload form
      *
      * @param $archiveFile
      * @return array|string

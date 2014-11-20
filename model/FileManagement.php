@@ -33,7 +33,7 @@ interface FileManagement {
     /**
      *
      * @param string $link the link provided by storeFile
-     * @return the file that match the link
+     * @return string the file that match the link
      */
     public function retrieveFile($link);
 

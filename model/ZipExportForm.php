@@ -56,16 +56,9 @@ class ZipExportForm extends \tao_helpers_form_FormContainer
 
     }
 
-    /**
-     * overriden
-     *
-     * @access public
-     * @author Joel Bout, <joel.bout@tudor.lu>
-     * @return mixed
-     */
+
     public function initElements()
     {
-
         $fileName = '';
 
         $instances = array();

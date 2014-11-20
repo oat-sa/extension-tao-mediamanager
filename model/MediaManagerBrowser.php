@@ -27,14 +27,19 @@ class MediaManagerBrowser implements MediaBrowser{
 
     private $lang;
 
-    public function __construct($datas){
-        $this->lang = (isset($datas['lang'])) ? $datas['lang'] : '';
+    /**
+     * get the lang of the class in case we want to filter the media on language
+     * @param $data
+     */
+    public function __construct($data){
+        $this->lang = (isset($data['lang'])) ? $data['lang'] : '';
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager');
     }
 
     /**
      * @param string $relPath
      * @param array $acceptableMime
+     * @param int $depth
      * @return array
      */
     public function getDirectory($relPath = '/', $acceptableMime = array(), $depth = 1)
@@ -73,6 +78,8 @@ class MediaManagerBrowser implements MediaBrowser{
                 $children[] = $this->getDirectory($subclass->getUri(), $acceptableMime, $depth - 1);
 
             }
+
+            //add a filter for example on language (not for now)
             $filter = array(
             );
 
@@ -96,12 +103,13 @@ class MediaManagerBrowser implements MediaBrowser{
 
     /**
      * @param string $relPath
+     * @param array $acceptableMime
      * @return array
      */
     public function getFileInfo($relPath, $acceptableMime)
     {
         $file = null;
-        $fileManagement = new SimpleFileManagement();
+        $fileManagement = FileManager::getPermissionModel();
         $filePath = $fileManagement->retrieveFile($relPath);
         $mime = \tao_helpers_File::getMimeType($filePath);
 

@@ -24,8 +24,10 @@ namespace oat\taoMediaManager\model;
 class SimpleFileManagement implements FileManagement{
 
     /**
+     * store the file and provide a link to retrieve it
      * @param string $filePath the entire path to the file
      * @return string a link to the file in order to retrieve it later
+     * @throws \common_exception_Error
      */
     public function storeFile($filePath)
     {
@@ -33,6 +35,11 @@ class SimpleFileManagement implements FileManagement{
         $relPath = '/media/';
 
         $fileName = \tao_helpers_File::getSafeFileName(basename($filePath));
+
+        // create media folder if doesn't exist
+        if(!is_dir($baseDir.$relPath)){
+            mkdir($baseDir.$relPath);
+        }
 
         if(!is_dir($baseDir.$relPath.$fileName)){
             if(!rename($filePath, $baseDir.$relPath.$fileName)){
@@ -44,9 +51,9 @@ class SimpleFileManagement implements FileManagement{
     }
 
     /**
-     *
+     * get the link and return the file that match it
      * @param string $link the link provided by storeFile
-     * @return the file that match the link
+     * @return string $filename the file that match the link
      */
     public function retrieveFile($link)
     {

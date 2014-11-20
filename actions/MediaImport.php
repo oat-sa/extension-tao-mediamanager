@@ -39,7 +39,7 @@ class MediaImport extends \tao_actions_Import {
     }
 
     /**
-     * overwrite the parent index to add the requiresRight for Items only
+     * overwrite the parent index to add the import handlers
      * 
      * @requiresRight id WRITE
      * @see tao_actions_Import::index()
@@ -58,6 +58,9 @@ class MediaImport extends \tao_actions_Import {
         return $this->importHandlers;
     }
 
+    /**
+     * get the import handler to replace a media
+     */
     public function uploadMedia(){
         $id = null;
         if(!$this->hasRequestParameter('instanceUri')){
@@ -75,7 +78,7 @@ class MediaImport extends \tao_actions_Import {
 
     /**
      * get the main class
-     * @return core_kernel_classes_Classes
+     * @return \core_kernel_classes_Class
      */
     protected function getRootClass()
     {

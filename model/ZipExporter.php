@@ -128,7 +128,7 @@ class ZipExporter implements \tao_models_classes_export_ExportHandler
 
             }
 
-            \common_Logger::w("Nombre de fichiers : " . $zip->numFiles." / ".$nbFiles);
+            \common_Logger::w("Number of file : " . $zip->numFiles." / ".$nbFiles);
         }
 
         $zip->close();

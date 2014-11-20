@@ -38,8 +38,6 @@ class MediaService extends \tao_models_classes_GenerisService
      * Short description of method __construct
      *
      * @access public
-     * @author Joel Bout, <joel@taotesting.com>
-     * @return void
      */
     protected function __construct(){
         parent::__construct();
@@ -49,8 +47,14 @@ class MediaService extends \tao_models_classes_GenerisService
         return new \core_kernel_classes_Class('http://www.tao.lu/Ontologies/TAOMedia.rdf#Media');
     }
 
+    /**
+     * Create a media instance from a file, and define its class and language
+     * @param string $filetmp
+     * @param string $classUri
+     * @param string $language
+     */
     public function createMediaInstance($filetmp, $classUri, $language){
-        $fileManager = new SimpleFileManagement();
+        $fileManager = FileManager::getPermissionModel();
         $link = $fileManager->storeFile($filetmp);
 
         if($link !== false){
@@ -65,8 +69,14 @@ class MediaService extends \tao_models_classes_GenerisService
 
     }
 
+    /**
+     * Edit a media instance with a new file and/or a new language
+     * @param $filetmp
+     * @param $instanceUri
+     * @param $language
+     */
     public function editMediaInstance($filetmp, $instanceUri, $language){
-        $fileManager = new SimpleFileManagement();
+        $fileManager = FileManager::getPermissionModel();
         $link = $fileManager->storeFile($filetmp);
 
         if($link !== false){
@@ -80,6 +90,14 @@ class MediaService extends \tao_models_classes_GenerisService
 
     }
 
+    /**
+     *
+     * Create the whole tree in the ontology
+     * @param array $dirs list of directory and sub directories [baseDir => [child1,child2,child3], child2 => [child21, child22]]
+     * @param string $base name of the bas directory
+     * @param string $parent the uri of the parent where to put the directories
+     * @return array the list of class created [baseDir => uri, child1 => uri, child2 => uri ...]
+     */
     public function createTreeFromZip($dirs, $base, $parent){
 
         //create the base class

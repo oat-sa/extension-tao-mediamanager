@@ -21,15 +21,11 @@
 
 namespace oat\taoMediaManager\actions;
 
+use oat\taoMediaManager\model\FileManager;
 use oat\taoMediaManager\model\MediaService;
-use oat\taoMediaManager\model\SimpleFileManagement;
 
 class MediaManager extends \tao_actions_SaSModule {
 
-
-    public function getOntologyData(){
-        parent::getOntologyData();
-    }
 
     protected function getClassService()
     {
@@ -37,10 +33,6 @@ class MediaManager extends \tao_actions_SaSModule {
     }
 
 
-    /**
-	 * constructor: initialize the service and the default data
-	 * @return Docs
-	 */
 	public function __construct(){
 		
 		parent::__construct();
@@ -50,8 +42,7 @@ class MediaManager extends \tao_actions_SaSModule {
 	}
 
 	/**
-	 * Show the list of documents
-	 * @return void
+	 * Show the form to edit a class
 	 */
 	public function editMediaClass(){
         $clazz = new \core_kernel_classes_Class(\tao_helpers_Uri::decode($this->getRequestParameter('classUri')));
@@ -73,7 +64,10 @@ class MediaManager extends \tao_actions_SaSModule {
         $this->setView('form.tpl', 'tao');
     }
 
-	public function editInstance(){
+    /**
+     * Show the form to edit an instance, show also a preview of the media
+     */
+    public function editInstance(){
         $clazz = $this->getCurrentClass();
         $instance = $this->getCurrentInstance();
         $myFormContainer = new \tao_actions_form_Instance($clazz, $instance);
@@ -99,7 +93,7 @@ class MediaManager extends \tao_actions_SaSModule {
 
         $uri = ($this->hasRequestParameter('id'))?$this->getRequestParameter('id'):\tao_helpers_Uri::decode($this->getRequestParameter('uri'));
         $media = new \core_kernel_classes_Resource($uri);
-        $fileManager = new SimpleFileManagement();
+        $fileManager = FileManager::getPermissionModel();
         $filePath = $fileManager->retrieveFile($media->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK)));
         $fp = fopen($filePath, "r");
         $data = '';
@@ -123,7 +117,6 @@ class MediaManager extends \tao_actions_SaSModule {
 		
 	/**
 	 * @see TaoModule::getRootClass
-	 * @abstract implement the abstract method
 	 */
 	public function getRootClass(){
 		return new \core_kernel_classes_Class(MEDIA_URI);

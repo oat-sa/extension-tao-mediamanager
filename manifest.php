@@ -53,11 +53,11 @@ return array(
 		dirname(__FILE__).'/actions/',
 		dirname(__FILE__).'/helpers/'
 	 ),
- 	'autoload' => array (
-        'psr-4' => array(
-            'oat\\taoMediaManager\\' => dirname(__FILE__).DIRECTORY_SEPARATOR
-        )
-    ),
+ 	// 'autoload' => array (
+  //       'psr-4' => array(
+  //           'oat\\taoMediaManager\\' => dirname(__FILE__).DIRECTORY_SEPARATOR
+  //       )
+  //   ),
     'routes' => array(
         '/taoMediaManager' => 'oat\\taoMediaManager\\actions'
     ),

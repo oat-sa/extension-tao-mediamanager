@@ -19,28 +19,28 @@
  *
  */
 
-/**
- *
- * @author Joel Bout <joel@taotesting.com>
- */
-class taoMediaManager_scripts_update_Updater extends \common_ext_ExtensionUpdater {
-    
+namespace oat\taoMediaManager\scripts\update;
+
+use oat\tao\model\media\MediaSource;
+
+class Updater extends \common_ext_ExtensionUpdater {
+
     /**
-     * 
-     * @param string $currentVersion
+     *
+     * @param string $initialVersion
      * @return string $versionUpdatedTo
      */
     public function update($initialVersion) {
-        
+
         $currentVersion = $initialVersion;
 
         //migrate from 0.1 to 0.1.1
         if ($currentVersion == '0.1') {
 
-            \oat\tao\model\media\MediaSource::addMediaSource('mediamanager', 'oat\taoMediaManager\model\MediaManagerBrowser', 'browser');
-            \oat\tao\model\media\MediaSource::addMediaSource('mediamanager', 'oat\taoMediaManager\model\MediaManagerManagement', 'management');
+            MediaSource::addMediaSource('mediamanager', 'oat\taoMediaManager\model\MediaManagerBrowser', 'browser');
+            MediaSource::addMediaSource('mediamanager', 'oat\taoMediaManager\model\MediaManagerManagement', 'management');
         }
-        
+
         return $currentVersion;
     }
 }

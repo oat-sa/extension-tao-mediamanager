@@ -44,6 +44,7 @@ return array(
             dirname(__FILE__) . '/scripts/install/setMediaManager.php',
         )
     ),
+    'update' => 'oat\\taoMediaManager\\scripts\\update\\Updater',
     'uninstall' => array(
         'php' => array(
             dirname(__FILE__) . '/scripts/uninstall/unsetMediaManager.php',

@@ -43,11 +43,10 @@ class MediaManagerManagement implements MediaManagement{
         $mediaBrowser = new MediaManagerBrowser(array('lang' => $this->lang));
 
         try{
-            $path = trim($path.'/');
+            $path = trim($path,'/');
             if($path === '' || $path === '/'){
                 $path = MEDIA_URI;
             }
-            \common_Logger::w('uri : '.$path);
             $class = new \core_kernel_classes_Class($path);
 
             if(!rename($file['tmp_name'], $filePath)){

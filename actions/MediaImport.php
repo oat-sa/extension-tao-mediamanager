@@ -47,8 +47,8 @@ class MediaImport extends \tao_actions_Import {
     public function index()
     {
         $this->importHandlers = array(
+            new FileImporter(),
             new ZipImporter(),
-            new FileImporter()
         );
         parent::index();
 

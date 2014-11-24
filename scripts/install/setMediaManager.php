@@ -23,7 +23,8 @@ use \oat\tao\model\media\MediaSource;
 use \oat\taoMediaManager\model\SimpleFileManagement;
 use \oat\taoMediaManager\model\FileManager;
 
-MediaSource::addMediaSource('mediamanager', 'oat\taoMediaManager\model\MediaManagerBrowser');
-FileManager::setPermissionModel(new SimpleFileManagement());
+MediaSource::addMediaSource('mediamanager', 'oat\taoMediaManager\model\MediaManagerBrowser', 'browser');
+MediaSource::addMediaSource('mediamanager', 'oat\taoMediaManager\model\MediaManagerManagement', 'management');
+FileManager::setFileManagementModel(new SimpleFileManagement());
 
 

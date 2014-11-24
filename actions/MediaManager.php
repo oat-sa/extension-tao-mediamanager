@@ -90,10 +90,9 @@ class MediaManager extends \tao_actions_SaSModule {
         $this->setData('formTitle', __('Edit Instance'));
         $this->setData('myForm', $myForm->render());
 
-
         $uri = ($this->hasRequestParameter('id'))?$this->getRequestParameter('id'):\tao_helpers_Uri::decode($this->getRequestParameter('uri'));
         $media = new \core_kernel_classes_Resource($uri);
-        $fileManager = FileManager::getPermissionModel();
+        $fileManager = FileManager::getFileManagementModel();
         $filePath = $fileManager->retrieveFile($media->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK)));
         $fp = fopen($filePath, "r");
         $data = '';
@@ -105,13 +104,9 @@ class MediaManager extends \tao_actions_SaSModule {
             fclose($fp);
         }
 
-
         $this->setData('mimeType', \tao_helpers_File::getMimeType($filePath));
         $this->setData('base64Data', $data);
         $this->setView('form.tpl');
-
-
-
 
 	}
 		

@@ -46,7 +46,7 @@ class MediaExport extends \tao_actions_Export {
         $media = new \core_kernel_classes_Resource($uri);
         $link = $media->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
 
-        $fileManager = FileManager::getPermissionModel();
+        $fileManager = FileManager::getFileManagementModel();
         $filePath = $fileManager->retrieveFile($link);
         $fp = fopen($filePath, "r");
         if ($fp !== false) {

@@ -59,7 +59,7 @@ class MediaManagerBrowser implements MediaBrowser{
             $path = array($class->getLabel());
             foreach($class->getParentClasses(true) as $parent){
                 if($parent->getUri() === MEDIA_URI){
-                    $path[] = 'mediamanger';
+                    $path[] = 'mediamanager';
                     break;
                 }
                 $path[] = $parent->getLabel();
@@ -109,7 +109,7 @@ class MediaManagerBrowser implements MediaBrowser{
     public function getFileInfo($relPath, $acceptableMime)
     {
         $file = null;
-        $fileManagement = FileManager::getPermissionModel();
+        $fileManagement = FileManager::getFileManagementModel();
         $filePath = $fileManagement->retrieveFile($relPath);
         $mime = \tao_helpers_File::getMimeType($filePath);
 

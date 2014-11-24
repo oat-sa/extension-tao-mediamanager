@@ -54,7 +54,7 @@ class MediaService extends \tao_models_classes_GenerisService
      * @param string $language
      */
     public function createMediaInstance($filetmp, $classUri, $language){
-        $fileManager = FileManager::getPermissionModel();
+        $fileManager = FileManager::getFileManagementModel();
         $link = $fileManager->storeFile($filetmp);
 
         if($link !== false){
@@ -65,7 +65,9 @@ class MediaService extends \tao_models_classes_GenerisService
                 $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LINK), $link);
                 $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LANGUAGE), $language);
             }
+            \common_Logger::w('instance : '.print_r($instance,true));
         }
+        return $link;
 
     }
 
@@ -76,7 +78,7 @@ class MediaService extends \tao_models_classes_GenerisService
      * @param $language
      */
     public function editMediaInstance($filetmp, $instanceUri, $language){
-        $fileManager = FileManager::getPermissionModel();
+        $fileManager = FileManager::getFileManagementModel();
         $link = $fileManager->storeFile($filetmp);
 
         if($link !== false){

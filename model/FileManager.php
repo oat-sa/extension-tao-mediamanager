@@ -34,7 +34,7 @@ class FileManager{
     /**
      * @return FileManagement
      */
-    public static function getPermissionModel() {
+    public static function getFileManagementModel() {
         if (is_null(self::$fileManager)) {
             $implementation = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager')->getConfig(self::CONFIG_KEY);
             if (class_exists($implementation)) {
@@ -50,7 +50,7 @@ class FileManager{
     /**
      * @param FileManagement $model
      */
-    public static function setPermissionModel(FileManagement $model) {
+    public static function setFileManagementModel(FileManagement $model) {
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager')->setConfig(self::CONFIG_KEY, get_class($model));
     }
 

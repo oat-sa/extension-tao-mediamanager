@@ -113,7 +113,7 @@ class MediaManagerBrowser implements MediaBrowser{
         $filePath = $fileManagement->retrieveFile($relPath);
         $mime = \tao_helpers_File::getMimeType($filePath);
 
-        if(count($acceptableMime) == 0 || in_array($mime, $acceptableMime)){
+        if((count($acceptableMime) == 0 || in_array($mime, $acceptableMime)) && file_exists($filePath)){
             $file = array(
                 'name' => basename($filePath),
                 'identifier' => 'mediamanager',

@@ -37,4 +37,10 @@ interface FileManagement {
      */
     public function retrieveFile($link);
 
+    /**
+     * @param $link
+     * @return boolean if the deletion was successful or not
+     */
+    public function deleteFile($link);
+
 } 

@@ -68,6 +68,17 @@ class MediaManagerManagement implements MediaManagement{
 
     public function delete($filename)
     {
-        // TODO: Implement delete() method.
+        $filename = trim($filename, '/');
+
+        $rootClass = new \core_kernel_classes_Class(MEDIA_URI);
+        $instances = $rootClass->searchInstances(array(MEDIA_LINK => $filename), array('recursive' => true));
+        $instance = array_pop($instances);
+
+        /** @var \core_kernel_classes_Resource $instance */
+        $instance->delete();
+        $fileManager = FileManager::getFileManagementModel();
+        $deleted = $fileManager->deleteFile($filename);
+
+        return $deleted;
     }
 }

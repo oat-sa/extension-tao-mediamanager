@@ -59,4 +59,13 @@ class SimpleFileManagement implements FileManagement{
     {
         return $link;
     }
+
+    /**
+     * @param $link
+     * @return boolean if the deletion was successful or not
+     */
+    public function deleteFile($link)
+    {
+        return unlink('/'.$link);
+    }
 }

@@ -39,6 +39,8 @@ class Updater extends \common_ext_ExtensionUpdater {
 
             MediaSource::addMediaSource('mediamanager', 'oat\taoMediaManager\model\MediaManagerBrowser', 'browser');
             MediaSource::addMediaSource('mediamanager', 'oat\taoMediaManager\model\MediaManagerManagement', 'management');
+
+            $currentVersion = '0.1.1';
         }
 
         return $currentVersion;

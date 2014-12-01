@@ -33,9 +33,9 @@ class MediaManagerManagement implements MediaManagement{
      * @param $data
      */
     public function __construct($data){
+        \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager');
         $this->lang = (isset($data['lang'])) ? $data['lang'] : '';
         $this->rootClassUri = (isset($data['rootClass'])) ? $data['rootClass'] : MEDIA_URI;
-        \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager');
     }
 
     public function upload($fileTmp, $fileName, $path)

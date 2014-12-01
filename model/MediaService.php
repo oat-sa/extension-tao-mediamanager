@@ -44,7 +44,7 @@ class MediaService extends \tao_models_classes_GenerisService
     }
 
     public function getRootClass(){
-        return new \core_kernel_classes_Class('http://www.tao.lu/Ontologies/TAOMedia.rdf#Media');
+        return new \core_kernel_classes_Class(MEDIA_URI);
     }
 
     /**

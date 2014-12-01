@@ -26,6 +26,7 @@ use oat\tao\model\media\MediaManagement;
 class MediaManagerManagement implements MediaManagement{
 
     private $lang;
+    private $rootClassUri;
 
     /**
      * get the lang of the class in case we want to filter the media on language
@@ -33,12 +34,13 @@ class MediaManagerManagement implements MediaManagement{
      */
     public function __construct($data){
         $this->lang = (isset($data['lang'])) ? $data['lang'] : '';
+        $this->rootClassUri = (isset($data['rootClass'])) ? $data['rootClass'] : MEDIA_URI;
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager');
     }
 
-    public function upload($file, $path)
+    public function upload($fileTmp, $fileName, $path)
     {
-        $filePath = dirname($file['tmp_name']).'/'.$file['name'];
+        $filePath = dirname($fileTmp).'/'.$fileName;
 
         $mediaBrowser = new MediaManagerBrowser(array('lang' => $this->lang));
 
@@ -48,9 +50,8 @@ class MediaManagerManagement implements MediaManagement{
                 $path = MEDIA_URI;
             }
             $class = new \core_kernel_classes_Class($path);
-
-            if(!rename($file['tmp_name'], $filePath)){
-                throw new \Exception('Can\'t rename uploaded file');
+            if(!@rename($fileTmp, $filePath)){
+                throw new \Exception('Can\'t copy uploaded file');
             }
             $service = MediaService::singleton();
             $classUri = $class->getUri();
@@ -62,15 +63,12 @@ class MediaManagerManagement implements MediaManagement{
             return array( 'error' => $e->getMessage());
         }
 
-
-
     }
 
     public function delete($filename)
     {
-        $filename = trim($filename, '/');
-
-        $rootClass = new \core_kernel_classes_Class(MEDIA_URI);
+        $filename = preg_replace('#^\/+(.+)#', '/${1}', $filename);
+        $rootClass = new \core_kernel_classes_Class($this->rootClassUri);
         $instances = $rootClass->searchInstances(array(MEDIA_LINK => $filename), array('recursive' => true));
         $instance = array_pop($instances);
 

@@ -26,6 +26,7 @@ use oat\tao\model\media\MediaBrowser;
 class MediaManagerBrowser implements MediaBrowser{
 
     private $lang;
+    private $rootClassUri;
 
     /**
      * get the lang of the class in case we want to filter the media on language
@@ -33,6 +34,7 @@ class MediaManagerBrowser implements MediaBrowser{
      */
     public function __construct($data){
         $this->lang = (isset($data['lang'])) ? $data['lang'] : '';
+        $this->rootClassUri = (isset($data['rootClass'])) ? $data['rootClass'] : MEDIA_URI;
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager');
     }
 
@@ -45,7 +47,7 @@ class MediaManagerBrowser implements MediaBrowser{
     public function getDirectory($relPath = '/', $acceptableMime = array(), $depth = 1)
     {
         if($relPath == '/'){
-            $class = new \core_kernel_classes_Class(MEDIA_URI);
+            $class = new \core_kernel_classes_Class($this->rootClassUri);
             $relPath = '';
         }
         else{
@@ -55,10 +57,10 @@ class MediaManagerBrowser implements MediaBrowser{
             $class = new \core_kernel_classes_Class($relPath);
         }
 
-        if($class->getUri() !== MEDIA_URI){
+        if($class->getUri() !== $this->rootClassUri){
             $path = array($class->getLabel());
             foreach($class->getParentClasses(true) as $parent){
-                if($parent->getUri() === MEDIA_URI){
+                if($parent->getUri() === $this->rootClassUri){
                     $path[] = 'mediamanager';
                     break;
                 }

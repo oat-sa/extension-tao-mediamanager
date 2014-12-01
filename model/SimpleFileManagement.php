@@ -35,14 +35,13 @@ class SimpleFileManagement implements FileManagement{
         $relPath = '/media/';
 
         $fileName = \tao_helpers_File::getSafeFileName(basename($filePath));
-
         // create media folder if doesn't exist
         if(!is_dir($baseDir.$relPath)){
             mkdir($baseDir.$relPath);
         }
 
         if(!is_dir($baseDir.$relPath.$fileName)){
-            if(!rename($filePath, $baseDir.$relPath.$fileName)){
+            if(!@copy($filePath, $baseDir.$relPath.$fileName)){
                 throw new \common_exception_Error('Unable to move uploaded file');
             }
             return $baseDir.$relPath.$fileName;
@@ -66,6 +65,6 @@ class SimpleFileManagement implements FileManagement{
      */
     public function deleteFile($link)
     {
-        return unlink('/'.$link);
+        return @unlink('/'.$link);
     }
 }

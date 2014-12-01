@@ -8,7 +8,7 @@ use oat\tao\test\TaoPhpUnitTestRunner;
 use oat\taoMediaManager\model\FileManager;
 use oat\taoMediaManager\model\MediaManagerBrowser;
 
-include_once dirname(__FILE__) . '/../includes/raw_start.php';
+include_once dirname(__FILE__) . '/../../includes/raw_start.php';
 
 class MediaManagerBrowserTest extends TaoPhpUnitTestRunner {
 
@@ -28,6 +28,7 @@ class MediaManagerBrowserTest extends TaoPhpUnitTestRunner {
     public function testGetDirectory(){
 
         $root = new \core_kernel_classes_Class($this->rootClass);
+        $root->delete();
         $root->setLabel('myRootClass');
 
         $acceptableMime = array();
@@ -45,8 +46,8 @@ class MediaManagerBrowserTest extends TaoPhpUnitTestRunner {
         $this->assertEquals('myRootClass', $directory['label'], 'The label is not correct');
         $this->assertEquals('mediamanager/', $directory['path'], 'The path is not correct');
 
-        $root->createSubClass('mySubClass0');
         $root->createSubClass('mySubClass1');
+        $root->createSubClass('mySubClass0');
 
         $newDirectory = $this->mediaManagerBrowser->getDirectory('/', $acceptableMime, $depth);
         $this->assertInternalType('array', $newDirectory['children'], 'Children should be an array');
@@ -60,12 +61,20 @@ class MediaManagerBrowserTest extends TaoPhpUnitTestRunner {
             $this->assertEquals('mySubClass'.$i, $child['label'], 'The label is not correct');
         }
 
+
+        //Remove what has been done
+        $subclasses = $root->getSubClasses();
+        foreach($subclasses as $subclass){
+            $subclass->delete();
+        }
+        $root->delete();
+
     }
 
     public function testGetFileInfo(){
 
         $fileManager = FileManager::getFileManagementModel();
-        $fileTmp = dirname(__FILE__).'/sample/Brazil.png';
+        $fileTmp = dirname(__DIR__).'/sample/Brazil.png';
         $link = $fileManager->storeFile($fileTmp);
         $acceptableMime = array();
 
@@ -81,6 +90,8 @@ class MediaManagerBrowserTest extends TaoPhpUnitTestRunner {
         $this->assertEquals('image/png', $fileInfo['mime'], 'The mime type is not correct');
         $this->assertContains('taoItems/ItemContent/download?path=mediamanager'.urlencode($link), $fileInfo['url'], 'The url is not correct');
 
+        //remove what has been done
+        $fileManager->deleteFile($link);
 
 
     }

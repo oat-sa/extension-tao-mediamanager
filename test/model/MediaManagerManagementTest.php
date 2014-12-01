@@ -7,7 +7,7 @@ namespace oat\taoMediaManager\test\model;
 use oat\tao\test\TaoPhpUnitTestRunner;
 use oat\taoMediaManager\model\MediaManagerManagement;
 
-include_once dirname(__FILE__) . '/../includes/raw_start.php';
+include_once dirname(__FILE__) . '/../../includes/raw_start.php';
 
 class MediaManagerManagementTest extends TaoPhpUnitTestRunner {
 
@@ -27,7 +27,7 @@ class MediaManagerManagementTest extends TaoPhpUnitTestRunner {
 
     public function testUpload(){
 
-        $filePath = dirname(__FILE__).'/sample/Italy.png';
+        $filePath = dirname(__DIR__).'/sample/Italy.png';
 
 
         $success = $this->mediaManagerManagement->upload($filePath, 'Italy.png', $this->path);
@@ -48,7 +48,7 @@ class MediaManagerManagementTest extends TaoPhpUnitTestRunner {
 
     public function testUploadFail(){
 
-        $filePath = dirname(__FILE__).'/sample/Unknown.png';
+        $filePath = dirname(__DIR__).'/sample/Unknown.png';
 
         $success = $this->mediaManagerManagement->upload($filePath, 'Unknown.png', $this->path);
 

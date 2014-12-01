@@ -5,7 +5,7 @@ namespace oat\taoMediaManager\test\model;
 use oat\tao\test\TaoPhpUnitTestRunner;
 use oat\taoMediaManager\model\SimpleFileManagement;
 
-include_once dirname(__FILE__) . '/../includes/raw_start.php';
+include_once dirname(__FILE__) . '/../../includes/raw_start.php';
 
 class SimpleFileManagementTest extends TaoPhpUnitTestRunner {
 
@@ -21,15 +21,15 @@ class SimpleFileManagementTest extends TaoPhpUnitTestRunner {
 
     public function testStoreFileValid(){
 
-        $fileTmp = dirname(__FILE__).'/sample/Brazil.png';
+        $fileTmp = dirname(__DIR__).'/sample/Brazil.png';
 
-        $this->assertFileNotExists(dirname(__DIR__).'/media/brazil.png', 'The file is already stored');
+        $this->assertFileNotExists(dirname(dirname(__DIR__)).'/media/brazil.png', 'The file is already stored');
         $link = $this->fileManagement->storeFile($fileTmp);
 
         // test the return link
         $this->assertInternalType('string', $link, 'The method return should be a string');
-        $this->assertEquals(dirname(__DIR__).'/media/brazil.png', $link, 'The link is wrong');
-        $this->assertFileExists(dirname(__DIR__).'/media/brazil.png', 'The file has not been stored');
+        $this->assertEquals(dirname(dirname(__DIR__)).'/media/brazil.png', $link, 'The link is wrong');
+        $this->assertFileExists(dirname(__DIR__).'/../media/brazil.png', 'The file has not been stored');
 
     }
 
@@ -48,7 +48,7 @@ class SimpleFileManagementTest extends TaoPhpUnitTestRunner {
 
     public function testRetrieveFile(){
 
-        $link = dirname(__DIR__).'/media/brazil.png';
+        $link = dirname(dirname(__DIR__)).'/media/brazil.png';
 
         $file = $this->fileManagement->retrieveFile($link);
 
@@ -61,7 +61,7 @@ class SimpleFileManagementTest extends TaoPhpUnitTestRunner {
 
     public function testDeleteFile(){
 
-        $link = dirname(__DIR__).'/media/brazil.png';
+        $link = dirname(dirname(__DIR__)).'/media/brazil.png';
 
         $remove = $this->fileManagement->deleteFile($link);
 
@@ -73,7 +73,7 @@ class SimpleFileManagementTest extends TaoPhpUnitTestRunner {
 
     public function testDeleteFileFail(){
 
-        $link = dirname(__DIR__).'/media/brazil.png';
+        $link = dirname(dirname(__DIR__)).'/media/brazil.png';
 
         $remove = $this->fileManagement->deleteFile($link);
 

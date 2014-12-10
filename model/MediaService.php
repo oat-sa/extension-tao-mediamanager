@@ -68,7 +68,6 @@ class MediaService extends \tao_models_classes_GenerisService
                 $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LINK), $link);
                 $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LANGUAGE), $language);
             }
-            \common_Logger::w('instance : '.print_r($instance,true));
         }
         return $link;
 

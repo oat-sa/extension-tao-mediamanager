@@ -21,7 +21,7 @@
 
 namespace oat\taoMediaManager\actions;
 
-use oat\taoMediaManager\model\FileManager;
+use oat\taoMediaManager\model\fileManagement\FileManager;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\ZipExporter;
 

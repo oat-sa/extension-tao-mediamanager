@@ -20,6 +20,9 @@
  */
 
 namespace oat\taoMediaManager\model;
+
+use oat\taoMediaManager\model\fileManagement\FileManager;
+
 /**
  * Service methods to manage the Media
  *

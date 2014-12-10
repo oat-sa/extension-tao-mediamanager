@@ -20,8 +20,8 @@
  */
 
 use \oat\tao\model\media\MediaSource;
-use \oat\taoMediaManager\model\SimpleFileManagement;
-use \oat\taoMediaManager\model\FileManager;
+use \oat\taoMediaManager\model\fileManagement\SimpleFileManagement;
+use \oat\taoMediaManager\model\fileManagement\FileManager;
 
 MediaSource::addMediaSource('mediamanager', 'oat\taoMediaManager\model\MediaManagerBrowser', 'browser');
 MediaSource::addMediaSource('mediamanager', 'oat\taoMediaManager\model\MediaManagerManagement', 'management');

@@ -20,8 +20,8 @@
  */
 
 use \oat\tao\model\media\MediaSource;
-use \oat\taoMediaManager\model\FileManager;
-use \oat\taoMediaManager\model\SimpleFileManagement;
+use \oat\taoMediaManager\model\fileManagement\FileManager;
+use \oat\taoMediaManager\model\fileManagement\SimpleFileManagement;
 
 MediaSource::removeMediaSource('mediamanager');
 MediaSource::removeMediaSource('mediamanager', 'management');

@@ -5,7 +5,7 @@ namespace oat\taoMediaManager\test\model;
 
 
 use oat\tao\test\TaoPhpUnitTestRunner;
-use oat\taoMediaManager\model\FileManager;
+use oat\taoMediaManager\model\fileManagement\FileManager;
 use oat\taoMediaManager\model\MediaManagerBrowser;
 
 include_once dirname(__FILE__) . '/../../includes/raw_start.php';

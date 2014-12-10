@@ -22,6 +22,7 @@ namespace oat\taoMediaManager\model;
 
 
 use oat\tao\model\media\MediaManagement;
+use oat\taoMediaManager\model\fileManagement\FileManager;
 
 class MediaManagerManagement implements MediaManagement{
 

@@ -22,6 +22,7 @@ namespace oat\taoMediaManager\model;
 
 
 use oat\tao\model\media\MediaBrowser;
+use oat\taoMediaManager\model\fileManagement\FileManager;
 
 class MediaManagerBrowser implements MediaBrowser{
 

@@ -77,17 +77,31 @@ class FileImporter implements \tao_models_classes_import_ImportHandler
         session_write_close();
         try{
             $file = $form->getValue('source');
-            $service = MediaService::singleton();
 
-            $classUri = $class->getUri();
-            if(is_null($this->instanceUri) || $this->instanceUri === $classUri){
-                $service->createMediaInstance($file["uploaded_file"], $classUri, \tao_helpers_Uri::decode($form->getValue('lang')));
-            }
-            else{
-                $service->editMediaInstance($file["uploaded_file"], $this->instanceUri, \tao_helpers_Uri::decode($form->getValue('lang')));
-            }
+                $service = MediaService::singleton();
+                $classUri = $class->getUri();
+                if(is_null($this->instanceUri) || $this->instanceUri === $classUri){
+                    //if the file is a zip do a zip import
+                    if($file['type'] !== 'application/zip'){
+                        $service->createMediaInstance($file["uploaded_file"], $classUri, \tao_helpers_Uri::decode($form->getValue('lang')));
+                        $report = \common_report_Report::createSuccess(__('Media imported successfully'));
+                    }
+                    else{
+                        $zipImporter = new ZipImporter();
+                        $report = $zipImporter->import($class,$form);
+                    }
+                }
+                else{
+                    if($file['type'] !== 'application/zip'){
+                        $service->editMediaInstance($file["uploaded_file"], $this->instanceUri, \tao_helpers_Uri::decode($form->getValue('lang')));
+                        $report = \common_report_Report::createSuccess(__('Media imported successfully'));
+                    }
+                    else{
+                        $report = \common_report_Report::createFailure(__('You can\'t upload a zip file as a media'));
+                    }
+                }
 
-            $report = \common_report_Report::createSuccess(__('Media imported successfully'));
+
             return $report;
 
         } catch(Exception $e){

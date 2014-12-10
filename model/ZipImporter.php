@@ -33,32 +33,9 @@ use tao_helpers_form_Form;
  * @package taoMediaManager
 
  */
-class ZipImporter implements \tao_models_classes_import_ImportHandler
+class ZipImporter
 {
 
-
-    /**
-     * Returns a textual description of the import format
-     *
-     * @return string
-     */
-    public function getLabel()
-    {
-        return __('Zip');
-    }
-
-    /**
-     * Returns a form in order to prepare the import
-     * if the import is from a file, the form should include the file element
-     *
-     * @param array $data the users tree selection
-     * @return tao_helpers_form_Form
-     */
-    public function getForm()
-    {
-        $form = new ZipImportForm();
-        return $form->getForm();
-    }
 
     /**
      * Starts the import based on the form

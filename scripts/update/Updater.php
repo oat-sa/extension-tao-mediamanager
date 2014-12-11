@@ -22,6 +22,8 @@
 namespace oat\taoMediaManager\scripts\update;
 
 use oat\tao\model\media\MediaSource;
+use \oat\taoMediaManager\model\fileManagement\FileManager;
+use \oat\taoMediaManager\model\fileManagement\SimpleFileManagement;
 
 class Updater extends \common_ext_ExtensionUpdater {
 
@@ -41,6 +43,17 @@ class Updater extends \common_ext_ExtensionUpdater {
             MediaSource::addMediaSource('mediamanager', 'oat\taoMediaManager\model\MediaManagerManagement', 'management');
 
             $currentVersion = '0.1.1';
+        }
+        if ($currentVersion == '0.1.1') {
+
+            FileManager::setFileManagementModel(new SimpleFileManagement());
+            $tao = \common_ext_ExtensionsManager::singleton()->getExtensionById('tao');
+            $configs = $tao->hasConfig('mediaSources')? $tao->getConfig('mediaSources'): array();;
+            if(!empty($configs)){
+                $tao->unsetConfig('mediaSources');
+            }
+
+            $currentVersion = '0.1.2';
         }
 
         return $currentVersion;

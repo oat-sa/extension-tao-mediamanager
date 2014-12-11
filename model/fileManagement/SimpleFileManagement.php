@@ -31,7 +31,7 @@ class SimpleFileManagement implements FileManagement{
      */
     public function storeFile($filePath)
     {
-        $baseDir = dirname(__DIR__);
+        $baseDir = dirname(dirname(__DIR__));
         $relPath = '/media/';
 
         $fileName = \tao_helpers_File::getSafeFileName(basename($filePath));

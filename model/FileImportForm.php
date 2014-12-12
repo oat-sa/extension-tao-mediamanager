@@ -77,16 +77,16 @@ class FileImportForm extends \tao_helpers_form_FormContainer
         $this->form->addElement($fileElt);
         $this->form->createGroup('file', __('Import Media from a file'), array('file_desc', 'source'));
 
-
         $dataUsage = new \core_kernel_classes_Resource(INSTANCE_LANGUAGE_USAGE_DATA);
         $langService = \tao_models_classes_LanguageService::singleton();
+        $dataLang = \common_session_SessionManager::getSession()->getDataLanguage();
 
         $langOptions = array();
         foreach($langService->getAvailableLanguagesByUsage($dataUsage) as $lang){
             $langOptions[\tao_helpers_Uri::encode($lang->getUri())] = $lang->getLabel();
         }
-
         $langElt = \tao_helpers_form_FormFactory::getElement('lang', 'Combobox');
+        $langElt->setValue(\tao_helpers_Uri::encode('http://www.tao.lu/Ontologies/TAO.rdf#Lang'.$dataLang));
         $langElt->setOptions($langOptions);
         $this->form->addElement($langElt);
 

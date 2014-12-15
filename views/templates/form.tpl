@@ -14,7 +14,14 @@ Template::inc('form_context.tpl', 'tao');
         <header class="section-header flex-container-full">
             <h2><?=__('Preview')?></h2>
         </header>
-        <embed src="data:<?=get_data('mimeType')?>;base64,<?=get_data('base64Data')?>">
+        <?php if(strpos(get_data('mimeType'), 'image') === 0):?>
+            <img src="data:<?=get_data('mimeType')?>;base64,<?=get_data('base64Data')?>" alt="preview"/>
+        <?php else:?>
+            <video width="320" height="240" controls>
+                <source src="data:<?=get_data('mimeType')?>;base64,<?=get_data('base64Data')?>" type="<?=get_data('mimeType')?>">
+                Your browser does not support the video tag.
+            </video>
+        <?php endif;?>
     </div>
 
 <?php Template::inc('footer.tpl', 'tao'); ?>

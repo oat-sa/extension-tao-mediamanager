@@ -70,8 +70,8 @@ class MediaManagerBrowser implements MediaBrowser{
             $path = array_reverse($path);
         }
         $data = array(
-            'path' => 'mediamanager/'.$relPath,
-            'relPath' => (isset($path))?implode('/',$path):'mediamanager',
+            'path' => 'mediamanager://'.$relPath,
+            'relPath' => (isset($path))?implode('/',$path):'taomgr://',
             'label' => $class->getLabel()
         );
 
@@ -119,11 +119,11 @@ class MediaManagerBrowser implements MediaBrowser{
         if((count($acceptableMime) == 0 || in_array($mime, $acceptableMime)) && file_exists($filePath)){
             $file = array(
                 'name' => basename($filePath),
-                'identifier' => 'mediamanager',
+                'identifier' => 'taomgr://',
                 'relPath' => $relPath,
                 'mime' => $mime,
                 'size' => filesize($filePath),
-                'url' => _url('download', 'ItemContent', 'taoItems', array('path' => 'mediamanager'.$relPath))
+                'url' => _url('download', 'ItemContent', 'taoItems', array('path' => 'mediamanager/'.$relPath))
             );
         }
         return $file;

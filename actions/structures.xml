@@ -10,6 +10,7 @@
                     <tree name="Media Manager"
                           className="Media"
                           dataUrl="/taoMediaManager/MediaManager/getOntologyData"
+                          rootNode="http://www.tao.lu/Ontologies/TAOMedia.rdf#Media"
                           selectClass="manager-index"
                           selectInstance="media-view"
                           delete="results-delete"

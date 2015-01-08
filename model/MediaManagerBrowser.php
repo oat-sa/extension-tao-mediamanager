@@ -70,8 +70,8 @@ class MediaManagerBrowser implements MediaBrowser{
             $path = array_reverse($path);
         }
         $data = array(
-            'path' => 'mediamanager://'.$relPath,
-            'relPath' => (isset($path))?implode('/',$path):'taomgr://',
+            'path' => 'mediamanager/'.$relPath,
+            'relPath' => (isset($path))?implode('/',$path):'mediamanager/',
             'label' => $class->getLabel()
         );
 
@@ -90,6 +90,11 @@ class MediaManagerBrowser implements MediaBrowser{
                 $link = $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK))->__toString();
                 $file = $this->getFileInfo($link, $acceptableMime);
                 if(!is_null($file)){
+                    //add the alt text to file array
+                    $altArray = $instance->getPropertyValues(new \core_kernel_classes_Property(MEDIA_ALT_TEXT));
+                    if(count($altArray) > 0){
+                        $file['alt'] = $altArray[0];
+                    }
                     $children[] = $file;
                 }
 
@@ -119,7 +124,7 @@ class MediaManagerBrowser implements MediaBrowser{
         if((count($acceptableMime) == 0 || in_array($mime, $acceptableMime)) && file_exists($filePath)){
             $file = array(
                 'name' => basename($filePath),
-                'identifier' => 'taomgr://',
+                'identifier' => 'mediamanager/',
                 'relPath' => $relPath,
                 'mime' => $mime,
                 'size' => filesize($filePath),

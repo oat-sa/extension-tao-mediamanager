@@ -55,6 +55,19 @@ class Updater extends \common_ext_ExtensionUpdater {
 
             $currentVersion = '0.1.2';
         }
+        if ($currentVersion == '0.1.2') {
+
+            //add alt text to media manager
+            $file = dirname(__FILE__).DIRECTORY_SEPARATOR.'alt_text.rdf';
+
+            $adapter = new \tao_helpers_data_GenerisAdapterRdf();
+            if($adapter->import($file)){
+                $currentVersion = '0.1.3';
+            } else{
+                \common_Logger::w('Import failed for '.$file);
+            }
+
+        }
 
         return $currentVersion;
     }

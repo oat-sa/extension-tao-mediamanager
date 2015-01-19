@@ -20,11 +20,20 @@
  */
 
 use \oat\tao\model\media\MediaSource;
-use \oat\taoMediaManager\model\fileManagement\SimpleFileManagement;
 use \oat\taoMediaManager\model\fileManagement\FileManager;
+use oat\taoMediaManager\model\fileManagement\TaoFileManagement;
+
+$dataPath = FILES_PATH . 'taoMediaManager' . DIRECTORY_SEPARATOR. 'media' . DIRECTORY_SEPARATOR;
+if (file_exists($dataPath)) {
+    helpers_File::emptyDirectory($dataPath);
+}
+
+$source = tao_models_classes_FileSourceService::singleton()->addLocalSource('MediaManager', $dataPath);
+$config = array(
+	'uri' => $source
+);
+
+FileManager::setFileManagementModel(new TaoFileManagement($config));
 
 MediaSource::addMediaSource('mediamanager', 'oat\taoMediaManager\model\MediaManagerBrowser', 'browser');
 MediaSource::addMediaSource('mediamanager', 'oat\taoMediaManager\model\MediaManagerManagement', 'management');
-FileManager::setFileManagementModel(new SimpleFileManagement());
-
-

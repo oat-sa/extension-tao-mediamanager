@@ -35,6 +35,9 @@ class TaoFileManagement extends Configurable implements FileManagement {
     public function storeFile($filePath)
     {
         $file = $this->getFilesystem()->spawnFile($filePath);
+        if (is_null($file)) {
+            throw \common_Exception('Unable to spawn file for '.$filePath);
+        }
         return $file->getUri();
     }
 

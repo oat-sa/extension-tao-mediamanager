@@ -87,7 +87,8 @@ class MediaManagerBrowser implements MediaBrowser{
             );
 
             foreach($class->searchInstances($filter) as $instance){
-                $link = $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK))->__toString();
+                $thing = $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
+                $link = $thing instanceof \core_kernel_classes_Resource ? $thing->getUri() : (string)$thing;
                 $file = $this->getFileInfo($link, $acceptableMime);
                 if(!is_null($file)){
                     //add the alt text to file array

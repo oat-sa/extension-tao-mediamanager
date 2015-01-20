@@ -72,8 +72,11 @@ class ZipImporter
                 new \RecursiveDirectoryIterator($extractResult),
                 \RecursiveIteratorIterator::LEAVES_ONLY);
 
-            $dirs = array();
-            $files = array();
+            $parents = array();
+
+            $service = MediaService::singleton();
+            $language = $form->getValue('lang');
+
             $rootNode = basename($fileName,'.zip');
             /** @var $file \SplFileInfo */
             foreach($iterator as $file) {
@@ -81,10 +84,42 @@ class ZipImporter
                         // get path from root
                         $path = substr($file->getPath(), (strpos($file->getPath(), $rootNode) + strlen($rootNode)));
                         $path = explode('/',$path);
+
+                        //get Parent path to have the architecture
+                        $parentPath = explode('/',$file->getPath());
+                        unset($parentPath[count($parentPath) - 1]);
+                        $parentPath = implode('/',$parentPath);
+                        //create class structure
                         if($file->isDir()) {
                             if(count($path) > 2){
-                                if(!isset($dirs[$path[count($path) - 2]]) || !in_array($path[count($path) - 1],$dirs[$path[count($path) - 2]])){
-                                    $dirs[$path[count($path) - 2]][] = $path[count($path) - 1];
+                                //do not create multiple time the same class
+                                if(!isset($parents[$file->getPath()]) || !in_array($file->getPath(), array_keys($parents))){
+                                    // create classes children of root
+                                    if($path[count($path) - 2] === ''){
+                                        $childClazz = $service->createSubClass($resource, $path[count($path) - 1]);
+                                        if(!isset($parents[$file->getPath()])){
+                                            $parents[$file->getPath()] = $childClazz;
+                                        }
+                                    }
+
+                                    //if parent exists just create a subclass
+                                    if(isset($parents[$parentPath])){
+                                        $clazz = $parents[$parentPath];
+                                        $childClazz = $service->createSubClass($clazz, $path[count($path) - 1]);
+                                        if(!isset($parents[$file->getPath()])){
+                                            $parents[$file->getPath()] = $childClazz;
+                                        }
+                                    }
+                                    //if it doesn't exist create the class and create the subclass
+                                    else{
+                                        $clazz = $service->createSubClass($resource, $path[count($path) - 2]);
+                                        $parents[$parentPath] = $clazz;
+
+                                        $childClazz = $service->createSubClass($clazz, $path[count($path) - 1]);
+                                        if(!isset($parents[$file->getPath()])){
+                                            $parents[$file->getPath()] = $childClazz;
+                                        }
+                                    }
                                 }
                             }
 
@@ -92,29 +127,19 @@ class ZipImporter
                         // get list of files and parent class to create instances
                         else if($file->isFile()){
                             if($path[count($path) - 1] === ""){
-                                $files[$resource->getLabel()][] = $file;
+                                // create media instance under root class
+                                $service->createMediaInstance($file->getRealPath(), $resource->getUri(), $language);
                             }
                             else{
-                                $files[$path[count($path) - 1]][] = $file;
+                                // create media instance
+                                if(isset($parents[$file->getPath()])){
+                                    $clazz = $parents[$file->getPath()];
+                                    $service->createMediaInstance($file->getRealPath(), $clazz->getUri(), $language);
+                                }
                             }
                         }
                     }
             }
-            // create classes
-            $service = MediaService::singleton();
-            $parents = $service->createTreeFromZip($dirs, $resource->getUri());
-
-            $language = $form->getValue('lang');
-            // iterate through files and create instances
-            foreach($files as $parent => $arrayFile){
-                if(isset($parents[$parent])){
-                    $classUri = $parents[$parent]->getUri();
-                    foreach($arrayFile as $file){
-                        $service->createMediaInstance($file->getRealPath(), $classUri, $language);
-                    }
-                }
-            }
-
 
             $report = \common_report_Report::createSuccess(__('Media imported successfully'));
             return $report;

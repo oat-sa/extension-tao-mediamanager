@@ -71,52 +71,5 @@ class MediaServiceTest extends TaoPhpUnitTestRunner {
         $inst = new \core_kernel_classes_Resource($instanceUri);
         $inst->delete();
     }
-
-
-    public function testCreateTreeFromZip(){
-
-        $dirs = array(
-            'baseDir'   => array('child1', 'child2', 'child3'),
-            'child2'    => array('child2.1', 'child2.2'),
-            'child2.2'  => array('child2.2.1')
-        );
-        $base = 'baseDir';
-        $parent = 'http://myFancyDomain.com/myGreatParentUri';
-
-        $parentKeys = array('child1','child2', 'child3', 'child2.1', 'child2.2', 'child2.2.1');
-
-        $parents = $this->mediaService->createTreeFromZip($dirs,$parent);
-
-        //nothing missing in parents
-        $missing = array_diff($parentKeys, array_keys($parents));
-        //nothing more in parents
-        $extra = array_diff(array_keys($parents), $parentKeys);
-
-
-        //see if the return is ok
-        $this->assertEmpty($missing, 'It miss '.implode(',', $missing).' in the return array');
-        $this->assertEmpty($extra, 'there are extra values in return array : '.implode(',', $extra));
-
-
-        $root = new \core_kernel_classes_Class($parent);
-
-        $subclasses = $root->getSubClasses(true);
-        $labels = array();
-        /** @var \core_kernel_classes_Resource $subclass */
-        foreach($subclasses as $subclass){
-            $this->assertInstanceOf('\core_kernel_classes_Resource', $subclass, 'It should create a class under the class : '.$base);
-            $labels[] = $subclass->getLabel();
-        }
-
-        //nothing missing in labels
-        $missing = array_diff($parentKeys, $labels);
-        //nothing more in labels
-        $extra = array_diff($labels, $parentKeys);
-
-        //see if subclasses are created
-        $this->assertEmpty($missing, 'It miss '.implode(',', $missing).' in the created class');
-        $this->assertEmpty($extra, 'there are extra classes created  : '.implode(',', $extra));
-    }
-
 }
  

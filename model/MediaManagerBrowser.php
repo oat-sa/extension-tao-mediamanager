@@ -137,11 +137,13 @@ class MediaManagerBrowser implements MediaBrowser{
     }
 
     /**
-     * @param string $filename
+     * @param string $link
      * @return string path of the file to download
      */
-    public function download($filename)
+    public function download($link)
     {
-        \tao_helpers_Http::returnFile($filename);
+        $fileManagement = FileManager::getFileManagementModel();
+        $filePath = $fileManagement->retrieveFile($link);
+        \tao_helpers_Http::returnFile($filePath);
     }
 }

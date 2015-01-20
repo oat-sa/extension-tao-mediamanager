@@ -51,7 +51,7 @@ class ZipImporter
 
         try{
             $file = $form->getValue('source');
-
+            $resource = new core_kernel_classes_Class($form->getValue('classUri'));
 
             $tmpDir = \tao_helpers_File::createTempDir();
             $fileName = \tao_helpers_File::getSafeFileName($file['name']);
@@ -69,56 +69,49 @@ class ZipImporter
 
             // get list of directory in order to create classes
             $iterator = new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator($extractResult.basename($fileName, '.zip')),
+                new \RecursiveDirectoryIterator($extractResult),
                 \RecursiveIteratorIterator::LEAVES_ONLY);
 
             $dirs = array();
             $files = array();
+            $rootNode = basename($fileName,'.zip');
             /** @var $file \SplFileInfo */
             foreach($iterator as $file) {
-                if($file->isDir()) {
-                    // get path from root
-                    $path = substr($file->getPath(), (strpos($file->getPath(), basename($fileName, '.zip')) + strlen(basename($fileName, '.zip'))));
-                    $path = explode('/',$path);
+                    if(strpos($file->getPath(), $rootNode) !== false){
+                        // get path from root
+                        $path = substr($file->getPath(), (strpos($file->getPath(), $rootNode) + strlen($rootNode)));
+                        $path = explode('/',$path);
+                        if($file->isDir()) {
+                            if(count($path) > 2){
+                                if(!isset($dirs[$path[count($path) - 2]]) || !in_array($path[count($path) - 1],$dirs[$path[count($path) - 2]])){
+                                    $dirs[$path[count($path) - 2]][] = $path[count($path) - 1];
+                                }
+                            }
 
-                    if(count($path) === 2){
-                        if(!isset($dirs[basename($fileName, '.zip')]) || !in_array($path[1],$dirs[basename($fileName, '.zip')])){
-                            $dirs[basename($fileName, '.zip')][] = $path[1];
+                        }
+                        // get list of files and parent class to create instances
+                        else if($file->isFile()){
+                            if($path[count($path) - 1] === ""){
+                                $files[$resource->getLabel()][] = $file;
+                            }
+                            else{
+                                $files[$path[count($path) - 1]][] = $file;
+                            }
                         }
                     }
-                    else if(count($path) > 2){
-                        if(!isset($dirs[$path[count($path) - 2]]) || !in_array($path[count($path) - 1],$dirs[$path[count($path) - 2]])){
-                            $dirs[$path[count($path) - 2]][] = $path[count($path) - 1];
-                        }
-                    }
-                }
-                // get list of files and parent class to create instances
-                else if($file->isFile()){
-                    $path = substr($file->getPath(), (strpos($file->getPath(), basename($fileName, '.zip')) + strlen(basename($fileName, '.zip'))));
-                    $path = explode('/',$path);
-
-                    if($path[count($path) - 1] === ""){
-                        $files[basename($fileName, '.zip')] = $file;
-                    }
-                    else{
-                        $files[$path[count($path) - 1]][] = $file;
-                    }
-
-
-
-                }
             }
-
             // create classes
             $service = MediaService::singleton();
-            $parents = $service->createTreeFromZip($dirs, basename($fileName, '.zip'),$form->getValue('classUri'));
+            $parents = $service->createTreeFromZip($dirs, $resource->getUri());
 
             $language = $form->getValue('lang');
             // iterate through files and create instances
             foreach($files as $parent => $arrayFile){
-                $classUri = $parents[$parent]->getUri();
-                foreach($arrayFile as $file){
-                    $service->createMediaInstance($file->getRealPath(), $classUri, $language);
+                if(isset($parents[$parent])){
+                    $classUri = $parents[$parent]->getUri();
+                    foreach($arrayFile as $file){
+                        $service->createMediaInstance($file->getRealPath(), $classUri, $language);
+                    }
                 }
             }
 
@@ -148,7 +141,7 @@ class ZipImporter
             return array('error' => 'Could not open archive');
         }
 
-        if (!$archiveObj->extractTo($archiveDir)) {
+        if (!$archiveObj->extractTo($archiveDir.basename($archiveFile,'.zip'))) {
             $archiveObj->close();
             return array('error' => 'Could not extract archive');
         }

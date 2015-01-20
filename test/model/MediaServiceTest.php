@@ -41,10 +41,12 @@ class MediaServiceTest extends TaoPhpUnitTestRunner {
         /** @var \core_kernel_classes_Resource $instance */
         $instance = array_pop($instances);
 
+        $thing = $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
+        $linkResult = $thing instanceof \core_kernel_classes_Resource ? $thing->getUri() : (string)$thing;
         $this->assertInstanceOf('\core_kernel_classes_Resource', $instance, 'It should create an instance under the class in parameter');
         $this->assertEquals('Brazil.png', $instance->getLabel(), 'The instance label is wrong');
         $this->assertInternalType('string', $link, 'The method return should be a string');
-        $this->assertEquals($link, $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK)), 'The instance link is wrong');
+        $this->assertEquals($link, $linkResult, 'The instance link is wrong');
         $this->assertEquals($lang, $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LANGUAGE)), 'The instance language is wrong');
 
         // remove what has been done
@@ -81,9 +83,9 @@ class MediaServiceTest extends TaoPhpUnitTestRunner {
         $base = 'baseDir';
         $parent = 'http://myFancyDomain.com/myGreatParentUri';
 
-        $parentKeys = array('baseDir', 'child1','child2', 'child3', 'child2.1', 'child2.2', 'child2.2.1');
+        $parentKeys = array('child1','child2', 'child3', 'child2.1', 'child2.2', 'child2.2.1');
 
-        $parents = $this->mediaService->createTreeFromZip($dirs,$base,$parent);
+        $parents = $this->mediaService->createTreeFromZip($dirs,$parent);
 
         //nothing missing in parents
         $missing = array_diff($parentKeys, array_keys($parents));
@@ -98,16 +100,8 @@ class MediaServiceTest extends TaoPhpUnitTestRunner {
 
         $root = new \core_kernel_classes_Class($parent);
 
-        $subclasses = $root->getSubClasses();
-        /** @var \core_kernel_classes_Resource $baseClass */
-        $baseClass = array_pop($subclasses);
-
-        //see if base class is created
-        $this->assertInstanceOf('\core_kernel_classes_Resource', $baseClass, 'It should create a class under the class : '.$parent);
-        $this->assertEquals($base, $baseClass->getLabel(), 'The created class hasn\'t the right label');
-
-        $subclasses = $baseClass->getSubClasses(true);
-        $labels = array($base);
+        $subclasses = $root->getSubClasses(true);
+        $labels = array();
         /** @var \core_kernel_classes_Resource $subclass */
         foreach($subclasses as $subclass){
             $this->assertInstanceOf('\core_kernel_classes_Resource', $subclass, 'It should create a class under the class : '.$base);

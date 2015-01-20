@@ -98,22 +98,22 @@ class MediaService extends \tao_models_classes_GenerisService
      *
      * Create the whole tree in the ontology
      * @param array $dirs list of directory and sub directories [baseDir => [child1,child2,child3], child2 => [child21, child22]]
-     * @param string $base name of the bas directory
      * @param string $parent the uri of the parent where to put the directories
      * @return array the list of class created [baseDir => uri, child1 => uri, child2 => uri ...]
      */
-    public function createTreeFromZip($dirs, $base, $parent){
+    public function createTreeFromZip($dirs, $parent){
 
         //create the base class
         $clazz = new \core_kernel_classes_Class($parent);
-        $baseClazz = $this->createSubClass($clazz, $base);
 
-        $parents[$base] = $baseClazz;
-
+        $parents = array();
         foreach($dirs as $parent => $children){
             foreach($children as $child){
                 if(isset($parents[$parent])){
                     $childClazz = $this->createSubClass($parents[$parent], $child);
+                    $parents[$child] = $childClazz;
+                }else{
+                    $childClazz = $this->createSubClass($clazz, $child);
                     $parents[$child] = $childClazz;
                 }
             }

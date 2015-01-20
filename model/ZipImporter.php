@@ -69,7 +69,7 @@ class ZipImporter
 
             // get list of directory in order to create classes
             $iterator = new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator($extractResult.'/'.basename($fileName, '.zip')),
+                new \RecursiveDirectoryIterator($extractResult.basename($fileName, '.zip')),
                 \RecursiveIteratorIterator::LEAVES_ONLY);
 
             $dirs = array();
@@ -118,7 +118,7 @@ class ZipImporter
             foreach($files as $parent => $arrayFile){
                 $classUri = $parents[$parent]->getUri();
                 foreach($arrayFile as $file){
-                    $service->createMediaInstance($file->getPath()."/".$file->getFilename(), $classUri, $language);
+                    $service->createMediaInstance($file->getRealPath(), $classUri, $language);
                 }
             }
 
@@ -141,7 +141,7 @@ class ZipImporter
      */
     protected function extractArchive($archiveFile)
     {
-        $archiveDir    = dirname($archiveFile);
+        $archiveDir    = \tao_helpers_File::createTempDir();
         $archiveObj    = new \ZipArchive();
         $archiveHandle = $archiveObj->open($archiveFile);
         if (true !== $archiveHandle) {

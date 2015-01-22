@@ -24,6 +24,7 @@ namespace oat\taoMediaManager\model;
 use core_kernel_classes_Class;
 use core_kernel_classes_Resource;
 use tao_helpers_form_Form;
+use oat\taoMediaManager\model\fileManagement\FileManager;
 
 /**
  * Service methods to manage the Media
@@ -106,7 +107,7 @@ class ZipExporter implements \tao_models_classes_export_ExportHandler
         $baseDir = \tao_helpers_Export::getExportPath();
         $path = $baseDir.'/'.$filename.'.zip';
         if ($zip->open($path, \ZipArchive::CREATE)!==TRUE) {
-            exit("Impossible d'ouvrir le fichier <$filename>\n");
+             throw new common_Exception('Unable to create zipfile '.$path);
         }
         if($zip->numFiles === 0){
             $nbFiles = 0;
@@ -123,12 +124,13 @@ class ZipExporter implements \tao_models_classes_export_ExportHandler
 
                 foreach($files as $file){
                     //add each file in the correct directory
-                    $zip->addFile($file->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK)), $archivePath.$file->getLabel());
+                    $link = $file->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
+                    $zip->addFile(FileManager::getFileManagementModel()->retrieveFile($link), $archivePath.$file->getLabel());
                 }
 
             }
 
-            \common_Logger::w("Number of file : " . $zip->numFiles." / ".$nbFiles);
+            \common_Logger::i("Number of file : " . $zip->numFiles." / ".$nbFiles);
         }
 
         $zip->close();

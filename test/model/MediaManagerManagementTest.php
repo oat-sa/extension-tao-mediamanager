@@ -30,7 +30,7 @@ class MediaManagerManagementTest extends TaoPhpUnitTestRunner {
         $filePath = dirname(__DIR__).'/sample/Italy.png';
 
 
-        $success = $this->mediaManagerManagement->upload($filePath, 'Italy.png', $this->path);
+        $success = $this->mediaManagerManagement->add($filePath, 'Italy.png', $this->path);
 
         // has no error
         $this->assertArrayNotHasKey('error', $success, 'upload doesn\'t succeed');
@@ -50,7 +50,7 @@ class MediaManagerManagementTest extends TaoPhpUnitTestRunner {
 
         $filePath = dirname(__DIR__).'/sample/Unknown.png';
 
-        $success = $this->mediaManagerManagement->upload($filePath, 'Unknown.png', $this->path);
+        $success = $this->mediaManagerManagement->add($filePath, 'Unknown.png', $this->path);
 
         // has no error
         $this->assertArrayHasKey('error', $success, 'upload doesn\'t succeed');

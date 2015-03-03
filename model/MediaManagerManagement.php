@@ -39,9 +39,9 @@ class MediaManagerManagement implements MediaManagement{
         $this->rootClassUri = (isset($data['rootClass'])) ? $data['rootClass'] : MEDIA_URI;
     }
 
-    public function upload($fileTmp, $fileName, $path)
+    public function add($source, $fileName, $path)
     {
-        $filePath = dirname($fileTmp).'/'.$fileName;
+        $filePath = dirname($source).'/'.$fileName;
 
         $mediaBrowser = new MediaManagerBrowser(array('lang' => $this->lang));
 
@@ -51,8 +51,8 @@ class MediaManagerManagement implements MediaManagement{
                 $path = MEDIA_URI;
             }
             $class = new \core_kernel_classes_Class($path);
-            if(!@rename($fileTmp, $filePath)){
-                throw new \Exception('Can\'t copy uploaded file');
+            if(!\tao_helpers_File::copy($source, $filePath)){
+                throw new \Exception('Can\'t copy file');
             }
             $service = MediaService::singleton();
             $classUri = $class->getUri();

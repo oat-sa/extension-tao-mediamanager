@@ -22,6 +22,10 @@ namespace oat\taoMediaManager\model\fileManagement;
 
 
 class SimpleFileManagement implements FileManagement{
+    
+    private function getBaseDir() {
+        return dirname(dirname(__DIR__)).'/media/';
+    }
 
     /**
      * store the file and provide a link to retrieve it
@@ -31,20 +35,18 @@ class SimpleFileManagement implements FileManagement{
      */
     public function storeFile($filePath)
     {
-        $baseDir = dirname(dirname(__DIR__));
-        $relPath = '/media/';
-
-        $fileName = \tao_helpers_File::getSafeFileName(basename($filePath));
+        $path = $this->getBaseDir();
         // create media folder if doesn't exist
-        if(!is_dir($baseDir.$relPath)){
-            mkdir($baseDir.$relPath);
+        if(!is_dir($path)){
+            mkdir($path);
         }
 
-        if(!is_dir($baseDir.$relPath.$fileName)){
-            if(!@copy($filePath, $baseDir.$relPath.$fileName)){
+        $fileName = \tao_helpers_File::getSafeFileName(basename($filePath));
+        if(!is_dir($path.$fileName)){
+            if(!@copy($filePath, $path.$fileName)){
                 throw new \common_exception_Error('Unable to move uploaded file');
             }
-            return $baseDir.$relPath.$fileName;
+            return $fileName;
         }
         return false;
     }
@@ -56,7 +58,10 @@ class SimpleFileManagement implements FileManagement{
      */
     public function retrieveFile($link)
     {
-        return $link;
+        if (!\tao_helpers_File::securityCheck($link)) {
+            throw new \common_exception_Error('Unsecure file link found');
+        }
+        return $this->getBaseDir().$link;
     }
 
     /**

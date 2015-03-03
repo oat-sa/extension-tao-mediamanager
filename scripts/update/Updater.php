@@ -24,6 +24,7 @@ namespace oat\taoMediaManager\scripts\update;
 use oat\tao\model\media\MediaSource;
 use \oat\taoMediaManager\model\fileManagement\FileManager;
 use \oat\taoMediaManager\model\fileManagement\SimpleFileManagement;
+use oat\tao\scripts\update\OntologyUpdater;
 
 class Updater extends \common_ext_ExtensionUpdater {
 
@@ -67,6 +68,14 @@ class Updater extends \common_ext_ExtensionUpdater {
                 \common_Logger::w('Import failed for '.$file);
             }
 
+        }
+        
+
+        if ($currentVersion == '0.1.3') {
+            
+            OntologyUpdater::correctModelId(dirname(__FILE__).DIRECTORY_SEPARATOR.'alt_text.rdf');
+            $currentVersion = '0.1.4';
+        
         }
 
         return $currentVersion;

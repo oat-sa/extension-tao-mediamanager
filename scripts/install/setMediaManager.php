@@ -30,7 +30,7 @@ if (file_exists($dataPath)) {
 
 $source = tao_models_classes_FileSourceService::singleton()->addLocalSource('MediaManager', $dataPath);
 $config = array(
-	'uri' => $source
+	'uri' => $source->getUri()
 );
 
 FileManager::setFileManagementModel(new TaoFileManagement($config));

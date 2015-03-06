@@ -1,40 +1,102 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO v2.5-alpha\n"
-"PO-Revision-Date: 2013-05-15T10:38:10\n"
+"Project-Id-Version: TAO 3.0-RC04\n"
+"PO-Revision-Date: 2015-03-06T16:00:26\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: it-IT\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: it-IT\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid "Add a media file"
+msgstr ""
+
+msgid "Class saved"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Download Media"
+msgstr ""
+
+msgid "Edit Instance"
+msgstr ""
+
+msgid "Edit Media class"
+msgstr ""
+
+msgid "Export"
+msgstr ""
+
+msgid "Export Media as Zip file"
+msgstr ""
+
+msgid "File"
+msgstr ""
+
+msgid "File name"
+msgstr ""
+
+msgid "Import"
+msgstr ""
+
+msgid "Import Media from a file"
+msgstr ""
+
+msgid "Index"
+msgstr ""
+
+msgid "Instance saved"
+msgstr ""
 
 #, tao-public
-msgid "An example extension."
-msgstr ""
-
-msgid "delete"
+msgid "Manage Media"
 msgstr ""
 
 #, tao-public
-msgid "Documents"
+msgid "Media"
 msgstr ""
 
-msgid "Documents library"
+msgid "Media imported successfully"
+msgstr ""
+
+msgid "Media Manager"
 msgstr ""
 
 #, tao-public
-msgid "Manage documents"
+msgid "Media Manager extension"
 msgstr ""
 
-msgid "My Documents"
+msgid "Media Options"
+msgstr ""
+
+msgid "New class"
+msgstr ""
+
+msgid "Preview"
 msgstr ""
 
 msgid "The file has been deleted"
 msgstr ""
 
-msgid "This extension enables you to manage your documents library"
+msgid "Unable to move uploaded file"
 msgstr ""
 
-msgid "You can download the document by right-clicking"
+msgid "Upload Media"
+msgstr ""
+
+msgid "View Media"
+msgstr ""
+
+msgid "You can\'t upload a zip file as a media"
+msgstr ""
+
+msgid "Zip"
 msgstr ""
 

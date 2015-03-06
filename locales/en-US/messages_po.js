@@ -1,4 +1,1 @@
-/* auto generated content */
-/* lang: en-US */
-var langCode = 'en-US';
-var i18n_tr = [];
+{"Manage test takers":"Manage test-takers","Record and manage test takers.":"Record and manage test-takers."}

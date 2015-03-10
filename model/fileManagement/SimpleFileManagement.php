@@ -70,6 +70,6 @@ class SimpleFileManagement implements FileManagement{
      */
     public function deleteFile($link)
     {
-        return @unlink('/'.$link);
+        return @unlink($this->getBaseDir().$link);
     }
 }

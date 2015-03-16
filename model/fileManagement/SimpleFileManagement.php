@@ -21,7 +21,8 @@
 namespace oat\taoMediaManager\model\fileManagement;
 
 
-class SimpleFileManagement implements FileManagement{
+class SimpleFileManagement implements FileManagement
+{
 
     /** @var string */
     private $baseDir = '';
@@ -29,9 +30,10 @@ class SimpleFileManagement implements FileManagement{
     /**
      * @return string
      */
-    private function getBaseDir() {
-        if($this->baseDir === ''){
-            $this->baseDir = dirname(dirname(__DIR__)).'/media/';
+    private function getBaseDir()
+    {
+        if ($this->baseDir === '') {
+            $this->baseDir = dirname(dirname(__DIR__)) . '/media/';
         }
         return $this->baseDir;
     }
@@ -47,13 +49,13 @@ class SimpleFileManagement implements FileManagement{
     {
         $path = $this->getBaseDir();
         // create media folder if doesn't exist
-        if(!is_dir($path)){
+        if (!is_dir($path)) {
             mkdir($path);
         }
 
         $fileName = \tao_helpers_File::getSafeFileName(basename($filePath));
-        if(!is_dir($path.$fileName)){
-            if(!@copy($filePath, $path.$fileName)){
+        if (!is_dir($path . $fileName)) {
+            if (!@copy($filePath, $path . $fileName)) {
                 throw new \common_exception_Error('Unable to move uploaded file');
             }
             return $fileName;
@@ -72,7 +74,7 @@ class SimpleFileManagement implements FileManagement{
         if (!\tao_helpers_File::securityCheck($link)) {
             throw new \common_exception_Error('Unsecure file link found');
         }
-        return $this->getBaseDir().$link;
+        return $this->getBaseDir() . $link;
     }
 
     /**
@@ -81,6 +83,6 @@ class SimpleFileManagement implements FileManagement{
      */
     public function deleteFile($link)
     {
-        return @unlink($this->getBaseDir().$link);
+        return @unlink($this->getBaseDir() . $link);
     }
 }

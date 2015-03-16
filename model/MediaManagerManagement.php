@@ -24,7 +24,8 @@ namespace oat\taoMediaManager\model;
 use oat\tao\model\media\MediaManagement;
 use oat\taoMediaManager\model\fileManagement\FileManager;
 
-class MediaManagerManagement implements MediaManagement{
+class MediaManagerManagement implements MediaManagement
+{
 
     private $lang;
     private $rootClassUri;
@@ -34,14 +35,16 @@ class MediaManagerManagement implements MediaManagement{
      * get the lang of the class in case we want to filter the media on language
      * @param $data
      */
-    public function __construct($data){
+    public function __construct($data)
+    {
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager');
         $this->lang = (isset($data['lang'])) ? $data['lang'] : '';
         $this->rootClassUri = (isset($data['rootClass'])) ? $data['rootClass'] : MEDIA_URI;
     }
 
-    public function getMediaBrowser(){
-        if(is_null($this->mediaBrowser)){
+    public function getMediaBrowser()
+    {
+        if (is_null($this->mediaBrowser)) {
             $this->mediaBrowser = new MediaManagerBrowser(array('lang' => $this->lang));
         }
         return $this->mediaBrowser;
@@ -54,18 +57,18 @@ class MediaManagerManagement implements MediaManagement{
      */
     public function add($source, $fileName, $parent)
     {
-        $filePath = dirname($source).'/'.$fileName;
+        $filePath = dirname($source) . '/' . $fileName;
 
-        try{
-            $parent = trim($parent,'/');
-            if($parent === '' || $parent === '/'){
+        try {
+            $parent = trim($parent, '/');
+            if ($parent === '' || $parent === '/') {
                 $parent = MEDIA_URI;
             }
             $class = new \core_kernel_classes_Class($parent);
-            if(!$class->exists()){
-                throw new \common_exception_Error('Class '.$parent.' not found');
+            if (!$class->exists()) {
+                throw new \common_exception_Error('Class ' . $parent . ' not found');
             }
-            if(!\tao_helpers_File::copy($source, $filePath)){
+            if (!\tao_helpers_File::copy($source, $filePath)) {
                 throw new \tao_models_classes_FileNotFoundException($source);
             }
             $service = MediaService::singleton();
@@ -73,8 +76,8 @@ class MediaManagerManagement implements MediaManagement{
 
             return $this->getMediaBrowser()->getFileInfo($link, array());
 
-        } catch(\Exception $e){
-            return array( 'error' => $e->getMessage());
+        } catch (\Exception $e) {
+            return array('error' => $e->getMessage());
         }
 
     }

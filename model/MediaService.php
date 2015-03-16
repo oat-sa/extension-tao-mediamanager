@@ -29,12 +29,12 @@ use oat\taoMediaManager\model\fileManagement\FileManager;
  * @access public
  * @author Antoine Robin, <antoine.robin@vesperiagroup.com>
  * @package taoMediaManager
-
  */
 class MediaService extends \tao_models_classes_GenerisService
 {
 
-    public function getRootClass(){
+    public function getRootClass()
+    {
         return new \core_kernel_classes_Class(MEDIA_URI);
     }
 
@@ -46,15 +46,16 @@ class MediaService extends \tao_models_classes_GenerisService
      * @param $language
      * @return string $link
      */
-    public function createMediaInstance($filetmp, $classUri, $language){
+    public function createMediaInstance($filetmp, $classUri, $language)
+    {
         $fileManager = FileManager::getFileManagementModel();
         $link = $fileManager->storeFile($filetmp);
 
-        if($link !== false){
+        if ($link !== false) {
             $clazz = new \core_kernel_classes_Class($classUri);
             $instance = $this->createInstance($clazz, basename($filetmp));
-            /** @var $instance  \core_kernel_classes_Resource*/
-            if(!is_null($instance) && $instance instanceof \core_kernel_classes_Resource){
+            /** @var $instance  \core_kernel_classes_Resource */
+            if (!is_null($instance) && $instance instanceof \core_kernel_classes_Resource) {
                 $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LINK), $link);
                 $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LANGUAGE), $language);
             }
@@ -69,14 +70,15 @@ class MediaService extends \tao_models_classes_GenerisService
      * @param $instanceUri
      * @param $language
      */
-    public function editMediaInstance($fileTmp, $instanceUri, $language){
+    public function editMediaInstance($fileTmp, $instanceUri, $language)
+    {
         $fileManager = FileManager::getFileManagementModel();
         $link = $fileManager->storeFile($fileTmp);
 
-        if($link !== false){
+        if ($link !== false) {
             $instance = new \core_kernel_classes_Class($instanceUri);
-            /** @var $instance  \core_kernel_classes_Resource*/
-            if(!is_null($instance) && $instance instanceof \core_kernel_classes_Resource){
+            /** @var $instance  \core_kernel_classes_Resource */
+            if (!is_null($instance) && $instance instanceof \core_kernel_classes_Resource) {
                 $instance->editPropertyValues(new \core_kernel_classes_Property(MEDIA_LINK), $link);
                 $instance->editPropertyValues(new \core_kernel_classes_Property(MEDIA_LANGUAGE), $language);
             }

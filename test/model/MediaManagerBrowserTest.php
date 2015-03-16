@@ -24,7 +24,8 @@ namespace oat\taoMediaManager\test\model;
 use oat\taoMediaManager\model\MediaManagerBrowser;
 
 
-class MediaManagerBrowserTest extends \PHPUnit_Framework_TestCase {
+class MediaManagerBrowserTest extends \PHPUnit_Framework_TestCase
+{
 
     /**
      * @var mediaManagerBrowser
@@ -39,7 +40,8 @@ class MediaManagerBrowserTest extends \PHPUnit_Framework_TestCase {
 
     private $rootClass = '';
 
-    public function setUp(){
+    public function setUp()
+    {
         $this->rootClass = 'http://myFancyDomaine.com/myGreatCLassUriForBrowserTest';
         $this->mediaManagerBrowser = new MediaManagerBrowser(array('lang' => 'EN_en', 'rootClass' => $this->rootClass));
 
@@ -52,7 +54,8 @@ class MediaManagerBrowserTest extends \PHPUnit_Framework_TestCase {
         $ref->setValue(null, $this->fileManagerMock);
     }
 
-    public function tearDown(){
+    public function tearDown()
+    {
         $this->fileManagerMock = null;
 
         $ref = new \ReflectionProperty('oat\taoMediaManager\model\fileManagement\FileManager', 'fileManager');
@@ -62,13 +65,14 @@ class MediaManagerBrowserTest extends \PHPUnit_Framework_TestCase {
 
     }
 
-    public function testGetDirectory(){
+    public function testGetDirectory()
+    {
 
         $root = new \core_kernel_classes_Class($this->rootClass);
 
         //Remove what has been done
         $subclasses = $root->getSubClasses();
-        foreach($subclasses as $subclass){
+        foreach ($subclasses as $subclass) {
             $subclass->delete();
         }
         $root->delete();
@@ -96,27 +100,28 @@ class MediaManagerBrowserTest extends \PHPUnit_Framework_TestCase {
         $this->assertInternalType('array', $newDirectory['children'], 'Children should be an array');
         $this->assertNotEmpty($newDirectory['children'], 'Children should be empty');
 
-        foreach($newDirectory['children'] as $i => $child){
+        foreach ($newDirectory['children'] as $i => $child) {
             $this->assertInternalType('array', $child, 'The result should be an array');
             $this->assertArrayHasKey('label', $child, 'The result should contain "label"');
             $this->assertArrayHasKey('path', $child, 'The result should contain "path"');
 
-            $this->assertEquals('mySubClass'.$i, $child['label'], 'The label is not correct');
+            $this->assertEquals('mySubClass' . $i, $child['label'], 'The label is not correct');
         }
 
 
         //Remove what has been done
         $subclasses = $root->getSubClasses();
-        foreach($subclasses as $subclass){
+        foreach ($subclasses as $subclass) {
             $subclass->delete();
         }
         $root->delete();
 
     }
 
-    public function testGetFileInfo(){
+    public function testGetFileInfo()
+    {
 
-        $fileTmp = dirname(__DIR__).'/sample/Brazil.png';
+        $fileTmp = dirname(__DIR__) . '/sample/Brazil.png';
 
         $this->fileManagerMock->expects($this->once())
             ->method('retrieveFile')
@@ -134,11 +139,16 @@ class MediaManagerBrowserTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertEquals('Brazil.png', $fileInfo['name'], 'The file name is not correct');
         $this->assertEquals('image/png', $fileInfo['mime'], 'The mime type is not correct');
-        $this->assertContains('taoItems/ItemContent/download?path=mediamanager'.urlencode('/Brazil.png'), $fileInfo['url'], 'The url is not correct');
+        $this->assertContains(
+            'taoItems/ItemContent/download?path=mediamanager' . urlencode('/Brazil.png'),
+            $fileInfo['url'],
+            'The url is not correct'
+        );
 
     }
 
-    public function testGetFileInfoFail(){
+    public function testGetFileInfoFail()
+    {
 
         $link = 'A Fake link';
         $acceptableMime = array();

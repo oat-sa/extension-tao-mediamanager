@@ -23,20 +23,23 @@ namespace oat\taoMediaManager\test\model;
 use oat\taoMediaManager\model\fileManagement\SimpleFileManagement;
 
 
-class SimpleFileManagementTest extends \PHPUnit_Framework_TestCase {
+class SimpleFileManagementTest extends \PHPUnit_Framework_TestCase
+{
 
     /**
      * @var SimpleFileManagement
      */
     private $fileManagement = null;
 
-    public function setUp(){
+    public function setUp()
+    {
         $this->fileManagement = new SimpleFileManagement();
     }
 
-    public function testStoreFileValid(){
+    public function testStoreFileValid()
+    {
         $tmpDir = \tao_helpers_File::createTempDir();
-        $storageDir = $tmpDir.'media/';
+        $storageDir = $tmpDir . 'media/';
         mkdir($storageDir);
 
         //force baseDir
@@ -45,25 +48,26 @@ class SimpleFileManagementTest extends \PHPUnit_Framework_TestCase {
         $ref->setValue($this->fileManagement, $storageDir);
         $ref->setAccessible(false);
 
-        $fileTmp = dirname(__DIR__).'/sample/Brazil.png';
+        $fileTmp = dirname(__DIR__) . '/sample/Brazil.png';
 
-        $this->assertFileNotExists($storageDir.'Brazil.png', 'The file is already stored');
+        $this->assertFileNotExists($storageDir . 'Brazil.png', 'The file is already stored');
         $link = $this->fileManagement->storeFile($fileTmp);
 
         // test the return link
         $this->assertInternalType('string', $link, 'The method return should be a string');
         $this->assertEquals('brazil.png', $link, 'The link is wrong');
-        $this->assertFileExists($storageDir.'brazil.png', 'The file has not been stored');
+        $this->assertFileExists($storageDir . 'brazil.png', 'The file has not been stored');
 
         return array($storageDir, $link);
     }
 
     /**
      * @depends testStoreFileValid
-     */ 
-    public function testRetrieveFile($array) {
+     */
+    public function testRetrieveFile($array)
+    {
 
-        $storage = implode('',$array);
+        $storage = implode('', $array);
 
         //force baseDir
         $ref = new \ReflectionProperty('oat\taoMediaManager\model\fileManagement\SimpleFileManagement', 'baseDir');
@@ -98,10 +102,11 @@ class SimpleFileManagementTest extends \PHPUnit_Framework_TestCase {
         // test the return link
         $this->assertInternalType('boolean', $remove, 'The method return should be a string');
         $this->assertEquals(true, $remove, 'impossible to remove file');
-        $this->assertFileNotExists(implode('',$array), 'The file is still here');
+        $this->assertFileNotExists(implode('', $array), 'The file is still here');
     }
 
-    public function testDeleteFileFail(){
+    public function testDeleteFileFail()
+    {
 
         $link = 'notadir/notafile.png';
 

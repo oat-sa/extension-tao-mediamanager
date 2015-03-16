@@ -21,7 +21,8 @@
 namespace oat\taoMediaManager\test\model;
 
 
-class MediaManagerManagementTest extends \PHPUnit_Framework_TestCase {
+class MediaManagerManagementTest extends \PHPUnit_Framework_TestCase
+{
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
@@ -42,12 +43,13 @@ class MediaManagerManagementTest extends \PHPUnit_Framework_TestCase {
 
     private $returnedLink = null;
 
-    public function setUp(){
+    public function setUp()
+    {
         $this->classUri = 'http://myFancyDomaine.com/myGreatCLassUriToUploadTo';
 
         $this->service = $this->getMockBuilder('oat\taoMediaManager\model\MediaService')
-                        ->disableOriginalConstructor()
-                        ->getMock();
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->returnedLink = 'myGreatLink';
         $ref = new \ReflectionProperty('tao_models_classes_Service', 'instances');
@@ -70,7 +72,8 @@ class MediaManagerManagementTest extends \PHPUnit_Framework_TestCase {
 
     }
 
-    public function tearDown(){
+    public function tearDown()
+    {
         $this->fileManagerMock = null;
 
         $ref = new \ReflectionProperty('oat\taoMediaManager\model\fileManagement\FileManager', 'fileManager');
@@ -85,15 +88,16 @@ class MediaManagerManagementTest extends \PHPUnit_Framework_TestCase {
     }
 
 
-    public function testUpload(){
+    public function testUpload()
+    {
         $classTao = new \core_kernel_classes_Class('http://www.tao.lu/Ontologies/TAO.rdf#TAOObject');
         $rootClass = $classTao->createSubClass('great', 'comment', $this->classUri);
 
-        $filePath = dirname(__DIR__).'/sample/Italy.png';
+        $filePath = dirname(__DIR__) . '/sample/Italy.png';
 
         $this->service->expects($this->once())
             ->method('createMediaInstance')
-            ->with(dirname($filePath).'/Italy1.png', $this->classUri, 'EN_en')
+            ->with(dirname($filePath) . '/Italy1.png', $this->classUri, 'EN_en')
             ->willReturn($this->returnedLink);
 
         //mock the mediaBrowser fileInfo method
@@ -103,11 +107,11 @@ class MediaManagerManagementTest extends \PHPUnit_Framework_TestCase {
             'relPath' => 'relativePath',
             'mime' => 'mime/type',
             'size' => 1024,
-            'url' =>'myGreatUrl'
+            'url' => 'myGreatUrl'
         );
         $mediaBrowserMock = $this->getMockBuilder('oat\taoMediaManager\model\MediaManagerBrowser')
-                            ->setConstructorArgs(array(array('lang' => 'EN_en')))
-                            ->getMock();
+            ->setConstructorArgs(array(array('lang' => 'EN_en')))
+            ->getMock();
 
         $mediaBrowserMock->expects($this->once())
             ->method('getFileInfo')
@@ -125,15 +129,16 @@ class MediaManagerManagementTest extends \PHPUnit_Framework_TestCase {
         $this->assertArrayNotHasKey('error', $success, 'upload doesn\'t succeed');
         $this->assertEquals($fileInfo, $success, 'Doesn\'t return the getFileInfo value');
 
-        $instance  = $rootClass->createInstance('Italy1.png');
+        $instance = $rootClass->createInstance('Italy1.png');
         $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LINK), $this->returnedLink);
 
     }
 
 
-    public function testUploadFail(){
+    public function testUploadFail()
+    {
 
-        $filePath = dirname(__DIR__).'/sample/Unknown.png';
+        $filePath = dirname(__DIR__) . '/sample/Unknown.png';
 
         $this->service->expects($this->never())
             ->method('createMediaInstance');
@@ -142,14 +147,19 @@ class MediaManagerManagementTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertInternalType('array', $error, 'Should be an error array');
         $this->assertArrayHasKey('error', $error, 'upload succeed');
-        $this->assertEquals('File '. $filePath .' not found', $error['error'], 'Doesn\'t return the right exception message');
+        $this->assertEquals(
+            'File ' . $filePath . ' not found',
+            $error['error'],
+            'Doesn\'t return the right exception message'
+        );
 
     }
 
     /**
      * @depends testUpload
      */
-    public function testDelete(){
+    public function testDelete()
+    {
 
         $this->fileManagerMock->expects($this->once())
             ->method('deleteFile')
@@ -168,8 +178,8 @@ class MediaManagerManagementTest extends \PHPUnit_Framework_TestCase {
 
         // should remove the instance
         $removedInstance = new \core_kernel_classes_Class($instance->getUri());
-        $this->assertEquals('',$instance->getLabel(), 'The instance still exists');
-        $this->assertEquals('',$removedInstance->getLabel(), 'The instance still exists');
+        $this->assertEquals('', $instance->getLabel(), 'The instance still exists');
+        $this->assertEquals('', $removedInstance->getLabel(), 'The instance still exists');
 
         //remove created class
         $rootClass->delete(true);
@@ -178,9 +188,10 @@ class MediaManagerManagementTest extends \PHPUnit_Framework_TestCase {
     /**
      * @depends testDelete
      */
-    public function testUploadFailNoClass(){
+    public function testUploadFailNoClass()
+    {
 
-        $filePath = dirname(__DIR__).'/sample/Italy.png';
+        $filePath = dirname(__DIR__) . '/sample/Italy.png';
 
         $this->service->expects($this->never())
             ->method('createMediaInstance');
@@ -189,7 +200,11 @@ class MediaManagerManagementTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertInternalType('array', $error, 'Should be an error array');
         $this->assertArrayHasKey('error', $error, 'upload succeed');
-        $this->assertEquals('Class '. $this->classUri .' not found', $error['error'], 'Doesn\'t return the right exception message');
+        $this->assertEquals(
+            'Class ' . $this->classUri . ' not found',
+            $error['error'],
+            'Doesn\'t return the right exception message'
+        );
 
     }
 

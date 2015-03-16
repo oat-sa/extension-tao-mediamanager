@@ -22,9 +22,11 @@ namespace oat\taoMediaManager\model\fileManagement;
 
 use oat\oatbox\Configurable;
 
-class TaoFileManagement extends Configurable implements FileManagement {
-    
-    protected function getFilesystem() {
+class TaoFileManagement extends Configurable implements FileManagement
+{
+
+    protected function getFilesystem()
+    {
         return new \core_kernel_fileSystem_FileSystem($this->getOption('uri'));
     }
 
@@ -36,7 +38,7 @@ class TaoFileManagement extends Configurable implements FileManagement {
     {
         $file = $this->getFilesystem()->spawnFile($filePath);
         if (is_null($file)) {
-            throw new \common_Exception('Unable to spawn file for '.$filePath);
+            throw new \common_Exception('Unable to spawn file for ' . $filePath);
         }
         return $file->getUri();
     }

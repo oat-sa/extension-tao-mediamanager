@@ -40,10 +40,8 @@ class MediaManagerBrowser implements MediaBrowser{
     }
 
     /**
-     * @param string $relPath
-     * @param array $acceptableMime
-     * @param int $depth
-     * @return array
+     * (non-PHPdoc)
+     * @see \oat\tao\model\media\MediaBrowser::getDirectory
      */
     public function getDirectory($relPath = '/', $acceptableMime = array(), $depth = 1)
     {
@@ -103,7 +101,7 @@ class MediaManagerBrowser implements MediaBrowser{
             $data['children'] = $children;
         }
         else{
-            $data['url'] = _url('files', 'ItemContent', 'taoItems', array('lang' => $this->lang, 'path' => $relPath));
+            $data['url'] = \tao_helpers_Uri::url('files', 'ItemContent', 'taoItems', array('lang' => $this->lang, 'path' => $relPath));
         }
         return $data;
 
@@ -111,9 +109,8 @@ class MediaManagerBrowser implements MediaBrowser{
     }
 
     /**
-     * @param string $relPath
-     * @param array $acceptableMime
-     * @return array
+     * (non-PHPdoc)
+     * @see \oat\tao\model\media\MediaBrowser::getFileInfo
      */
     public function getFileInfo($relPath, $acceptableMime)
     {
@@ -137,8 +134,8 @@ class MediaManagerBrowser implements MediaBrowser{
     }
 
     /**
-     * @param string $link
-     * @return string path of the file to download
+     * (non-PHPdoc)
+     * @see \oat\tao\model\media\MediaBrowser::download
      */
     public function download($link)
     {

@@ -22,15 +22,25 @@ namespace oat\taoMediaManager\model\fileManagement;
 
 
 class SimpleFileManagement implements FileManagement{
-    
+
+    /** @var string */
+    private $baseDir = '';
+
+    /**
+     * @return string
+     */
     private function getBaseDir() {
-        return dirname(dirname(__DIR__)).'/media/';
+        if($this->baseDir === ''){
+            $this->baseDir = dirname(dirname(__DIR__)).'/media/';
+        }
+        return $this->baseDir;
     }
+
 
     /**
      * store the file and provide a link to retrieve it
-     * @param string $filePath the entire path to the file
-     * @return string a link to the file in order to retrieve it later
+     * @param string $filePath the relative path to the file
+     * @return string $link to the file
      * @throws \common_exception_Error
      */
     public function storeFile($filePath)
@@ -48,13 +58,14 @@ class SimpleFileManagement implements FileManagement{
             }
             return $fileName;
         }
-        return false;
+        throw new \common_exception_Error('Unable to move uploaded file');
     }
 
     /**
      * get the link and return the file that match it
      * @param string $link the link provided by storeFile
      * @return string $filename the file that match the link
+     * @throws \common_exception_Error
      */
     public function retrieveFile($link)
     {

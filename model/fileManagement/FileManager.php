@@ -21,28 +21,27 @@
 
 namespace oat\taoMediaManager\model\fileManagement;
 
-use oat\oatbox\Configurable;
-
 class FileManager{
 
     const CONFIG_KEY = 'fileManager';
 
     /**
-     * @var array
+     * @var FileManagement
      */
     private static $fileManager = null;
 
 
     /**
-     * @return FileManagement
+     * @return mixed|FileManagement|SimpleFileManagement
+     * @throws \common_exception_Error
      */
     public static function getFileManagementModel() {
         if (is_null(self::$fileManager)) {
             $data = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager')->getConfig(self::CONFIG_KEY);
             if (is_string($data)) {
                 // legacy
-                if (class_exists($implementation)) {
-                    self::$fileManager = new $implementation();
+                if (class_exists($data)) {
+                    self::$fileManager = new $data();
                 } else {
                     \common_Logger::w('No file manager implementation found');
                     self::$fileManager = new SimpleFileManagement();

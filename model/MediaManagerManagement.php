@@ -28,6 +28,7 @@ class MediaManagerManagement implements MediaManagement{
 
     private $lang;
     private $rootClassUri;
+    private $mediaBrowser;
 
     /**
      * get the lang of the class in case we want to filter the media on language
@@ -39,26 +40,38 @@ class MediaManagerManagement implements MediaManagement{
         $this->rootClassUri = (isset($data['rootClass'])) ? $data['rootClass'] : MEDIA_URI;
     }
 
-    public function add($source, $fileName, $path)
+    public function getMediaBrowser(){
+        if(is_null($this->mediaBrowser)){
+            $this->mediaBrowser = new MediaManagerBrowser(array('lang' => $this->lang));
+        }
+        return $this->mediaBrowser;
+    }
+
+
+    /**
+     * (non-PHPdoc)
+     * @see \oat\tao\model\media\MediaManagement::add
+     */
+    public function add($source, $fileName, $parent)
     {
         $filePath = dirname($source).'/'.$fileName;
 
-        $mediaBrowser = new MediaManagerBrowser(array('lang' => $this->lang));
-
         try{
-            $path = trim($path,'/');
-            if($path === '' || $path === '/'){
-                $path = MEDIA_URI;
+            $parent = trim($parent,'/');
+            if($parent === '' || $parent === '/'){
+                $parent = MEDIA_URI;
             }
-            $class = new \core_kernel_classes_Class($path);
+            $class = new \core_kernel_classes_Class($parent);
+            if(!$class->exists()){
+                throw new \common_exception_Error('Class '.$parent.' not found');
+            }
             if(!\tao_helpers_File::copy($source, $filePath)){
-                throw new \Exception('Can\'t copy file');
+                throw new \tao_models_classes_FileNotFoundException($source);
             }
             $service = MediaService::singleton();
-            $classUri = $class->getUri();
-            $link = $service->createMediaInstance($filePath, $classUri, $this->lang);
+            $link = $service->createMediaInstance($filePath, $class->getUri(), $this->lang);
 
-            return $mediaBrowser->getFileInfo($link, array());
+            return $this->getMediaBrowser()->getFileInfo($link, array());
 
         } catch(\Exception $e){
             return array( 'error' => $e->getMessage());
@@ -66,6 +79,10 @@ class MediaManagerManagement implements MediaManagement{
 
     }
 
+    /**
+     * (non-PHPdoc)
+     * @see \oat\tao\model\media\MediaManagement::delete
+     */
     public function delete($filename)
     {
         $filename = preg_replace('#^\/+(.+)#', '/${1}', $filename);

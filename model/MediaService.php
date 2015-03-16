@@ -34,27 +34,17 @@ use oat\taoMediaManager\model\fileManagement\FileManager;
 class MediaService extends \tao_models_classes_GenerisService
 {
 
-
-    // --- OPERATIONS ---
-
-    /**
-     * Short description of method __construct
-     *
-     * @access public
-     */
-    protected function __construct(){
-        parent::__construct();
-    }
-
     public function getRootClass(){
         return new \core_kernel_classes_Class(MEDIA_URI);
     }
 
+
     /**
      * Create a media instance from a file, and define its class and language
-     * @param string $filetmp
-     * @param string $classUri
-     * @param string $language
+     * @param $filetmp
+     * @param $classUri
+     * @param $language
+     * @return string $link
      */
     public function createMediaInstance($filetmp, $classUri, $language){
         $fileManager = FileManager::getFileManagementModel();
@@ -75,13 +65,13 @@ class MediaService extends \tao_models_classes_GenerisService
 
     /**
      * Edit a media instance with a new file and/or a new language
-     * @param $filetmp
+     * @param $fileTmp
      * @param $instanceUri
      * @param $language
      */
-    public function editMediaInstance($filetmp, $instanceUri, $language){
+    public function editMediaInstance($fileTmp, $instanceUri, $language){
         $fileManager = FileManager::getFileManagementModel();
-        $link = $fileManager->storeFile($filetmp);
+        $link = $fileManager->storeFile($fileTmp);
 
         if($link !== false){
             $instance = new \core_kernel_classes_Class($instanceUri);

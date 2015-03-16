@@ -127,33 +127,24 @@ class MediaManagerBrowserTest extends \PHPUnit_Framework_TestCase
             ->method('retrieveFile')
             ->with('Brazil.png')
             ->willReturn($fileTmp);
-        $acceptableMime = array();
 
-        $fileInfo = $this->mediaManagerBrowser->getFileInfo('Brazil.png', $acceptableMime);
+        $fileInfo = $this->mediaManagerBrowser->getFileInfo('Brazil.png');
 
         $this->assertInternalType('array', $fileInfo, 'The result should be an array');
         $this->assertArrayHasKey('name', $fileInfo, 'The result should contain "name"');
         $this->assertArrayHasKey('mime', $fileInfo, 'The result should contain "mime"');
         $this->assertArrayHasKey('size', $fileInfo, 'The result should contain "size"');
-        $this->assertArrayHasKey('url', $fileInfo, 'The result should contain "url"');
 
         $this->assertEquals('Brazil.png', $fileInfo['name'], 'The file name is not correct');
         $this->assertEquals('image/png', $fileInfo['mime'], 'The mime type is not correct');
-        $this->assertContains(
-            'taoItems/ItemContent/download?path=mediamanager' . urlencode('/Brazil.png'),
-            $fileInfo['url'],
-            'The url is not correct'
-        );
-
     }
 
     public function testGetFileInfoFail()
     {
 
         $link = 'A Fake link';
-        $acceptableMime = array();
 
-        $fileInfo = $this->mediaManagerBrowser->getFileInfo($link, $acceptableMime);
+        $fileInfo = $this->mediaManagerBrowser->getFileInfo($link);
 
         $this->assertNull($fileInfo, 'The result should be null');
     }

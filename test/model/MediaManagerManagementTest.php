@@ -135,6 +135,10 @@ class MediaManagerManagementTest extends \PHPUnit_Framework_TestCase
     }
 
 
+    /**
+     * @expectedException \tao_models_classes_FileNotFoundException
+     * @expectedExceptionMessageRegExp /File [^\s]+ not found/
+     */
     public function testUploadFail()
     {
 
@@ -143,15 +147,7 @@ class MediaManagerManagementTest extends \PHPUnit_Framework_TestCase
         $this->service->expects($this->never())
             ->method('createMediaInstance');
 
-        $error = $this->mediaManagerManagement->add($filePath, 'Unknown.png', $this->classUri);
-
-        $this->assertInternalType('array', $error, 'Should be an error array');
-        $this->assertArrayHasKey('error', $error, 'upload succeed');
-        $this->assertEquals(
-            'File ' . $filePath . ' not found',
-            $error['error'],
-            'Doesn\'t return the right exception message'
-        );
+        $this->mediaManagerManagement->add($filePath, 'Unknown.png', $this->classUri);
 
     }
 
@@ -187,6 +183,8 @@ class MediaManagerManagementTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @depends testDelete
+     * @expectedException \common_exception_Error
+     * @expectedExceptionMessageRegExp /Class [^\s]+ not found/
      */
     public function testUploadFailNoClass()
     {
@@ -196,15 +194,7 @@ class MediaManagerManagementTest extends \PHPUnit_Framework_TestCase
         $this->service->expects($this->never())
             ->method('createMediaInstance');
 
-        $error = $this->mediaManagerManagement->add($filePath, 'Italy1.png', $this->classUri);
-
-        $this->assertInternalType('array', $error, 'Should be an error array');
-        $this->assertArrayHasKey('error', $error, 'upload succeed');
-        $this->assertEquals(
-            'Class ' . $this->classUri . ' not found',
-            $error['error'],
-            'Doesn\'t return the right exception message'
-        );
+        $this->mediaManagerManagement->add($filePath, 'Italy1.png', $this->classUri);
 
     }
 

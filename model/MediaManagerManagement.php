@@ -59,27 +59,21 @@ class MediaManagerManagement implements MediaManagement
     {
         $filePath = dirname($source) . '/' . $fileName;
 
-        try {
-            $parent = trim($parent, '/');
-            if ($parent === '' || $parent === '/') {
-                $parent = MEDIA_URI;
-            }
-            $class = new \core_kernel_classes_Class($parent);
-            if (!$class->exists()) {
-                throw new \common_exception_Error('Class ' . $parent . ' not found');
-            }
-            if (!\tao_helpers_File::copy($source, $filePath)) {
-                throw new \tao_models_classes_FileNotFoundException($source);
-            }
-            $service = MediaService::singleton();
-            $link = $service->createMediaInstance($filePath, $class->getUri(), $this->lang);
-
-            return $this->getMediaBrowser()->getFileInfo($link, array());
-
-        } catch (\Exception $e) {
-            return array('error' => $e->getMessage());
+        $parent = trim($parent, '/');
+        if ($parent === '' || $parent === '/') {
+            $parent = MEDIA_URI;
         }
+        $class = new \core_kernel_classes_Class($parent);
+        if (!$class->exists()) {
+            throw new \common_exception_Error('Class ' . $parent . ' not found');
+        }
+        if (!\tao_helpers_File::copy($source, $filePath)) {
+            throw new \tao_models_classes_FileNotFoundException($source);
+        }
+        $service = MediaService::singleton();
+        $link = $service->createMediaInstance($filePath, $class->getUri(), $this->lang);
 
+        return $this->getMediaBrowser()->getFileInfo($link);
     }
 
     /**

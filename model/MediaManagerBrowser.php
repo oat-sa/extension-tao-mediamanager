@@ -45,16 +45,16 @@ class MediaManagerBrowser implements MediaBrowser
      * (non-PHPdoc)
      * @see \oat\tao\model\media\MediaBrowser::getDirectory
      */
-    public function getDirectory($relPath = '/', $acceptableMime = array(), $depth = 1)
+    public function getDirectory($parentLink = '/', $acceptableMime = array(), $depth = 1)
     {
-        if ($relPath == '/') {
+        if ($parentLink == '/') {
             $class = new \core_kernel_classes_Class($this->rootClassUri);
-            $relPath = '';
+            $parentLink = '';
         } else {
-            if (strpos($relPath, '/') === 0) {
-                $relPath = substr($relPath, 1);
+            if (strpos($parentLink, '/') === 0) {
+                $parentLink = substr($parentLink, 1);
             }
-            $class = new \core_kernel_classes_Class($relPath);
+            $class = new \core_kernel_classes_Class($parentLink);
         }
 
         if ($class->getUri() !== $this->rootClassUri) {
@@ -69,7 +69,7 @@ class MediaManagerBrowser implements MediaBrowser
             $path = array_reverse($path);
         }
         $data = array(
-            'path' => 'mediamanager/' . $relPath,
+            'path' => 'mediamanager/' . $parentLink,
             'relPath' => (isset($path)) ? implode('/', $path) : 'mediamanager/',
             'label' => $class->getLabel()
         );
@@ -88,7 +88,7 @@ class MediaManagerBrowser implements MediaBrowser
                 $thing = $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
                 $link = $thing instanceof \core_kernel_classes_Resource ? $thing->getUri() : (string)$thing;
                 $file = $this->getFileInfo($link, $acceptableMime);
-                if (!is_null($file)) {
+                if (!is_null($file) && (count($acceptableMime) == 0 || in_array($file['mime'], $acceptableMime)) ) {
                     //add the alt text to file array
                     $altArray = $instance->getPropertyValues(new \core_kernel_classes_Property(MEDIA_ALT_TEXT));
                     if (count($altArray) > 0) {
@@ -104,7 +104,7 @@ class MediaManagerBrowser implements MediaBrowser
                 'files',
                 'ItemContent',
                 'taoItems',
-                array('lang' => $this->lang, 'path' => $relPath)
+                array('lang' => $this->lang, 'path' => $parentLink)
             );
         }
         return $data;
@@ -116,21 +116,20 @@ class MediaManagerBrowser implements MediaBrowser
      * (non-PHPdoc)
      * @see \oat\tao\model\media\MediaBrowser::getFileInfo
      */
-    public function getFileInfo($relPath, $acceptableMime)
+    public function getFileInfo($link)
     {
         $file = null;
         $fileManagement = FileManager::getFileManagementModel();
-        $filePath = $fileManagement->retrieveFile($relPath);
+        $filePath = $fileManagement->retrieveFile($link);
         $mime = \tao_helpers_File::getMimeType($filePath);
 
-        if ((count($acceptableMime) == 0 || in_array($mime, $acceptableMime)) && file_exists($filePath)) {
+        if (file_exists($filePath)) {
             $file = array(
                 'name' => basename($filePath),
                 'identifier' => 'mediamanager/',
-                'relPath' => $relPath,
+                'relPath' => $link,
                 'mime' => $mime,
                 'size' => filesize($filePath),
-                'url' => _url('download', 'ItemContent', 'taoItems', array('path' => 'mediamanager/' . $relPath))
             );
         }
         return $file;

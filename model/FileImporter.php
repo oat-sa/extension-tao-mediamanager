@@ -83,7 +83,7 @@ class FileImporter implements \tao_models_classes_import_ImportHandler
                 if(is_null($this->instanceUri) || $this->instanceUri === $classUri){
                     //if the file is a zip do a zip import
                     if($file['type'] !== 'application/zip'){
-                        $service->createMediaInstance($file["uploaded_file"], $classUri, \tao_helpers_Uri::decode($form->getValue('lang')));
+                        $service->createMediaInstance($file["uploaded_file"], $classUri, \tao_helpers_Uri::decode($form->getValue('lang')),$file["name"]);
                         $report = \common_report_Report::createSuccess(__('Media imported successfully'));
                     }
                     else{

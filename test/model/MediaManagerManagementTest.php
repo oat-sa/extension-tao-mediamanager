@@ -88,7 +88,7 @@ class MediaManagerManagementTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function testUpload()
+    public function testAdd()
     {
         $classTao = new \core_kernel_classes_Class('http://www.tao.lu/Ontologies/TAO.rdf#TAOObject');
         $rootClass = $classTao->createSubClass('great', 'comment', $this->classUri);
@@ -97,7 +97,7 @@ class MediaManagerManagementTest extends \PHPUnit_Framework_TestCase
 
         $this->service->expects($this->once())
             ->method('createMediaInstance')
-            ->with(dirname($filePath) . '/Italy1.png', $this->classUri, 'EN_en')
+            ->with($filePath, $this->classUri, 'EN_en', 'Italy1.png')
             ->willReturn($this->returnedLink);
 
         //mock the mediaBrowser fileInfo method

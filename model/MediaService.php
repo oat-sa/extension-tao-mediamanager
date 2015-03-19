@@ -41,19 +41,22 @@ class MediaService extends \tao_models_classes_GenerisService
 
     /**
      * Create a media instance from a file, and define its class and language
-     * @param $filetmp
-     * @param $classUri
-     * @param $language
-     * @return string $link
+     * 
+     * @param string $fileSource path to the file to create instance from
+     * @param string $classUri parent to add the instance to
+     * @param string $language language of the content
+     * @param string $label label of the instance
+     * @return string
      */
-    public function createMediaInstance($filetmp, $classUri, $language)
+    public function createMediaInstance($fileSource, $classUri, $language, $label = null)
     {
+        $label = is_null($label) ? basename($fileSource) : $label;
         $fileManager = FileManager::getFileManagementModel();
-        $link = $fileManager->storeFile($filetmp);
+        $link = $fileManager->storeFile($fileSource);
 
         if ($link !== false) {
             $clazz = new \core_kernel_classes_Class($classUri);
-            $instance = $this->createInstance($clazz, basename($filetmp));
+            $instance = $this->createInstance($clazz, $label);
             /** @var $instance  \core_kernel_classes_Resource */
             if (!is_null($instance) && $instance instanceof \core_kernel_classes_Resource) {
                 $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LINK), $link);

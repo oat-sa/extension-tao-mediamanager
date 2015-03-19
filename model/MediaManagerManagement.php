@@ -57,8 +57,9 @@ class MediaManagerManagement implements MediaManagement
      */
     public function add($source, $fileName, $parent)
     {
-        $filePath = dirname($source) . '/' . $fileName;
-
+        if (!file_exists($source)) {
+            throw new \tao_models_classes_FileNotFoundException('File ' . $source . ' not found');
+        }
         $parent = trim($parent, '/');
         if ($parent === '' || $parent === '/') {
             $parent = MEDIA_URI;
@@ -67,11 +68,8 @@ class MediaManagerManagement implements MediaManagement
         if (!$class->exists()) {
             throw new \common_exception_Error('Class ' . $parent . ' not found');
         }
-        if (!\tao_helpers_File::copy($source, $filePath)) {
-            throw new \tao_models_classes_FileNotFoundException($source);
-        }
         $service = MediaService::singleton();
-        $link = $service->createMediaInstance($filePath, $class->getUri(), $this->lang);
+        $link = $service->createMediaInstance($source, $class->getUri(), $this->lang, $fileName);
 
         return $this->getMediaBrowser()->getFileInfo($link);
     }

@@ -57,7 +57,7 @@ class ZipImporter
             $fileName = \tao_helpers_File::getSafeFileName($file['name']);
             $filePath = $tmpDir . '/' . $fileName;
             if (!rename($file['uploaded_file'], $filePath)) {
-                return array('error' => __('Unable to move uploaded file'));
+                return \common_report_Report::createFailure(__('Unable to move uploaded file'));
             }
 
             // unzip the file

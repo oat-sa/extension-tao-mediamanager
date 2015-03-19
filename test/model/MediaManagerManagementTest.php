@@ -115,7 +115,7 @@ class MediaManagerManagementTest extends \PHPUnit_Framework_TestCase
 
         $mediaBrowserMock->expects($this->once())
             ->method('getFileInfo')
-            ->with($this->returnedLink, array())
+            ->with($this->returnedLink)
             ->willReturn($fileInfo);
 
         $this->mediaManagerManagement->expects($this->any())

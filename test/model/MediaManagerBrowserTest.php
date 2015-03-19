@@ -100,15 +100,18 @@ class MediaManagerBrowserTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('array', $newDirectory['children'], 'Children should be an array');
         $this->assertNotEmpty($newDirectory['children'], 'Children should be empty');
 
+        $labels = array();
         foreach ($newDirectory['children'] as $i => $child) {
             $this->assertInternalType('array', $child, 'The result should be an array');
             $this->assertArrayHasKey('label', $child, 'The result should contain "label"');
             $this->assertArrayHasKey('path', $child, 'The result should contain "path"');
 
-            $this->assertEquals('mySubClass' . $i, $child['label'], 'The label is not correct');
+            $labels[] = $child['label'];
         }
-
-
+        $this->assertEquals(2, count($labels));
+        $this->assertContains('mySubClass0', $labels);
+        $this->assertContains('mySubClass1', $labels);
+        
         //Remove what has been done
         $subclasses = $root->getSubClasses();
         foreach ($subclasses as $subclass) {

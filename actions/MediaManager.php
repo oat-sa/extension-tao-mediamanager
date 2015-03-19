@@ -89,11 +89,14 @@ class MediaManager extends \tao_actions_SaSModule {
 
         $this->setData('formTitle', __('Edit Instance'));
         $this->setData('myForm', $myForm->render());
-
         $uri = ($this->hasRequestParameter('id'))?$this->getRequestParameter('id'):\tao_helpers_Uri::decode($this->getRequestParameter('uri'));
         $media = new \core_kernel_classes_Resource($uri);
+        $link = $media->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
+        if($link instanceof \core_kernel_classes_Literal){
+            $link = $link->literal;
+        }
         $fileManager = FileManager::getFileManagementModel();
-        $filePath = $fileManager->retrieveFile($media->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK)));
+        $filePath = $fileManager->retrieveFile($link);
         $fp = fopen($filePath, "r");
         $data = '';
         if ($fp !== false) {

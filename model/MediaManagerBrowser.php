@@ -24,7 +24,8 @@ namespace oat\taoMediaManager\model;
 use oat\tao\model\media\MediaBrowser;
 use oat\taoMediaManager\model\fileManagement\FileManager;
 
-class MediaManagerBrowser implements MediaBrowser{
+class MediaManagerBrowser implements MediaBrowser
+{
 
     private $lang;
     private $rootClassUri;
@@ -33,35 +34,33 @@ class MediaManagerBrowser implements MediaBrowser{
      * get the lang of the class in case we want to filter the media on language
      * @param $data
      */
-    public function __construct($data){
+    public function __construct($data)
+    {
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager');
         $this->lang = (isset($data['lang'])) ? $data['lang'] : '';
         $this->rootClassUri = (isset($data['rootClass'])) ? $data['rootClass'] : MEDIA_URI;
     }
 
     /**
-     * @param string $relPath
-     * @param array $acceptableMime
-     * @param int $depth
-     * @return array
+     * (non-PHPdoc)
+     * @see \oat\tao\model\media\MediaBrowser::getDirectory
      */
-    public function getDirectory($relPath = '/', $acceptableMime = array(), $depth = 1)
+    public function getDirectory($parentLink = '/', $acceptableMime = array(), $depth = 1)
     {
-        if($relPath == '/'){
+        if ($parentLink == '/') {
             $class = new \core_kernel_classes_Class($this->rootClassUri);
-            $relPath = '';
-        }
-        else{
-            if(strpos($relPath,'/') === 0){
-                $relPath = substr($relPath,1);
+            $parentLink = '';
+        } else {
+            if (strpos($parentLink, '/') === 0) {
+                $parentLink = substr($parentLink, 1);
             }
-            $class = new \core_kernel_classes_Class($relPath);
+            $class = new \core_kernel_classes_Class($parentLink);
         }
 
-        if($class->getUri() !== $this->rootClassUri){
+        if ($class->getUri() !== $this->rootClassUri) {
             $path = array($class->getLabel());
-            foreach($class->getParentClasses(true) as $parent){
-                if($parent->getUri() === $this->rootClassUri){
+            foreach ($class->getParentClasses(true) as $parent) {
+                if ($parent->getUri() === $this->rootClassUri) {
                     $path[] = 'mediamanager';
                     break;
                 }
@@ -70,12 +69,12 @@ class MediaManagerBrowser implements MediaBrowser{
             $path = array_reverse($path);
         }
         $data = array(
-            'path' => 'mediamanager/'.$relPath,
-            'relPath' => (isset($path))?implode('/',$path):'mediamanager/',
+            'path' => 'mediamanager/' . $parentLink,
+            'relPath' => (isset($path)) ? implode('/', $path) : 'mediamanager/',
             'label' => $class->getLabel()
         );
 
-        if ($depth > 0 ) {
+        if ($depth > 0) {
             $children = array();
             foreach ($class->getSubClasses() as $subclass) {
                 $children[] = $this->getDirectory($subclass->getUri(), $acceptableMime, $depth - 1);
@@ -83,17 +82,16 @@ class MediaManagerBrowser implements MediaBrowser{
             }
 
             //add a filter for example on language (not for now)
-            $filter = array(
-            );
+            $filter = array();
 
-            foreach($class->searchInstances($filter) as $instance){
+            foreach ($class->searchInstances($filter) as $instance) {
                 $thing = $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
                 $link = $thing instanceof \core_kernel_classes_Resource ? $thing->getUri() : (string)$thing;
                 $file = $this->getFileInfo($link, $acceptableMime);
-                if(!is_null($file)){
+                if (!is_null($file) && (count($acceptableMime) == 0 || in_array($file['mime'], $acceptableMime)) ) {
                     //add the alt text to file array
                     $altArray = $instance->getPropertyValues(new \core_kernel_classes_Property(MEDIA_ALT_TEXT));
-                    if(count($altArray) > 0){
+                    if (count($altArray) > 0) {
                         $file['alt'] = $altArray[0];
                     }
                     $children[] = $file;
@@ -101,9 +99,13 @@ class MediaManagerBrowser implements MediaBrowser{
 
             }
             $data['children'] = $children;
-        }
-        else{
-            $data['url'] = _url('files', 'ItemContent', 'taoItems', array('lang' => $this->lang, 'path' => $relPath));
+        } else {
+            $data['url'] = \tao_helpers_Uri::url(
+                'files',
+                'ItemContent',
+                'taoItems',
+                array('lang' => $this->lang, 'path' => $parentLink)
+            );
         }
         return $data;
 
@@ -111,25 +113,23 @@ class MediaManagerBrowser implements MediaBrowser{
     }
 
     /**
-     * @param string $relPath
-     * @param array $acceptableMime
-     * @return array
+     * (non-PHPdoc)
+     * @see \oat\tao\model\media\MediaBrowser::getFileInfo
      */
-    public function getFileInfo($relPath, $acceptableMime)
+    public function getFileInfo($link)
     {
         $file = null;
         $fileManagement = FileManager::getFileManagementModel();
-        $filePath = $fileManagement->retrieveFile($relPath);
+        $filePath = $fileManagement->retrieveFile($link);
         $mime = \tao_helpers_File::getMimeType($filePath);
 
-        if((count($acceptableMime) == 0 || in_array($mime, $acceptableMime)) && file_exists($filePath)){
+        if (file_exists($filePath)) {
             $file = array(
                 'name' => basename($filePath),
                 'identifier' => 'mediamanager/',
-                'relPath' => $relPath,
+                'relPath' => $link,
                 'mime' => $mime,
                 'size' => filesize($filePath),
-                'url' => _url('download', 'ItemContent', 'taoItems', array('path' => 'mediamanager/'.$relPath))
             );
         }
         return $file;
@@ -137,8 +137,8 @@ class MediaManagerBrowser implements MediaBrowser{
     }
 
     /**
-     * @param string $link
-     * @return string path of the file to download
+     * (non-PHPdoc)
+     * @see \oat\tao\model\media\MediaBrowser::download
      */
     public function download($link)
     {

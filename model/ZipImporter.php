@@ -57,7 +57,7 @@ class ZipImporter
             $fileName = \tao_helpers_File::getSafeFileName($file['name']);
             $filePath = $tmpDir . '/' . $fileName;
             if (!rename($file['uploaded_file'], $filePath)) {
-                return array('error' => __('Unable to move uploaded file'));
+                return \common_report_Report::createFailure(__('Unable to move uploaded file'));
             }
 
             // unzip the file
@@ -128,13 +128,13 @@ class ZipImporter
                         else if($file->isFile()){
                             if($path[count($path) - 1] === ""){
                                 // create media instance under root class
-                                $service->createMediaInstance($file->getRealPath(), $resource->getUri(), $language);
+                                $service->createMediaInstance($file->getRealPath(), $resource->getUri(), $language, $file->getFilename());
                             }
                             else{
                                 // create media instance
                                 if(isset($parents[$file->getPath()])){
                                     $clazz = $parents[$file->getPath()];
-                                    $service->createMediaInstance($file->getRealPath(), $clazz->getUri(), $language);
+                                    $service->createMediaInstance($file->getRealPath(), $clazz->getUri(), $language, $file->getFilename());
                                 }
                             }
                         }

@@ -21,28 +21,31 @@
 
 namespace oat\taoMediaManager\model\fileManagement;
 
-use oat\oatbox\Configurable;
-
-class FileManager{
+class FileManager
+{
 
     const CONFIG_KEY = 'fileManager';
 
     /**
-     * @var array
+     * @var FileManagement
      */
     private static $fileManager = null;
 
 
     /**
-     * @return FileManagement
+     * @return mixed|FileManagement|SimpleFileManagement
+     * @throws \common_exception_Error
      */
-    public static function getFileManagementModel() {
+    public static function getFileManagementModel()
+    {
         if (is_null(self::$fileManager)) {
-            $data = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager')->getConfig(self::CONFIG_KEY);
+            $data = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager')->getConfig(
+                self::CONFIG_KEY
+            );
             if (is_string($data)) {
                 // legacy
-                if (class_exists($implementation)) {
-                    self::$fileManager = new $implementation();
+                if (class_exists($data)) {
+                    self::$fileManager = new $data();
                 } else {
                     \common_Logger::w('No file manager implementation found');
                     self::$fileManager = new SimpleFileManagement();
@@ -50,7 +53,7 @@ class FileManager{
             } elseif (is_object($data)) {
                 self::$fileManager = $data;
             } else {
-                throw new \common_exception_Error('Unsupported configuration for '.__CLASS__);
+                throw new \common_exception_Error('Unsupported configuration for ' . __CLASS__);
             }
         }
         return self::$fileManager;
@@ -59,8 +62,12 @@ class FileManager{
     /**
      * @param FileManagement $model
      */
-    public static function setFileManagementModel(FileManagement $model) {
-        \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager')->setConfig(self::CONFIG_KEY, $model);
+    public static function setFileManagementModel(FileManagement $model)
+    {
+        \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager')->setConfig(
+            self::CONFIG_KEY,
+            $model
+        );
     }
 
 } 

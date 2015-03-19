@@ -29,42 +29,36 @@ use oat\taoMediaManager\model\fileManagement\FileManager;
  * @access public
  * @author Antoine Robin, <antoine.robin@vesperiagroup.com>
  * @package taoMediaManager
-
  */
 class MediaService extends \tao_models_classes_GenerisService
 {
 
-
-    // --- OPERATIONS ---
-
-    /**
-     * Short description of method __construct
-     *
-     * @access public
-     */
-    protected function __construct(){
-        parent::__construct();
-    }
-
-    public function getRootClass(){
+    public function getRootClass()
+    {
         return new \core_kernel_classes_Class(MEDIA_URI);
     }
 
+
     /**
      * Create a media instance from a file, and define its class and language
-     * @param string $filetmp
-     * @param string $classUri
-     * @param string $language
+     * 
+     * @param string $fileSource path to the file to create instance from
+     * @param string $classUri parent to add the instance to
+     * @param string $language language of the content
+     * @param string $label label of the instance
+     * @return string
      */
-    public function createMediaInstance($filetmp, $classUri, $language){
+    public function createMediaInstance($fileSource, $classUri, $language, $label = null)
+    {
+        $label = is_null($label) ? basename($fileSource) : $label;
         $fileManager = FileManager::getFileManagementModel();
-        $link = $fileManager->storeFile($filetmp);
+        $link = $fileManager->storeFile($fileSource);
 
-        if($link !== false){
+        if ($link !== false) {
             $clazz = new \core_kernel_classes_Class($classUri);
-            $instance = $this->createInstance($clazz, basename($filetmp));
-            /** @var $instance  \core_kernel_classes_Resource*/
-            if(!is_null($instance) && $instance instanceof \core_kernel_classes_Resource){
+            $instance = $this->createInstance($clazz, $label);
+            /** @var $instance  \core_kernel_classes_Resource */
+            if (!is_null($instance) && $instance instanceof \core_kernel_classes_Resource) {
                 $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LINK), $link);
                 $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LANGUAGE), $language);
             }
@@ -75,18 +69,19 @@ class MediaService extends \tao_models_classes_GenerisService
 
     /**
      * Edit a media instance with a new file and/or a new language
-     * @param $filetmp
+     * @param $fileTmp
      * @param $instanceUri
      * @param $language
      */
-    public function editMediaInstance($filetmp, $instanceUri, $language){
+    public function editMediaInstance($fileTmp, $instanceUri, $language)
+    {
         $fileManager = FileManager::getFileManagementModel();
-        $link = $fileManager->storeFile($filetmp);
+        $link = $fileManager->storeFile($fileTmp);
 
-        if($link !== false){
+        if ($link !== false) {
             $instance = new \core_kernel_classes_Class($instanceUri);
-            /** @var $instance  \core_kernel_classes_Resource*/
-            if(!is_null($instance) && $instance instanceof \core_kernel_classes_Resource){
+            /** @var $instance  \core_kernel_classes_Resource */
+            if (!is_null($instance) && $instance instanceof \core_kernel_classes_Resource) {
                 $instance->editPropertyValues(new \core_kernel_classes_Property(MEDIA_LINK), $link);
                 $instance->editPropertyValues(new \core_kernel_classes_Property(MEDIA_LANGUAGE), $language);
             }

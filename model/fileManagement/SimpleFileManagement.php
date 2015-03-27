@@ -21,47 +21,60 @@
 namespace oat\taoMediaManager\model\fileManagement;
 
 
-class SimpleFileManagement implements FileManagement{
-    
-    private function getBaseDir() {
-        return dirname(dirname(__DIR__)).'/media/';
+class SimpleFileManagement implements FileManagement
+{
+
+    /** @var string */
+    private $baseDir = '';
+
+    /**
+     * @return string
+     */
+    private function getBaseDir()
+    {
+        if ($this->baseDir === '') {
+            $this->baseDir = dirname(dirname(__DIR__)) . '/media/';
+        }
+        return $this->baseDir;
     }
+
 
     /**
      * store the file and provide a link to retrieve it
-     * @param string $filePath the entire path to the file
-     * @return string a link to the file in order to retrieve it later
+     * @param string $filePath the relative path to the file
+     * @return string $link to the file
      * @throws \common_exception_Error
      */
     public function storeFile($filePath)
     {
         $path = $this->getBaseDir();
         // create media folder if doesn't exist
-        if(!is_dir($path)){
+        if (!is_dir($path)) {
             mkdir($path);
         }
 
         $fileName = \tao_helpers_File::getSafeFileName(basename($filePath));
-        if(!is_dir($path.$fileName)){
-            if(!@copy($filePath, $path.$fileName)){
+        if (!is_dir($path . $fileName)) {
+            if (!@copy($filePath, $path . $fileName)) {
                 throw new \common_exception_Error('Unable to move uploaded file');
             }
             return $fileName;
         }
-        return false;
+        throw new \common_exception_Error('Unable to move uploaded file');
     }
 
     /**
      * get the link and return the file that match it
      * @param string $link the link provided by storeFile
      * @return string $filename the file that match the link
+     * @throws \common_exception_Error
      */
     public function retrieveFile($link)
     {
         if (!\tao_helpers_File::securityCheck($link)) {
             throw new \common_exception_Error('Unsecure file link found');
         }
-        return $this->getBaseDir().$link;
+        return $this->getBaseDir() . $link;
     }
 
     /**
@@ -70,6 +83,6 @@ class SimpleFileManagement implements FileManagement{
      */
     public function deleteFile($link)
     {
-        return @unlink('/'.$link);
+        return @unlink($this->getBaseDir() . $link);
     }
 }

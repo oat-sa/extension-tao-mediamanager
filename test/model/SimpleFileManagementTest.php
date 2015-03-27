@@ -1,85 +1,120 @@
 <?php
-
+/**
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; under version 2
+ * of the License (non-upgradable).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
+ *
+ *
+ */
 namespace oat\taoMediaManager\test\model;
 
-use oat\tao\test\TaoPhpUnitTestRunner;
-use oat\taoMediaManager\model\SimpleFileManagement;
+use oat\taoMediaManager\model\fileManagement\SimpleFileManagement;
 
-include_once dirname(__FILE__) . '/../../includes/raw_start.php';
 
-class SimpleFileManagementTest extends TaoPhpUnitTestRunner {
+class SimpleFileManagementTest extends \PHPUnit_Framework_TestCase
+{
 
     /**
      * @var SimpleFileManagement
      */
     private $fileManagement = null;
 
-    public function setup(){
-        TaoPhpUnitTestRunner::initTest();
+    public function setUp()
+    {
         $this->fileManagement = new SimpleFileManagement();
     }
 
-    public function testStoreFileValid(){
+    public function testStoreFileValid()
+    {
+        $tmpDir = \tao_helpers_File::createTempDir();
+        $storageDir = $tmpDir . 'media/';
+        mkdir($storageDir);
 
-        $fileTmp = dirname(__DIR__).'/sample/Brazil.png';
+        //force baseDir
+        $ref = new \ReflectionProperty('oat\taoMediaManager\model\fileManagement\SimpleFileManagement', 'baseDir');
+        $ref->setAccessible(true);
+        $ref->setValue($this->fileManagement, $storageDir);
+        $ref->setAccessible(false);
 
-        $this->assertFileNotExists(dirname(dirname(__DIR__)).'/media/brazil.png', 'The file is already stored');
+        $fileTmp = dirname(__DIR__) . '/sample/Brazil.png';
+
+        $this->assertFileNotExists($storageDir . 'Brazil.png', 'The file is already stored');
         $link = $this->fileManagement->storeFile($fileTmp);
 
         // test the return link
         $this->assertInternalType('string', $link, 'The method return should be a string');
-        $this->assertEquals(dirname(dirname(__DIR__)).'/media/brazil.png', $link, 'The link is wrong');
-        $this->assertFileExists(dirname(__DIR__).'/../media/brazil.png', 'The file has not been stored');
+        $this->assertEquals('brazil.png', $link, 'The link is wrong');
+        $this->assertFileExists($storageDir . 'brazil.png', 'The file has not been stored');
 
+        return array($storageDir, $link);
     }
 
     /**
-     * @expectedException \common_exception_Error
-     * @expectedExceptionMessage Unable to move uploaded file
+     * @depends testStoreFileValid
      */
-    public function testStoreFileException(){
+    public function testRetrieveFile($array)
+    {
 
-        $fileTmp = dirname(__FILE__).'/sample/unknown.png';
+        $storage = implode('', $array);
 
-        $this->fileManagement->storeFile($fileTmp);
+        //force baseDir
+        $ref = new \ReflectionProperty('oat\taoMediaManager\model\fileManagement\SimpleFileManagement', 'baseDir');
+        $ref->setAccessible(true);
+        $ref->setValue($this->fileManagement, $array[0]);
+        $ref->setAccessible(false);
 
-    }
-
-
-    public function testRetrieveFile(){
-
-        $link = dirname(dirname(__DIR__)).'/media/brazil.png';
-
-        $file = $this->fileManagement->retrieveFile($link);
+        $file = $this->fileManagement->retrieveFile($array[1]);
 
         // test the return link
         $this->assertInternalType('string', $file, 'The method return should be a string');
-        $this->assertEquals($link, $file, 'The return file is wrong');
+        $this->assertEquals($storage, $file, 'The return file is wrong');
         $this->assertFileExists($file, 'The file is not stored');
 
+        return $array;
     }
 
-    public function testDeleteFile(){
+    /**
+     * @depends testRetrieveFile
+     */
+    public function testDeleteFile($array)
+    {
 
-        $link = dirname(dirname(__DIR__)).'/media/brazil.png';
+        //force baseDir
+        $ref = new \ReflectionProperty('oat\taoMediaManager\model\fileManagement\SimpleFileManagement', 'baseDir');
+        $ref->setAccessible(true);
+        $ref->setValue($this->fileManagement, $array[0]);
+        $ref->setAccessible(false);
 
-        $remove = $this->fileManagement->deleteFile($link);
+        $remove = $this->fileManagement->deleteFile($array[1]);
 
         // test the return link
         $this->assertInternalType('boolean', $remove, 'The method return should be a string');
         $this->assertEquals(true, $remove, 'impossible to remove file');
-        $this->assertFileNotExists($link, 'The file is still here');
+        $this->assertFileNotExists(implode('', $array), 'The file is still here');
     }
 
-    public function testDeleteFileFail(){
+    public function testDeleteFileFail()
+    {
 
-        $link = dirname(dirname(__DIR__)).'/media/brazil.png';
+        $link = 'notadir/notafile.png';
 
         $remove = $this->fileManagement->deleteFile($link);
 
         // test the return link
         $this->assertInternalType('boolean', $remove, 'The method return should be a string');
-        $this->assertEquals(false, $remove, 'File was here');
+        $this->assertFalse($remove, 'File was not removed');
     }
 
 

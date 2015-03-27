@@ -1,33 +1,80 @@
 <?php
+/**
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; under version 2
+ * of the License (non-upgradable).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
+ *
+ *
+ */
 
 namespace oat\taoMediaManager\test\model;
 
-
-
-use oat\tao\test\TaoPhpUnitTestRunner;
-use oat\taoMediaManager\model\fileManagement\FileManager;
 use oat\taoMediaManager\model\MediaManagerBrowser;
 
-include_once dirname(__FILE__) . '/../../includes/raw_start.php';
 
-class MediaManagerBrowserTest extends TaoPhpUnitTestRunner {
+class MediaManagerBrowserTest extends \PHPUnit_Framework_TestCase
+{
 
     /**
      * @var mediaManagerBrowser
      */
     private $mediaManagerBrowser = null;
 
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    private $fileManagerMock = null;
+
+
     private $rootClass = '';
 
-    public function setup(){
-        TaoPhpUnitTestRunner::initTest();
+    public function setUp()
+    {
         $this->rootClass = 'http://myFancyDomaine.com/myGreatCLassUriForBrowserTest';
         $this->mediaManagerBrowser = new MediaManagerBrowser(array('lang' => 'EN_en', 'rootClass' => $this->rootClass));
+
+        //fileManagerMock
+        $this->fileManagerMock = $this->getMockBuilder('oat\taoMediaManager\model\fileManagement\SimpleFileManagement')
+            ->getMock();
+
+        $ref = new \ReflectionProperty('oat\taoMediaManager\model\fileManagement\FileManager', 'fileManager');
+        $ref->setAccessible(true);
+        $ref->setValue(null, $this->fileManagerMock);
     }
 
-    public function testGetDirectory(){
+    public function tearDown()
+    {
+        $this->fileManagerMock = null;
+
+        $ref = new \ReflectionProperty('oat\taoMediaManager\model\fileManagement\FileManager', 'fileManager');
+        $ref->setAccessible(true);
+        $ref->setValue(null, null);
+        $ref->setAccessible(false);
+
+    }
+
+    public function testGetDirectory()
+    {
 
         $root = new \core_kernel_classes_Class($this->rootClass);
+
+        //Remove what has been done
+        $subclasses = $root->getSubClasses();
+        foreach ($subclasses as $subclass) {
+            $subclass->delete();
+        }
         $root->delete();
         $root->setLabel('myRootClass');
 
@@ -53,55 +100,54 @@ class MediaManagerBrowserTest extends TaoPhpUnitTestRunner {
         $this->assertInternalType('array', $newDirectory['children'], 'Children should be an array');
         $this->assertNotEmpty($newDirectory['children'], 'Children should be empty');
 
-        foreach($newDirectory['children'] as $i => $child){
+        $labels = array();
+        foreach ($newDirectory['children'] as $i => $child) {
             $this->assertInternalType('array', $child, 'The result should be an array');
             $this->assertArrayHasKey('label', $child, 'The result should contain "label"');
             $this->assertArrayHasKey('path', $child, 'The result should contain "path"');
 
-            $this->assertEquals('mySubClass'.$i, $child['label'], 'The label is not correct');
+            $labels[] = $child['label'];
         }
-
-
+        $this->assertEquals(2, count($labels));
+        $this->assertContains('mySubClass0', $labels);
+        $this->assertContains('mySubClass1', $labels);
+        
         //Remove what has been done
         $subclasses = $root->getSubClasses();
-        foreach($subclasses as $subclass){
+        foreach ($subclasses as $subclass) {
             $subclass->delete();
         }
         $root->delete();
 
     }
 
-    public function testGetFileInfo(){
+    public function testGetFileInfo()
+    {
 
-        $fileManager = FileManager::getFileManagementModel();
-        $fileTmp = dirname(__DIR__).'/sample/Brazil.png';
-        $link = $fileManager->storeFile($fileTmp);
-        $acceptableMime = array();
+        $fileTmp = dirname(__DIR__) . '/sample/Brazil.png';
 
-        $fileInfo = $this->mediaManagerBrowser->getFileInfo($link, $acceptableMime);
+        $this->fileManagerMock->expects($this->once())
+            ->method('retrieveFile')
+            ->with('Brazil.png')
+            ->willReturn($fileTmp);
+
+        $fileInfo = $this->mediaManagerBrowser->getFileInfo('Brazil.png');
 
         $this->assertInternalType('array', $fileInfo, 'The result should be an array');
         $this->assertArrayHasKey('name', $fileInfo, 'The result should contain "name"');
         $this->assertArrayHasKey('mime', $fileInfo, 'The result should contain "mime"');
         $this->assertArrayHasKey('size', $fileInfo, 'The result should contain "size"');
-        $this->assertArrayHasKey('url', $fileInfo, 'The result should contain "url"');
 
-        $this->assertEquals('brazil.png', $fileInfo['name'], 'The file name is not correct');
+        $this->assertEquals('Brazil.png', $fileInfo['name'], 'The file name is not correct');
         $this->assertEquals('image/png', $fileInfo['mime'], 'The mime type is not correct');
-        $this->assertContains('taoItems/ItemContent/download?path=mediamanager'.urlencode($link), $fileInfo['url'], 'The url is not correct');
-
-        //remove what has been done
-        $fileManager->deleteFile($link);
-
-
     }
 
-    public function testGetFileInfoFail(){
+    public function testGetFileInfoFail()
+    {
 
         $link = 'A Fake link';
-        $acceptableMime = array();
 
-        $fileInfo = $this->mediaManagerBrowser->getFileInfo($link, $acceptableMime);
+        $fileInfo = $this->mediaManagerBrowser->getFileInfo($link);
 
         $this->assertNull($fileInfo, 'The result should be null');
     }

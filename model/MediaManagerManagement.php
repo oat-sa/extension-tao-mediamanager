@@ -24,48 +24,60 @@ namespace oat\taoMediaManager\model;
 use oat\tao\model\media\MediaManagement;
 use oat\taoMediaManager\model\fileManagement\FileManager;
 
-class MediaManagerManagement implements MediaManagement{
+class MediaManagerManagement implements MediaManagement
+{
 
     private $lang;
     private $rootClassUri;
+    private $mediaBrowser;
 
     /**
      * get the lang of the class in case we want to filter the media on language
      * @param $data
      */
-    public function __construct($data){
+    public function __construct($data)
+    {
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager');
         $this->lang = (isset($data['lang'])) ? $data['lang'] : '';
         $this->rootClassUri = (isset($data['rootClass'])) ? $data['rootClass'] : MEDIA_URI;
     }
 
-    public function upload($fileTmp, $fileName, $path)
+    public function getMediaBrowser()
     {
-        $filePath = dirname($fileTmp).'/'.$fileName;
-
-        $mediaBrowser = new MediaManagerBrowser(array('lang' => $this->lang));
-
-        try{
-            $path = trim($path,'/');
-            if($path === '' || $path === '/'){
-                $path = MEDIA_URI;
-            }
-            $class = new \core_kernel_classes_Class($path);
-            if(!@rename($fileTmp, $filePath)){
-                throw new \Exception('Can\'t copy uploaded file');
-            }
-            $service = MediaService::singleton();
-            $classUri = $class->getUri();
-            $link = $service->createMediaInstance($filePath, $classUri, $this->lang);
-
-            return $mediaBrowser->getFileInfo($link, array());
-
-        } catch(\Exception $e){
-            return array( 'error' => $e->getMessage());
+        if (is_null($this->mediaBrowser)) {
+            $this->mediaBrowser = new MediaManagerBrowser(array('lang' => $this->lang));
         }
-
+        return $this->mediaBrowser;
     }
 
+
+    /**
+     * (non-PHPdoc)
+     * @see \oat\tao\model\media\MediaManagement::add
+     */
+    public function add($source, $fileName, $parent)
+    {
+        if (!file_exists($source)) {
+            throw new \tao_models_classes_FileNotFoundException('File ' . $source . ' not found');
+        }
+        $parent = trim($parent, '/');
+        if ($parent === '' || $parent === '/') {
+            $parent = MEDIA_URI;
+        }
+        $class = new \core_kernel_classes_Class($parent);
+        if (!$class->exists()) {
+            throw new \common_exception_Error('Class ' . $parent . ' not found');
+        }
+        $service = MediaService::singleton();
+        $link = $service->createMediaInstance($source, $class->getUri(), $this->lang, $fileName);
+
+        return $this->getMediaBrowser()->getFileInfo($link);
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see \oat\tao\model\media\MediaManagement::delete
+     */
     public function delete($filename)
     {
         $filename = preg_replace('#^\/+(.+)#', '/${1}', $filename);

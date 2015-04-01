@@ -78,6 +78,20 @@ class Updater extends \common_ext_ExtensionUpdater {
         
         }
 
+        if ($currentVersion == '0.1.4') {
+
+            $tao = \common_ext_ExtensionsManager::singleton()->getExtensionById('tao');
+            $configs = $tao->hasConfig('mediaManagementSources')? $tao->getConfig('mediaManagementSources'): array();;
+            if(!empty($configs)){
+                $tao->unsetConfig('mediaManagementSources');
+            }
+
+            MediaSource::addMediaSource('mediamanager', 'oat\taoMediaManager\model\MediaManagerManagement');
+
+            $currentVersion = '0.2.0';
+
+        }
+
         return $currentVersion;
     }
 }

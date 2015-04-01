@@ -29,7 +29,6 @@ class MediaManagerManagement implements MediaManagement
 
     private $lang;
     private $rootClassUri;
-    private $mediaBrowser;
 
     /**
      * get the lang of the class in case we want to filter the media on language
@@ -40,14 +39,7 @@ class MediaManagerManagement implements MediaManagement
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager');
         $this->lang = (isset($data['lang'])) ? $data['lang'] : '';
         $this->rootClassUri = (isset($data['rootClass'])) ? $data['rootClass'] : MEDIA_URI;
-    }
 
-    public function getMediaBrowser()
-    {
-        if (is_null($this->mediaBrowser)) {
-            $this->mediaBrowser = new MediaManagerBrowser(array('lang' => $this->lang));
-        }
-        return $this->mediaBrowser;
     }
 
 
@@ -69,27 +61,135 @@ class MediaManagerManagement implements MediaManagement
             throw new \common_exception_Error('Class ' . $parent . ' not found');
         }
         $service = MediaService::singleton();
-        $link = $service->createMediaInstance($source, $class->getUri(), $this->lang, $fileName);
+        $instanceUri = $service->createMediaInstance($source, $class->getUri(), $this->lang, $fileName);
 
-        return $this->getMediaBrowser()->getFileInfo($link);
+        return $this->getFileInfo($instanceUri);
     }
 
     /**
      * (non-PHPdoc)
      * @see \oat\tao\model\media\MediaManagement::delete
      */
-    public function delete($filename)
+    public function delete($link)
     {
-        $filename = preg_replace('#^\/+(.+)#', '/${1}', $filename);
-        $rootClass = new \core_kernel_classes_Class($this->rootClassUri);
-        $instances = $rootClass->searchInstances(array(MEDIA_LINK => $filename), array('recursive' => true));
-        $instance = array_pop($instances);
-
         /** @var \core_kernel_classes_Resource $instance */
+        $instance = new \core_kernel_classes_Class(\tao_helpers_Uri::decode($link));
+        $fileLink = $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
+        $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
+
+
         $instance->delete();
         $fileManager = FileManager::getFileManagementModel();
-        $deleted = $fileManager->deleteFile($filename);
+        $deleted = $fileManager->deleteFile($fileLink);
 
         return $deleted;
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see \oat\tao\model\media\MediaBrowser::getDirectory
+     */
+    public function getDirectory($parentLink = '', $acceptableMime = array(), $depth = 1)
+    {
+        if ($parentLink == '') {
+            $class = new \core_kernel_classes_Class($this->rootClassUri);
+            $parentLink = '';
+        } else {
+            $class = new \core_kernel_classes_Class(\tao_helpers_Uri::decode($parentLink));
+        }
+
+        if ($class->getUri() !== $this->rootClassUri) {
+            $path = array($class->getLabel());
+            foreach ($class->getParentClasses(true) as $parent) {
+                if ($parent->getUri() === $this->rootClassUri) {
+                    $path[] = 'mediamanager';
+                    break;
+                }
+                $path[] = $parent->getLabel();
+            }
+            $path = array_reverse($path);
+        }
+        $data = array(
+            'path' => 'taomedia://mediamanager/' . \tao_helpers_Uri::encode($parentLink),
+            'relPath' => (isset($path)) ? implode('/', $path) : 'mediamanager/',
+            'label' => $class->getLabel()
+        );
+
+        if ($depth > 0) {
+            $children = array();
+            foreach ($class->getSubClasses() as $subclass) {
+                $children[] = $this->getDirectory($subclass->getUri(), $acceptableMime, $depth - 1);
+
+            }
+
+            //add a filter for example on language (not for now)
+            $filter = array();
+
+            foreach ($class->searchInstances($filter) as $instance) {
+                $file = $this->getFileInfo($instance->getUri());
+                if (!is_null($file) && (count($acceptableMime) == 0 || in_array($file['mime'], $acceptableMime)) ) {
+                    //add the alt text to file array
+                    $altArray = $instance->getPropertyValues(new \core_kernel_classes_Property(MEDIA_ALT_TEXT));
+                    if (count($altArray) > 0) {
+                        $file['alt'] = $altArray[0];
+                    }
+                    $children[] = $file;
+                }
+
+            }
+            $data['children'] = $children;
+        } else {
+            $data['url'] = \tao_helpers_Uri::url(
+                'files',
+                'ItemContent',
+                'taoItems',
+                array('lang' => $this->lang, 'path' => $parentLink)
+            );
+        }
+        return $data;
+
+
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see \oat\tao\model\media\MediaBrowser::getFileInfo
+     */
+    public function getFileInfo($link)
+    {
+        //get the media link from the resource
+        $resource = new \core_kernel_classes_Class(\tao_helpers_Uri::decode($link));
+        $fileLink = $resource->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
+        $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
+        $file = null;
+        $fileManagement = FileManager::getFileManagementModel();
+        $filePath = $fileManagement->retrieveFile($fileLink);
+        $mime = \tao_helpers_File::getMimeType($filePath);
+
+        if (file_exists($filePath)) {
+            $file = array(
+                'name' => basename($filePath),
+                'uri' => 'taomedia://mediamanager/'.\tao_helpers_Uri::encode($link),
+                'mime' => $mime,
+                'size' => filesize($filePath),
+            );
+        }
+        return $file;
+
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see \oat\tao\model\media\MediaBrowser::download
+     */
+    public function download($link)
+    {
+        //get the media link from the resource
+        $resource = new \core_kernel_classes_Class(\tao_helpers_Uri::decode($link));
+        $fileLink = $resource->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
+        $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
+        $fileManagement = FileManager::getFileManagementModel();
+        $filePath = $fileManagement->retrieveFile($fileLink);
+        return $filePath;
     }
 }

@@ -46,7 +46,7 @@ class MediaService extends \tao_models_classes_GenerisService
      * @param string $classUri parent to add the instance to
      * @param string $language language of the content
      * @param string $label label of the instance
-     * @return string
+     * @return string | bool $instanceUri or false on error
      */
     public function createMediaInstance($fileSource, $classUri, $language, $label = null)
     {
@@ -63,7 +63,7 @@ class MediaService extends \tao_models_classes_GenerisService
                 $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LANGUAGE), $language);
             }
         }
-        return $link;
+        return ($link !== false) ? $instance->getUri() : false;
 
     }
 

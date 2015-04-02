@@ -34,9 +34,9 @@ class TaoFileManagement extends Configurable implements FileManagement
      * (non-PHPdoc)
      * @see \oat\taoMediaManager\model\fileManagement\FileManagement::storeFile()
      */
-    public function storeFile($filePath)
+    public function storeFile($filePath, $label)
     {
-        $file = $this->getFilesystem()->spawnFile($filePath);
+        $file = $this->getFilesystem()->spawnFile($filePath, $label);
         if (is_null($file)) {
             throw new \common_Exception('Unable to spawn file for ' . $filePath);
         }

@@ -52,7 +52,7 @@ class MediaService extends \tao_models_classes_GenerisService
     {
         $label = is_null($label) ? basename($fileSource) : $label;
         $fileManager = FileManager::getFileManagementModel();
-        $link = $fileManager->storeFile($fileSource);
+        $link = $fileManager->storeFile($fileSource, $label);
 
         if ($link !== false) {
             $clazz = new \core_kernel_classes_Class($classUri);
@@ -73,10 +73,11 @@ class MediaService extends \tao_models_classes_GenerisService
      * @param $instanceUri
      * @param $language
      */
-    public function editMediaInstance($fileTmp, $instanceUri, $language)
+    public function editMediaInstance($fileTmp, $instanceUri, $language, $label = null)
     {
+        $label = is_null($label) ? basename($fileTmp) : $label;
         $fileManager = FileManager::getFileManagementModel();
-        $link = $fileManager->storeFile($fileTmp);
+        $link = $fileManager->storeFile($fileTmp, $label);
 
         if ($link !== false) {
             $instance = new \core_kernel_classes_Class($instanceUri);

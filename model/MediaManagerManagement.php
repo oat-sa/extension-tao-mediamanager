@@ -98,20 +98,8 @@ class MediaManagerManagement implements MediaManagement
             $class = new \core_kernel_classes_Class(\tao_helpers_Uri::decode($parentLink));
         }
 
-        if ($class->getUri() !== $this->rootClassUri) {
-            $path = array($class->getLabel());
-            foreach ($class->getParentClasses(true) as $parent) {
-                if ($parent->getUri() === $this->rootClassUri) {
-                    $path[] = 'mediamanager';
-                    break;
-                }
-                $path[] = $parent->getLabel();
-            }
-            $path = array_reverse($path);
-        }
         $data = array(
             'path' => 'taomedia://mediamanager/' . \tao_helpers_Uri::encode($parentLink),
-            'relPath' => (isset($path)) ? implode('/', $path) : 'mediamanager/',
             'label' => $class->getLabel()
         );
 
@@ -158,23 +146,28 @@ class MediaManagerManagement implements MediaManagement
     public function getFileInfo($link)
     {
         //get the media link from the resource
-        $resource = new \core_kernel_classes_Class(\tao_helpers_Uri::decode($link));
-        $fileLink = $resource->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
-        $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
-        $file = null;
-        $fileManagement = FileManager::getFileManagementModel();
-        $filePath = $fileManagement->retrieveFile($fileLink);
-        $mime = \tao_helpers_File::getMimeType($filePath);
+        $resource = new \core_kernel_classes_Resource(\tao_helpers_Uri::decode($link));
+        if($resource->exists()){
+            $fileLink = $resource->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
+            $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
+            $file = null;
+            $fileManagement = FileManager::getFileManagementModel();
+            $filePath = $fileManagement->retrieveFile($fileLink);
+            $mime = \tao_helpers_File::getMimeType($filePath);
 
-        if (file_exists($filePath)) {
-            $file = array(
-                'name' => basename($filePath),
-                'uri' => 'taomedia://mediamanager/'.\tao_helpers_Uri::encode($link),
-                'mime' => $mime,
-                'size' => filesize($filePath),
-            );
+            if (file_exists($filePath)) {
+                $file = array(
+                    'name' => basename($filePath),
+                    'uri' => 'taomedia://mediamanager/'.\tao_helpers_Uri::encode($link),
+                    'mime' => $mime,
+                    'size' => filesize($filePath),
+                );
+            }
+            return $file;
         }
-        return $file;
+        else{
+            throw new \Exception('Resource ' . $resource->getUri() . ' can not be found');
+        }
 
     }
 

@@ -41,8 +41,6 @@ class MediaManagerManagementTest extends \PHPUnit_Framework_TestCase
 
     private $classUri = null;
 
-    private $returnedLink = null;
-
     public function setUp()
     {
         $this->classUri = 'http://myFancyDomaine.com/myGreatCLassUriToUploadTo';
@@ -51,14 +49,13 @@ class MediaManagerManagementTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->returnedLink = 'myGreatLink';
         $ref = new \ReflectionProperty('tao_models_classes_Service', 'instances');
         $ref->setAccessible(true);
         $ref->setValue(null, array('oat\taoMediaManager\model\MediaService' => $this->service));
 
 
         $this->mediaManagerManagement = $this->getMockBuilder('oat\taoMediaManager\model\MediaManagerManagement')
-            ->setMethods(array('getMediaBrowser'))
+            ->setMethods(array('getFileInfo'))
             ->setConstructorArgs(array(array('lang' => 'EN_en', 'rootClass' => $this->classUri)))
             ->getMock();
 
@@ -95,32 +92,26 @@ class MediaManagerManagementTest extends \PHPUnit_Framework_TestCase
 
         $filePath = dirname(__DIR__) . '/sample/Italy.png';
 
+        $instance = $rootClass->createInstance();
+        $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LINK), 'myGreatLink');
+        $returnedLink = $instance->getUri();
         $this->service->expects($this->once())
             ->method('createMediaInstance')
             ->with($filePath, $this->classUri, 'EN_en', 'Italy1.png')
-            ->willReturn($this->returnedLink);
+            ->willReturn($returnedLink);
 
-        //mock the mediaBrowser fileInfo method
+        //mock the fileInfo method
         $fileInfo = array(
             'name' => 'myName',
-            'identifier' => 'mediamanager/',
-            'relPath' => 'relativePath',
             'mime' => 'mime/type',
             'size' => 1024,
-            'url' => 'myGreatUrl'
         );
-        $mediaBrowserMock = $this->getMockBuilder('oat\taoMediaManager\model\MediaManagerBrowser')
-            ->setConstructorArgs(array(array('lang' => 'EN_en')))
-            ->getMock();
 
-        $mediaBrowserMock->expects($this->once())
+        $this->mediaManagerManagement->expects($this->once())
             ->method('getFileInfo')
-            ->with($this->returnedLink)
+            ->with($returnedLink)
             ->willReturn($fileInfo);
 
-        $this->mediaManagerManagement->expects($this->any())
-            ->method('getMediaBrowser')
-            ->willReturn($mediaBrowserMock);
 
         $success = $this->mediaManagerManagement->add($filePath, 'Italy1.png', $this->classUri);
 
@@ -128,10 +119,7 @@ class MediaManagerManagementTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('array', $success, 'Should be a file info array');
         $this->assertArrayNotHasKey('error', $success, 'upload doesn\'t succeed');
         $this->assertEquals($fileInfo, $success, 'Doesn\'t return the getFileInfo value');
-
-        $instance = $rootClass->createInstance('Italy1.png');
-        $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LINK), $this->returnedLink);
-
+        return $returnedLink;
     }
 
 
@@ -152,32 +140,31 @@ class MediaManagerManagementTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @depends testUpload
+     * @depends testAdd
      */
-    public function testDelete()
+    public function testDelete($returnedLink)
     {
 
         $this->fileManagerMock->expects($this->once())
             ->method('deleteFile')
-            ->with($this->returnedLink)
+            ->with('myGreatLink')
             ->willReturn(true);
 
-        $rootClass = new \core_kernel_classes_Class($this->classUri);
-        $instances = $rootClass->searchInstances(array(MEDIA_LINK => $this->returnedLink), array('recursive' => true));
-        $instance = array_pop($instances);
+        $instance = new \core_kernel_classes_Resource($returnedLink);
         $this->assertInstanceOf('\core_kernel_classes_Resource', $instance, 'This class should exists');
 
-        $success = $this->mediaManagerManagement->delete($this->returnedLink);
+        $success = $this->mediaManagerManagement->delete($returnedLink);
 
         // should return true
         $this->assertTrue($success, 'The file is not deleted');
 
         // should remove the instance
         $removedInstance = new \core_kernel_classes_Class($instance->getUri());
-        $this->assertEquals('', $instance->getLabel(), 'The instance still exists');
-        $this->assertEquals('', $removedInstance->getLabel(), 'The instance still exists');
+        $this->assertFalse($instance->exists(), 'The instance still exists');
+        $this->assertFalse($removedInstance->exists(), 'The instance still exists');
 
         //remove created class
+        $rootClass = new \core_kernel_classes_Class($this->classUri);
         $rootClass->delete(true);
     }
 

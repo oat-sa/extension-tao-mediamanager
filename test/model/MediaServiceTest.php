@@ -107,8 +107,8 @@ class MediaServiceTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertEquals('Brazil.png', $instance->getLabel(), 'The instance label is wrong');
         $this->assertInternalType('string', $link, 'The method return should be a string');
-        $this->assertEquals($link, $linkResult, 'The instance link is wrong');
-        $this->assertEquals($link, 'MyGreatLink', 'The returned link is wrong');
+        $this->assertEquals($instance->getUri(), $link, 'The instance link is wrong');
+        $this->assertEquals($linkResult, 'MyGreatLink', 'The returned link is wrong');
         $this->assertEquals(
             $lang,
             $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LANGUAGE)),

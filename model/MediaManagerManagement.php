@@ -52,8 +52,8 @@ class MediaManagerManagement implements MediaManagement
         if (!file_exists($source)) {
             throw new \tao_models_classes_FileNotFoundException('File ' . $source . ' not found');
         }
-        $parent = trim($parent, '/');
-        if ($parent === '' || $parent === '/') {
+        $parent = \tao_helpers_uri::decode($parent);
+        if ($parent === '') {
             $parent = MEDIA_URI;
         }
         $class = new \core_kernel_classes_Class($parent);

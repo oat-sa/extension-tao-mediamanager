@@ -157,7 +157,7 @@ class MediaManagerManagement implements MediaManagement
 
             if (file_exists($filePath)) {
                 $file = array(
-                    'name' => basename($filePath),
+                    'name' => $resource->getLabel(),
                     'uri' => 'taomedia://mediamanager/'.\tao_helpers_Uri::encode($link),
                     'mime' => $mime,
                     'size' => filesize($filePath),

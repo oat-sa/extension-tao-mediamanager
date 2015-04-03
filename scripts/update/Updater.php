@@ -25,6 +25,7 @@ use oat\tao\model\media\MediaSource;
 use \oat\taoMediaManager\model\fileManagement\FileManager;
 use \oat\taoMediaManager\model\fileManagement\SimpleFileManagement;
 use oat\tao\scripts\update\OntologyUpdater;
+use oat\taoMediaManager\model\MediaService;
 
 class Updater extends \common_ext_ExtensionUpdater {
 
@@ -80,6 +81,7 @@ class Updater extends \common_ext_ExtensionUpdater {
 
         if ($currentVersion == '0.1.4') {
 
+            //modify config files due to the new interfaces relation
             $tao = \common_ext_ExtensionsManager::singleton()->getExtensionById('tao');
             $configs = $tao->hasConfig('mediaManagementSources')? $tao->getConfig('mediaManagementSources'): array();;
             if(!empty($configs)){
@@ -87,6 +89,31 @@ class Updater extends \common_ext_ExtensionUpdater {
             }
 
             MediaSource::addMediaSource('mediamanager', 'oat\taoMediaManager\model\MediaManagerManagement');
+
+            //modify links in item content
+            $service = \taoItems_models_classes_ItemsService::singleton();
+            $items = $service->getAllByModel('http://www.tao.lu/Ontologies/TAOItem.rdf#QTI');
+
+            foreach($items as $item){
+                $itemContent = $service->getItemContent($item);
+                $itemContent = preg_replace_callback('/src="mediamanager\/([^"]+)"/', function($matches){
+                        $mediaClass = MediaService::singleton()->getRootClass();
+                        $medias = $mediaClass->searchInstances(array(
+                                MEDIA_LINK => $matches[1]
+                            ), array('recursive' => true));
+                        $media = array_pop($medias);
+                        return 'src="taomedia://mediamanager/' . \tao_helpers_Uri::encode($media->getUri()) . '"';
+
+                    }, $itemContent);
+
+                $itemContent = preg_replace_callback('/src="local\/([^"]+)"/', function($matches){
+                        return 'src="' . $matches[1] . '"';
+
+                    }, $itemContent);
+
+                $service->setItemContent($item, $itemContent);
+
+            }
 
             $currentVersion = '0.2.0';
 

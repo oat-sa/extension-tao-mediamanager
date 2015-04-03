@@ -37,5 +37,4 @@ FileManager::setFileManagementModel(new TaoFileManagement($config));
 
 //FileManager::setFileManagementModel(new SimpleFileManagement());
 
-//MediaSource::addMediaSource('mediamanager', 'oat\taoMediaManager\model\MediaManagerBrowser', 'browser');
 MediaSource::addMediaSource('mediamanager', 'oat\taoMediaManager\model\MediaManagerManagement');

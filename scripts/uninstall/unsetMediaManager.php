@@ -24,6 +24,5 @@ use \oat\taoMediaManager\model\fileManagement\FileManager;
 use \oat\taoMediaManager\model\fileManagement\SimpleFileManagement;
 
 MediaSource::removeMediaSource('mediamanager');
-MediaSource::removeMediaSource('mediamanager', 'management');
 
 FileManager::setFileManagementModel(new SimpleFileManagement());

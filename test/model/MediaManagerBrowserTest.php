@@ -21,14 +21,14 @@
 
 namespace oat\taoMediaManager\test\model;
 
-use oat\taoMediaManager\model\MediaManagerManagement;
+use oat\taoMediaManager\model\MediaSource;
 
 
 class MediaManagerBrowserTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var mediaManagerManagement
+     * @var MediaSource
      */
     private $mediaManagerManagement = null;
 
@@ -43,7 +43,7 @@ class MediaManagerBrowserTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->rootClass = 'http://myFancyDomaine.com/myGreatCLassUriForBrowserTest';
-        $this->mediaManagerManagement = new MediaManagerManagement(array('lang' => 'EN_en', 'rootClass' => $this->rootClass));
+        $this->mediaManagerManagement = new MediaSource(array('lang' => 'EN_en', 'rootClass' => $this->rootClass));
 
         //fileManagerMock
         $this->fileManagerMock = $this->getMockBuilder('oat\taoMediaManager\model\fileManagement\SimpleFileManagement')

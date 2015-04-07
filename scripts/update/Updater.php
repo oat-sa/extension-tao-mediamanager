@@ -88,7 +88,7 @@ class Updater extends \common_ext_ExtensionUpdater {
                 $tao->unsetConfig('mediaManagementSources');
             }
 
-            MediaSource::addMediaSource('mediamanager', 'oat\taoMediaManager\model\MediaManagerManagement');
+            MediaSource::addMediaSource('mediamanager', 'oat\taoMediaManager\model\MediaSource');
 
             //modify links in item content
             $service = \taoItems_models_classes_ItemsService::singleton();

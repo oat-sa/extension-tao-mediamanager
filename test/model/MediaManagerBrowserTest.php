@@ -128,7 +128,7 @@ class MediaManagerBrowserTest extends \PHPUnit_Framework_TestCase
         $fileTmp = dirname(__DIR__) . '/sample/Brazil.png';
 
         $root = new \core_kernel_classes_Class($this->rootClass);
-        $instance = $root->createInstance();
+        $instance = $root->createInstance('Brazil.png');
         $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LINK), 'myGreatLink');
 
         $uri = $instance->getUri();
@@ -145,7 +145,7 @@ class MediaManagerBrowserTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('size', $fileInfo, 'The result should contain "size"');
         $this->assertArrayHasKey('uri', $fileInfo, 'The result should contain "size"');
 
-        $this->assertEquals('Brazil.png', $fileInfo['name'], 'The file name is not correct');
+        $this->assertEquals($instance->getLabel(), $fileInfo['name'], 'The file name is not correct');
         $this->assertEquals('image/png', $fileInfo['mime'], 'The mime type is not correct');
         $this->assertEquals('taomedia://mediamanager/'.\tao_helpers_Uri::encode($uri), $fileInfo['uri'], 'The uri is not correct');
     }

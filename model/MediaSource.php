@@ -127,12 +127,7 @@ class MediaSource implements MediaManagement
             }
             $data['children'] = $children;
         } else {
-            $data['url'] = \tao_helpers_Uri::url(
-                'files',
-                'ItemContent',
-                'taoItems',
-                array('lang' => $this->lang, 'path' => $parentLink)
-            );
+            $data['parent'] = $parentLink;
         }
         return $data;
 

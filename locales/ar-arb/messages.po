@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.0-RC04\n"
-"PO-Revision-Date: 2015-03-06T16:00:26\n"
+"Project-Id-Version: TAO 3.0-RC05\n"
+"PO-Revision-Date: 2015-04-09T09:21:11\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ar-arb\n"
@@ -19,9 +19,11 @@ msgstr ""
 msgid "Class saved"
 msgstr ""
 
+#, tao-public
 msgid "Delete"
 msgstr ""
 
+#, tao-public
 msgid "Download Media"
 msgstr ""
 
@@ -31,6 +33,7 @@ msgstr ""
 msgid "Edit Media class"
 msgstr ""
 
+#, tao-public
 msgid "Export"
 msgstr ""
 
@@ -43,12 +46,14 @@ msgstr ""
 msgid "File name"
 msgstr ""
 
+#, tao-public
 msgid "Import"
 msgstr ""
 
 msgid "Import Media from a file"
 msgstr ""
 
+#, tao-public
 msgid "Index"
 msgstr ""
 
@@ -66,6 +71,7 @@ msgstr ""
 msgid "Media imported successfully"
 msgstr ""
 
+#, tao-public
 msgid "Media Manager"
 msgstr ""
 
@@ -76,6 +82,7 @@ msgstr ""
 msgid "Media Options"
 msgstr ""
 
+#, tao-public
 msgid "New class"
 msgstr ""
 
@@ -88,9 +95,11 @@ msgstr ""
 msgid "Unable to move uploaded file"
 msgstr ""
 
+#, tao-public
 msgid "Upload Media"
 msgstr ""
 
+#, tao-public
 msgid "View Media"
 msgstr ""
 

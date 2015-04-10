@@ -30,7 +30,7 @@ use oat\taoMediaManager\model\fileManagement\FileManager;
  * @author Antoine Robin, <antoine.robin@vesperiagroup.com>
  * @package taoMediaManager
  */
-class MediaService extends \tao_models_classes_GenerisService
+class MediaService extends \tao_models_classes_ClassService
 {
 
     public function getRootClass()

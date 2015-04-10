@@ -26,12 +26,10 @@ use oat\taoMediaManager\model\MediaService;
 
 class MediaManager extends \tao_actions_SaSModule {
 
-
     protected function getClassService()
     {
         return MediaService::singleton();
     }
-
 
 	public function __construct(){
 		
@@ -40,29 +38,6 @@ class MediaManager extends \tao_actions_SaSModule {
 		//the service is initialized by default
 		$this->defaultData();
 	}
-
-	/**
-	 * Show the form to edit a class
-	 */
-	public function editMediaClass(){
-        $clazz = new \core_kernel_classes_Class(\tao_helpers_Uri::decode($this->getRequestParameter('classUri')));
-
-
-        $myForm = $this->editClass($clazz, $this->getRootClass());
-
-        if($myForm->isSubmited()){
-            if($myForm->isValid()){
-                if($clazz instanceof \core_kernel_classes_Resource){
-                    $this->setData("selectNode", \tao_helpers_Uri::encode($clazz->getUri()));
-                }
-                $this->setData('message', __('Class saved'));
-                $this->setData('reload', true);
-            }
-        }
-        $this->setData('formTitle', __('Edit Media class'));
-        $this->setData('myForm', $myForm->render());
-        $this->setView('form.tpl', 'tao');
-    }
 
     /**
      * Show the form to edit an instance, show also a preview of the media
@@ -112,13 +87,4 @@ class MediaManager extends \tao_actions_SaSModule {
         $this->setView('form.tpl');
 
 	}
-		
-	/**
-	 * @see TaoModule::getRootClass
-	 */
-	public function getRootClass(){
-		return new \core_kernel_classes_Class(MEDIA_URI);
-	}
-
 }
-?>

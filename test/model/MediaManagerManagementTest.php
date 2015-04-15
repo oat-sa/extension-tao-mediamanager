@@ -21,7 +21,7 @@
 namespace oat\taoMediaManager\test\model;
 
 
-class MediaManagerManagementTest extends \PHPUnit_Framework_TestCase
+class MediaSourceTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -54,7 +54,7 @@ class MediaManagerManagementTest extends \PHPUnit_Framework_TestCase
         $ref->setValue(null, array('oat\taoMediaManager\model\MediaService' => $this->service));
 
 
-        $this->mediaManagerManagement = $this->getMockBuilder('oat\taoMediaManager\model\MediaManagerManagement')
+        $this->mediaManagerManagement = $this->getMockBuilder('oat\taoMediaManager\model\MediaSource')
             ->setMethods(array('getFileInfo'))
             ->setConstructorArgs(array(array('lang' => 'EN_en', 'rootClass' => $this->classUri)))
             ->getMock();

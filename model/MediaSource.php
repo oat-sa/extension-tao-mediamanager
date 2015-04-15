@@ -25,7 +25,7 @@ use oat\tao\model\media\MediaManagement;
 use oat\taoMediaManager\model\fileManagement\FileManager;
 use oat\oatbox\Configurable;
 
-class MediaManagerManagement extends Configurable implements MediaManagement
+class MediaSource extends Configurable implements MediaManagement
 {
 
     private $lang;
@@ -126,12 +126,7 @@ class MediaManagerManagement extends Configurable implements MediaManagement
             }
             $data['children'] = $children;
         } else {
-            $data['url'] = \tao_helpers_Uri::url(
-                'files',
-                'ItemContent',
-                'taoItems',
-                array('lang' => $this->lang, 'path' => $parentLink)
-            );
+            $data['parent'] = $parentLink;
         }
         return $data;
 

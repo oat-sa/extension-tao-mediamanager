@@ -21,12 +21,13 @@
 
 namespace oat\taoMediaManager\scripts\update;
 
+use oat\tao\model\media\MediaSource;
 use \oat\taoMediaManager\model\fileManagement\FileManager;
 use \oat\taoMediaManager\model\fileManagement\SimpleFileManagement;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\taoMediaManager\model\MediaService;
 use oat\tao\model\media\MediaService as TaoMediaService;
-use oat\taoMediaManager\model\MediaManagerManagement;
+use oat\taoMediaManager\model\MediaSource;
 
 class Updater extends \common_ext_ExtensionUpdater {
 
@@ -79,7 +80,7 @@ class Updater extends \common_ext_ExtensionUpdater {
             $tao->unsetConfig('mediaManagementSources');
             $tao->unsetConfig('mediaBrowserSources');
             
-            TaoMediaService::singleton()->addMediaSource(new MediaManagerManagement());
+            TaoMediaService::singleton()->addMediaSource(new MediaSource());
 
             //modify links in item content
             $service = \taoItems_models_classes_ItemsService::singleton();

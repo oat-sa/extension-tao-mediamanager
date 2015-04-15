@@ -21,11 +21,12 @@
 
 namespace oat\taoMediaManager\scripts\update;
 
-use oat\tao\model\media\MediaSource;
 use \oat\taoMediaManager\model\fileManagement\FileManager;
 use \oat\taoMediaManager\model\fileManagement\SimpleFileManagement;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\taoMediaManager\model\MediaService;
+use oat\tao\model\media\MediaService as TaoMediaService;
+use oat\taoMediaManager\model\MediaManagerManagement;
 
 class Updater extends \common_ext_ExtensionUpdater {
 
@@ -40,20 +41,13 @@ class Updater extends \common_ext_ExtensionUpdater {
 
         //migrate from 0.1 to 0.1.1
         if ($currentVersion == '0.1') {
-
-            MediaSource::addMediaSource('mediamanager', 'oat\taoMediaManager\model\MediaManagerBrowser', 'browser');
-            MediaSource::addMediaSource('mediamanager', 'oat\taoMediaManager\model\MediaManagerManagement', 'management');
-
+            // mediaSources set in 0.2
             $currentVersion = '0.1.1';
         }
         if ($currentVersion == '0.1.1') {
 
             FileManager::setFileManagementModel(new SimpleFileManagement());
-            $tao = \common_ext_ExtensionsManager::singleton()->getExtensionById('tao');
-            $configs = $tao->hasConfig('mediaSources')? $tao->getConfig('mediaSources'): array();;
-            if(!empty($configs)){
-                $tao->unsetConfig('mediaSources');
-            }
+            // mediaSources unset in 0.2
 
             $currentVersion = '0.1.2';
         }
@@ -68,7 +62,6 @@ class Updater extends \common_ext_ExtensionUpdater {
             } else{
                 \common_Logger::w('Import failed for '.$file);
             }
-
         }
         
 
@@ -83,12 +76,10 @@ class Updater extends \common_ext_ExtensionUpdater {
 
             //modify config files due to the new interfaces relation
             $tao = \common_ext_ExtensionsManager::singleton()->getExtensionById('tao');
-            $configs = $tao->hasConfig('mediaManagementSources')? $tao->getConfig('mediaManagementSources'): array();;
-            if(!empty($configs)){
-                $tao->unsetConfig('mediaManagementSources');
-            }
-
-            MediaSource::addMediaSource('mediamanager', 'oat\taoMediaManager\model\MediaManagerManagement');
+            $tao->unsetConfig('mediaManagementSources');
+            $tao->unsetConfig('mediaBrowserSources');
+            
+            TaoMediaService::singleton()->addMediaSource(new MediaManagerManagement());
 
             //modify links in item content
             $service = \taoItems_models_classes_ItemsService::singleton();

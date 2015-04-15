@@ -23,8 +23,9 @@ namespace oat\taoMediaManager\model;
 
 use oat\tao\model\media\MediaManagement;
 use oat\taoMediaManager\model\fileManagement\FileManager;
+use oat\oatbox\Configurable;
 
-class MediaManagerManagement implements MediaManagement
+class MediaManagerManagement extends Configurable implements MediaManagement
 {
 
     private $lang;
@@ -34,14 +35,12 @@ class MediaManagerManagement implements MediaManagement
      * get the lang of the class in case we want to filter the media on language
      * @param $data
      */
-    public function __construct($data)
-    {
+    public function __construct($options = array()) {
+        parent::__construct($options);
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager');
-        $this->lang = (isset($data['lang'])) ? $data['lang'] : '';
-        $this->rootClassUri = (isset($data['rootClass'])) ? $data['rootClass'] : MEDIA_URI;
-
+        $this->lang = (isset($options['lang'])) ? $options['lang'] : '';
+        $this->rootClassUri = (isset($options['rootClass'])) ? $options['rootClass'] : MEDIA_URI;
     }
-
 
     /**
      * (non-PHPdoc)

@@ -19,10 +19,11 @@
  *
  */
 
-use \oat\tao\model\media\MediaSource;
 use \oat\taoMediaManager\model\fileManagement\FileManager;
 use oat\taoMediaManager\model\fileManagement\TaoFileManagement;
 use oat\taoMediaManager\model\fileManagement\SimpleFileManagement;
+use oat\tao\model\media\MediaService;
+use oat\taoMediaManager\model\MediaManagerManagement;
 
 $dataPath = FILES_PATH . 'taoMediaManager' . DIRECTORY_SEPARATOR. 'media' . DIRECTORY_SEPARATOR;
 if (file_exists($dataPath)) {
@@ -36,5 +37,6 @@ $config = array(
 FileManager::setFileManagementModel(new TaoFileManagement($config));
 
 //FileManager::setFileManagementModel(new SimpleFileManagement());
+$mediaManager = new MediaManagerManagement();
 
-MediaSource::addMediaSource('mediamanager', 'oat\taoMediaManager\model\MediaManagerManagement');
+MediaService::singleton()->addMediaSource($mediaManager);

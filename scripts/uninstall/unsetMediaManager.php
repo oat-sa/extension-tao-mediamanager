@@ -19,10 +19,10 @@
  *
  */
 
-use \oat\tao\model\media\MediaSource;
 use \oat\taoMediaManager\model\fileManagement\FileManager;
 use \oat\taoMediaManager\model\fileManagement\SimpleFileManagement;
+use oat\tao\model\media\MediaService;
 
-MediaSource::removeMediaSource('mediamanager');
+MediaService::singleton()->removeMediaSource('mediamanager');
 
-FileManager::setFileManagementModel(new SimpleFileManagement());
+\common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager')->unsetConfig(FileManager::CONFIG_KEY);

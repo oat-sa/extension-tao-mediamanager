@@ -47,9 +47,17 @@ class MediaImport extends \tao_actions_Import {
      */
     public function index()
     {
+        $id = null;
+        if($this->hasRequestParameter('instanceUri')){
+            $id = \tao_helpers_Uri::decode($this->getRequestParameter('instanceUri'));
+        }
+        else if($this->hasRequestParameter('uri')){
+            $id = \tao_helpers_Uri::decode($this->getRequestParameter('uri'));
+        }
+
         $this->importHandlers = array(
-            new FileImporter(),
-            new SharedStimulusImporter()
+            new FileImporter($id),
+            new SharedStimulusImporter($id)
         );
         parent::index();
 
@@ -57,25 +65,6 @@ class MediaImport extends \tao_actions_Import {
 
     protected function getAvailableImportHandlers() {
         return $this->importHandlers;
-    }
-
-    /**
-     * get the import handler to replace a media
-     */
-    public function uploadMedia(){
-        $id = null;
-        if(!$this->hasRequestParameter('instanceUri')){
-            $id = $this->getRequestParameter('id');
-        }
-        else{
-            $id = $this->getRequestParameter('instanceUri');
-        }
-        $this->importHandlers = array(
-            new FileImporter($id),
-            new SharedStimulusImporter($id)
-        );
-        parent::index();
-
     }
 
 

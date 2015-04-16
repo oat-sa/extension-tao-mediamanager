@@ -21,7 +21,6 @@
 
 namespace oat\taoMediaManager\scripts\update;
 
-use oat\tao\model\media\MediaSource;
 use \oat\taoMediaManager\model\fileManagement\FileManager;
 use \oat\taoMediaManager\model\fileManagement\SimpleFileManagement;
 use oat\tao\scripts\update\OntologyUpdater;

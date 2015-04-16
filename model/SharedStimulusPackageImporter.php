@@ -94,8 +94,51 @@ class SharedStimulusPackageImporter extends ZipImporter
 
 
     /**
+     * @param core_kernel_classes_Class $instance
+     * @param \tao_helpers_form_Form$form
+     * @return \common_report_Report
+     */
+    public function edit($instance, $form){
+
+        //as upload may be called multiple times, we remove the session lock as soon as possible
+        session_write_close();
+
+        try{
+            $file = $form->getValue('source');
+
+            $tmpDir = \tao_helpers_File::createTempDir();
+            $fileName = \tao_helpers_File::getSafeFileName($file['name']);
+            $filePath = $tmpDir . '/' . $fileName;
+            if (!rename($file['uploaded_file'], $filePath)) {
+                return \common_report_Report::createFailure(__('Unable to move uploaded file'));
+            }
+
+            // unzip the file
+            if (!$this->extractArchive($filePath)) {
+                $report = \common_report_Report::createFailure($this->getDirectory());
+                return $report;
+            }
+
+            //get the xml file that represents the shared stimulus
+            if($this->getSharedStimulusFile() === false){
+                $report = \common_report_Report::createFailure('Unable to find an xml file in you package');
+                return $report;
+            }
+
+            $report = $this->validateAndEditSharedStimulus($instance, \tao_helpers_Uri::decode($form->getValue('lang')), $tmpDir);
+
+            return $report;
+
+        } catch(\Exception $e){
+            $report = \common_report_Report::createFailure($e->getMessage());
+            return $report;
+        }
+    }
+
+
+    /**
      * Validate an xml file, convert file linked inside and store it into media manager
-     * @param string $class the class under which we will store the shared stimulus (can be an item)
+     * @param \core_kernel_classes_Resource $class the class under which we will store the shared stimulus (can be an item)
      * @param string $lang language of the shared stimulus
      * @param string $tmpDir (optional)
      * @return \common_report_Report
@@ -113,23 +156,46 @@ class SharedStimulusPackageImporter extends ZipImporter
             $mediaClass->createSubClass($class->getLabel());
         }
 
-        //validate the xml file
-        $xmlDocument = SharedStimulusImporter::isValidSharedStimulus($this->xmlFile);
-
-        //parse the xml file to modify it with base64 files
-        if(($xmlDocument = $this->convertEmbeddedFiles($xmlDocument)) === false){
-            $report = \common_report_Report::createFailure('Unable to convert embedded files');
-            return $report;
-        }
-
         $service = MediaService::singleton();
-        $filename = $tmpDir . '/sharedStimulus.xml';
-        $xmlDocument->save($filename);
+        $filename = $this->validateXmlFile($tmpDir);
         if(!$service->createMediaInstance($filename, $class->getUri(), $lang, basename($this->xmlFile))){
             $report = \common_report_Report::createFailure(__('Fail to import Shared Stimulus'));
         }
         else{
             $report = \common_report_Report::createSuccess(__('Shared Stimulus imported successfully'));
+        }
+
+        return $report;
+    }
+
+    /**
+     * Validate an xml file, convert file linked inside and store it into media manager
+     * @param \core_kernel_classes_Resource $instance the instance to edit
+     * @param string $lang language of the shared stimulus
+     * @param string $tmpDir (optional)
+     * @return \common_report_Report
+     */
+    public function validateAndEditSharedStimulus($instance, $lang, $tmpDir = ''){
+        //create tmp dir if it does not exist
+        if($tmpDir === ''){
+            $tmpDir = \tao_helpers_File::createTempDir();
+        }
+
+
+        //if the class does not belong to media classes create a new one with its name (for items)
+        $mediaClass = new core_kernel_classes_Class(MEDIA_URI);
+        if(!$instance->isInstanceOf($mediaClass)){
+            $report = \common_report_Report::createFailure('The instance ' . $instance->getUri() . ' is not a Media instance');
+            return $report;
+        }
+
+        $service = MediaService::singleton();
+        $filename = $this->validateXmlFile($tmpDir);
+        if(!$service->editMediaInstance($filename, $instance->getUri(), $lang)){
+            $report = \common_report_Report::createFailure(__('Fail to edit Shared Stimulus'));
+        }
+        else{
+            $report = \common_report_Report::createSuccess(__('Shared Stimulus edited successfully'));
         }
 
         return $report;
@@ -165,6 +231,26 @@ class SharedStimulusPackageImporter extends ZipImporter
             }
         }
         return $xmlDocument;
+    }
+
+    /**
+     * @param $tmpDir
+     * @return string filename
+     * @throws \Exception
+     */
+    private function validateXmlFile($tmpDir){
+        //validate the xml file
+        $xmlDocument = SharedStimulusImporter::isValidSharedStimulus($this->xmlFile);
+
+        //parse the xml file to modify it with base64 files
+        if(($xmlDocument = $this->convertEmbeddedFiles($xmlDocument)) === false){
+            throw new \Exception('Unable to convert embedded files');
+        }
+
+        $filename = $tmpDir . '/sharedStimulus.xml';
+        $xmlDocument->save($filename);
+
+        return $filename;
     }
 
 

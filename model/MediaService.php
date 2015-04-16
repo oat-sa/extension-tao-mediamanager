@@ -72,21 +72,22 @@ class MediaService extends \tao_models_classes_ClassService
      * @param $fileTmp
      * @param $instanceUri
      * @param $language
+     * @return bool $instanceUri or false on error
      */
-    public function editMediaInstance($fileTmp, $instanceUri, $language, $label = null)
+    public function editMediaInstance($fileTmp, $instanceUri, $language)
     {
-        $label = is_null($label) ? basename($fileTmp) : $label;
+        $instance = new \core_kernel_classes_Class($instanceUri);
         $fileManager = FileManager::getFileManagementModel();
-        $link = $fileManager->storeFile($fileTmp, $label);
+        $link = $fileManager->storeFile($fileTmp, $instance->getLabel());
 
         if ($link !== false) {
-            $instance = new \core_kernel_classes_Class($instanceUri);
             /** @var $instance  \core_kernel_classes_Resource */
             if (!is_null($instance) && $instance instanceof \core_kernel_classes_Resource) {
                 $instance->editPropertyValues(new \core_kernel_classes_Property(MEDIA_LINK), $link);
                 $instance->editPropertyValues(new \core_kernel_classes_Property(MEDIA_LANGUAGE), $language);
             }
         }
+        return ($link !== false) ? true : false;
 
     }
 }

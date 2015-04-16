@@ -108,14 +108,19 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
                     }
                 }
                 else{
-//                    if($file['type'] !== 'application/zip'){
-//                        $service->editMediaInstance($file["uploaded_file"], $this->instanceUri, \tao_helpers_Uri::decode($form->getValue('lang')));
-//                        $report = \common_report_Report::createSuccess(__('Media imported successfully'));
-//                    }
-//                    else{
-//                        $report = \common_report_Report::createFailure(__('You can\'t upload a zip file as a media'));
-//                    }
-                        $report = \common_report_Report::createFailure(__('Can\'t edit shared stimulus'));
+                    if($file['type'] !== 'application/zip'){
+                        self::isValidSharedStimulus($file['uploaded_file']);
+                        if(!$service->editMediaInstance($file["uploaded_file"], $this->instanceUri, \tao_helpers_Uri::decode($form->getValue('lang')))){
+                            $report = \common_report_Report::createFailure(__('Fail to edit shared stimulus'));
+                        }
+                        else{
+                            $report = \common_report_Report::createSuccess(__('Media imported successfully'));
+                        }
+                    }
+                    else{
+                        $zipImporter = new SharedStimulusPackageImporter();
+                        $report = $zipImporter->edit(new core_kernel_classes_Class($this->instanceUri),$form);
+                    }
                 }
 
             return $report;

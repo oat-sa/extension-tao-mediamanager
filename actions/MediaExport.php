@@ -38,33 +38,6 @@ class MediaExport extends \tao_actions_Export {
 
 
     /**
-     * Download a media on click on the download button
-     */
-    public function downloadMedia(){
-        $uri = $this->getRequestParameter('id');
-
-        $media = new \core_kernel_classes_Resource($uri);
-        $link = $media->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
-        if($link instanceof \core_kernel_classes_Literal){
-            $link = $link->literal;
-        }
-
-        $fileManager = FileManager::getFileManagementModel();
-        $filePath = $fileManager->retrieveFile($link);
-        $fp = fopen($filePath, "r");
-        if ($fp !== false) {
-            $embed =  '<embed src="data:'.\tao_helpers_File::getMimeType($filePath).';base64,';
-            while (!feof($fp))
-            {
-                $embed .= base64_encode(fread($fp, filesize($filePath)));
-            }
-            $embed .= '"/>';
-            fclose($fp);
-        }
-        echo $embed;
-    }
-
-    /**
      * get the main class
      * @return \core_kernel_classes_Class
      */

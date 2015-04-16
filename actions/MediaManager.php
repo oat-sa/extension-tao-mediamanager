@@ -23,6 +23,7 @@ namespace oat\taoMediaManager\actions;
 
 use oat\taoMediaManager\model\fileManagement\FileManager;
 use oat\taoMediaManager\model\MediaService;
+use oat\taoMediaManager\model\MediaSource;
 
 class MediaManager extends \tao_actions_SaSModule {
 
@@ -64,26 +65,29 @@ class MediaManager extends \tao_actions_SaSModule {
 
         $this->setData('formTitle', __('Edit Instance'));
         $this->setData('myForm', $myForm->render());
-        $uri = ($this->hasRequestParameter('id'))?$this->getRequestParameter('id'):\tao_helpers_Uri::decode($this->getRequestParameter('uri'));
-        $media = new \core_kernel_classes_Resource($uri);
-        $link = $media->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
-        if($link instanceof \core_kernel_classes_Literal){
-            $link = $link->literal;
-        }
-        $fileManager = FileManager::getFileManagementModel();
-        $filePath = $fileManager->retrieveFile($link);
-        $fp = fopen($filePath, "r");
-        $data = '';
-        if ($fp !== false) {
-            while (!feof($fp))
-            {
-                $data .= base64_encode(fread($fp, filesize($filePath)));
+        $uri = ($this->hasRequestParameter('id'))?$this->getRequestParameter('id'):$this->getRequestParameter('uri');
+
+        $mediaSource = new MediaSource(array());
+        $filePath = $mediaSource->download($uri);
+
+        $mimeType = \tao_helpers_File::getMimeType($filePath);
+        if(preg_match('/^video|^image/',$mimeType)){
+            $fp = fopen($filePath, "r");
+            $data = '';
+            if ($fp !== false) {
+                while (!feof($fp))
+                {
+                    $data .= base64_encode(fread($fp, filesize($filePath)));
+                }
+                fclose($fp);
             }
-            fclose($fp);
+            $this->setData('base64Data', $data);
+        }
+        else if(preg_match('/^text|xml$/',$mimeType)){
+            $this->setData('data', file_get_contents($filePath));
         }
 
-        $this->setData('mimeType', \tao_helpers_File::getMimeType($filePath));
-        $this->setData('base64Data', $data);
+        $this->setData('mimeType', $mimeType);
         $this->setView('form.tpl');
 
 	}

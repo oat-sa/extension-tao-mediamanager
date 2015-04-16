@@ -23,6 +23,7 @@ namespace oat\taoMediaManager\actions;
 
 use oat\taoMediaManager\model\FileImporter;
 use oat\taoMediaManager\model\MediaService;
+use oat\taoMediaManager\model\SharedStimulusImporter;
 use oat\taoMediaManager\model\ZipImporter;
 
 /**
@@ -47,7 +48,8 @@ class MediaImport extends \tao_actions_Import {
     public function index()
     {
         $this->importHandlers = array(
-            new FileImporter()
+            new FileImporter(),
+            new SharedStimulusImporter()
         );
         parent::index();
 
@@ -68,7 +70,10 @@ class MediaImport extends \tao_actions_Import {
         else{
             $id = $this->getRequestParameter('instanceUri');
         }
-        $this->importHandlers = array(new FileImporter($id));
+        $this->importHandlers = array(
+            new FileImporter($id),
+            new SharedStimulusImporter($id)
+        );
         parent::index();
 
     }

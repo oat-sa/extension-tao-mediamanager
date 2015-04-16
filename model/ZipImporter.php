@@ -22,7 +22,6 @@
 namespace oat\taoMediaManager\model;
 
 use core_kernel_classes_Class;
-use oat\tao\helpers\FileUploadException;
 use tao_helpers_form_Form;
 
 /**
@@ -36,6 +35,14 @@ use tao_helpers_form_Form;
 class ZipImporter
 {
 
+    /**
+     * @var string $directory
+     */
+    private $directory;
+
+    public function __construct($directory = ''){
+        $this->directory = $directory;
+    }
 
     /**
      * Starts the import based on the form
@@ -61,15 +68,14 @@ class ZipImporter
             }
 
             // unzip the file
-            $extractResult = $this->extractArchive($filePath);
-            if (!empty($extractResult['error'])) {
-                $report = \common_report_Report::createFailure($extractResult['error']);
+            if (!$this->extractArchive($filePath)) {
+                $report = \common_report_Report::createFailure($this->getDirectory());
                 return $report;
             }
 
             // get list of directory in order to create classes
             $iterator = new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator($extractResult),
+                new \RecursiveDirectoryIterator($this->getDirectory()),
                 \RecursiveIteratorIterator::LEAVES_ONLY);
 
             $parents = array();
@@ -155,7 +161,7 @@ class ZipImporter
      * Unzip archive from the upload form
      *
      * @param $archiveFile
-     * @return array|string
+     * @return bool whether it fail or succeed
      */
     protected function extractArchive($archiveFile)
     {
@@ -166,11 +172,21 @@ class ZipImporter
             return array('error' => 'Could not open archive');
         }
 
-        if (!$archiveObj->extractTo($archiveDir.basename($archiveFile,'.zip'))) {
+        if (!$archiveObj->extractTo($archiveDir)) {
             $archiveObj->close();
-            return array('error' => 'Could not extract archive');
+            $this->directory = array('error' => 'Could not extract archive');
+            return false;
         }
         $archiveObj->close();
-        return $archiveDir;
+        $this->directory = $archiveDir.basename($archiveFile,'.zip');
+        return true;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDirectory()
+    {
+        return $this->directory;
     }
 }

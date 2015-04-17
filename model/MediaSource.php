@@ -160,9 +160,12 @@ class MediaSource extends Configurable implements MediaManagement
             return $file;
         }
         else{
-            throw new \Exception('Resource ' . $resource->getUri() . ' can not be found');
-        }
+            if(!preg_match('/http:\/\/[^#]+[^\/]+\/.+/',$resource->getUri())){
+                throw new \Exception('Resource ' . $resource->getUri() . ' can not be found');
 
+            }
+            return null;
+        }
     }
 
     /**

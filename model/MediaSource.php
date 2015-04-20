@@ -159,11 +159,7 @@ class MediaSource extends Configurable implements MediaManagement
             return $file;
         }
         else{
-            if(!preg_match('/http:\/\/[^#]+[^\/]+\/.+/',$resource->getUri())){
-                throw new \tao_models_classes_FileNotFoundException($link);
-
-            }
-            return null;
+            throw new \tao_models_classes_FileNotFoundException($link);
         }
     }
 

@@ -97,7 +97,7 @@ class MediaSource extends Configurable implements MediaManagement
         }
 
         $data = array(
-            'path' => 'taomedia://mediamanager/' . \tao_helpers_Uri::encode($parentLink),
+            'path' => 'taomedia://mediamanager/' . \tao_helpers_Uri::encode($class->getUri()),
             'label' => $class->getLabel()
         );
 

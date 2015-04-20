@@ -92,7 +92,6 @@ class MediaSource extends Configurable implements MediaManagement
     {
         if ($parentLink == '') {
             $class = new \core_kernel_classes_Class($this->rootClassUri);
-            $parentLink = '';
         } else {
             $class = new \core_kernel_classes_Class(\tao_helpers_Uri::decode($parentLink));
         }

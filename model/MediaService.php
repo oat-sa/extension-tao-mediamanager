@@ -46,13 +46,13 @@ class MediaService extends \tao_models_classes_ClassService
      * @param string $classUri parent to add the instance to
      * @param string $language language of the content
      * @param string $label label of the instance
-     * @return string
+     * @return string | bool $instanceUri or false on error
      */
     public function createMediaInstance($fileSource, $classUri, $language, $label = null)
     {
         $label = is_null($label) ? basename($fileSource) : $label;
         $fileManager = FileManager::getFileManagementModel();
-        $link = $fileManager->storeFile($fileSource);
+        $link = $fileManager->storeFile($fileSource, $label);
 
         if ($link !== false) {
             $clazz = new \core_kernel_classes_Class($classUri);
@@ -63,7 +63,7 @@ class MediaService extends \tao_models_classes_ClassService
                 $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LANGUAGE), $language);
             }
         }
-        return $link;
+        return ($link !== false) ? $instance->getUri() : false;
 
     }
 
@@ -73,10 +73,11 @@ class MediaService extends \tao_models_classes_ClassService
      * @param $instanceUri
      * @param $language
      */
-    public function editMediaInstance($fileTmp, $instanceUri, $language)
+    public function editMediaInstance($fileTmp, $instanceUri, $language, $label = null)
     {
+        $label = is_null($label) ? basename($fileTmp) : $label;
         $fileManager = FileManager::getFileManagementModel();
-        $link = $fileManager->storeFile($fileTmp);
+        $link = $fileManager->storeFile($fileTmp, $label);
 
         if ($link !== false) {
             $instance = new \core_kernel_classes_Class($instanceUri);

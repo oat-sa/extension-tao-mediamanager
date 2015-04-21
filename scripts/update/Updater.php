@@ -21,10 +21,12 @@
 
 namespace oat\taoMediaManager\scripts\update;
 
-use oat\tao\model\media\MediaSource;
 use \oat\taoMediaManager\model\fileManagement\FileManager;
 use \oat\taoMediaManager\model\fileManagement\SimpleFileManagement;
 use oat\tao\scripts\update\OntologyUpdater;
+use oat\taoMediaManager\model\MediaService;
+use oat\tao\model\media\MediaService as TaoMediaService;
+use oat\taoMediaManager\model\MediaSource;
 
 class Updater extends \common_ext_ExtensionUpdater {
 
@@ -39,20 +41,13 @@ class Updater extends \common_ext_ExtensionUpdater {
 
         //migrate from 0.1 to 0.1.1
         if ($currentVersion == '0.1') {
-
-            MediaSource::addMediaSource('mediamanager', 'oat\taoMediaManager\model\MediaManagerBrowser', 'browser');
-            MediaSource::addMediaSource('mediamanager', 'oat\taoMediaManager\model\MediaManagerManagement', 'management');
-
+            // mediaSources set in 0.2
             $currentVersion = '0.1.1';
         }
         if ($currentVersion == '0.1.1') {
 
             FileManager::setFileManagementModel(new SimpleFileManagement());
-            $tao = \common_ext_ExtensionsManager::singleton()->getExtensionById('tao');
-            $configs = $tao->hasConfig('mediaSources')? $tao->getConfig('mediaSources'): array();;
-            if(!empty($configs)){
-                $tao->unsetConfig('mediaSources');
-            }
+            // mediaSources unset in 0.2
 
             $currentVersion = '0.1.2';
         }
@@ -67,7 +62,6 @@ class Updater extends \common_ext_ExtensionUpdater {
             } else{
                 \common_Logger::w('Import failed for '.$file);
             }
-
         }
         
 
@@ -76,6 +70,44 @@ class Updater extends \common_ext_ExtensionUpdater {
             OntologyUpdater::correctModelId(dirname(__FILE__).DIRECTORY_SEPARATOR.'alt_text.rdf');
             $currentVersion = '0.1.4';
         
+        }
+
+        if ($currentVersion == '0.1.4') {
+
+            //modify config files due to the new interfaces relation
+            $tao = \common_ext_ExtensionsManager::singleton()->getExtensionById('tao');
+            $tao->unsetConfig('mediaManagementSources');
+            $tao->unsetConfig('mediaBrowserSources');
+            
+            TaoMediaService::singleton()->addMediaSource(new MediaSource());
+
+            //modify links in item content
+            $service = \taoItems_models_classes_ItemsService::singleton();
+            $items = $service->getAllByModel('http://www.tao.lu/Ontologies/TAOItem.rdf#QTI');
+
+            foreach($items as $item){
+                $itemContent = $service->getItemContent($item);
+                $itemContent = preg_replace_callback('/src="mediamanager\/([^"]+)"/', function($matches){
+                        $mediaClass = MediaService::singleton()->getRootClass();
+                        $medias = $mediaClass->searchInstances(array(
+                                MEDIA_LINK => $matches[1]
+                            ), array('recursive' => true));
+                        $media = array_pop($medias);
+                        return 'src="taomedia://mediamanager/' . \tao_helpers_Uri::encode($media->getUri()) . '"';
+
+                    }, $itemContent);
+
+                $itemContent = preg_replace_callback('/src="local\/([^"]+)"/', function($matches){
+                        return 'src="' . $matches[1] . '"';
+
+                    }, $itemContent);
+
+                $service->setItemContent($item, $itemContent);
+
+            }
+
+            $currentVersion = '0.2.0';
+
         }
 
         return $currentVersion;

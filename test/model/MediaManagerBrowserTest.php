@@ -21,16 +21,16 @@
 
 namespace oat\taoMediaManager\test\model;
 
-use oat\taoMediaManager\model\MediaManagerBrowser;
+use oat\taoMediaManager\model\MediaSource;
 
 
 class MediaManagerBrowserTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var mediaManagerBrowser
+     * @var MediaSource
      */
-    private $mediaManagerBrowser = null;
+    private $mediaManagerManagement = null;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
@@ -43,7 +43,7 @@ class MediaManagerBrowserTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->rootClass = 'http://myFancyDomaine.com/myGreatCLassUriForBrowserTest';
-        $this->mediaManagerBrowser = new MediaManagerBrowser(array('lang' => 'EN_en', 'rootClass' => $this->rootClass));
+        $this->mediaManagerManagement = new MediaSource(array('lang' => 'EN_en', 'rootClass' => $this->rootClass));
 
         //fileManagerMock
         $this->fileManagerMock = $this->getMockBuilder('oat\taoMediaManager\model\fileManagement\SimpleFileManagement')
@@ -73,15 +73,16 @@ class MediaManagerBrowserTest extends \PHPUnit_Framework_TestCase
         //Remove what has been done
         $subclasses = $root->getSubClasses();
         foreach ($subclasses as $subclass) {
-            $subclass->delete();
+            $subclass->delete(true);
         }
+
         $root->delete();
         $root->setLabel('myRootClass');
 
         $acceptableMime = array();
         $depth = 1;
 
-        $directory = $this->mediaManagerBrowser->getDirectory('/', $acceptableMime, $depth);
+        $directory = $this->mediaManagerManagement->getDirectory($this->rootClass, $acceptableMime, $depth);
 
         $this->assertInternalType('array', $directory, 'The result should be an array');
         $this->assertArrayHasKey('label', $directory, 'The result should contain "label"');
@@ -91,14 +92,14 @@ class MediaManagerBrowserTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('array', $directory['children'], 'Children should be an array');
         $this->assertEmpty($directory['children'], 'Children should be empty');
         $this->assertEquals('myRootClass', $directory['label'], 'The label is not correct');
-        $this->assertEquals('mediamanager/', $directory['path'], 'The path is not correct');
+        $this->assertEquals('taomedia://mediamanager/'.\tao_helpers_Uri::encode($this->rootClass), $directory['path'], 'The path is not correct');
 
         $root->createSubClass('mySubClass1');
         $root->createSubClass('mySubClass0');
 
-        $newDirectory = $this->mediaManagerBrowser->getDirectory('/', $acceptableMime, $depth);
+        $newDirectory = $this->mediaManagerManagement->getDirectory($this->rootClass, $acceptableMime, $depth);
         $this->assertInternalType('array', $newDirectory['children'], 'Children should be an array');
-        $this->assertNotEmpty($newDirectory['children'], 'Children should be empty');
+        $this->assertNotEmpty($newDirectory['children'], 'Children should not be empty');
 
         $labels = array();
         foreach ($newDirectory['children'] as $i => $child) {
@@ -126,30 +127,39 @@ class MediaManagerBrowserTest extends \PHPUnit_Framework_TestCase
 
         $fileTmp = dirname(__DIR__) . '/sample/Brazil.png';
 
+        $root = new \core_kernel_classes_Class($this->rootClass);
+        $instance = $root->createInstance('Brazil.png');
+        $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LINK), 'myGreatLink');
+
+        $uri = $instance->getUri();
         $this->fileManagerMock->expects($this->once())
             ->method('retrieveFile')
-            ->with('Brazil.png')
+            ->with('myGreatLink')
             ->willReturn($fileTmp);
 
-        $fileInfo = $this->mediaManagerBrowser->getFileInfo('Brazil.png');
-
+        $fileInfo = $this->mediaManagerManagement->getFileInfo($uri);
+        $instance->delete(true);
         $this->assertInternalType('array', $fileInfo, 'The result should be an array');
         $this->assertArrayHasKey('name', $fileInfo, 'The result should contain "name"');
         $this->assertArrayHasKey('mime', $fileInfo, 'The result should contain "mime"');
         $this->assertArrayHasKey('size', $fileInfo, 'The result should contain "size"');
+        $this->assertArrayHasKey('uri', $fileInfo, 'The result should contain "size"');
 
-        $this->assertEquals('Brazil.png', $fileInfo['name'], 'The file name is not correct');
+        $this->assertEquals($instance->getLabel(), $fileInfo['name'], 'The file name is not correct');
         $this->assertEquals('image/png', $fileInfo['mime'], 'The mime type is not correct');
+        $this->assertEquals('taomedia://mediamanager/'.\tao_helpers_Uri::encode($uri), $fileInfo['uri'], 'The uri is not correct');
     }
 
+    /**
+     * @expectedException        \tao_models_classes_FileNotFoundException
+     * @expectedExceptionMessage File A Fake link not found
+     */
     public function testGetFileInfoFail()
     {
 
         $link = 'A Fake link';
 
-        $fileInfo = $this->mediaManagerBrowser->getFileInfo($link);
-
-        $this->assertNull($fileInfo, 'The result should be null');
+        $this->mediaManagerManagement->getFileInfo($link);
     }
 
 }

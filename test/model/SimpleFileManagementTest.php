@@ -51,7 +51,7 @@ class SimpleFileManagementTest extends \PHPUnit_Framework_TestCase
         $fileTmp = dirname(__DIR__) . '/sample/Brazil.png';
 
         $this->assertFileNotExists($storageDir . 'Brazil.png', 'The file is already stored');
-        $link = $this->fileManagement->storeFile($fileTmp);
+        $link = $this->fileManagement->storeFile($fileTmp, 'brazil.png');
 
         // test the return link
         $this->assertInternalType('string', $link, 'The method return should be a string');

@@ -93,7 +93,12 @@ class Updater extends \common_ext_ExtensionUpdater {
                                 MEDIA_LINK => $matches[1]
                             ), array('recursive' => true));
                         $media = array_pop($medias);
-                        return 'src="taomedia://mediamanager/' . \tao_helpers_Uri::encode($media->getUri()) . '"';
+                        $uri = '';
+                        if(!is_null($media) && $media->exists()){
+                            $uri = \tao_helpers_Uri::encode($media->getUri());
+                        }
+                        return 'src="taomedia://mediamanager/' . $uri . '"';
+
 
                     }, $itemContent);
 

@@ -61,8 +61,11 @@ class ZipImporter
             $resource = new core_kernel_classes_Class($form->getValue('classUri'));
 
             $tmpDir = \tao_helpers_File::createTempDir();
-            $fileName = \tao_helpers_File::getSafeFileName($file['name']);
-            $filePath = $tmpDir . '/' . $fileName;
+            if(!\tao_helpers_File::securityCheck($file['name'])){
+                return \common_report_Report::createFailure(__('Filename is unsafe'));
+            }
+
+            $filePath = $tmpDir . '/' . $file['name'];
             if (!rename($file['uploaded_file'], $filePath)) {
                 return \common_report_Report::createFailure(__('Unable to move uploaded file'));
             }
@@ -163,7 +166,7 @@ class ZipImporter
      * @param $archiveFile
      * @return bool whether it fail or succeed
      */
-    protected function extractArchive($archiveFile)
+    public function extractArchive($archiveFile)
     {
         $archiveDir    = \tao_helpers_File::createTempDir();
         $archiveObj    = new \ZipArchive();
@@ -189,4 +192,15 @@ class ZipImporter
     {
         return $this->directory;
     }
+
+    /**
+     * @param string $directory
+     * @return $this
+     */
+    public function setDirectory($directory)
+    {
+        $this->directory = $directory;
+        return $this;
+    }
+
 }

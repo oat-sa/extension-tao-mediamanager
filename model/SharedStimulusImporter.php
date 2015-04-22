@@ -40,9 +40,14 @@ use tao_helpers_form_Form;
 class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
 {
 
+    /**
+     * @var SharedStimulusPackageImporter
+     */
+    private $zipImporter = null;
 
     public function __construct($instanceUri = null){
         $this->instanceUri = $instanceUri;
+        $this->zipImporter = new SharedStimulusPackageImporter();
     }
 
     /**
@@ -80,7 +85,6 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
         session_write_close();
         try{
             $file = $form->getValue('source');
-
                 $service = MediaService::singleton();
                 $classUri = $class->getUri();
                 if(is_null($this->instanceUri) || $this->instanceUri === $classUri){
@@ -91,7 +95,7 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
 
                             self::isValidSharedStimulus($file['uploaded_file']);
 
-                            if(!$service->createMediaInstance($file['upload_file'], $classUri, \tao_helpers_Uri::decode($form->getValue('lang')),$file["name"])){
+                            if(!$service->createMediaInstance($file['uploaded_file'], $classUri, \tao_helpers_Uri::decode($form->getValue('lang')),$file["name"])){
                                 $report = \common_report_Report::createFailure(__('Fail to import Shared Stimulus'));
                             }
                             else{
@@ -103,8 +107,7 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
                         }
                     }
                     else{
-                        $zipImporter = new SharedStimulusPackageImporter();
-                        $report = $zipImporter->import($class,$form);
+                        $report = $this->zipImporter->import($class,$form);
                     }
                 }
                 else{
@@ -114,12 +117,11 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
                             $report = \common_report_Report::createFailure(__('Fail to edit shared stimulus'));
                         }
                         else{
-                            $report = \common_report_Report::createSuccess(__('Media imported successfully'));
+                            $report = \common_report_Report::createSuccess(__('Shared Stimulus edited successfully'));
                         }
                     }
                     else{
-                        $zipImporter = new SharedStimulusPackageImporter();
-                        $report = $zipImporter->edit(new core_kernel_classes_Class($this->instanceUri),$form);
+                        $report = $this->zipImporter->edit(new \core_kernel_classes_Resource($this->instanceUri),$form);
                     }
                 }
 
@@ -139,7 +141,6 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
     public static function isValidSharedStimulus($filename){
         // No $version given = auto detect.
         $xmlDocument = new XmlDocument();
-
         //true as second parameter to validate right away
         $xmlDocument->load($filename, true);
 
@@ -156,22 +157,6 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
         }
 
         return $xmlDocument;
-    }
-
-    private function cleanNamespaces(\DOMDocument $domDocument){
-
-        $test = preg_replace('/xmlns[^"]+"[^"]+"|xsi[^"]+"[^"]+"/', '', $domDocument->C14N());
-        $test = preg_replace('/\s{2}/', ' ', $test);
-
-        $returnDocument = new \DOMDocument($domDocument->version,$domDocument->encoding);
-        $returnDocument->loadXML($test);
-
-        return $returnDocument;
-    }
-
-    private function getStimulusBody(\DOMDocument $domDocument){
-
-        return $domDocument;
     }
 
 
@@ -191,7 +176,11 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
             'drawingInteraction',
             'extendedTextInteraction',
             'gapMatchInteraction',
-            'graphicInteraction',
+            'graphicAssociateInteraction',
+            'graphicGapMatchInteraction',
+            'graphicOrderInteraction',
+            'hotspotInteraction',
+            'selectPointInteraction',
             'hottextInteraction',
             'matchInteraction',
             'mediaInteraction',
@@ -199,7 +188,7 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
             'sliderInteraction',
             'uploadInteraction',
             'customInteraction',
-            'positionObjectInteraction'
+            'positionObjectInteraction',
 
         );
         return self::hasComponents($domDocument, $interactions);
@@ -244,4 +233,16 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
 
         return false;
     }
+
+    /**
+     * @param SharedStimulusPackageImporter $zipImporter
+     * @return $this
+     */
+    public function setZipImporter($zipImporter)
+    {
+        $this->zipImporter = $zipImporter;
+        return $this;
+    }
+
+
 }

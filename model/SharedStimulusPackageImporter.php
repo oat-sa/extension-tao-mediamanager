@@ -41,6 +41,16 @@ class SharedStimulusPackageImporter extends ZipImporter
      */
     private $xmlFile;
 
+    /**
+     * @param string $xmlFile
+     * @return $this
+     */
+    public function setXmlFile($xmlFile)
+    {
+        $this->xmlFile = $xmlFile;
+        return $this;
+    }
+
     public function __construct($xmlFile = '', $directory = ''){
         parent::__construct($directory);
         $this->xmlFile = $xmlFile;
@@ -63,9 +73,12 @@ class SharedStimulusPackageImporter extends ZipImporter
             $file = $form->getValue('source');
 
             $tmpDir = \tao_helpers_File::createTempDir();
-            $fileName = \tao_helpers_File::getSafeFileName($file['name']);
-            $filePath = $tmpDir . '/' . $fileName;
-            if (!rename($file['uploaded_file'], $filePath)) {
+            if(!\tao_helpers_File::securityCheck($file['uploaded_file'], true) || !\tao_helpers_File::securityCheck($file['name'], true)){
+                return \common_report_Report::createFailure(__('Filename is unsafe'));
+            }
+
+            $filePath = $tmpDir . '/' . $file['name'];
+            if (!@rename($file['uploaded_file'], $filePath)) {
                 return \common_report_Report::createFailure(__('Unable to move uploaded file'));
             }
 
@@ -94,7 +107,7 @@ class SharedStimulusPackageImporter extends ZipImporter
 
 
     /**
-     * @param core_kernel_classes_Class $instance
+     * @param \core_kernel_classes_Resource $instance
      * @param \tao_helpers_form_Form$form
      * @return \common_report_Report
      */
@@ -107,9 +120,12 @@ class SharedStimulusPackageImporter extends ZipImporter
             $file = $form->getValue('source');
 
             $tmpDir = \tao_helpers_File::createTempDir();
-            $fileName = \tao_helpers_File::getSafeFileName($file['name']);
-            $filePath = $tmpDir . '/' . $fileName;
-            if (!rename($file['uploaded_file'], $filePath)) {
+            if(!\tao_helpers_File::securityCheck($file['uploaded_file'], true) || !\tao_helpers_File::securityCheck($file['name'], true)){
+                return \common_report_Report::createFailure(__('Filename is unsafe'));
+            }
+
+            $filePath = $tmpDir . '/' . $file['name'];
+            if (!@rename($file['uploaded_file'], $filePath)) {
                 return \common_report_Report::createFailure(__('Unable to move uploaded file'));
             }
 
@@ -147,13 +163,6 @@ class SharedStimulusPackageImporter extends ZipImporter
         //create tmp dir if it does not exist
         if($tmpDir === ''){
             $tmpDir = \tao_helpers_File::createTempDir();
-        }
-
-
-        //if the class does not belong to media classes create a new one with its name (for items)
-        $mediaClass = new core_kernel_classes_Class(MEDIA_URI);
-        if(!$class->isClass() && !$class->isInstanceOf($mediaClass)){
-            $mediaClass->createSubClass($class->getLabel());
         }
 
         $service = MediaService::singleton();
@@ -205,6 +214,7 @@ class SharedStimulusPackageImporter extends ZipImporter
     /**
      * @param XmlDocument $xmlDocument
      * @return XmlDocument
+     * @throws \tao_models_classes_FileNotFoundException
      */
     public function convertEmbeddedFiles(XmlDocument $xmlDocument){
         //get images and object to base64 their src/data
@@ -219,6 +229,9 @@ class SharedStimulusPackageImporter extends ZipImporter
                     . 'base64,' . base64_encode(file_get_contents($this->getDirectory() . '/' . $source));
                 $image->setSrc($base64);
             }
+            else{
+                throw new \tao_models_classes_FileNotFoundException($source);
+            }
         }
 
         /** @var $object \qtism\data\content\xhtml\Object */
@@ -228,6 +241,9 @@ class SharedStimulusPackageImporter extends ZipImporter
                 $base64 = 'data:' . FsUtils::getMimeType($this->getDirectory() . '/' . $data) . ';'
                     . 'base64,' . base64_encode(file_get_contents($this->getDirectory() . '/' . $data));
                 $object->setData($base64);
+            }
+            else{
+                throw new \tao_models_classes_FileNotFoundException($data);
             }
         }
         return $xmlDocument;

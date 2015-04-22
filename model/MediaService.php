@@ -56,6 +56,10 @@ class MediaService extends \tao_models_classes_ClassService
 
         if ($link !== false) {
             $clazz = new \core_kernel_classes_Class($classUri);
+            //if the class does not belong to media classes create a new one with its name (for items)
+            if(!$clazz->isSubClassOf($this->getRootClass()) && !$clazz->equals($this->getRootClass()) && $clazz->exists()){
+                $clazz = $this->getRootClass()->createSubClass($clazz->getLabel());
+            }
             $instance = $this->createInstance($clazz, $label);
             /** @var $instance  \core_kernel_classes_Resource */
             if (!is_null($instance) && $instance instanceof \core_kernel_classes_Resource) {
@@ -76,7 +80,7 @@ class MediaService extends \tao_models_classes_ClassService
      */
     public function editMediaInstance($fileTmp, $instanceUri, $language)
     {
-        $instance = new \core_kernel_classes_Class($instanceUri);
+        $instance = new \core_kernel_classes_Resource($instanceUri);
         $fileManager = FileManager::getFileManagementModel();
         $link = $fileManager->storeFile($fileTmp, $instance->getLabel());
 

@@ -30,7 +30,6 @@ use tao_helpers_form_Form;
  * @access public
  * @author Antoine Robin, <antoine.robin@vesperiagroup.com>
  * @package taoMediaManager
-
  */
 class ZipImporter
 {
@@ -40,7 +39,8 @@ class ZipImporter
      */
     private $directory;
 
-    public function __construct($directory = ''){
+    public function __construct($directory = '')
+    {
         $this->directory = $directory;
     }
 
@@ -56,12 +56,12 @@ class ZipImporter
         //as upload may be called multiple times, we remove the session lock as soon as possible
         session_write_close();
 
-        try{
+        try {
             $file = $form->getValue('source');
             $resource = new core_kernel_classes_Class($form->getValue('classUri'));
 
             $tmpDir = \tao_helpers_File::createTempDir();
-            if(!\tao_helpers_File::securityCheck($file['name'])){
+            if (!\tao_helpers_File::securityCheck($file['name'])) {
                 return \common_report_Report::createFailure(__('Filename is unsafe'));
             }
 
@@ -86,74 +86,71 @@ class ZipImporter
             $service = MediaService::singleton();
             $language = $form->getValue('lang');
 
-            $rootNode = basename($fileName,'.zip');
+            $rootNode = basename($fileName, '.zip');
             /** @var $file \SplFileInfo */
-            foreach($iterator as $file) {
-                    if(strpos($file->getPath(), $rootNode) !== false){
-                        // get path from root
-                        $path = substr($file->getPath(), (strpos($file->getPath(), $rootNode) + strlen($rootNode)));
-                        $path = explode('/',$path);
+            foreach ($iterator as $file) {
+                if (strpos($file->getPath(), $rootNode) !== false) {
+                    // get path from root
+                    $path = substr($file->getPath(), (strpos($file->getPath(), $rootNode) + strlen($rootNode)));
+                    $path = explode('/', $path);
 
-                        //get Parent path to have the architecture
-                        $parentPath = explode('/',$file->getPath());
-                        unset($parentPath[count($parentPath) - 1]);
-                        $parentPath = implode('/',$parentPath);
-                        //create class structure
-                        if($file->isDir()) {
-                            if(count($path) > 2){
-                                //do not create multiple time the same class
-                                if(!isset($parents[$file->getPath()]) || !in_array($file->getPath(), array_keys($parents))){
-                                    // create classes children of root
-                                    if($path[count($path) - 2] === ''){
-                                        $childClazz = $service->createSubClass($resource, $path[count($path) - 1]);
-                                        if(!isset($parents[$file->getPath()])){
-                                            $parents[$file->getPath()] = $childClazz;
-                                        }
+                    //get Parent path to have the architecture
+                    $parentPath = explode('/', $file->getPath());
+                    unset($parentPath[count($parentPath) - 1]);
+                    $parentPath = implode('/', $parentPath);
+                    //create class structure
+                    if ($file->isDir()) {
+                        if (count($path) > 2) {
+                            //do not create multiple time the same class
+                            if (!isset($parents[$file->getPath()]) || !in_array($file->getPath(), array_keys($parents))) {
+                                // create classes children of root
+                                if ($path[count($path) - 2] === '') {
+                                    $childClazz = $service->createSubClass($resource, $path[count($path) - 1]);
+                                    if (!isset($parents[$file->getPath()])) {
+                                        $parents[$file->getPath()] = $childClazz;
                                     }
+                                }
 
-                                    //if parent exists just create a subclass
-                                    if(isset($parents[$parentPath])){
-                                        $clazz = $parents[$parentPath];
-                                        $childClazz = $service->createSubClass($clazz, $path[count($path) - 1]);
-                                        if(!isset($parents[$file->getPath()])){
-                                            $parents[$file->getPath()] = $childClazz;
-                                        }
+                                //if parent exists just create a subclass
+                                if (isset($parents[$parentPath])) {
+                                    $clazz = $parents[$parentPath];
+                                    $childClazz = $service->createSubClass($clazz, $path[count($path) - 1]);
+                                    if (!isset($parents[$file->getPath()])) {
+                                        $parents[$file->getPath()] = $childClazz;
                                     }
-                                    //if it doesn't exist create the class and create the subclass
-                                    else{
-                                        $clazz = $service->createSubClass($resource, $path[count($path) - 2]);
-                                        $parents[$parentPath] = $clazz;
+                                } //if it doesn't exist create the class and create the subclass
+                                else {
+                                    $clazz = $service->createSubClass($resource, $path[count($path) - 2]);
+                                    $parents[$parentPath] = $clazz;
 
-                                        $childClazz = $service->createSubClass($clazz, $path[count($path) - 1]);
-                                        if(!isset($parents[$file->getPath()])){
-                                            $parents[$file->getPath()] = $childClazz;
-                                        }
+                                    $childClazz = $service->createSubClass($clazz, $path[count($path) - 1]);
+                                    if (!isset($parents[$file->getPath()])) {
+                                        $parents[$file->getPath()] = $childClazz;
                                     }
                                 }
                             }
-
                         }
-                        // get list of files and parent class to create instances
-                        else if($file->isFile()){
-                            if($path[count($path) - 1] === ""){
-                                // create media instance under root class
-                                $service->createMediaInstance($file->getRealPath(), $resource->getUri(), $language, $file->getFilename());
-                            }
-                            else{
-                                // create media instance
-                                if(isset($parents[$file->getPath()])){
-                                    $clazz = $parents[$file->getPath()];
-                                    $service->createMediaInstance($file->getRealPath(), $clazz->getUri(), $language, $file->getFilename());
-                                }
+
+                    } // get list of files and parent class to create instances
+                    else if ($file->isFile()) {
+                        if ($path[count($path) - 1] === "") {
+                            // create media instance under root class
+                            $service->createMediaInstance($file->getRealPath(), $resource->getUri(), $language, $file->getFilename());
+                        } else {
+                            // create media instance
+                            if (isset($parents[$file->getPath()])) {
+                                $clazz = $parents[$file->getPath()];
+                                $service->createMediaInstance($file->getRealPath(), $clazz->getUri(), $language, $file->getFilename());
                             }
                         }
                     }
+                }
             }
 
             $report = \common_report_Report::createSuccess(__('Media imported successfully'));
             return $report;
 
-        } catch(\Exception $e){
+        } catch (\Exception $e) {
             $report = \common_report_Report::createFailure($e->getMessage());
             return $report;
         }
@@ -168,8 +165,8 @@ class ZipImporter
      */
     public function extractArchive($archiveFile)
     {
-        $archiveDir    = \tao_helpers_File::createTempDir();
-        $archiveObj    = new \ZipArchive();
+        $archiveDir = \tao_helpers_File::createTempDir();
+        $archiveObj = new \ZipArchive();
         $archiveHandle = $archiveObj->open($archiveFile);
         if (true !== $archiveHandle) {
             return array('error' => 'Could not open archive');
@@ -181,7 +178,7 @@ class ZipImporter
             return false;
         }
         $archiveObj->close();
-        $this->directory = $archiveDir.basename($archiveFile,'.zip');
+        $this->directory = $archiveDir . basename($archiveFile, '.zip');
         return true;
     }
 

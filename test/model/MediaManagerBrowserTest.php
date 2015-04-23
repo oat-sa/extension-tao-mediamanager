@@ -92,7 +92,7 @@ class MediaManagerBrowserTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('array', $directory['children'], 'Children should be an array');
         $this->assertEmpty($directory['children'], 'Children should be empty');
         $this->assertEquals('myRootClass', $directory['label'], 'The label is not correct');
-        $this->assertEquals('taomedia://mediamanager/'.\tao_helpers_Uri::encode($this->rootClass), $directory['path'], 'The path is not correct');
+        $this->assertEquals('taomedia://mediamanager/' . \tao_helpers_Uri::encode($this->rootClass), $directory['path'], 'The path is not correct');
 
         $root->createSubClass('mySubClass1');
         $root->createSubClass('mySubClass0');
@@ -112,7 +112,7 @@ class MediaManagerBrowserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2, count($labels));
         $this->assertContains('mySubClass0', $labels);
         $this->assertContains('mySubClass1', $labels);
-        
+
         //Remove what has been done
         $subclasses = $root->getSubClasses();
         foreach ($subclasses as $subclass) {
@@ -147,7 +147,7 @@ class MediaManagerBrowserTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($instance->getLabel(), $fileInfo['name'], 'The file name is not correct');
         $this->assertEquals('image/png', $fileInfo['mime'], 'The mime type is not correct');
-        $this->assertEquals('taomedia://mediamanager/'.\tao_helpers_Uri::encode($uri), $fileInfo['uri'], 'The uri is not correct');
+        $this->assertEquals('taomedia://mediamanager/' . \tao_helpers_Uri::encode($uri), $fileInfo['uri'], 'The uri is not correct');
     }
 
     /**

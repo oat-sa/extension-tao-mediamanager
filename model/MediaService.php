@@ -41,7 +41,7 @@ class MediaService extends \tao_models_classes_ClassService
 
     /**
      * Create a media instance from a file, and define its class and language
-     * 
+     *
      * @param string $fileSource path to the file to create instance from
      * @param string $classUri parent to add the instance to
      * @param string $language language of the content
@@ -57,7 +57,7 @@ class MediaService extends \tao_models_classes_ClassService
         if ($link !== false) {
             $clazz = new \core_kernel_classes_Class($classUri);
             //if the class does not belong to media classes create a new one with its name (for items)
-            if(!$clazz->isSubClassOf($this->getRootClass()) && !$clazz->equals($this->getRootClass()) && $clazz->exists()){
+            if (!$clazz->isSubClassOf($this->getRootClass()) && !$clazz->equals($this->getRootClass()) && $clazz->exists()) {
                 $clazz = $this->getRootClass()->createSubClass($clazz->getLabel());
             }
             $instance = $this->createInstance($clazz, $label);

@@ -21,22 +21,19 @@
 
 namespace oat\taoMediaManager\model;
 
-use core_kernel_classes_Class;
-use tao_helpers_form_Form;
-
 /**
  * Service methods to manage the Media
  *
  * @access public
  * @author Antoine Robin, <antoine.robin@vesperiagroup.com>
  * @package taoMediaManager
-
  */
 class FileImportForm extends \tao_helpers_form_FormContainer
 {
     private $instanceUri;
 
-    public function __construct($instanceUri){
+    public function __construct($instanceUri)
+    {
         $this->instanceUri = $instanceUri;
         parent::__construct();
 
@@ -46,7 +43,7 @@ class FileImportForm extends \tao_helpers_form_FormContainer
     {
         $this->form = new \tao_helpers_form_xhtml_Form('export');
         $submitElt = \tao_helpers_form_FormFactory::getElement('import', 'Free');
-        $submitElt->setValue('<a href="#" class="form-submitter btn-success small"><span class="icon-import"></span> ' .__('Import').'</a>');
+        $submitElt->setValue('<a href="#" class="form-submitter btn-success small"><span class="icon-import"></span> ' . __('Import') . '</a>');
 
         $this->form->setActions(array($submitElt), 'bottom');
         $this->form->setActions(array(), 'top');
@@ -64,15 +61,14 @@ class FileImportForm extends \tao_helpers_form_FormContainer
         //create file upload form box
         $fileElt = \tao_helpers_form_FormFactory::getElement('source', 'AsyncFile');
         $fileElt->setDescription(__("Add a media file"));
-        if(isset($_POST['import_sent_file'])){
+        if (isset($_POST['import_sent_file'])) {
             $fileElt->addValidator(\tao_helpers_form_FormFactory::getValidator('NotEmpty'));
-        }
-        else{
+        } else {
             $fileElt->addValidator(\tao_helpers_form_FormFactory::getValidator('NotEmpty', array('message' => '')));
         }
         $fileElt->addValidators(array(
-                \tao_helpers_form_FormFactory::getValidator('FileSize', array('max' => \tao_helpers_Environment::getFileUploadLimit()))
-            ));
+            \tao_helpers_form_FormFactory::getValidator('FileSize', array('max' => \tao_helpers_Environment::getFileUploadLimit()))
+        ));
 
         $this->form->addElement($fileElt);
         $this->form->createGroup('file', __('Import Media from a file'), array('file_desc', 'source'));
@@ -82,24 +78,24 @@ class FileImportForm extends \tao_helpers_form_FormContainer
         $dataLang = \common_session_SessionManager::getSession()->getDataLanguage();
 
         $langOptions = array();
-        foreach($langService->getAvailableLanguagesByUsage($dataUsage) as $lang){
+        foreach ($langService->getAvailableLanguagesByUsage($dataUsage) as $lang) {
             $langOptions[\tao_helpers_Uri::encode($lang->getUri())] = $lang->getLabel();
         }
         $langElt = \tao_helpers_form_FormFactory::getElement('lang', 'Combobox');
-        $langElt->setValue(\tao_helpers_Uri::encode('http://www.tao.lu/Ontologies/TAO.rdf#Lang'.$dataLang));
+        $langElt->setValue(\tao_helpers_Uri::encode('http://www.tao.lu/Ontologies/TAO.rdf#Lang' . $dataLang));
         $langElt->setOptions($langOptions);
         $this->form->addElement($langElt);
 
 
         $this->form->createGroup('options', __('Media Options'), array(
-                $langElt
-            ));
+            $langElt
+        ));
 
         $fileSentElt = \tao_helpers_form_FormFactory::getElement('import_sent_file', 'Hidden');
         $fileSentElt->setValue(1);
         $this->form->addElement($fileSentElt);
 
-        if(!is_null($this->instanceUri)){
+        if (!is_null($this->instanceUri)) {
             $instanceElt = \tao_helpers_form_FormFactory::getElement('instanceUri', 'Hidden');
             $instanceElt->setValue($this->instanceUri);
             $this->form->addElement($instanceElt);

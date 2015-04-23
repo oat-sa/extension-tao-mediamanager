@@ -20,10 +20,10 @@
  */
 namespace oat\taoMediaManager\test\model;
 
-use oat\taoMediaManager\model\FileImportForm;
 use oat\taoMediaManager\model\SharedStimulusImporter;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
+
 include_once dirname(__FILE__) . '/../../../tao/includes/raw_start.php';
 
 class SharedStimulusImporterTest extends \PHPUnit_Framework_TestCase
@@ -42,33 +42,35 @@ class SharedStimulusImporterTest extends \PHPUnit_Framework_TestCase
         $ref->setValue(null, array('oat\taoMediaManager\model\MediaService' => $this->service));
     }
 
-    public function tearDown(){
+    public function tearDown()
+    {
         $ref = new \ReflectionProperty('tao_models_classes_Service', 'instances');
         $ref->setAccessible(true);
         $ref->setValue(null, array());
     }
 
-    public function testGetLabel(){
+    public function testGetLabel()
+    {
         $sharedImporter = new SharedStimulusImporter();
-        $this->assertEquals('Shared Stimulus',$sharedImporter->getLabel(), __('The label is wrong'));
+        $this->assertEquals('Shared Stimulus', $sharedImporter->getLabel(), __('The label is wrong'));
     }
 
     /**
      * @dataProvider sharedStimulusFilenameProvider
      */
-    public function testIsValidSharedStimulus($filename, $response, $exception){
-        try{
+    public function testIsValidSharedStimulus($filename, $response, $exception)
+    {
+        try {
             $xmlDocumentValid = SharedStimulusImporter::isValidSharedStimulus($filename);
             $this->assertTrue($response, __('It should not be valid'));
             $xmlDocument = new XmlDocument();
             $xmlDocument->load($filename);
             $this->assertEquals($xmlDocument->getDomDocument()->C14N(), $xmlDocumentValid->getDomDocument()->C14N(), __('The loaded cml is wrong'));
-        }
-        catch(\Exception $e){
+        } catch (\Exception $e) {
             $this->assertFalse($response, __('It should not throw an exception'));
-            if(!is_null($e)){
+            if (!is_null($e)) {
                 $this->assertInstanceOf(get_class($exception), $e, __('The exception class is wrong'));
-                if($exception->getMessage() !== ''){
+                if ($exception->getMessage() !== '') {
                     $this->assertEquals($exception->getMessage(), $e->getMessage(), __('The exception message is wrong'));
                 }
             }
@@ -77,7 +79,8 @@ class SharedStimulusImporterTest extends \PHPUnit_Framework_TestCase
 
     }
 
-    public function testImportXml(){
+    public function testImportXml()
+    {
         $sharedImporter = new SharedStimulusImporter();
         $filename = dirname(__DIR__) . '/sample/sharedStimulus/sharedStimulus.xml';
         $myClass = new \core_kernel_classes_Class('http://fancyDomain.com/tao.rdf#fancyUri');
@@ -95,13 +98,14 @@ class SharedStimulusImporterTest extends \PHPUnit_Framework_TestCase
             ->with($filename, $myClass->getUri(), 'EN_en', basename($filename))
             ->willReturn('myGreatLink');
 
-        $report = $sharedImporter->import($myClass,$form);
+        $report = $sharedImporter->import($myClass, $form);
 
-        $this->assertEquals(\common_report_Report::TYPE_SUCCESS,$report->getType(), __('Report should be success'));
-        $this->assertEquals(__('Shared Stimulus imported successfully'),$report->getMessage(), __('Report message is wrong'));
+        $this->assertEquals(\common_report_Report::TYPE_SUCCESS, $report->getType(), __('Report should be success'));
+        $this->assertEquals(__('Shared Stimulus imported successfully'), $report->getMessage(), __('Report message is wrong'));
     }
 
-    public function testEditXml(){
+    public function testEditXml()
+    {
         $instance = new \core_kernel_classes_Resource('http://fancyDomain.com/tao.rdf#fancyInstanceUri');
         $sharedImporter = new SharedStimulusImporter($instance->getUri());
         $filename = dirname(__DIR__) . '/sample/sharedStimulus/sharedStimulus.xml';
@@ -121,13 +125,14 @@ class SharedStimulusImporterTest extends \PHPUnit_Framework_TestCase
             ->with($filename, $instance->getUri(), 'EN_en')
             ->willReturn(true);
 
-        $report = $sharedImporter->import($myClass,$form);
+        $report = $sharedImporter->import($myClass, $form);
 
-        $this->assertEquals(__('Shared Stimulus edited successfully'),$report->getMessage(), __('Report message is wrong'));
-        $this->assertEquals(\common_report_Report::TYPE_SUCCESS,$report->getType(), __('Report should be success'));
+        $this->assertEquals(__('Shared Stimulus edited successfully'), $report->getMessage(), __('Report message is wrong'));
+        $this->assertEquals(\common_report_Report::TYPE_SUCCESS, $report->getType(), __('Report should be success'));
     }
 
-    public function testImportPackage(){
+    public function testImportPackage()
+    {
         $packageImporter = $this->getMockBuilder('oat\taoMediaManager\model\SharedStimulusPackageImporter')
             ->disableOriginalConstructor()
             ->getMock();
@@ -148,13 +153,14 @@ class SharedStimulusImporterTest extends \PHPUnit_Framework_TestCase
             ->willReturn($returnReport);
 
         $sharedImporter->setZipImporter($packageImporter);
-        $report = $sharedImporter->import($myClass,$form);
+        $report = $sharedImporter->import($myClass, $form);
 
-        $this->assertEquals($returnReport->getMessage(),$report->getMessage(), __('Report message is wrong'));
-        $this->assertEquals($returnReport->getType(),$report->getType(), __('Report should be success'));
+        $this->assertEquals($returnReport->getMessage(), $report->getMessage(), __('Report message is wrong'));
+        $this->assertEquals($returnReport->getType(), $report->getType(), __('Report should be success'));
     }
 
-    public function testEditPackage(){
+    public function testEditPackage()
+    {
         $packageImporter = $this->getMockBuilder('oat\taoMediaManager\model\SharedStimulusPackageImporter')
             ->getMock();
 
@@ -175,19 +181,20 @@ class SharedStimulusImporterTest extends \PHPUnit_Framework_TestCase
             ->willReturn($returnReport);
 
         $sharedImporter->setZipImporter($packageImporter);
-        $report = $sharedImporter->import($myClass,$form);
-        $this->assertEquals($returnReport->getMessage(),$report->getMessage(), __('Report message is wrong'));
-        $this->assertEquals($returnReport->getType(),$report->getType(), __('Report should be success'));
+        $report = $sharedImporter->import($myClass, $form);
+        $this->assertEquals($returnReport->getMessage(), $report->getMessage(), __('Report message is wrong'));
+        $this->assertEquals($returnReport->getType(), $report->getType(), __('Report should be success'));
     }
 
-    public function sharedStimulusFilenameProvider(){
+    public function sharedStimulusFilenameProvider()
+    {
         $sampleDir = dirname(__DIR__) . '/sample/sharedStimulus/';
         return array(
-            array($sampleDir.'sharedStimulus.xml', true, null),
-            array($sampleDir.'wrongParsing.xml', false, new XmlStorageException('')),
-            array($sampleDir.'feedback.xml', false, new XmlStorageException("The shared stimulus contains feedback QTI components.")),
-            array($sampleDir.'template.xml', false, new XmlStorageException("The shared stimulus contains template QTI components.")),
-            array($sampleDir.'interactions.xml', false, new XmlStorageException("The shared stimulus contains interactions QTI components."))
+            array($sampleDir . 'sharedStimulus.xml', true, null),
+            array($sampleDir . 'wrongParsing.xml', false, new XmlStorageException('')),
+            array($sampleDir . 'feedback.xml', false, new XmlStorageException("The shared stimulus contains feedback QTI components.")),
+            array($sampleDir . 'template.xml', false, new XmlStorageException("The shared stimulus contains template QTI components.")),
+            array($sampleDir . 'interactions.xml', false, new XmlStorageException("The shared stimulus contains interactions QTI components."))
         );
     }
 }

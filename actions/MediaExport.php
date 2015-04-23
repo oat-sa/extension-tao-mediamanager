@@ -21,16 +21,17 @@
 
 namespace oat\taoMediaManager\actions;
 
-use oat\taoMediaManager\model\fileManagement\FileManager;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\ZipExporter;
 
 /**
  * This controller provide the actions to import medias
  */
-class MediaExport extends \tao_actions_Export {
+class MediaExport extends \tao_actions_Export
+{
 
-    public function __construct(){
+    public function __construct()
+    {
 
         parent::__construct();
         $this->service = MediaService::singleton();
@@ -46,7 +47,8 @@ class MediaExport extends \tao_actions_Export {
         return new \core_kernel_classes_Class(MEDIA_URI);
     }
 
-    protected function getAvailableExportHandlers() {
+    protected function getAvailableExportHandlers()
+    {
         return array(
             new ZipExporter()
         );

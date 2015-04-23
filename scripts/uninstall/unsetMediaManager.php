@@ -19,9 +19,8 @@
  *
  */
 
-use \oat\taoMediaManager\model\fileManagement\FileManager;
-use \oat\taoMediaManager\model\fileManagement\SimpleFileManagement;
 use oat\tao\model\media\MediaService;
+use oat\taoMediaManager\model\fileManagement\FileManager;
 
 MediaService::singleton()->removeMediaSource('mediamanager');
 

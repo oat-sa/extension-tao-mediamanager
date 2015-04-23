@@ -40,20 +40,13 @@ class SharedStimulusPackageImporter extends ZipImporter
      */
     private $xmlFile;
 
-    /**
-     * @param string $xmlFile
-     * @return $this
-     */
-    public function setXmlFile($xmlFile)
-    {
-        $this->xmlFile = $xmlFile;
-        return $this;
-    }
+    private $tmpDir;
 
-    public function __construct($xmlFile = '', $directory = '')
+    public function __construct($xmlFile = '', $directory = '', $tmpDir = '')
     {
         parent::__construct($directory);
         $this->xmlFile = $xmlFile;
+        $this->tmpDir = $tmpDir;
     }
 
 
@@ -66,42 +59,15 @@ class SharedStimulusPackageImporter extends ZipImporter
      */
     public function import($class, $form)
     {
-        //as upload may be called multiple times, we remove the session lock as soon as possible
-        session_write_close();
-
         try {
-            $file = $form->getValue('source');
 
-            $tmpDir = \tao_helpers_File::createTempDir();
-            if (!\tao_helpers_File::securityCheck($file['uploaded_file'], true)
-                || !\tao_helpers_File::securityCheck($file['name'], true)) {
-                return \common_report_Report::createFailure(__('Filename is unsafe'));
-            }
-
-            $filePath = $tmpDir . '/' . $file['name'];
-            if (!@rename($file['uploaded_file'], $filePath)) {
-                return \common_report_Report::createFailure(__('Unable to move uploaded file'));
-            }
-
-            // unzip the file
-
-            if (!$this->extractArchive($filePath)) {
-                $report = \common_report_Report::createFailure($this->getDirectory());
-                return $report;
-            }
-
-            //get the xml file that represents the shared stimulus
-            if ($this->getSharedStimulusFile() === false) {
-                $report = \common_report_Report::createFailure('Unable to find an xml file in you package');
-                return $report;
-            }
-
-            $report = $this->validateAndStoreSharedStimulus(
-                $class,
-                \tao_helpers_Uri::decode($form->getValue('lang')),
-                $tmpDir
-            );
-
+            if(($report = $this->getSharedStimulusInfo($form)) === true){
+                $report = $this->validateAndStoreSharedStimulus(
+                    $class,
+                    \tao_helpers_Uri::decode($form->getValue('lang')),
+                    $this->tmpDir
+                );
+            };
             return $report;
 
         } catch (\Exception $e) {
@@ -118,41 +84,15 @@ class SharedStimulusPackageImporter extends ZipImporter
      */
     public function edit($instance, $form)
     {
-
-        //as upload may be called multiple times, we remove the session lock as soon as possible
-        session_write_close();
-
         try {
-            $file = $form->getValue('source');
 
-            $tmpDir = \tao_helpers_File::createTempDir();
-            if (!\tao_helpers_File::securityCheck($file['uploaded_file'], true)
-                || !\tao_helpers_File::securityCheck($file['name'], true)) {
-                return \common_report_Report::createFailure(__('Filename is unsafe'));
+            if(($report = $this->getSharedStimulusInfo($form)) === true){
+                $report = $this->validateAndEditSharedStimulus(
+                    $instance,
+                    \tao_helpers_Uri::decode($form->getValue('lang')),
+                    $this->tmpDir
+                );
             }
-
-            $filePath = $tmpDir . '/' . $file['name'];
-            if (!@rename($file['uploaded_file'], $filePath)) {
-                return \common_report_Report::createFailure(__('Unable to move uploaded file'));
-            }
-
-            // unzip the file
-            if (!$this->extractArchive($filePath)) {
-                $report = \common_report_Report::createFailure($this->getDirectory());
-                return $report;
-            }
-
-            //get the xml file that represents the shared stimulus
-            if ($this->getSharedStimulusFile() === false) {
-                $report = \common_report_Report::createFailure('Unable to find an xml file in you package');
-                return $report;
-            }
-
-            $report = $this->validateAndEditSharedStimulus(
-                $instance,
-                \tao_helpers_Uri::decode($form->getValue('lang')),
-                $tmpDir
-            );
 
             return $report;
 
@@ -167,18 +107,12 @@ class SharedStimulusPackageImporter extends ZipImporter
      * Validate an xml file, convert file linked inside and store it into media manager
      * @param \core_kernel_classes_Resource $class the class under which we will store the shared stimulus (can be an item)
      * @param string $lang language of the shared stimulus
-     * @param string $tmpDir (optional)
      * @return \common_report_Report
      */
-    public function validateAndStoreSharedStimulus($class, $lang, $tmpDir = '')
+    public function validateAndStoreSharedStimulus($class, $lang)
     {
-        //create tmp dir if it does not exist
-        if ($tmpDir === '') {
-            $tmpDir = \tao_helpers_File::createTempDir();
-        }
-
         $service = MediaService::singleton();
-        $filename = $this->validateXmlFile($tmpDir);
+        $filename = $this->validateXmlFile();
         if (!$service->createMediaInstance($filename, $class->getUri(), $lang, basename($this->xmlFile))) {
             $report = \common_report_Report::createFailure(__('Fail to import Shared Stimulus'));
         } else {
@@ -192,17 +126,10 @@ class SharedStimulusPackageImporter extends ZipImporter
      * Validate an xml file, convert file linked inside and store it into media manager
      * @param \core_kernel_classes_Resource $instance the instance to edit
      * @param string $lang language of the shared stimulus
-     * @param string $tmpDir (optional)
      * @return \common_report_Report
      */
-    public function validateAndEditSharedStimulus($instance, $lang, $tmpDir = '')
+    public function validateAndEditSharedStimulus($instance, $lang)
     {
-        //create tmp dir if it does not exist
-        if ($tmpDir === '') {
-            $tmpDir = \tao_helpers_File::createTempDir();
-        }
-
-
         //if the class does not belong to media classes create a new one with its name (for items)
         $mediaClass = new core_kernel_classes_Class(MEDIA_URI);
         if (!$instance->isInstanceOf($mediaClass)) {
@@ -213,7 +140,7 @@ class SharedStimulusPackageImporter extends ZipImporter
         }
 
         $service = MediaService::singleton();
-        $filename = $this->validateXmlFile($tmpDir);
+        $filename = $this->validateXmlFile();
         if (!$service->editMediaInstance($filename, $instance->getUri(), $lang)) {
             $report = \common_report_Report::createFailure(__('Fail to edit Shared Stimulus'));
         } else {
@@ -261,13 +188,54 @@ class SharedStimulusPackageImporter extends ZipImporter
         return $xmlDocument;
     }
 
+
     /**
-     * @param $tmpDir
+     * allow to get the share stimulus xml and the directory of the shared stimulus to work with
+     * @param \tao_helpers_form_Form $form
+     * @return bool|\common_report_Report true on success report in case of failure
+     */
+    private function getSharedStimulusInfo($form){
+        //as upload may be called multiple times, we remove the session lock as soon as possible
+        session_write_close();
+
+        $file = $form->getValue('source');
+
+        $this->tmpDir = \tao_helpers_File::createTempDir();
+        if (!\tao_helpers_File::securityCheck($file['uploaded_file'], true)
+            || !\tao_helpers_File::securityCheck($file['name'], true)) {
+            return \common_report_Report::createFailure(__('Filename is unsafe'));
+        }
+
+        $filePath = $this->tmpDir . '/' . $file['name'];
+        if (!@rename($file['uploaded_file'], $filePath)) {
+            return \common_report_Report::createFailure(__('Unable to move uploaded file'));
+        }
+
+        // unzip the file
+        if (!$this->extractArchive($filePath)) {
+            $report = \common_report_Report::createFailure($this->getDirectory());
+            return $report;
+        }
+
+        //get the xml file that represents the shared stimulus
+        if ($this->getSharedStimulusFile() === false) {
+            $report = \common_report_Report::createFailure('Unable to find an xml file in you package');
+            return $report;
+        }
+        return true;
+    }
+
+    /**
      * @return string filename
      * @throws \Exception
      */
-    private function validateXmlFile($tmpDir)
+    private function validateXmlFile()
     {
+        //create tmp dir if it does not exist
+        if ($this->tmpDir === '') {
+            $this->tmpDir = \tao_helpers_File::createTempDir();
+        }
+
         //validate the xml file
         $xmlDocument = SharedStimulusImporter::isValidSharedStimulus($this->xmlFile);
 
@@ -276,7 +244,7 @@ class SharedStimulusPackageImporter extends ZipImporter
             throw new \Exception('Unable to convert embedded files');
         }
 
-        $filename = $tmpDir . '/sharedStimulus.xml';
+        $filename = $this->tmpDir . '/sharedStimulus.xml';
         $xmlDocument->save($filename);
 
         return $filename;
@@ -306,4 +274,27 @@ class SharedStimulusPackageImporter extends ZipImporter
 
         return false;
     }
+
+    /**
+     * @param string $xmlFile
+     * @return $this
+     */
+    public function setXmlFile($xmlFile)
+    {
+        $this->xmlFile = $xmlFile;
+        return $this;
+    }
+
+    /**
+     * @param string $tmpDir
+     * @return $this
+     */
+    public function setTmpDir($tmpDir)
+    {
+        $this->tmpDir = $tmpDir;
+        return $this;
+    }
+
+
+
 }

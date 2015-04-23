@@ -11,4 +11,3 @@ $todefine = array(
     'MEDIA_URI'         => 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Media',
     'MEDIA_ALT_TEXT'    => 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AltText',
 );
-?>

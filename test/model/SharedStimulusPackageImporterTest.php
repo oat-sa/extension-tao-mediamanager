@@ -138,15 +138,14 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
 
         $report = $this->packageImporter->setXmlFile(dirname(__DIR__) . '/sample/sharedStimulus/stimulusPackage/stimulus.xml')
             ->setDirectory(dirname(__DIR__) . '/sample/sharedStimulus/stimulusPackage/')
-            ->validateAndStoreSharedStimulus($class, 'en_EN', $tmpDir, $tmpDir);
+            ->setTmpDir($tmpDir)
+            ->validateAndStoreSharedStimulus($class, 'en_EN');
 
         $expected = \common_report_Report::createSuccess(__('Shared Stimulus imported successfully'));
         $this->assertEquals($expected->getType(), $report->getType(), __('Import should succeed and create a success report'));
         $this->assertEquals($expected->getMessage(), $report->getMessage(), __('Report message is not the right one'));
 
-        $report = $this->packageImporter->setXmlFile(dirname(__DIR__) . '/sample/sharedStimulus/stimulusPackage/stimulus.xml')
-            ->setDirectory(dirname(__DIR__) . '/sample/sharedStimulus/stimulusPackage/')
-            ->validateAndStoreSharedStimulus($class, 'en_EN', $tmpDir, $tmpDir);
+        $report = $this->packageImporter->validateAndStoreSharedStimulus($class, 'en_EN');
 
         $expected = \common_report_Report::createFailure(__('Fail to import Shared Stimulus'));
         $this->assertEquals($expected->getType(), $report->getType(), __('Import should fail and create a fail report'));
@@ -166,14 +165,14 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
 
         $report = $this->packageImporter->setXmlFile(dirname(__DIR__) . '/sample/sharedStimulus/editStimulus/stimulus.xml')
             ->setDirectory(dirname(__DIR__) . '/sample/sharedStimulus/editStimulus/')
-            ->validateAndEditSharedStimulus($instance, 'en_EN', $tmpDir);
+            ->setTmpDir($tmpDir)
+            ->validateAndEditSharedStimulus($instance, 'en_EN');
 
         $expected = \common_report_Report::createSuccess(__('Shared Stimulus edited successfully'));
         $this->assertEquals($expected->getType(), $report->getType(), __('Edit should succeed and create a success report'));
         $this->assertEquals($expected->getMessage(), $report->getMessage(), __('Report message is not the right one'));
 
-        $report = $this->packageImporter->setXmlFile(dirname(__DIR__) . '/sample/sharedStimulus/editStimulus/stimulus.xml')
-            ->validateAndEditSharedStimulus($instance, 'en_EN', $tmpDir);
+        $report = $this->packageImporter->validateAndEditSharedStimulus($instance, 'en_EN');
 
         $expected = \common_report_Report::createFailure(__('Fail to edit Shared Stimulus'));
         $this->assertEquals($expected->getType(), $report->getType(), __('Edit should fail and create a fail report'));

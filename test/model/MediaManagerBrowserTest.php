@@ -151,17 +151,15 @@ class MediaManagerBrowserTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException        \Exception
-     * @expectedExceptionMessage Resource A Fake link can not be found
+     * @expectedException        \tao_models_classes_FileNotFoundException
+     * @expectedExceptionMessage File A Fake link not found
      */
     public function testGetFileInfoFail()
     {
 
         $link = 'A Fake link';
 
-        $fileInfo = $this->mediaManagerManagement->getFileInfo($link);
-
-        $this->assertNull($fileInfo, 'The result should be null');
+        $this->mediaManagerManagement->getFileInfo($link);
     }
 
 }

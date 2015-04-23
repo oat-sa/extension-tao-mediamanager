@@ -21,7 +21,6 @@
 
 namespace oat\taoMediaManager\scripts\update;
 
-use oat\tao\model\media\MediaSource;
 use \oat\taoMediaManager\model\fileManagement\FileManager;
 use \oat\taoMediaManager\model\fileManagement\SimpleFileManagement;
 use oat\tao\scripts\update\OntologyUpdater;
@@ -94,7 +93,12 @@ class Updater extends \common_ext_ExtensionUpdater {
                                 MEDIA_LINK => $matches[1]
                             ), array('recursive' => true));
                         $media = array_pop($medias);
-                        return 'src="taomedia://mediamanager/' . \tao_helpers_Uri::encode($media->getUri()) . '"';
+                        $uri = '';
+                        if(!is_null($media) && $media->exists()){
+                            $uri = \tao_helpers_Uri::encode($media->getUri());
+                        }
+                        return 'src="taomedia://mediamanager/' . $uri . '"';
+
 
                     }, $itemContent);
 

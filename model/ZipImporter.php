@@ -86,7 +86,7 @@ class ZipImporter
             $service = MediaService::singleton();
             $language = $form->getValue('lang');
 
-            $rootNode = basename($fileName, '.zip');
+            $rootNode = basename($file['name'], '.zip');
             /** @var $file \SplFileInfo */
             foreach ($iterator as $file) {
                 if (strpos($file->getPath(), $rootNode) !== false) {

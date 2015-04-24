@@ -48,12 +48,7 @@ class MediaImport extends \tao_actions_Import
      */
     public function index()
     {
-        $id = null;
-        if ($this->hasRequestParameter('classUri')) {
-            $id = \tao_helpers_Uri::decode($this->getRequestParameter('classUri'));
-        }
-
-        $this->setAvailableImportHandlers($id);
+        $this->setAvailableImportHandlers();
         parent::index();
 
     }
@@ -78,7 +73,7 @@ class MediaImport extends \tao_actions_Import
         return $this->importHandlers;
     }
 
-    protected function setAvailableImportHandlers($id)
+    protected function setAvailableImportHandlers($id = null)
     {
         $this->importHandlers = array(
             new FileImporter($id),

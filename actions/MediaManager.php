@@ -21,6 +21,7 @@
 
 namespace oat\taoMediaManager\actions;
 
+use oat\taoMediaManager\model\editInstanceForm;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
 
@@ -48,7 +49,7 @@ class MediaManager extends \tao_actions_SaSModule
     {
         $clazz = $this->getCurrentClass();
         $instance = $this->getCurrentInstance();
-        $myFormContainer = new \tao_actions_form_Instance($clazz, $instance);
+        $myFormContainer = new editInstanceForm($clazz, $instance);
 
         $myForm = $myFormContainer->getForm();
         if ($myForm->isSubmited()) {

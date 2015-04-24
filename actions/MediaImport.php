@@ -49,23 +49,43 @@ class MediaImport extends \tao_actions_Import
     public function index()
     {
         $id = null;
-        if ($this->hasRequestParameter('instanceUri')) {
-            $id = \tao_helpers_Uri::decode($this->getRequestParameter('instanceUri'));
-        } else if ($this->hasRequestParameter('uri')) {
-            $id = \tao_helpers_Uri::decode($this->getRequestParameter('uri'));
+        if ($this->hasRequestParameter('classUri')) {
+            $id = \tao_helpers_Uri::decode($this->getRequestParameter('classUri'));
         }
 
-        $this->importHandlers = array(
-            new FileImporter($id),
-            new SharedStimulusImporter($id)
-        );
+        $this->setAvailableImportHandlers($id);
         parent::index();
 
+    }
+
+    /**
+     * @requiresRight id WRITE
+     */
+    public function editMedia()
+    {
+        $id = null;
+        if ($this->hasRequestParameter('instanceUri')) {
+            $id = $this->getRequestParameter('instanceUri');
+        } else {
+            $id = $this->getRequestParameter('id');
+        }
+        $this->setAvailableImportHandlers($id);
+        parent::index();
     }
 
     protected function getAvailableImportHandlers()
     {
         return $this->importHandlers;
+    }
+
+    protected function setAvailableImportHandlers($id)
+    {
+        $this->importHandlers = array(
+            new FileImporter($id),
+            new SharedStimulusImporter($id)
+        );
+
+        return $this;
     }
 
 

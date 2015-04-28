@@ -23,16 +23,17 @@ namespace oat\taoMediaManager\actions;
 
 use oat\taoMediaManager\model\FileImporter;
 use oat\taoMediaManager\model\MediaService;
-use oat\taoMediaManager\model\ZipImporter;
 
 /**
  * This controller provide the actions to import medias
  */
-class MediaImport extends \tao_actions_Import {
+class MediaImport extends \tao_actions_Import
+{
 
     private $importHandlers;
 
-    public function __construct(){
+    public function __construct()
+    {
 
         parent::__construct();
         $this->service = MediaService::singleton();
@@ -40,8 +41,7 @@ class MediaImport extends \tao_actions_Import {
 
     /**
      * overwrite the parent index to add the import handlers
-     * 
-     * @requiresRight id WRITE
+     *
      * @see tao_actions_Import::index()
      */
     public function index()
@@ -53,26 +53,26 @@ class MediaImport extends \tao_actions_Import {
 
     }
 
-    protected function getAvailableImportHandlers() {
+    protected function getAvailableImportHandlers()
+    {
         return $this->importHandlers;
     }
 
     /**
      * get the import handler to replace a media
      */
-    public function uploadMedia(){
+    public function uploadMedia()
+    {
         $id = null;
-        if(!$this->hasRequestParameter('instanceUri')){
+        if (!$this->hasRequestParameter('instanceUri')) {
             $id = $this->getRequestParameter('id');
-        }
-        else{
+        } else {
             $id = $this->getRequestParameter('instanceUri');
         }
         $this->importHandlers = array(new FileImporter($id));
         parent::index();
 
     }
-
 
 
     /**

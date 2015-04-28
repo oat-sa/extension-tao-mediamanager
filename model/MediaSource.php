@@ -153,6 +153,7 @@ class MediaSource extends Configurable implements MediaManagement
                     'name' => $resource->getLabel(),
                     'uri' => 'taomedia://mediamanager/' . \tao_helpers_Uri::encode($link),
                     'mime' => $mime,
+                    'filePath' => basename($filePath),
                     'size' => filesize($filePath)
                 );
             }

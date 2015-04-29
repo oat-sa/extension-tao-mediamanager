@@ -117,6 +117,20 @@ class Updater extends \common_ext_ExtensionUpdater
 
         }
 
+        if ($currentVersion === '0.2.0') {
+            $accessService = \funcAcl_models_classes_AccessService::singleton();
+
+            //revoke access right to back office
+            $backOffice = new \core_kernel_classes_Resource('http://www.tao.lu/Ontologies/TAO.rdf#BackOfficeRole');
+            $accessService->revokeExtensionAccess($backOffice, 'taoMediaManager');
+
+            //grant access right to media manager
+            $mediaManager = new \core_kernel_classes_Resource('http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole');
+            $accessService->grantExtensionAccess($mediaManager, 'taoMediaManager');
+
+            $currentVersion = '0.2.1';
+        }
+
         return $currentVersion;
     }
 }

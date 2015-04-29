@@ -128,6 +128,8 @@ class Updater extends \common_ext_ExtensionUpdater
             $mediaManager = new \core_kernel_classes_Resource('http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole');
             $accessService->grantExtensionAccess($mediaManager, 'taoMediaManager');
 
+            $globalManager = new \core_kernel_Classes_Resource('http://www.tao.lu/Ontologies/TAO.rdf#GlobalManagerRole');
+            \tao_models_classes_RoleService::singleton()->includeRole($globalManager, $mediaManager);
             $currentVersion = '0.2.1';
         }
 

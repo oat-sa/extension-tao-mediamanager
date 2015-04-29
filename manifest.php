@@ -33,6 +33,7 @@ return array(
     'models' => array(
         'http://www.tao.lu/Ontologies/TAOMedia.rdf'
     ),
+    'managementRole' => 'http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole',
     'acl' => array(
         array('grant', 'http://www.tao.lu/Ontologies/TAO.rdf#BackOfficeRole', array('ext' => 'taoMediaManager')),
     ),

@@ -17,10 +17,15 @@ Template::inc('form_context.tpl', 'tao');
         <?php if(strpos(get_data('mimeType'), 'image') === 0):?>
             <img src="data:<?=get_data('mimeType')?>;base64,<?=get_data('base64Data')?>" alt="preview"/>
         <?php else:?>
+            <?php if(strpos(get_data('mimeType'), 'video') === 0):?>
             <video width="320" height="240" controls>
                 <source src="data:<?=get_data('mimeType')?>;base64,<?=get_data('base64Data')?>" type="<?=get_data('mimeType')?>">
                 Your browser does not support the video tag.
             </video>
+            <?php endif;?>
+            <?php if(has_data('data')):?>
+                <pre><?=get_data('data')?></pre>
+            <?php endif;?>
         <?php endif;?>
     </div>
 

@@ -21,11 +21,11 @@
 
 namespace oat\taoMediaManager\scripts\update;
 
-use \oat\taoMediaManager\model\fileManagement\FileManager;
-use \oat\taoMediaManager\model\fileManagement\SimpleFileManagement;
-use oat\tao\scripts\update\OntologyUpdater;
-use oat\taoMediaManager\model\MediaService;
 use oat\tao\model\media\MediaService as TaoMediaService;
+use oat\tao\scripts\update\OntologyUpdater;
+use oat\taoMediaManager\model\fileManagement\FileManager;
+use oat\taoMediaManager\model\fileManagement\SimpleFileManagement;
+use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
 
 class Updater extends \common_ext_ExtensionUpdater

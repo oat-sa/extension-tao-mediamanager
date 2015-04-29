@@ -23,6 +23,7 @@ namespace oat\taoMediaManager\actions;
 
 use oat\taoMediaManager\model\FileImporter;
 use oat\taoMediaManager\model\MediaService;
+use oat\taoMediaManager\model\SharedStimulusImporter;
 
 /**
  * This controller provide the actions to import medias
@@ -41,16 +42,30 @@ class MediaImport extends \tao_actions_Import
 
     /**
      * overwrite the parent index to add the import handlers
-     *
+     * 
+     * @requiresRight id WRITE
      * @see tao_actions_Import::index()
      */
     public function index()
     {
-        $this->importHandlers = array(
-            new FileImporter()
-        );
+        $this->setAvailableImportHandlers();
         parent::index();
 
+    }
+
+    /**
+     * @requiresRight id WRITE
+     */
+    public function editMedia()
+    {
+        $id = null;
+        if ($this->hasRequestParameter('instanceUri')) {
+            $id = $this->getRequestParameter('instanceUri');
+        } else {
+            $id = $this->getRequestParameter('id');
+        }
+        $this->setAvailableImportHandlers($id);
+        parent::index();
     }
 
     protected function getAvailableImportHandlers()
@@ -58,20 +73,14 @@ class MediaImport extends \tao_actions_Import
         return $this->importHandlers;
     }
 
-    /**
-     * get the import handler to replace a media
-     */
-    public function uploadMedia()
+    protected function setAvailableImportHandlers($id = null)
     {
-        $id = null;
-        if (!$this->hasRequestParameter('instanceUri')) {
-            $id = $this->getRequestParameter('id');
-        } else {
-            $id = $this->getRequestParameter('instanceUri');
-        }
-        $this->importHandlers = array(new FileImporter($id));
-        parent::index();
+        $this->importHandlers = array(
+            new FileImporter($id),
+            new SharedStimulusImporter($id)
+        );
 
+        return $this;
     }
 
 

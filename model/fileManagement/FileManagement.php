@@ -21,7 +21,8 @@
 namespace oat\taoMediaManager\model\fileManagement;
 
 
-interface FileManagement {
+interface FileManagement
+{
 
 
     /**

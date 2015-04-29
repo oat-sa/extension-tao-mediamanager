@@ -39,14 +39,6 @@
                     <action id="media-view" name="View Media" url="/taoMediaManager/MediaManager/editInstance" group="none"
                             context="instance">
                     </action>
-                    <action id="media-upload" name="Upload Media" url="/taoMediaManager/MediaImport/uploadMedia" group="content"
-                            context="instance">
-                        <icon id="icon-upload"/>
-                    </action>
-                    <action id="media-download" name="Download Media" url="/taoMediaManager/MediaExport/downloadMedia" group="content"
-                            context="instance">
-                        <icon id="icon-download"/>
-                    </action>
                 </actions>
             </section>
         </sections>

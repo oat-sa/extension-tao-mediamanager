@@ -23,8 +23,8 @@ namespace oat\taoMediaManager\model;
 
 use core_kernel_classes_Class;
 use core_kernel_classes_Resource;
-use tao_helpers_form_Form;
 use oat\taoMediaManager\model\fileManagement\FileManager;
+use tao_helpers_form_Form;
 
 /**
  * Service methods to manage the Media
@@ -32,7 +32,6 @@ use oat\taoMediaManager\model\fileManagement\FileManager;
  * @access public
  * @author Antoine Robin, <antoine.robin@vesperiagroup.com>
  * @package taoMediaManager
-
  */
 class ZipExporter implements \tao_models_classes_export_ExportHandler
 {
@@ -57,11 +56,8 @@ class ZipExporter implements \tao_models_classes_export_ExportHandler
      */
     public function getExportForm(core_kernel_classes_Resource $resource)
     {
-        if ($resource instanceof core_kernel_classes_Class) {
-            $formData= array('class' => $resource);
-        } else {
-            $formData= array('instance' => $resource);
-        }
+
+        $formData = array('resource' => $resource);
         $form = new ZipExportForm($formData);
         return $form->getForm();
     }
@@ -76,61 +72,70 @@ class ZipExporter implements \tao_models_classes_export_ExportHandler
     public function export($formValues, $destPath)
     {
         $file = null;
-        if(isset($formValues['filename']) && isset($formValues['resource'])){
+        if (isset($formValues['filename']) && isset($formValues['id'])) {
 
-            $class = new core_kernel_classes_Class($formValues['resource']);
-            \common_Logger::i('Exporting '.$class->getUri());
-            $subClasses = $class->getSubClasses(true);
+            $class = new core_kernel_classes_Class($formValues['id']);
+            \common_Logger::i('Exporting ' . $class->getUri());
 
-            $exportData = array($class->getLabel() => $class->getInstances());
             $exportClasses = array();
-            foreach($subClasses as $subClass){
-                $instances = $subClass->getInstances();
-                $exportData[$subClass->getLabel()] = $instances;
+            if ($class->isClass()) {
+                $subClasses = $class->getSubClasses(true);
+                $exportData = array($class->getLabel() => $class->getInstances());
+                foreach ($subClasses as $subClass) {
+                    $instances = $subClass->getInstances();
+                    $exportData[$subClass->getLabel()] = $instances;
 
-                //get Class path
-                $parent = array_shift($subClass->getParentClasses());
-                if(array_key_exists($parent->getLabel(), $exportClasses)){
-                    $exportClasses[$subClass->getLabel()] = $exportClasses[$parent->getLabel()].'/'.$subClass->getLabel();
+                    //get Class path
+                    $parents = $subClass->getParentClasses();
+                    $parent = array_shift($parents);
+                    if (array_key_exists($parent->getLabel(), $exportClasses)) {
+                        $exportClasses[$subClass->getLabel()] = $exportClasses[$parent->getLabel()] . '/' . $subClass->getLabel();
+                    } else {
+                        $exportClasses[$subClass->getLabel()] = $subClass->getLabel();
+                    }
                 }
-                else{
-                    $exportClasses[$subClass->getLabel()] = $subClass->getLabel();
-                }
+            } else {
+                $exportData = array($class->getLabel() => array($class));
             }
+
             $file = $this->createZipFile($formValues['filename'], $exportClasses, $exportData);
         }
         return $file;
     }
 
-    private function createZipFile($filename, $exportClasses = array(), $exportFiles = array()){
+    private function createZipFile($filename, $exportClasses = array(), $exportFiles = array())
+    {
         $zip = new \ZipArchive();
         $baseDir = \tao_helpers_Export::getExportPath();
-        $path = $baseDir.'/'.$filename.'.zip';
-        if ($zip->open($path, \ZipArchive::CREATE)!==TRUE) {
-             throw new common_Exception('Unable to create zipfile '.$path);
+        $path = $baseDir . '/' . $filename . '.zip';
+        if ($zip->open($path, \ZipArchive::CREATE) !== TRUE) {
+            throw new \common_Exception('Unable to create zipfile ' . $path);
         }
-        if($zip->numFiles === 0){
+        if ($zip->numFiles === 0) {
             $nbFiles = 0;
-            foreach($exportFiles as $label => $files){
+            foreach ($exportFiles as $label => $files) {
                 $archivePath = '';
                 /** @var $class \core_kernel_classes_Class */
-                if(array_key_exists($label,$exportClasses)){
-                    $archivePath = $exportClasses[$label].'/';
+                if (array_key_exists($label, $exportClasses)) {
+                    $archivePath = $exportClasses[$label] . '/';
                     $zip->addEmptyDir($archivePath);
-                    $nbFiles ++;
+                    $nbFiles++;
                 }
                 $nbFiles += count($files);
                 //create the directory
 
-                foreach($files as $file){
+                foreach ($files as $file) {
                     //add each file in the correct directory
                     $link = $file->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
-                    $zip->addFile(FileManager::getFileManagementModel()->retrieveFile($link), $archivePath.$file->getLabel());
+                    if ($link instanceof \core_kernel_classes_Literal) {
+                        $link = $link->literal;
+                    }
+                    $zip->addFile(FileManager::getFileManagementModel()->retrieveFile($link), $archivePath . $file->getLabel());
                 }
 
             }
 
-            \common_Logger::i("Number of file : " . $zip->numFiles." / ".$nbFiles);
+            \common_Logger::i("Number of file : " . $zip->numFiles . " / " . $nbFiles);
         }
 
         $zip->close();

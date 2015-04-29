@@ -87,13 +87,15 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
 
         $report = $this->packageImporter->import($myClass, $form);
 
+        /** @var \common_report_Report $expectedReport*/
+        $expectedReport->setMessage(preg_replace('/%s/', 'imported', $expectedReport->getMessage()));
         $this->assertEquals($expectedReport->getType(), $report->getType(), __('Report should be success'));
         $this->assertEquals($expectedReport->getMessage(), $report->getMessage(), __('Report message is wrong'));
 
     }
 
     /**
-     * @dataProvider sharedStimulusEditProvider
+     * @dataProvider sharedStimulusImportProvider
      */
     public function testEdit($filename, $expectedReport, $called)
     {
@@ -121,6 +123,8 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
 
         $report = $this->packageImporter->edit($instance, $form);
 
+        /** @var \common_report_Report $expectedReport*/
+        $expectedReport->setMessage(preg_replace('/%s/', 'edited', $expectedReport->getMessage()));
         $this->assertEquals($expectedReport->getMessage(), $report->getMessage(), __('Report message is wrong'));
         $this->assertEquals($expectedReport->getType(), $report->getType(), __('Report should be success'));
         $instance->delete(true);
@@ -240,18 +244,7 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
             array($sampleDir . 'stimulus/../Package.zip', \common_report_Report::createFailure(__('Filename is unsafe')), false),
             array($sampleDir . 'UnknowFile.zip', \common_report_Report::createFailure(__('Unable to move uploaded file')), false),
             array($sampleDir . 'missingXmlArchive.zip', \common_report_Report::createFailure('Unable to find an xml file in you package'), false),
-            array($sampleDir . 'stimulusPackage.zip', \common_report_Report::createSuccess(__('Shared Stimulus imported successfully')), true),
-        );
-    }
-
-    public function sharedStimulusEditProvider()
-    {
-        $sampleDir = dirname(__DIR__) . '/sample/sharedStimulus/';
-        return array(
-            array($sampleDir . 'stimulus/../Package.zip', \common_report_Report::createFailure(__('Filename is unsafe')), false),
-            array($sampleDir . 'UnknowFile.zip', \common_report_Report::createFailure(__('Unable to move uploaded file')), false),
-            array($sampleDir . 'missingXmlArchive.zip', \common_report_Report::createFailure('Unable to find an xml file in you package'), false),
-            array($sampleDir . 'stimulusPackage.zip', \common_report_Report::createSuccess(__('Shared Stimulus edited successfully')), true),
+            array($sampleDir . 'stimulusPackage.zip', \common_report_Report::createSuccess(__('Shared Stimulus %s successfully')), true),
         );
     }
 

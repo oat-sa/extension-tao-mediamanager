@@ -27,12 +27,13 @@ return array(
     'label' => 'extension-tao-mediamanager',
     'description' => 'TAO media manager extension',
     'license' => 'GPL-2.0',
-    'version' => '0.2.0',
+    'version' => '0.2.2',
     'author' => 'Open Assessment Technologies SA',
     'dependencies' => array('tao'),
     'models' => array(
         'http://www.tao.lu/Ontologies/TAOMedia.rdf'
     ),
+    'managementRole' => 'http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole',
     'acl' => array(
         array('grant', 'http://www.tao.lu/Ontologies/TAO.rdf#BackOfficeRole', array('ext' => 'taoMediaManager')),
     ),

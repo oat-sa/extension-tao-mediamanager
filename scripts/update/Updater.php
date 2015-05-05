@@ -136,8 +136,8 @@ class Updater extends \common_ext_ExtensionUpdater
             $dataPath = FILES_PATH . 'taoMediaManager' . DIRECTORY_SEPARATOR . 'media' . DIRECTORY_SEPARATOR;
             $dir = dirname(dirname(__DIR__)) . '/media';
 
-            if(\tao_helpers_File::copy($dir, $dataPath)){
-                if(file_exists($dir)){
+            if(file_exists($dir)){
+                if(\tao_helpers_File::copy($dir, $dataPath)){
                     $it = new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS);
                     $files = new \RecursiveIteratorIterator($it,
                         \RecursiveIteratorIterator::CHILD_FIRST);
@@ -150,8 +150,8 @@ class Updater extends \common_ext_ExtensionUpdater
                     }
                     rmdir($dir);
                 }
-                $currentVersion = '0.2.3';
             }
+            $currentVersion = '0.2.3';
 
         }
 

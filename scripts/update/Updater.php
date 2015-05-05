@@ -131,6 +131,14 @@ class Updater extends \common_ext_ExtensionUpdater
             $currentVersion = '0.2.1';
         }
 
+        if ($currentVersion === '0.2.1') {
+            //include mediamanager into globalmanager
+            $mediaManager = new \core_kernel_classes_Resource('http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole');
+            $globalManager = new \core_kernel_Classes_Resource('http://www.tao.lu/Ontologies/TAO.rdf#GlobalManagerRole');
+            \tao_models_classes_RoleService::singleton()->includeRole($globalManager, $mediaManager);
+            $currentVersion = '0.2.2';
+        }
+
         if($currentVersion === '0.2.2'){
             //copy file from /media to data/taoMediaManager/media and delete /media
             $dataPath = FILES_PATH . 'taoMediaManager' . DIRECTORY_SEPARATOR . 'media' . DIRECTORY_SEPARATOR;

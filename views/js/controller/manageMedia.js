@@ -27,11 +27,9 @@ define([
             $.ajax({
                 url: file.url,
                 method: "POST",
-                datatype: "xml"
+                datatype: "text"
             }).success(function(response){
-                if(response instanceof Node){
-                    file.xml = new XMLSerializer().serializeToString(response);
-                }
+                file.xml = response;
                 $previewer.previewer(file);
             });
 

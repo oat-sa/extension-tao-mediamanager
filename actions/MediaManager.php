@@ -96,9 +96,8 @@ class MediaManager extends \tao_actions_SaSModule
 
             $mediaSource = new MediaSource(array());
             $filepath = $mediaSource->download($uri);
-            \tao_helpers_Http::returnFile($filepath);
-        }
-        else{
+            \tao_helpers_Http::returnFile($filepath, false);
+        } else {
             throw new \common_exception_Error('invalid media identifier');
         }
     }

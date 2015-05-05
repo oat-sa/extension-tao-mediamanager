@@ -74,22 +74,32 @@ class MediaManager extends \tao_actions_SaSModule
         $filePath = $mediaSource->download($uri);
 
         $mimeType = \tao_helpers_File::getMimeType($filePath);
-        if (preg_match('/^video|^image/', $mimeType)) {
-            $fp = fopen($filePath, "r");
-            $data = '';
-            if ($fp !== false) {
-                while (!feof($fp)) {
-                    $data .= base64_encode(fread($fp, filesize($filePath)));
-                }
-                fclose($fp);
-            }
-            $this->setData('base64Data', $data);
-        } else if (preg_match('/^text|xml$/', $mimeType)) {
-            $this->setData('data', file_get_contents($filePath));
-        }
-
+        $url = \tao_helpers_Uri::url(
+            'getFile',
+            'MediaManager',
+            'taoMediaManager',
+            array(
+                'uri' => $uri,
+            )
+        );
+        $this->setData('fileurl', $url);
         $this->setData('mimeType', $mimeType);
         $this->setView('form.tpl');
 
+    }
+
+    public function getFile()
+    {
+
+        if ($this->hasRequestParameter('uri')) {
+            $uri = urldecode($this->getRequestParameter('uri'));
+
+            $mediaSource = new MediaSource(array());
+            $filepath = $mediaSource->download($uri);
+            \tao_helpers_Http::returnFile($filepath);
+        }
+        else{
+            throw new \common_exception_Error('invalid media identifier');
+        }
     }
 }

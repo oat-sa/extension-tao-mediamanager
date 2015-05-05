@@ -157,9 +157,12 @@ class Updater extends \common_ext_ExtensionUpdater
                         }
                     }
                     rmdir($dir);
+                    $currentVersion = '0.2.3';
                 }
             }
-            $currentVersion = '0.2.3';
+            else{
+                $currentVersion = '0.2.3';
+            }
 
         }
 

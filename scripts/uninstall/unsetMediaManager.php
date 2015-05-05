@@ -22,6 +22,22 @@
 use oat\tao\model\media\MediaService;
 use oat\taoMediaManager\model\fileManagement\FileManager;
 
+//remove possible /media folder in taoMediaManager
+$dir = dirname(dirname(__DIR__)) . '/media';
+if(file_exists($dir)){
+    $it = new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS);
+    $files = new \RecursiveIteratorIterator($it,
+        \RecursiveIteratorIterator::CHILD_FIRST);
+    foreach($files as $file) {
+        if ($file->isDir()){
+            rmdir($file->getRealPath());
+        } else {
+            unlink($file->getRealPath());
+        }
+    }
+    rmdir($dir);
+}
+
 MediaService::singleton()->removeMediaSource('mediamanager');
 
 \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager')->unsetConfig(FileManager::CONFIG_KEY);

@@ -139,6 +139,33 @@ class Updater extends \common_ext_ExtensionUpdater
             $currentVersion = '0.2.2';
         }
 
+        if($currentVersion === '0.2.2'){
+            //copy file from /media to data/taoMediaManager/media and delete /media
+            $dataPath = FILES_PATH . 'taoMediaManager' . DIRECTORY_SEPARATOR . 'media' . DIRECTORY_SEPARATOR;
+            $dir = dirname(dirname(__DIR__)) . '/media';
+
+            if(file_exists($dir)){
+                if(\tao_helpers_File::copy($dir, $dataPath)){
+                    $it = new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS);
+                    $files = new \RecursiveIteratorIterator($it,
+                        \RecursiveIteratorIterator::CHILD_FIRST);
+                    foreach($files as $file) {
+                        if ($file->isDir()){
+                            rmdir($file->getRealPath());
+                        } else {
+                            unlink($file->getRealPath());
+                        }
+                    }
+                    rmdir($dir);
+                    $currentVersion = '0.2.3';
+                }
+            }
+            else{
+                $currentVersion = '0.2.3';
+            }
+
+        }
+
         return $currentVersion;
     }
 }

@@ -33,7 +33,7 @@ class SimpleFileManagement implements FileManagement
     private function getBaseDir()
     {
         if ($this->baseDir === '') {
-            $this->baseDir = dirname(dirname(__DIR__)) . '/media/';
+            $this->baseDir = FILES_PATH . 'taoMediaManager' . DIRECTORY_SEPARATOR . 'media' . DIRECTORY_SEPARATOR;
         }
         return $this->baseDir;
     }

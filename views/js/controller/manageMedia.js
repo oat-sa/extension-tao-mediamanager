@@ -24,14 +24,19 @@ define([
             file.url = $previewer.data('url');
             file.mime = $previewer.data('type');
 
-            $.ajax({
-                url: file.url,
-                method: "POST",
-                datatype: "text"
-            }).success(function(response){
-                file.xml = response;
+            if(!$previewer.data('xml')){
                 $previewer.previewer(file);
-            });
+            }
+            else{
+                $.ajax({
+                    url: file.url,
+                    data: {xml:true},
+                    method: "POST",
+                }).success(function(response){
+                    file.xml = response;
+                    $previewer.previewer(file);
+                });
+            }
 
             $('#edit-media').off()
                 .on('click', function(){

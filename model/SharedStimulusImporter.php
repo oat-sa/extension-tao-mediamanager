@@ -95,9 +95,9 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
                         $filepath = $file['uploaded_file'];
                         $name = $file['name'];
                         if(in_array($file['type'], array('application/xml', 'text/xml'))){
-                            $name = basename($file['upload_file'], 'xml');
+                            $name = basename($file['uploaded_file'], 'xml');
                             $name .= 'xhtml';
-                            $filepath = dirname($file['upload_file']).$name;
+                            $filepath = dirname($file['uploaded_file']).'/'.$name;
                             \tao_helpers_File::copy($file['uploaded_file'], $filepath);
                         }
 

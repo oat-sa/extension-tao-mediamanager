@@ -8,6 +8,7 @@ define([
     'helpers', 
     'layout/actions/binder',
     'uri',
+    'ui/previewer'
 ], function($, __, module, helpers, binder, uri) {
     'use strict';
 
@@ -17,6 +18,25 @@ define([
          * Controller entry point
          */
         start : function(){
+
+            var $previewer = $('.previewer');
+            var file = {};
+            file.url = $previewer.data('url');
+            file.mime = $previewer.data('type');
+
+            if(!$previewer.data('xml')){
+                $previewer.previewer(file);
+            }
+            else{
+                $.ajax({
+                    url: file.url,
+                    data: {xml:true},
+                    method: "POST",
+                }).success(function(response){
+                    file.xml = response;
+                    $previewer.previewer(file);
+                });
+            }
 
             $('#edit-media').off()
                 .on('click', function(){

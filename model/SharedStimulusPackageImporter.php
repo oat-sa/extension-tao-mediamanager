@@ -181,9 +181,14 @@ class SharedStimulusPackageImporter extends ZipImporter
     protected function storeSharedStimulus($class, $lang, $xmlFile)
     {
         SharedStimulusImporter::isValidSharedStimulus($xmlFile);
-        
+
+        $name = basename($xmlFile, '.xml');
+        $name .= '.xhtml';
+        $filepath = dirname($xmlFile) . '/' . $name;
+        \tao_helpers_File::copy($xmlFile, $filepath);
+
         $service = MediaService::singleton();
-        if (!$service->createMediaInstance($xmlFile, $class->getUri(), $lang, basename($xmlFile))) {
+        if (!$service->createMediaInstance($filepath, $class->getUri(), $lang, basename($filepath))) {
             $report = \common_report_Report::createFailure(__('Fail to import Shared Stimulus'));
         } else {
             $report = \common_report_Report::createSuccess(__('Shared Stimulus imported successfully'));
@@ -211,9 +216,13 @@ class SharedStimulusPackageImporter extends ZipImporter
         }
 
         SharedStimulusImporter::isValidSharedStimulus($xmlFile);
-        
+        $name = basename($xmlFile, '.xml');
+        $name .= '.xhtml';
+        $filepath = dirname($xmlFile) . '/' . $name;
+        \tao_helpers_File::copy($xmlFile, $filepath);
+
         $service = MediaService::singleton();
-        if (!$service->editMediaInstance($xmlFile, $instance->getUri(), $lang)) {
+        if (!$service->editMediaInstance($filepath, $instance->getUri(), $lang)) {
             $report = \common_report_Report::createFailure(__('Fail to edit Shared Stimulus'));
         } else {
             $report = \common_report_Report::createSuccess(__('Shared Stimulus edited successfully'));

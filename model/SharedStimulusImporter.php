@@ -92,8 +92,16 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
                     try {
 
                         self::isValidSharedStimulus($file['uploaded_file']);
+                        $filepath = $file['uploaded_file'];
+                        $name = $file['name'];
+                        if(in_array($file['type'], array('application/xml', 'text/xml'))){
+                            $name = basename($file['name'], 'xml');
+                            $name .= 'xhtml';
+                            $filepath = dirname($file['name']).'/'.$name;
+                            \tao_helpers_File::copy($file['uploaded_file'], $filepath);
+                        }
 
-                        if (!$service->createMediaInstance($file['uploaded_file'], $classUri, \tao_helpers_Uri::decode($form->getValue('lang')), $file["name"])) {
+                        if (!$service->createMediaInstance($filepath, $classUri, \tao_helpers_Uri::decode($form->getValue('lang')), $name)) {
                             $report = \common_report_Report::createFailure(__('Fail to import Shared Stimulus'));
                         } else {
                             $report = \common_report_Report::createSuccess(__('Shared Stimulus imported successfully'));

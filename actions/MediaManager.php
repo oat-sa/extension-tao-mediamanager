@@ -73,23 +73,39 @@ class MediaManager extends \tao_actions_SaSModule
         $mediaSource = new MediaSource(array());
         $filePath = $mediaSource->download($uri);
 
-        $mimeType = \tao_helpers_File::getMimeType($filePath);
-        if (preg_match('/^video|^image/', $mimeType)) {
-            $fp = fopen($filePath, "r");
-            $data = '';
-            if ($fp !== false) {
-                while (!feof($fp)) {
-                    $data .= base64_encode(fread($fp, filesize($filePath)));
-                }
-                fclose($fp);
-            }
-            $this->setData('base64Data', $data);
-        } else if (preg_match('/^text|xml$/', $mimeType)) {
-            $this->setData('data', file_get_contents($filePath));
-        }
-
+        $mimeType = \tao_helpers_File::getMimeType($filePath, true);
+        $xml = in_array($mimeType, array('application/xml','text/xml'));
+        $url = \tao_helpers_Uri::url(
+            'getFile',
+            'MediaManager',
+            'taoMediaManager',
+            array(
+                'uri' => $uri,
+            )
+        );
+        $this->setData('xml', $xml);
+        $this->setData('fileurl', $url);
         $this->setData('mimeType', $mimeType);
         $this->setView('form.tpl');
 
+    }
+
+    public function getFile()
+    {
+
+        if ($this->hasRequestParameter('uri')) {
+            $uri = urldecode($this->getRequestParameter('uri'));
+
+            $mediaSource = new MediaSource(array());
+            $filepath = $mediaSource->download($uri);
+            if($this->hasRequestParameter('xml')){
+                $this->returnJson(htmlentities(file_get_contents($filepath)));
+            }
+            else{
+                \tao_helpers_Http::returnFile($filepath, false);
+            }
+        } else {
+            throw new \common_exception_Error('invalid media identifier');
+        }
     }
 }

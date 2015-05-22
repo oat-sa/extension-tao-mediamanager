@@ -146,7 +146,7 @@ class MediaSource extends Configurable implements MediaManagement
             $file = null;
             $fileManagement = FileManager::getFileManagementModel();
             $filePath = $fileManagement->retrieveFile($fileLink);
-            $mime = \tao_helpers_File::getMimeType($filePath);
+            $mime = \tao_helpers_File::getMimeType($filePath, true);
 
             if (file_exists($filePath)) {
                 $file = array(

@@ -2,6 +2,7 @@
 use oat\tao\helpers\Template;
 Template::inc('form_context.tpl', 'tao');
 ?>
+<link rel="stylesheet" href="<?= Template::css('media.css') ?>"/>
     <div class="main-container flex-container-main-form">
         <header class="section-header flex-container-full">
             <h2><?=get_data('formTitle')?></h2>
@@ -14,18 +15,11 @@ Template::inc('form_context.tpl', 'tao');
         <header class="section-header flex-container-full">
             <h2><?=__('Preview')?></h2>
         </header>
-        <?php if(strpos(get_data('mimeType'), 'image') === 0):?>
-            <img src="data:<?=get_data('mimeType')?>;base64,<?=get_data('base64Data')?>" alt="preview"/>
-        <?php else:?>
-            <?php if(strpos(get_data('mimeType'), 'video') === 0):?>
-            <video width="320" height="240" controls>
-                <source src="data:<?=get_data('mimeType')?>;base64,<?=get_data('base64Data')?>" type="<?=get_data('mimeType')?>">
-                Your browser does not support the video tag.
-            </video>
-            <?php endif;?>
-            <?php if(has_data('data')):?>
-                <pre><?=get_data('data')?></pre>
-            <?php endif;?>
+        <?php if(has_data('fileurl')):?>
+        <div class="previewer" data-url="<?=get_data('fileurl')?>" data-type="<?=get_data('mimeType')?>" data-xml="<?=get_data('xml')?>"></div>
+        <?php endif;?>
+        <?php if(has_data('data')):?>
+        <pre><?=get_data('data')?></pre>
         <?php endif;?>
     </div>
 

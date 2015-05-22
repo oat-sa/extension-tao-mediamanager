@@ -22,6 +22,8 @@
 namespace oat\taoMediaManager\model;
 
 use oat\taoMediaManager\model\fileManagement\FileManager;
+use common_ext_ExtensionsManager;
+use oat\taoRevision\model\RevisionService;
 
 /**
  * Service methods to manage the Media
@@ -65,6 +67,12 @@ class MediaService extends \tao_models_classes_ClassService
             if (!is_null($instance) && $instance instanceof \core_kernel_classes_Resource) {
                 $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LINK), $link);
                 $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LANGUAGE), $language);
+                
+                if (common_ext_ExtensionsManager::singleton()->isEnabled('taoRevision')) {
+                    \common_Logger::i('Auto generating initial revision');
+                    RevisionService::commit($instance, __('Initial import'));
+                }
+                
             }
         }
         return ($link !== false) ? $instance->getUri() : false;
@@ -89,6 +97,11 @@ class MediaService extends \tao_models_classes_ClassService
             if (!is_null($instance) && $instance instanceof \core_kernel_classes_Resource) {
                 $instance->editPropertyValues(new \core_kernel_classes_Property(MEDIA_LINK), $link);
                 $instance->editPropertyValues(new \core_kernel_classes_Property(MEDIA_LANGUAGE), $language);
+            }
+            
+            if (common_ext_ExtensionsManager::singleton()->isEnabled('taoRevision')) {
+                \common_Logger::i('Auto generating revision');
+                RevisionService::commit($instance, __('Imported new file'));
             }
         }
         return ($link !== false) ? true : false;

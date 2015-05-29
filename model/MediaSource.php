@@ -52,18 +52,15 @@ class MediaSource extends Configurable implements MediaManagement
     public function add($source, $fileName, $parent)
     {
         if (!file_exists($source)) {
-            throw new \tao_models_classes_FileNotFoundException('File ' . $source . ' not found');
+            throw new \tao_models_classes_FileNotFoundException($source);
         }
         $parent = \tao_helpers_uri::decode($parent);
         if ($parent === '') {
             $parent = MEDIA_URI;
         }
-        $class = new \core_kernel_classes_Class($parent);
-        if (!$class->exists()) {
-            throw new \common_exception_Error('Class ' . $parent . ' not found');
-        }
+
         $service = MediaService::singleton();
-        $instanceUri = $service->createMediaInstance($source, $class->getUri(), $this->lang, $fileName);
+        $instanceUri = $service->createMediaInstance($source, $parent, $this->lang, $fileName);
 
         return $this->getFileInfo($instanceUri);
     }

@@ -83,7 +83,12 @@ class SharedStimulusImporterTest extends \PHPUnit_Framework_TestCase
     {
         $sharedImporter = new SharedStimulusImporter();
         $filename = dirname(__DIR__) . '/sample/sharedStimulus/sharedStimulus.xml';
-        $finalFilename = dirname(__DIR__) . '/sample/sharedStimulus/sharedStimulus.xhtml';
+
+        $tmpDir = \tao_helpers_File::createTempDir();
+        copy($filename, $tmpDir . basename($filename));
+        $filename = $tmpDir . basename($filename);
+        $finalFilename = $tmpDir.'sharedStimulus.xhtml';
+
         $myClass = new \core_kernel_classes_Class('http://fancyDomain.com/tao.rdf#fancyUri');
         $info = finfo_open(FILEINFO_MIME_TYPE);
         $file['type'] = finfo_file($info, $filename);
@@ -110,7 +115,12 @@ class SharedStimulusImporterTest extends \PHPUnit_Framework_TestCase
         $instance = new \core_kernel_classes_Resource('http://fancyDomain.com/tao.rdf#fancyInstanceUri');
         $sharedImporter = new SharedStimulusImporter($instance->getUri());
         $filename = dirname(__DIR__) . '/sample/sharedStimulus/sharedStimulus.xml';
-        $finalFilename = dirname(__DIR__) . '/sample/sharedStimulus/sharedStimulus.xhtml';
+
+        $tmpDir = \tao_helpers_File::createTempDir();
+        copy($filename, $tmpDir . basename($filename));
+        $filename = $tmpDir . basename($filename);
+        $finalFilename = $tmpDir.'sharedStimulus.xhtml';
+
         $myClass = new \core_kernel_classes_Class('http://fancyDomain.com/tao.rdf#fancyUri');
         $info = finfo_open(FILEINFO_MIME_TYPE);
         $file['type'] = finfo_file($info, $filename);

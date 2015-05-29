@@ -71,8 +71,6 @@ class FileImportForm extends \tao_helpers_form_FormContainer
         ));
 
         $this->form->addElement($fileElt);
-        $this->form->createGroup('file', __('Import Media from a file'), array('file_desc', 'source'));
-
 
         $langService = \tao_models_classes_LanguageService::singleton();
         $dataUsage = new \core_kernel_classes_Resource(INSTANCE_LANGUAGE_USAGE_DATA);

@@ -48,9 +48,10 @@ class MediaService extends \tao_models_classes_ClassService
      * @param string $classUri parent to add the instance to
      * @param string $language language of the content
      * @param string $label label of the instance
+     * @param bool $stimulus if it is a stimulus or not
      * @return string | bool $instanceUri or false on error
      */
-    public function createMediaInstance($fileSource, $classUri, $language, $label = null)
+    public function createMediaInstance($fileSource, $classUri, $language, $label = null, $stimulus = false)
     {
         $label = is_null($label) ? basename($fileSource) : $label;
         $fileManager = FileManager::getFileManagementModel();
@@ -65,9 +66,11 @@ class MediaService extends \tao_models_classes_ClassService
             $instance = $this->createInstance($clazz, $label);
             /** @var $instance  \core_kernel_classes_Resource */
             if (!is_null($instance) && $instance instanceof \core_kernel_classes_Resource) {
+                $mimeType = (!$stimulus) ? \tao_helpers_File::getMimeType($fileSource): 'application/qti+xml';
                 $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LINK), $link);
                 $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LANGUAGE), $language);
-                
+                $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_MIME_TYPE), $mimeType);
+
                 if (common_ext_ExtensionsManager::singleton()->isEnabled('taoRevision')) {
                     \common_Logger::i('Auto generating initial revision');
                     RevisionService::commit($instance, __('Initial import'));

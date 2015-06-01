@@ -49,7 +49,7 @@ class MediaSource extends Configurable implements MediaManagement
      *
      * @see \oat\tao\model\media\MediaManagement::add
      */
-    public function add($source, $fileName, $parent)
+    public function add($source, $fileName, $parent, $stimulus = false)
     {
         if (!file_exists($source)) {
             throw new \tao_models_classes_FileNotFoundException('File ' . $source . ' not found');
@@ -63,7 +63,7 @@ class MediaSource extends Configurable implements MediaManagement
             throw new \common_exception_Error('Class ' . $parent . ' not found');
         }
         $service = MediaService::singleton();
-        $instanceUri = $service->createMediaInstance($source, $class->getUri(), $this->lang, $fileName);
+        $instanceUri = $service->createMediaInstance($source, $class->getUri(), $this->lang, $fileName, $stimulus);
 
         return $this->getFileInfo($instanceUri);
     }
@@ -146,7 +146,7 @@ class MediaSource extends Configurable implements MediaManagement
             $file = null;
             $fileManagement = FileManager::getFileManagementModel();
             $filePath = $fileManagement->retrieveFile($fileLink);
-            $mime = \tao_helpers_File::getMimeType($filePath, true);
+            $mime = (string) $resource->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_MIME_TYPE));
 
             if (file_exists($filePath)) {
                 $file = array(

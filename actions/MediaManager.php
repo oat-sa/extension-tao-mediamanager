@@ -71,9 +71,9 @@ class MediaManager extends \tao_actions_SaSModule
         $uri = ($this->hasRequestParameter('id')) ? $this->getRequestParameter('id') : $this->getRequestParameter('uri');
 
         $mediaSource = new MediaSource(array());
-        $filePath = $mediaSource->download($uri);
+        $fileInfo = $mediaSource->getFileInfo($uri);
 
-        $mimeType = \tao_helpers_File::getMimeType($filePath, true);
+        $mimeType = $fileInfo['mime'];
         $xml = in_array($mimeType, array('application/xml','text/xml'));
         $url = \tao_helpers_Uri::url(
             'getFile',

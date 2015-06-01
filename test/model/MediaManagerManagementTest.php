@@ -168,20 +168,33 @@ class MediaSourceTest extends \PHPUnit_Framework_TestCase
         $rootClass->delete(true);
     }
 
-    /**
-     * @depends testDelete
-     * @expectedException \common_exception_Error
-     * @expectedExceptionMessageRegExp /Class [^\s]+ not found/
-     */
     public function testUploadFailNoClass()
     {
 
         $filePath = dirname(__DIR__) . '/sample/Italy.png';
 
-        $this->service->expects($this->never())
-            ->method('createMediaInstance');
+        $this->service->expects($this->once())
+            ->method('createMediaInstance')
+            ->with($filePath, $this->classUri, 'EN_en','Italy1.png')
+            ->willReturn('http://www.tao.lu/Ontologies/TAO.rdf#MyLink');
 
-        $this->mediaManagerManagement->add($filePath, 'Italy1.png', $this->classUri);
+        //mock the fileInfo method
+        $fileInfo = array(
+            'name' => 'myName',
+            'mime' => 'mime/type',
+            'size' => 1024,
+        );
+
+        $this->mediaManagerManagement->expects($this->once())
+            ->method('getFileInfo')
+            ->with('http://www.tao.lu/Ontologies/TAO.rdf#MyLink')
+            ->willReturn($fileInfo);
+
+        $success = $this->mediaManagerManagement->add($filePath, 'Italy1.png', $this->classUri);
+
+        $this->assertInternalType('array', $success, 'Should be a file info array');
+        $this->assertArrayNotHasKey('error', $success, 'upload doesn\'t succeed');
+        $this->assertEquals($fileInfo, $success, 'Doesn\'t return the getFileInfo value');
 
     }
 

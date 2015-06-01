@@ -92,6 +92,7 @@ class MediaServiceTest extends \PHPUnit_Framework_TestCase
 
         //clear previous tests
         $root = new \core_kernel_classes_Class($classUri);
+        $root->setSubClassOf($this->mediaService->getRootClass());
         $instances = $root->getInstances();
         foreach ($instances as $inst) {
             $inst->delete();
@@ -103,7 +104,6 @@ class MediaServiceTest extends \PHPUnit_Framework_TestCase
         $instances = $root->getInstances();
         /** @var \core_kernel_classes_Resource $instance */
         $instance = array_pop($instances);
-
         $thing = $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
         $linkResult = $thing instanceof \core_kernel_classes_Resource ? $thing->getUri() : (string)$thing;
         $this->assertInstanceOf(
@@ -120,6 +120,9 @@ class MediaServiceTest extends \PHPUnit_Framework_TestCase
             $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LANGUAGE)),
             'The instance language is wrong'
         );
+
+        $root->delete(true);
+        $root->setSubClassOf($this->mediaService->getRootClass());
 
     }
 

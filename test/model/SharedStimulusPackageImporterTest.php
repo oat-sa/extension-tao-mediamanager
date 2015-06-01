@@ -137,10 +137,10 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
         $tmpDir = \tao_helpers_File::createTempDir();
         $this->service->expects($this->exactly(2))
             ->method('createMediaInstance')
-            ->with($tmpDir . '/sharedStimulus.xml', $class->getUri(), 'en_EN')
+            ->with($tmpDir . 'sharedStimulus.xml', $class->getUri(), 'en_EN')
             ->willReturnOnConsecutiveCalls(array(true, false));
 
-        $report = $this->packageImporter->setXmlFile(dirname(__DIR__) . '/sample/sharedStimulus/stimulusPackage/stimulus.xml')
+        $report = $this->packageImporter->setXmlFile(dirname(__DIR__) . '/sample/sharedStimulus/stimulusPackage/sharedStimulus.xml')
             ->setDirectory(dirname(__DIR__) . '/sample/sharedStimulus/stimulusPackage/')
             ->setTmpDir($tmpDir)
             ->validateAndStoreSharedStimulus($class, 'en_EN');

@@ -67,38 +67,26 @@ class MediaService extends \tao_models_classes_ClassService
         //get the file MD5
         $md5 = md5_file($fileSource);
 
-        //compare it to existing files
-        $instance = $this->getInstanceFromFile($md5, $clazz);
+        //create media instance
+        $label = is_null($label) ? basename($fileSource) : $label;
+        $fileManager = FileManager::getFileManagementModel();
+        $link = $fileManager->storeFile($fileSource, $label);
 
-        //create media instance if files doesn't exists
-        if(is_null($instance)){
-            $label = is_null($label) ? basename($fileSource) : $label;
-            $fileManager = FileManager::getFileManagementModel();
-            $link = $fileManager->storeFile($fileSource, $label);
+        if ($link !== false) {
+            $instance = $clazz->createInstanceWithProperties(array(
+                RDFS_LABEL => $label,
+                MEDIA_LINK => $link,
+                MEDIA_LANGUAGE => $language,
+                MEDIA_MD5 => $md5
+            ));
 
-            if ($link !== false) {
-                $instance = $this->createInstance($clazz, $label);
-                /** @var $instance  \core_kernel_classes_Resource */
-                if (!is_null($instance) && $instance instanceof \core_kernel_classes_Resource) {
-                    $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LINK), $link);
-                    $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LANGUAGE), $language);
-                    $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_MD5), $md5);
-
-                    if (common_ext_ExtensionsManager::singleton()->isEnabled('taoRevision')) {
-                        \common_Logger::i('Auto generating initial revision');
-                        RevisionService::commit($instance, __('Initial import'));
-                    }
-                    return $instance->getUri();
-                }
+            if (common_ext_ExtensionsManager::singleton()->isEnabled('taoRevision')) {
+                \common_Logger::i('Auto generating initial revision');
+                RevisionService::commit($instance, __('Initial import'));
             }
-            return false;
+            return $instance->getUri();
         }
-
-        return $instance->getUri();
-
-
-
-
+        return false;
     }
 
     /**
@@ -111,7 +99,11 @@ class MediaService extends \tao_models_classes_ClassService
     public function editMediaInstance($fileTmp, $instanceUri, $language)
     {
         $instance = new \core_kernel_classes_Resource($instanceUri);
+        $link = $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
+        $link = $link instanceof \core_kernel_classes_Resource ? $link->getUri() : (string)$link;
+
         $fileManager = FileManager::getFileManagementModel();
+        $fileManager->deleteFile($link);
         $link = $fileManager->storeFile($fileTmp, $instance->getLabel());
 
         if ($link !== false) {
@@ -133,23 +125,4 @@ class MediaService extends \tao_models_classes_ClassService
 
     }
 
-    /**
-     * @param string $md5 representing the file md5
-     * @param \core_kernel_classes_Class $parent parent to add the instance to
-     * @return core_kernel_classes_Resource instance if file exists or null
-     * @throws \common_exception_Error
-     */
-    private function getInstanceFromFile($md5, $parent){
-        //if the class does not belong to media classes throw exception
-        if (!($parent->isSubClassOf($this->getRootClass()) || $parent->equals($this->getRootClass()))) {
-            throw new \common_exception_Error('Class ' . $parent->getUri() . ' is not a media class');
-        }
-
-        $instances = $parent->searchInstances(array(MEDIA_MD5 => $md5));
-        $instance = array_shift($instances);
-        if(!is_null($instance)){
-            return $instance;
-        }
-        return null;
-    }
 }

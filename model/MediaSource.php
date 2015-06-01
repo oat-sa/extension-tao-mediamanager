@@ -178,4 +178,14 @@ class MediaSource extends Configurable implements MediaManagement
         $filePath = $fileManagement->retrieveFile($fileLink);
         return $filePath;
     }
+
+    /**
+     * @param string $md5 representing the file md5
+     * @param \core_kernel_classes_Class $parent parent to add the instance to
+     * @return \core_kernel_classes_Resource instance if file exists or null
+     * @throws \common_exception_Error
+     */
+    private function getInstanceFromFile($md5, $parent){
+        \common_Logger::w('Not yet implemented');
+    }
 }

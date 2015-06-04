@@ -52,18 +52,15 @@ class MediaSource extends Configurable implements MediaManagement
     public function add($source, $fileName, $parent, $stimulus = false)
     {
         if (!file_exists($source)) {
-            throw new \tao_models_classes_FileNotFoundException('File ' . $source . ' not found');
+            throw new \tao_models_classes_FileNotFoundException($source);
         }
         $parent = \tao_helpers_uri::decode($parent);
         if ($parent === '') {
             $parent = MEDIA_URI;
         }
-        $class = new \core_kernel_classes_Class($parent);
-        if (!$class->exists()) {
-            throw new \common_exception_Error('Class ' . $parent . ' not found');
-        }
+
         $service = MediaService::singleton();
-        $instanceUri = $service->createMediaInstance($source, $class->getUri(), $this->lang, $fileName, $stimulus);
+        $instanceUri = $service->createMediaInstance($source, $parent, $this->lang, $fileName, $stimulus);
 
         return $this->getFileInfo($instanceUri);
     }
@@ -180,5 +177,15 @@ class MediaSource extends Configurable implements MediaManagement
         $fileManagement = FileManager::getFileManagementModel();
         $filePath = $fileManagement->retrieveFile($fileLink);
         return $filePath;
+    }
+
+    /**
+     * @param string $md5 representing the file md5
+     * @param \core_kernel_classes_Class $parent parent to add the instance to
+     * @return \core_kernel_classes_Resource instance if file exists or null
+     * @throws \common_exception_Error
+     */
+    private function getInstanceFromFile($md5, $parent){
+        \common_Logger::w('Not yet implemented');
     }
 }

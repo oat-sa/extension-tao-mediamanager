@@ -83,19 +83,25 @@ class SharedStimulusImporterTest extends \PHPUnit_Framework_TestCase
     {
         $sharedImporter = new SharedStimulusImporter();
         $filename = dirname(__DIR__) . '/sample/sharedStimulus/sharedStimulus.xml';
+
+        $tmpDir = \tao_helpers_File::createTempDir();
+        copy($filename, $tmpDir . basename($filename));
+        $filename = $tmpDir . basename($filename);
+        $finalFilename = $tmpDir.'sharedStimulus.xhtml';
+
         $myClass = new \core_kernel_classes_Class('http://fancyDomain.com/tao.rdf#fancyUri');
         $info = finfo_open(FILEINFO_MIME_TYPE);
         $file['type'] = finfo_file($info, $filename);
         finfo_close($info);
         $file['uploaded_file'] = $filename;
-        $file['name'] = basename($filename);
+        $file['name'] = $filename;
 
         $form = $sharedImporter->getForm();
         $form->setValues(array('source' => $file, 'lang' => 'EN_en'));
 
         $this->service->expects($this->once())
             ->method('createMediaInstance')
-            ->with($filename, $myClass->getUri(), 'EN_en', basename($filename))
+            ->with($finalFilename, $myClass->getUri(), 'EN_en', basename($filename,'xml').'xhtml')
             ->willReturn('myGreatLink');
 
         $report = $sharedImporter->import($myClass, $form);
@@ -109,12 +115,18 @@ class SharedStimulusImporterTest extends \PHPUnit_Framework_TestCase
         $instance = new \core_kernel_classes_Resource('http://fancyDomain.com/tao.rdf#fancyInstanceUri');
         $sharedImporter = new SharedStimulusImporter($instance->getUri());
         $filename = dirname(__DIR__) . '/sample/sharedStimulus/sharedStimulus.xml';
+
+        $tmpDir = \tao_helpers_File::createTempDir();
+        copy($filename, $tmpDir . basename($filename));
+        $filename = $tmpDir . basename($filename);
+        $finalFilename = $tmpDir.'sharedStimulus.xhtml';
+
         $myClass = new \core_kernel_classes_Class('http://fancyDomain.com/tao.rdf#fancyUri');
         $info = finfo_open(FILEINFO_MIME_TYPE);
         $file['type'] = finfo_file($info, $filename);
         finfo_close($info);
         $file['uploaded_file'] = $filename;
-        $file['name'] = basename($filename);
+        $file['name'] = $filename;
 
 
         $form = $sharedImporter->getForm();
@@ -122,7 +134,7 @@ class SharedStimulusImporterTest extends \PHPUnit_Framework_TestCase
 
         $this->service->expects($this->once())
             ->method('editMediaInstance')
-            ->with($filename, $instance->getUri(), 'EN_en')
+            ->with($finalFilename, $instance->getUri(), 'EN_en')
             ->willReturn(true);
 
         $report = $sharedImporter->import($myClass, $form);

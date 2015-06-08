@@ -130,92 +130,47 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
         $instance->delete(true);
     }
 
-    public function testValidateAndStoreSharedStimulus()
+
+    /**
+     * @dataProvider sharedStimulusPackage
+     */
+    public function testGetSharedStimulusFile($filename, $exception)
     {
 
-        $class = new \core_kernel_classes_Class('myGreatClassUri');
-        $tmpDir = \tao_helpers_File::createTempDir();
-        $filename = dirname(__DIR__) . '/sample/sharedStimulus/stimulusPackage/stimulus.xml';
-        copy($filename, $tmpDir . 'stimulus.xml');
+        try {
+            $method = new \ReflectionMethod('oat\taoMediaManager\model\SharedStimulusPackageImporter', 'getSharedStimulusFile');
+            $method->setAccessible(true);
+            $xmlFile = $method->invokeArgs($this->packageImporter, array($filename));
 
-        $this->service->expects($this->exactly(2))
-            ->method('createMediaInstance')
-            ->with($tmpDir . 'sharedStimulus.xml', $class->getUri(), 'en_EN')
-            ->willReturnOnConsecutiveCalls(array(true, false));
+            $this->assertContains(basename($filename, '.zip') . '/stimulus.xml', $xmlFile);
+        } catch (\common_Exception $e) {
+            $this->assertNotNull($exception, __('It should not throw an exception'));
+            if (!is_null($e)) {
+                $this->assertInstanceOf(get_class($exception), $e, __('The exception class is wrong'));
+                if ($exception->getMessage() !== '') {
+                    $this->assertEquals($exception->getMessage(), $e->getMessage(), __('The exception message is wrong'));
+                }
+            }
+        }
 
-        $report = $this->packageImporter->setXmlFile($filename)
-            ->setDirectory(dirname(__DIR__) . '/sample/sharedStimulus/stimulusPackage/')
-            ->setTmpDir($tmpDir)
-            ->validateAndStoreSharedStimulus($class, 'en_EN');
 
-        $expected = \common_report_Report::createSuccess(__('Shared Stimulus imported successfully'));
-        $this->assertEquals($expected->getType(), $report->getType(), __('Import should succeed and create a success report'));
-        $this->assertEquals($expected->getMessage(), $report->getMessage(), __('Report message is not the right one'));
-
-        $report = $this->packageImporter->validateAndStoreSharedStimulus($class, 'en_EN');
-
-        $expected = \common_report_Report::createFailure(__('Fail to import Shared Stimulus'));
-        $this->assertEquals($expected->getType(), $report->getType(), __('Import should fail and create a fail report'));
-        $this->assertEquals($expected->getMessage(), $report->getMessage(), __('Report message is not the right one'));
-
-    }
-
-    public function testValidateAndEditSharedStimulus()
-    {
-        $clazz = new \core_kernel_classes_Class('http://www.tao.lu/Ontologies/TAOMedia.rdf#Media');
-        $instance = $clazz->createInstance('my Label');
-        $tmpDir = \tao_helpers_File::createTempDir();
-        $filename = dirname(__DIR__) . '/sample/sharedStimulus/editStimulus/stimulus.xml';
-        copy($filename, $tmpDir . 'stimulus.xml');
-
-        $this->service->expects($this->exactly(2))
-            ->method('editMediaInstance')
-            ->with($tmpDir . 'sharedStimulus.xml', $instance->getUri(), 'en_EN')
-            ->willReturnOnConsecutiveCalls(array(true, false));
-
-        $report = $this->packageImporter->setXmlFile($filename)
-            ->setDirectory(dirname(__DIR__) . '/sample/sharedStimulus/editStimulus/')
-            ->setTmpDir($tmpDir)
-            ->validateAndEditSharedStimulus($instance, 'en_EN');
-
-        $expected = \common_report_Report::createSuccess(__('Shared Stimulus edited successfully'));
-        $this->assertEquals($expected->getType(), $report->getType(), __('Edit should succeed and create a success report'));
-        $this->assertEquals($expected->getMessage(), $report->getMessage(), __('Report message is not the right one'));
-
-        $report = $this->packageImporter->validateAndEditSharedStimulus($instance, 'en_EN');
-
-        $expected = \common_report_Report::createFailure(__('Fail to edit Shared Stimulus'));
-        $this->assertEquals($expected->getType(), $report->getType(), __('Edit should fail and create a fail report'));
-        $this->assertEquals($expected->getMessage(), $report->getMessage(), __('Report message is not the right one'));
-
-        $instance->delete(true);
-
-    }
-
-    public function testValidateAndEditSharedStimulusFail()
-    {
-
-        $instance = new \core_kernel_classes_Resource('fakeInstance');
-        $expected = \common_report_Report::createFailure('The instance fakeInstance is not a Media instance');
-
-        $report = $this->packageImporter->validateAndEditSharedStimulus($instance, 'en_EN');
-        $this->assertEquals($expected->getType(), $report->getType(), __('Edit should fail and create a fail report'));
-        $this->assertEquals($expected->getMessage(), $report->getMessage(), __('Report message is not the right one'));
     }
 
     /**
      * @dataProvider sharedStimulusConvertProvider
      */
-    public function testConvertEmbeddedFiles($directory, $exception, $converted)
+    public function testEmbedAssets($directory, $exception, $converted)
     {
 
-        $this->packageImporter->setDirectory($directory);
         $xmlDocument = new XmlDocument();
-        $xmlDocument->load($this->packageImporter->getDirectory() . '/stimulus.xml');
+        $xmlDocument->load($directory . '/stimulus.xml');
 
         try {
-            $xmlConverted = $this->packageImporter->convertEmbeddedFiles($xmlDocument);
-            $strXml = $xmlConverted->saveToString();
+            $method = new \ReflectionMethod('oat\taoMediaManager\model\SharedStimulusPackageImporter', 'embedAssets');
+            $method->setAccessible(true);
+            $xmlConverted = $method->invokeArgs($this->packageImporter, array($directory.'/stimulus.xml'));
+            $xmlDocument->load($xmlConverted);
+            $strXml = $xmlDocument->saveToString();
             $xmlDocument->load($converted);
             $convertStr = $xmlDocument->saveToString();
 
@@ -243,13 +198,22 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function sharedStimulusPackage()
+    {
+        $sampleDir = dirname(__DIR__) . '/sample/sharedStimulus/';
+        return array(
+            array($sampleDir . 'UnknowFile.zip', new \common_Exception('Unable to open archive '.$sampleDir . 'UnknowFile.zip')),
+            array($sampleDir . 'missingXmlArchive.zip', new \common_Exception('XML not found')),
+            array($sampleDir . 'stimulusPackage.zip', null),
+        );
+    }
+
     public function sharedStimulusImportProvider()
     {
         $sampleDir = dirname(__DIR__) . '/sample/sharedStimulus/';
         return array(
-            array($sampleDir . 'stimulus/../Package.zip', \common_report_Report::createFailure(__('Filename is unsafe')), false),
-            array($sampleDir . 'UnknowFile.zip', \common_report_Report::createFailure(__('Unable to move uploaded file')), false),
-            array($sampleDir . 'missingXmlArchive.zip', \common_report_Report::createFailure('Unable to find an xml file in you package'), false),
+            array($sampleDir . 'UnknowFile.zip', \common_report_Report::createFailure(__('Unable to open archive '.$sampleDir . 'UnknowFile.zip')), false),
+            array($sampleDir . 'missingXmlArchive.zip', \common_report_Report::createFailure('XML not found'), false),
             array($sampleDir . 'stimulusPackage.zip', \common_report_Report::createSuccess(__('Shared Stimulus %s successfully')), true),
         );
     }

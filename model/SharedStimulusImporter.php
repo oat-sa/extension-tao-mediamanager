@@ -151,7 +151,7 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
         // No $version given = auto detect.
         $xmlDocument = new XmlDocument();
         //true as second parameter to validate right away
-        $xmlDocument->load($filename, true);
+        $xmlDocument->load($filename, false);
 
         // The shared stimulus is qti compliant, see if it is not an interaction, feedback or template
         if (self::hasInteraction($xmlDocument->getDocumentComponent())) {

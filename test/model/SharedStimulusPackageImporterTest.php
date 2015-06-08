@@ -135,12 +135,15 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
 
         $class = new \core_kernel_classes_Class('myGreatClassUri');
         $tmpDir = \tao_helpers_File::createTempDir();
+        $filename = dirname(__DIR__) . '/sample/sharedStimulus/stimulusPackage/stimulus.xml';
+        copy($filename, $tmpDir . 'stimulus.xml');
+
         $this->service->expects($this->exactly(2))
             ->method('createMediaInstance')
             ->with($tmpDir . 'sharedStimulus.xml', $class->getUri(), 'en_EN')
             ->willReturnOnConsecutiveCalls(array(true, false));
 
-        $report = $this->packageImporter->setXmlFile(dirname(__DIR__) . '/sample/sharedStimulus/stimulusPackage/sharedStimulus.xml')
+        $report = $this->packageImporter->setXmlFile($filename)
             ->setDirectory(dirname(__DIR__) . '/sample/sharedStimulus/stimulusPackage/')
             ->setTmpDir($tmpDir)
             ->validateAndStoreSharedStimulus($class, 'en_EN');
@@ -162,12 +165,15 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
         $clazz = new \core_kernel_classes_Class('http://www.tao.lu/Ontologies/TAOMedia.rdf#Media');
         $instance = $clazz->createInstance('my Label');
         $tmpDir = \tao_helpers_File::createTempDir();
+        $filename = dirname(__DIR__) . '/sample/sharedStimulus/editStimulus/stimulus.xml';
+        copy($filename, $tmpDir . 'stimulus.xml');
+
         $this->service->expects($this->exactly(2))
             ->method('editMediaInstance')
-            ->with($tmpDir . '/sharedStimulus.xml', $instance->getUri(), 'en_EN')
+            ->with($tmpDir . 'sharedStimulus.xml', $instance->getUri(), 'en_EN')
             ->willReturnOnConsecutiveCalls(array(true, false));
 
-        $report = $this->packageImporter->setXmlFile(dirname(__DIR__) . '/sample/sharedStimulus/editStimulus/stimulus.xml')
+        $report = $this->packageImporter->setXmlFile($filename)
             ->setDirectory(dirname(__DIR__) . '/sample/sharedStimulus/editStimulus/')
             ->setTmpDir($tmpDir)
             ->validateAndEditSharedStimulus($instance, 'en_EN');

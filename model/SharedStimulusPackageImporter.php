@@ -245,7 +245,7 @@ class SharedStimulusPackageImporter extends ZipImporter
             throw new \Exception('Unable to convert embedded files');
         }
 
-        $filename = $this->tmpDir . '/sharedStimulus.xml';
+        $filename = $this->tmpDir . 'sharedStimulus.xml';
         $xmlDocument->save($filename);
 
         return $filename;

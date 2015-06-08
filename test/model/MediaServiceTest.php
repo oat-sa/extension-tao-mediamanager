@@ -44,7 +44,7 @@ class MediaServiceTest extends \PHPUnit_Framework_TestCase
 
         //fileManagerMock
         $this->fileManagerMock = $this->getMockBuilder('oat\taoMediaManager\model\fileManagement\SimpleFileManagement')
-            ->setMethods(array('storeFile'))
+            ->setMethods(array('storeFile', 'deleteFile'))
             ->getMock();
 
         $ref = new \ReflectionProperty('oat\taoMediaManager\model\fileManagement\FileManager', 'fileManager');
@@ -132,12 +132,18 @@ class MediaServiceTest extends \PHPUnit_Framework_TestCase
         $fileTmp = dirname(__DIR__) . '/sample/Italy.png';
         $this->initializeMock($fileTmp);
 
+        $this->fileManagerMock->expects($this->once())
+            ->method('deleteFile')
+            ->with('MyLink')
+            ->willReturn(true);
+
         $lang = 'EN-en';
         $instanceUri = 'http://myFancyDomain.com/myGreatInstanceUri';
+        $instance = new \core_kernel_classes_Class($instanceUri);
+        $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LINK), 'MyLink');
 
         $this->mediaService->editMediaInstance($fileTmp, $instanceUri, $lang);
 
-        $instance = new \core_kernel_classes_Class($instanceUri);
         $this->assertEquals(
             $lang,
             $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LANGUAGE)),

@@ -60,10 +60,15 @@ class MediaSource extends Configurable implements MediaManagement
         }
 
         $service = MediaService::singleton();
+        $newXml = $source;
         if($stimulus){
+            // validate the shared stimulus
             SharedStimulusImporter::isValidSharedStimulus($source);
+
+            // embed assets in the shared stimulus
+            $newXml = SharedStimulusPackageImporter::embedAssets($source);
         }
-        $instanceUri = $service->createMediaInstance($source, $parent, $this->lang, $fileName, $stimulus);
+        $instanceUri = $service->createMediaInstance($newXml, $parent, $this->lang, $fileName, $stimulus);
 
         return $this->getFileInfo($instanceUri);
     }

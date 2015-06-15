@@ -181,13 +181,8 @@ class SharedStimulusPackageImporter extends ZipImporter
     {
         SharedStimulusImporter::isValidSharedStimulus($xmlFile);
 
-        $name = basename($xmlFile, '.xml');
-        $name .= '.xhtml';
-        $filepath = dirname($xmlFile) . '/' . $name;
-        \tao_helpers_File::copy($xmlFile, $filepath);
-
         $service = MediaService::singleton();
-        if (!$service->createMediaInstance($filepath, $class->getUri(), $lang, basename($filepath))) {
+        if (!$service->createMediaInstance($xmlFile, $class->getUri(), $lang, basename($xmlFile), true)) {
             $report = \common_report_Report::createFailure(__('Fail to import Shared Stimulus'));
         } else {
             $report = \common_report_Report::createSuccess(__('Shared Stimulus imported successfully'));

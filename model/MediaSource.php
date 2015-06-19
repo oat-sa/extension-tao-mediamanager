@@ -21,8 +21,10 @@
 namespace oat\taoMediaManager\model;
 
 use oat\oatbox\Configurable;
+use oat\tao\model\accessControl\data\PermissionException;
 use oat\tao\model\media\MediaManagement;
 use oat\taoMediaManager\model\fileManagement\FileManager;
+use oat\tao\model\accessControl\func\AclProxy as FuncProxy;
 
 class MediaSource extends Configurable implements MediaManagement
 {
@@ -51,6 +53,11 @@ class MediaSource extends Configurable implements MediaManagement
      */
     public function add($source, $fileName, $parent)
     {
+        $user = \common_session_SessionManager::getSession()->getUser();
+        if(!FuncProxy::accessPossible($user, 'oat\\taoMediaManager\\actions\\MediaImport', 'index')){
+            throw new PermissionException($user->getIdentifier(), 'index', 'MediaImport','taoMediaManager');
+        }
+
         if (!file_exists($source)) {
             throw new \tao_models_classes_FileNotFoundException('File ' . $source . ' not found');
         }

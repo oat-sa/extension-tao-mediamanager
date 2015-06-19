@@ -174,6 +174,14 @@ class Updater extends \common_ext_ExtensionUpdater
             $currentVersion = '0.2.4';
         }
 
+        if ($currentVersion === '0.2.4') {
+            $accessService = \funcAcl_models_classes_AccessService::singleton();
+            //grant access to item author
+            $itemAuthor = new \core_kernel_classes_Resource('http://www.tao.lu/Ontologies/TAOItem.rdf#ItemAuthor');
+            $accessService->revokeModuleAccess($itemAuthor, 'taoMediaManager', 'MediaImport');
+            $currentVersion = '0.2.5';
+        }
+
         return $currentVersion;
     }
 }

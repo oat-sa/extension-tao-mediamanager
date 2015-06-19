@@ -21,45 +21,22 @@
 
 namespace oat\taoMediaManager\actions;
 
-use oat\taoMediaManager\model\fileManagement\FileManager;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\ZipExporter;
 
 /**
  * This controller provide the actions to import medias
  */
-class MediaExport extends \tao_actions_Export {
+class MediaExport extends \tao_actions_Export
+{
 
-    public function __construct(){
+    public function __construct()
+    {
 
         parent::__construct();
         $this->service = MediaService::singleton();
     }
 
-
-    /**
-     * Download a media on click on the download button
-     */
-    public function downloadMedia(){
-        $uri = $this->getRequestParameter('id');
-
-        $media = new \core_kernel_classes_Resource($uri);
-        $link = $media->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
-
-        $fileManager = FileManager::getFileManagementModel();
-        $filePath = $fileManager->retrieveFile($link);
-        $fp = fopen($filePath, "r");
-        if ($fp !== false) {
-            $embed =  '<embed src="data:'.\tao_helpers_File::getMimeType($filePath).';base64,';
-            while (!feof($fp))
-            {
-                $embed .= base64_encode(fread($fp, filesize($filePath)));
-            }
-            $embed .= '"/>';
-            fclose($fp);
-        }
-        echo $embed;
-    }
 
     /**
      * get the main class
@@ -70,7 +47,8 @@ class MediaExport extends \tao_actions_Export {
         return new \core_kernel_classes_Class(MEDIA_URI);
     }
 
-    protected function getAvailableExportHandlers() {
+    protected function getAvailableExportHandlers()
+    {
         return array(
             new ZipExporter()
         );

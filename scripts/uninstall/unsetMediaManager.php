@@ -19,11 +19,25 @@
  *
  */
 
-use \oat\tao\model\media\MediaSource;
-use \oat\taoMediaManager\model\fileManagement\FileManager;
-use \oat\taoMediaManager\model\fileManagement\SimpleFileManagement;
+use oat\tao\model\media\MediaService;
+use oat\taoMediaManager\model\fileManagement\FileManager;
 
-MediaSource::removeMediaSource('mediamanager');
-MediaSource::removeMediaSource('mediamanager', 'management');
+//remove possible /media folder in taoMediaManager
+$dir = dirname(dirname(__DIR__)) . '/media';
+if(file_exists($dir)){
+    $it = new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS);
+    $files = new \RecursiveIteratorIterator($it,
+        \RecursiveIteratorIterator::CHILD_FIRST);
+    foreach($files as $file) {
+        if ($file->isDir()){
+            rmdir($file->getRealPath());
+        } else {
+            unlink($file->getRealPath());
+        }
+    }
+    rmdir($dir);
+}
 
-FileManager::setFileManagementModel(new SimpleFileManagement());
+MediaService::singleton()->removeMediaSource('mediamanager');
+
+\common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager')->unsetConfig(FileManager::CONFIG_KEY);

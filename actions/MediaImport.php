@@ -23,16 +23,18 @@ namespace oat\taoMediaManager\actions;
 
 use oat\taoMediaManager\model\FileImporter;
 use oat\taoMediaManager\model\MediaService;
-use oat\taoMediaManager\model\ZipImporter;
+use oat\taoMediaManager\model\SharedStimulusImporter;
 
 /**
  * This controller provide the actions to import medias
  */
-class MediaImport extends \tao_actions_Import {
+class MediaImport extends \tao_actions_Import
+{
 
     private $importHandlers;
 
-    public function __construct(){
+    public function __construct()
+    {
 
         parent::__construct();
         $this->service = MediaService::singleton();
@@ -46,33 +48,40 @@ class MediaImport extends \tao_actions_Import {
      */
     public function index()
     {
-        $this->importHandlers = array(
-            new FileImporter()
-        );
+        $this->setAvailableImportHandlers();
         parent::index();
 
-    }
-
-    protected function getAvailableImportHandlers() {
-        return $this->importHandlers;
     }
 
     /**
-     * get the import handler to replace a media
+     * @requiresRight id WRITE
      */
-    public function uploadMedia(){
+    public function editMedia()
+    {
         $id = null;
-        if(!$this->hasRequestParameter('instanceUri')){
+        if ($this->hasRequestParameter('instanceUri')) {
+            $id = $this->getRequestParameter('instanceUri');
+        } else {
             $id = $this->getRequestParameter('id');
         }
-        else{
-            $id = $this->getRequestParameter('instanceUri');
-        }
-        $this->importHandlers = array(new FileImporter($id));
+        $this->setAvailableImportHandlers($id);
         parent::index();
-
     }
 
+    protected function getAvailableImportHandlers()
+    {
+        return $this->importHandlers;
+    }
+
+    protected function setAvailableImportHandlers($id = null)
+    {
+        $this->importHandlers = array(
+            new FileImporter($id),
+            new SharedStimulusImporter($id)
+        );
+
+        return $this;
+    }
 
 
     /**

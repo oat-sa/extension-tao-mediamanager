@@ -21,60 +21,39 @@
 
 namespace oat\taoMediaManager\actions;
 
-use oat\taoMediaManager\model\fileManagement\FileManager;
+use oat\taoMediaManager\model\editInstanceForm;
 use oat\taoMediaManager\model\MediaService;
+use oat\taoMediaManager\model\MediaSource;
 
-class MediaManager extends \tao_actions_SaSModule {
-
+class MediaManager extends \tao_actions_SaSModule
+{
 
     protected function getClassService()
     {
         return MediaService::singleton();
     }
 
+    public function __construct()
+    {
 
-	public function __construct(){
-		
-		parent::__construct();
-		$this->service = $this->getClassService();
-		//the service is initialized by default
-		$this->defaultData();
-	}
-
-	/**
-	 * Show the form to edit a class
-	 */
-	public function editMediaClass(){
-        $clazz = new \core_kernel_classes_Class(\tao_helpers_Uri::decode($this->getRequestParameter('classUri')));
-
-
-        $myForm = $this->editClass($clazz, $this->getRootClass());
-
-        if($myForm->isSubmited()){
-            if($myForm->isValid()){
-                if($clazz instanceof \core_kernel_classes_Resource){
-                    $this->setData("selectNode", \tao_helpers_Uri::encode($clazz->getUri()));
-                }
-                $this->setData('message', __('Class saved'));
-                $this->setData('reload', true);
-            }
-        }
-        $this->setData('formTitle', __('Edit Media class'));
-        $this->setData('myForm', $myForm->render());
-        $this->setView('form.tpl', 'tao');
+        parent::__construct();
+        $this->service = $this->getClassService();
+        //the service is initialized by default
+        $this->defaultData();
     }
 
     /**
      * Show the form to edit an instance, show also a preview of the media
      */
-    public function editInstance(){
+    public function editInstance()
+    {
         $clazz = $this->getCurrentClass();
         $instance = $this->getCurrentInstance();
-        $myFormContainer = new \tao_actions_form_Instance($clazz, $instance);
+        $myFormContainer = new editInstanceForm($clazz, $instance);
 
         $myForm = $myFormContainer->getForm();
-        if($myForm->isSubmited()){
-            if($myForm->isValid()){
+        if ($myForm->isSubmited()) {
+            if ($myForm->isValid()) {
 
                 $values = $myForm->getValues();
                 // save properties
@@ -82,43 +61,51 @@ class MediaManager extends \tao_actions_SaSModule {
                 $instance = $binder->bind($values);
                 $message = __('Instance saved');
 
-                $this->setData('message',$message);
+                $this->setData('message', $message);
                 $this->setData('reload', true);
             }
         }
 
         $this->setData('formTitle', __('Edit Instance'));
         $this->setData('myForm', $myForm->render());
-        $uri = ($this->hasRequestParameter('id'))?$this->getRequestParameter('id'):\tao_helpers_Uri::decode($this->getRequestParameter('uri'));
-        $media = new \core_kernel_classes_Resource($uri);
-        $link = $media->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
-        if($link instanceof \core_kernel_classes_Literal){
-            $link = $link->literal;
-        }
-        $fileManager = FileManager::getFileManagementModel();
-        $filePath = $fileManager->retrieveFile($link);
-        $fp = fopen($filePath, "r");
-        $data = '';
-        if ($fp !== false) {
-            while (!feof($fp))
-            {
-                $data .= base64_encode(fread($fp, filesize($filePath)));
-            }
-            fclose($fp);
-        }
+        $uri = ($this->hasRequestParameter('id')) ? $this->getRequestParameter('id') : $this->getRequestParameter('uri');
 
-        $this->setData('mimeType', \tao_helpers_File::getMimeType($filePath));
-        $this->setData('base64Data', $data);
+        $mediaSource = new MediaSource(array());
+        $filePath = $mediaSource->download($uri);
+
+        $mimeType = \tao_helpers_File::getMimeType($filePath, true);
+        $xml = in_array($mimeType, array('application/xml','text/xml'));
+        $url = \tao_helpers_Uri::url(
+            'getFile',
+            'MediaManager',
+            'taoMediaManager',
+            array(
+                'uri' => $uri,
+            )
+        );
+        $this->setData('xml', $xml);
+        $this->setData('fileurl', $url);
+        $this->setData('mimeType', $mimeType);
         $this->setView('form.tpl');
 
-	}
-		
-	/**
-	 * @see TaoModule::getRootClass
-	 */
-	public function getRootClass(){
-		return new \core_kernel_classes_Class(MEDIA_URI);
-	}
+    }
 
+    public function getFile()
+    {
+
+        if ($this->hasRequestParameter('uri')) {
+            $uri = urldecode($this->getRequestParameter('uri'));
+
+            $mediaSource = new MediaSource(array());
+            $filepath = $mediaSource->download($uri);
+            if($this->hasRequestParameter('xml')){
+                $this->returnJson(htmlentities(file_get_contents($filepath)));
+            }
+            else{
+                \tao_helpers_Http::returnFile($filepath, false);
+            }
+        } else {
+            throw new \common_exception_Error('invalid media identifier');
+        }
+    }
 }
-?>

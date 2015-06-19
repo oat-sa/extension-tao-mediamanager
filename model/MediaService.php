@@ -22,6 +22,8 @@
 namespace oat\taoMediaManager\model;
 
 use oat\taoMediaManager\model\fileManagement\FileManager;
+use common_ext_ExtensionsManager;
+use oat\taoRevision\model\RevisionService;
 
 /**
  * Service methods to manage the Media
@@ -30,7 +32,7 @@ use oat\taoMediaManager\model\fileManagement\FileManager;
  * @author Antoine Robin, <antoine.robin@vesperiagroup.com>
  * @package taoMediaManager
  */
-class MediaService extends \tao_models_classes_GenerisService
+class MediaService extends \tao_models_classes_ClassService
 {
 
     public function getRootClass()
@@ -41,29 +43,39 @@ class MediaService extends \tao_models_classes_GenerisService
 
     /**
      * Create a media instance from a file, and define its class and language
-     * 
+     *
      * @param string $fileSource path to the file to create instance from
      * @param string $classUri parent to add the instance to
      * @param string $language language of the content
      * @param string $label label of the instance
-     * @return string
+     * @return string | bool $instanceUri or false on error
      */
     public function createMediaInstance($fileSource, $classUri, $language, $label = null)
     {
         $label = is_null($label) ? basename($fileSource) : $label;
         $fileManager = FileManager::getFileManagementModel();
-        $link = $fileManager->storeFile($fileSource);
+        $link = $fileManager->storeFile($fileSource, $label);
 
         if ($link !== false) {
             $clazz = new \core_kernel_classes_Class($classUri);
+            //if the class does not belong to media classes create a new one with its name (for items)
+            if (!$clazz->isSubClassOf($this->getRootClass()) && !$clazz->equals($this->getRootClass()) && $clazz->exists()) {
+                $clazz = $this->getRootClass()->createSubClass($clazz->getLabel());
+            }
             $instance = $this->createInstance($clazz, $label);
             /** @var $instance  \core_kernel_classes_Resource */
             if (!is_null($instance) && $instance instanceof \core_kernel_classes_Resource) {
                 $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LINK), $link);
                 $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LANGUAGE), $language);
+                
+                if (common_ext_ExtensionsManager::singleton()->isEnabled('taoRevision')) {
+                    \common_Logger::i('Auto generating initial revision');
+                    RevisionService::commit($instance, __('Initial import'));
+                }
+                
             }
         }
-        return $link;
+        return ($link !== false) ? $instance->getUri() : false;
 
     }
 
@@ -72,20 +84,27 @@ class MediaService extends \tao_models_classes_GenerisService
      * @param $fileTmp
      * @param $instanceUri
      * @param $language
+     * @return bool $instanceUri or false on error
      */
     public function editMediaInstance($fileTmp, $instanceUri, $language)
     {
+        $instance = new \core_kernel_classes_Resource($instanceUri);
         $fileManager = FileManager::getFileManagementModel();
-        $link = $fileManager->storeFile($fileTmp);
+        $link = $fileManager->storeFile($fileTmp, $instance->getLabel());
 
         if ($link !== false) {
-            $instance = new \core_kernel_classes_Class($instanceUri);
             /** @var $instance  \core_kernel_classes_Resource */
             if (!is_null($instance) && $instance instanceof \core_kernel_classes_Resource) {
                 $instance->editPropertyValues(new \core_kernel_classes_Property(MEDIA_LINK), $link);
                 $instance->editPropertyValues(new \core_kernel_classes_Property(MEDIA_LANGUAGE), $language);
             }
+            
+            if (common_ext_ExtensionsManager::singleton()->isEnabled('taoRevision')) {
+                \common_Logger::i('Auto generating revision');
+                RevisionService::commit($instance, __('Imported new file'));
+            }
         }
+        return ($link !== false) ? true : false;
 
     }
 }

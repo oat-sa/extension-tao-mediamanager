@@ -21,16 +21,12 @@
 
 namespace oat\taoMediaManager\model;
 
-use core_kernel_classes_Class;
-use tao_helpers_form_Form;
-
 /**
  * Service methods to manage the Media
  *
  * @access public
  * @author Antoine Robin, <antoine.robin@vesperiagroup.com>
  * @package taoMediaManager
-
  */
 class ZipExportForm extends \tao_helpers_form_FormContainer
 {
@@ -50,7 +46,7 @@ class ZipExportForm extends \tao_helpers_form_FormContainer
             ));
 
         $exportElt = \tao_helpers_form_FormFactory::getElement('export', 'Free');
-        $exportElt->setValue('<a href="#" class="form-submitter btn-success small"><span class="icon-export"></span> ' .__('Export').'</a>');
+        $exportElt->setValue('<a href="#" class="form-submitter btn-success small"><span class="icon-export"></span> ' . __('Export') . '</a>');
 
         $this->form->setActions(array($exportElt), 'bottom');
 
@@ -59,14 +55,8 @@ class ZipExportForm extends \tao_helpers_form_FormContainer
 
     public function initElements()
     {
-        $fileName = '';
-
-        $instances = array();
-        if (isset($this->data['instance'])){
-            $resource = $this->data['instance'];
-        }
-        elseif (isset($this->data['class'])) {
-            $resource = $this->data['class'];
+        if (isset($this->data['resource'])) {
+            $resource = $this->data['resource'];
         } else {
             throw new \common_Exception('No class nor instance specified for export');
         }
@@ -84,8 +74,6 @@ class ZipExportForm extends \tao_helpers_form_FormContainer
         $nameElt->setValue($fileName);
         $nameElt->setUnit(".zip");
         $this->form->addElement($nameElt);
-
-        $instances = \tao_helpers_Uri::encodeArray($instances, \tao_helpers_Uri::ENCODE_ARRAY_KEYS);
 
         $this->form->createGroup('options', __('Export Media as Zip file'), array('zip_desc', 'filename', 'ziptpl'));
     }

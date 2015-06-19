@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.0-RC04\n"
-"PO-Revision-Date: 2015-03-06T16:00:26\n"
+"Project-Id-Version: TAO v3.1-dev\n"
+"PO-Revision-Date: 2015-06-18T18:40:16\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: pl-PL\n"
@@ -16,25 +16,30 @@ msgstr ""
 msgid "Add a media file"
 msgstr ""
 
-msgid "Class saved"
-msgstr ""
-
+#, tao-public
 msgid "Delete"
-msgstr ""
-
-msgid "Download Media"
 msgstr ""
 
 msgid "Edit Instance"
 msgstr ""
 
-msgid "Edit Media class"
-msgstr ""
-
+#, tao-public
 msgid "Export"
 msgstr ""
 
 msgid "Export Media as Zip file"
+msgstr ""
+
+msgid "Fail to edit Shared Stimulus"
+msgstr ""
+
+msgid "Fail to edit shared stimulus"
+msgstr ""
+
+msgid "Fail to import media"
+msgstr ""
+
+msgid "Fail to import Shared Stimulus"
 msgstr ""
 
 msgid "File"
@@ -43,13 +48,14 @@ msgstr ""
 msgid "File name"
 msgstr ""
 
+#, tao-public
 msgid "Import"
 msgstr ""
 
-msgid "Import Media from a file"
+msgid "Imported new file"
 msgstr ""
 
-msgid "Index"
+msgid "Initial import"
 msgstr ""
 
 msgid "Instance saved"
@@ -66,6 +72,7 @@ msgstr ""
 msgid "Media imported successfully"
 msgstr ""
 
+#, tao-public
 msgid "Media Manager"
 msgstr ""
 
@@ -76,22 +83,36 @@ msgstr ""
 msgid "Media Options"
 msgstr ""
 
+#, tao-public
 msgid "New class"
 msgstr ""
 
 msgid "Preview"
 msgstr ""
 
+#, tao-public
+msgid "Properties"
+msgstr ""
+
+msgid "Shared Stimulus"
+msgstr ""
+
+msgid "Shared Stimulus edited successfully"
+msgstr ""
+
+msgid "Shared Stimulus imported successfully"
+msgstr ""
+
 msgid "The file has been deleted"
 msgstr ""
 
-msgid "Unable to move uploaded file"
+msgid "Unable to extract the archive"
 msgstr ""
 
 msgid "Upload Media"
 msgstr ""
 
-msgid "View Media"
+msgid "Upload new media"
 msgstr ""
 
 msgid "You can\'t upload a zip file as a media"

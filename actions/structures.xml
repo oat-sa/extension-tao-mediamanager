@@ -11,41 +11,32 @@
                           className="Media"
                           dataUrl="/taoMediaManager/MediaManager/getOntologyData"
                           rootNode="http://www.tao.lu/Ontologies/TAOMedia.rdf#Media"
-                          selectClass="manager-index"
-                          selectInstance="media-view"
-                          delete="results-delete"
+                          selectClass="media-class-properties"
+                          selectInstance="media-properties"
+                          delete="media-delete"
                             />
                 </trees>
                 <actions>
-                    <action id="manager-index" name="Index" url="/taoMediaManager/MediaManager/editMediaClass" group="none"
-                            context="class">
+                    <action id="media-class-properties" name="Properties" url="/tao/PropertiesAuthoring/index" group="content" context="class">
+                        <icon id="icon-edit"/>
                     </action>
-                    <action id="media-import" name="Import" url="/taoMediaManager/MediaImport/index" group="content"
-                            context="class">
-                        <icon id="icon-import"/>
+                    <action id="media-properties" name="Properties"  url="/taoMediaManager/MediaManager/editInstance" group="content" context="instance">
+                        <icon id="icon-edit"/>
                     </action>
-                    <action id="media-export" name="Export" url="/taoMediaManager/MediaExport/index" group="content"
-                            context="class">
-                        <icon id="icon-export"/>
-                    </action>
-                    <action id="media-class-new" name="New class" url="/taoMediaManager/MediaManager/addSubClass" context="class" group="content" binding="subClass">
+                    <action id="media-class-new" name="New class" url="/taoMediaManager/MediaManager/addSubClass" context="resource" group="tree" binding="subClass">
                         <icon id="icon-folder-open"/>
                     </action>
-
-                    <action id="media-view" name="View Media" url="/taoMediaManager/MediaManager/editInstance" group="none"
-                            context="instance">
-                    </action>
-                    <action id="media-upload" name="Upload Media" url="/taoMediaManager/MediaImport/uploadMedia" group="content"
-                            context="instance">
-                        <icon id="icon-upload"/>
-                    </action>
-                    <action id="media-download" name="Download Media" url="/taoMediaManager/MediaExport/downloadMedia" group="content"
-                            context="instance">
-                        <icon id="icon-download"/>
-                    </action>
-                    <action id="results-delete" name="Delete" binding="removeNode" url="/taoMediaManager/MediaManager/delete"
+                    <action id="media-delete" name="Delete" binding="removeNode" url="/taoMediaManager/MediaManager/delete"
                             context="resource" group="tree">
                         <icon id="icon-bin"/>
+                    </action>
+                    <action id="media-import" name="Import" url="/taoMediaManager/MediaImport/index" group="tree"
+                            context="resource">
+                        <icon id="icon-import"/>
+                    </action>
+                    <action id="media-export" name="Export" url="/taoMediaManager/MediaExport/index" group="tree"
+                            context="resource">
+                        <icon id="icon-export"/>
                     </action>
                 </actions>
             </section>

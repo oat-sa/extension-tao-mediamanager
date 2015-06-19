@@ -87,9 +87,15 @@ class MediaServiceTest extends \PHPUnit_Framework_TestCase
         $fileTmp = dirname(__DIR__) . '/sample/Brazil.png';
 
         $this->initializeMock($fileTmp);
-
         $lang = 'EN-en';
         $classUri = 'http://myFancyDomain.com/myGreatUri';
+
+        //clear previous tests
+        $root = new \core_kernel_classes_Class($classUri);
+        $instances = $root->getInstances();
+        foreach ($instances as $inst) {
+            $inst->delete();
+        }
 
         $link = $this->mediaService->createMediaInstance($fileTmp, $classUri, $lang);
 
@@ -107,19 +113,13 @@ class MediaServiceTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertEquals('Brazil.png', $instance->getLabel(), 'The instance label is wrong');
         $this->assertInternalType('string', $link, 'The method return should be a string');
-        $this->assertEquals($link, $linkResult, 'The instance link is wrong');
-        $this->assertEquals($link, 'MyGreatLink', 'The returned link is wrong');
+        $this->assertEquals($instance->getUri(), $link, 'The instance link is wrong');
+        $this->assertEquals($linkResult, 'MyGreatLink', 'The returned link is wrong');
         $this->assertEquals(
             $lang,
             $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LANGUAGE)),
             'The instance language is wrong'
         );
-
-        // remove what has been done
-        foreach ($instances as $inst) {
-            $inst->delete();
-        }
-
 
     }
 

@@ -33,7 +33,7 @@ class SimpleFileManagement implements FileManagement
     private function getBaseDir()
     {
         if ($this->baseDir === '') {
-            $this->baseDir = dirname(dirname(__DIR__)) . '/media/';
+            $this->baseDir = FILES_PATH . 'taoMediaManager' . DIRECTORY_SEPARATOR . 'media' . DIRECTORY_SEPARATOR;
         }
         return $this->baseDir;
     }
@@ -45,7 +45,7 @@ class SimpleFileManagement implements FileManagement
      * @return string $link to the file
      * @throws \common_exception_Error
      */
-    public function storeFile($filePath)
+    public function storeFile($filePath, $label)
     {
         $path = $this->getBaseDir();
         // create media folder if doesn't exist
@@ -53,12 +53,11 @@ class SimpleFileManagement implements FileManagement
             mkdir($path);
         }
 
-        $fileName = \tao_helpers_File::getSafeFileName(basename($filePath));
-        if (!is_dir($path . $fileName)) {
-            if (!@copy($filePath, $path . $fileName)) {
+        if (!is_dir($path . $label)) {
+            if (!@copy($filePath, $path . $label)) {
                 throw new \common_exception_Error('Unable to move uploaded file');
             }
-            return $fileName;
+            return $label;
         }
         throw new \common_exception_Error('Unable to move uploaded file');
     }

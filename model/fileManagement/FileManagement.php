@@ -21,14 +21,15 @@
 namespace oat\taoMediaManager\model\fileManagement;
 
 
-interface FileManagement {
+interface FileManagement
+{
 
 
     /**
      * @param string $filePath the relative path to the file
      * @return string a link to the file in order to retrieve it later
      */
-    public function storeFile($filePath);
+    public function storeFile($filePath, $label);
 
     /**
      *

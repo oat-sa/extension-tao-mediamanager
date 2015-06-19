@@ -6,9 +6,8 @@
  * 
  */
 $todefine = array(
-	'MEDIA_LINK'      => 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Link',
-	'MEDIA_LANGUAGE'      => 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Language',
-	'MEDIA_URI'      => 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Media',
-	'MEDIA_ALT_TEXT'      => 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AltText',
+    'MEDIA_LINK'        => 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Link',
+    'MEDIA_LANGUAGE'    => 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Language',
+    'MEDIA_URI'         => 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Media',
+    'MEDIA_ALT_TEXT'    => 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AltText',
 );
-?>

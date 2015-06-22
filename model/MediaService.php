@@ -67,7 +67,9 @@ class MediaService extends \tao_models_classes_ClassService
             if (!is_null($instance) && $instance instanceof \core_kernel_classes_Resource) {
                 $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LINK), $link);
                 $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LANGUAGE), $language);
-                
+                //populate alt text by default
+                $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_ALT_TEXT), $label);
+
                 if (common_ext_ExtensionsManager::singleton()->isEnabled('taoRevision')) {
                     \common_Logger::i('Auto generating initial revision');
                     RevisionService::commit($instance, __('Initial import'));

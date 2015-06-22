@@ -118,9 +118,12 @@ class MediaSource extends Configurable implements MediaManagement
                 if (!is_null($file) && (count($acceptableMime) == 0 || in_array($file['mime'], $acceptableMime))) {
                     // add the alt text to file array
                     $altArray = $instance->getPropertyValues(new \core_kernel_classes_Property(MEDIA_ALT_TEXT));
+                    $alt = $file['name'];
                     if (count($altArray) > 0) {
-                        $file['alt'] = $altArray[0];
+                        $alt = $altArray[0];
                     }
+
+                    $file['alt'] = $alt;
                     $children[] = $file;
                 }
             }

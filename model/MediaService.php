@@ -54,17 +54,7 @@ class MediaService extends \tao_models_classes_ClassService
     public function createMediaInstance($fileSource, $classUri, $language, $label = null, $stimulus = false)
     {
         $clazz = new \core_kernel_classes_Class($classUri);
-        //if the class does not belong to media classes create a new one with its name (for items)
-        if (!$clazz->isSubClassOf($this->getRootClass()) && !$clazz->equals($this->getRootClass()) && !$clazz->exists()) {
-            $newclazz = null;
-            foreach($this->getRootClass()->getSubClasses() as $subclass){
-                if($subclass->getLabel() === $clazz->getUri()){
-                    $newclazz = $subclass;
-                    continue;
-                }
-            }
-            $clazz = (is_null($newclazz)) ? $this->getRootClass()->createSubClass($clazz->getUri()) : $newclazz;
-        }
+
         //get the file MD5
         $md5 = md5_file($fileSource);
 

@@ -43,6 +43,11 @@ class MediaSource extends Configurable implements MediaManagement
         $this->lang = (isset($options['lang'])) ? $options['lang'] : '';
         $this->rootClassUri = (isset($options['rootClass'])) ? $options['rootClass'] : MEDIA_URI;
     }
+    
+    public function getRootClass()
+    {
+        return new \core_kernel_classes_Class($this->rootClassUri);
+    }
 
     /**
      * (non-PHPdoc)
@@ -54,11 +59,9 @@ class MediaSource extends Configurable implements MediaManagement
         if (!file_exists($source)) {
             throw new \tao_models_classes_FileNotFoundException($source);
         }
-        $parent = \tao_helpers_uri::decode($parent);
-        if ($parent === '') {
-            $parent = MEDIA_URI;
-        }
-
+        
+        $clazz = $this->getOrCreatePath($parent);
+        
         $service = MediaService::singleton();
         $newXml = $source;
         if($stimulus){
@@ -68,7 +71,8 @@ class MediaSource extends Configurable implements MediaManagement
             // embed assets in the shared stimulus
             $newXml = SharedStimulusPackageImporter::embedAssets($source);
         }
-        $instanceUri = $service->createMediaInstance($newXml, $parent, $this->lang, $fileName, $stimulus);
+        
+        $instanceUri = $service->createMediaInstance($newXml, $clazz->getUri(), $this->lang, $fileName, $stimulus);
 
         return $this->getFileInfo($instanceUri);
     }
@@ -185,6 +189,34 @@ class MediaSource extends Configurable implements MediaManagement
         $fileManagement = FileManager::getFileManagementModel();
         $filePath = $fileManagement->retrieveFile($fileLink);
         return $filePath;
+    }
+    
+    /**
+     * 
+     * @param string $path
+     * @return \core_kernel_classes_Class
+     */
+    private function getOrCreatePath($path) {
+        if ($path === '') {
+            $clazz = $this->getRootClass();
+        } else {
+            $clazz = new \core_kernel_classes_Class(\tao_helpers_uri::decode($path));
+            if (!$clazz->isSubClassOf($this->getRootClass()) && !$clazz->equals($this->getRootClass()) && !$clazz->exists()) {
+                // consider $path to be a label
+                $found = false;
+                foreach($this->getRootClass()->getSubClasses() as $subclass){
+                    if($subclass->getLabel() === $path){
+                        $found = true;
+                        $clazz = $subclass;
+                        break;
+                    }
+                }
+                if (!$found) {
+                    $clazz = $this->getRootClass()->createSubClass($path);
+                }
+            }
+        }
+        return $clazz;
     }
 
     /**

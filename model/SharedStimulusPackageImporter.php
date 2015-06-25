@@ -120,7 +120,7 @@ class SharedStimulusPackageImporter extends ZipImporter
                 $base64 = 'data:' . FsUtils::getMimeType($basedir . $source) . ';'
                     . 'base64,' . base64_encode(file_get_contents($basedir . $source));
                 $image->setSrc($base64);
-            } else {
+            } else if (fopen($source, 'r') === false) {
                 throw new \tao_models_classes_FileNotFoundException($source);
             }
         }
@@ -132,7 +132,7 @@ class SharedStimulusPackageImporter extends ZipImporter
                 $base64 = 'data:' . FsUtils::getMimeType($basedir . $data) . ';'
                     . 'base64,' . base64_encode(file_get_contents($basedir . $data));
                 $object->setData($base64);
-            } else {
+            } else if (fopen($source, 'r') === false) {
                 throw new \tao_models_classes_FileNotFoundException($data);
             }
         }

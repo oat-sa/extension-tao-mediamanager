@@ -174,6 +174,18 @@ class Updater extends \common_ext_ExtensionUpdater
             $currentVersion = '0.2.4';
         }
 
+        if ($currentVersion === '0.2.4') {
+            $mediaClass = MediaService::singleton()->getRootClass();
+            $fileManager = FileManager::getFileManagementModel();
+            foreach($mediaClass->getInstances(true) as $media){
+                $fileLink = $media->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
+                $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
+                $filePath = $fileManager->retrieveFile($fileLink);
+                $media->setPropertyValue(new \core_kernel_classes_Property(MEDIA_MD5), md5_file($filePath));
+            }
+            $currentVersion = '0.2.5';
+        }
+
         return $currentVersion;
     }
 }

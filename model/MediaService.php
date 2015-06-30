@@ -48,10 +48,10 @@ class MediaService extends \tao_models_classes_ClassService
      * @param string $classUri parent to add the instance to
      * @param string $language language of the content
      * @param string $label label of the instance
-     * @param bool $stimulus if it is a stimulus or not
+     * @param string $mimeType mimeType of the file
      * @return string | bool $instanceUri or false on error
      */
-    public function createMediaInstance($fileSource, $classUri, $language, $label = null, $stimulus = false)
+    public function createMediaInstance($fileSource, $classUri, $language, $label = null, $mimeType = null)
     {
         $clazz = new \core_kernel_classes_Class($classUri);
 
@@ -64,7 +64,7 @@ class MediaService extends \tao_models_classes_ClassService
         $link = $fileManager->storeFile($fileSource, $label);
 
         if ($link !== false) {
-            $mimeType = (!$stimulus) ? \tao_helpers_File::getMimeType($fileSource): 'application/qti+xml';
+            $mimeType = is_null($mimeType) ? \tao_helpers_File::getMimeType($fileSource) : $mimeType;
             $instance = $clazz->createInstanceWithProperties(array(
                 RDFS_LABEL => $label,
                 MEDIA_LINK => $link,

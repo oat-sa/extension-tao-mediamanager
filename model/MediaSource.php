@@ -54,7 +54,7 @@ class MediaSource extends Configurable implements MediaManagement
      *
      * @see \oat\tao\model\media\MediaManagement::add
      */
-    public function add($source, $fileName, $parent, $stimulus = false)
+    public function add($source, $fileName, $parent)
     {
         if (!file_exists($source)) {
             throw new \tao_models_classes_FileNotFoundException($source);
@@ -63,17 +63,8 @@ class MediaSource extends Configurable implements MediaManagement
         $clazz = $this->getOrCreatePath($parent);
         
         $service = MediaService::singleton();
-        $newXml = $source;
-        if($stimulus){
-            // validate the shared stimulus
-            SharedStimulusImporter::isValidSharedStimulus($source);
-
-            // embed assets in the shared stimulus
-            $newXml = SharedStimulusPackageImporter::embedAssets($source);
-        }
+        $instanceUri = $service->createMediaInstance($source, $clazz->getUri(), $this->lang, $fileName);
         
-        $instanceUri = $service->createMediaInstance($newXml, $clazz->getUri(), $this->lang, $fileName, $stimulus);
-
         return $this->getFileInfo($instanceUri);
     }
 
@@ -189,6 +180,19 @@ class MediaSource extends Configurable implements MediaManagement
         $fileManagement = FileManager::getFileManagementModel();
         $filePath = $fileManagement->retrieveFile($fileLink);
         return $filePath;
+    }
+    
+    /**
+     * Force the mime-type of a resource
+     * 
+     * @param string $link
+     * @param string $mimeType
+     * @return boolean
+     */
+    public function forceMimeType($link, $mimeType)
+    {
+        $resource = new \core_kernel_classes_Resource(\tao_helpers_Uri::decode($link));
+        return $resource->editPropertyValues(new \core_kernel_classes_Property(MEDIA_MIME_TYPE), $mimeType);
     }
     
     /**

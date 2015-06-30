@@ -116,25 +116,13 @@ class SharedStimulusPackageImporter extends ZipImporter
         /** @var $image \qtism\data\content\xhtml\Img */
         foreach ($images as $image) {
             $source = $image->getSrc();
-            if (file_exists($basedir . $source)) {
-                $base64 = 'data:' . FsUtils::getMimeType($basedir . $source) . ';'
-                    . 'base64,' . base64_encode(file_get_contents($basedir . $source));
-                $image->setSrc($base64);
-            } else if (fopen($source, 'r') === false) {
-                throw new \tao_models_classes_FileNotFoundException($source);
-            }
+            $image->setSrc(self::secureEncode($basedir, $source));
         }
 
         /** @var $object \qtism\data\content\xhtml\Object */
         foreach ($objects as $object) {
             $data = $object->getData();
-            if (file_exists($basedir . $data)) {
-                $base64 = 'data:' . FsUtils::getMimeType($basedir . $data) . ';'
-                    . 'base64,' . base64_encode(file_get_contents($basedir . $data));
-                $object->setData($base64);
-            } else if (fopen($source, 'r') === false) {
-                throw new \tao_models_classes_FileNotFoundException($data);
-            }
+            $object->setData(self::secureEncode($basedir, $data));
         }
 
         // save the document to a tempfile
@@ -182,10 +170,10 @@ class SharedStimulusPackageImporter extends ZipImporter
         SharedStimulusImporter::isValidSharedStimulus($xmlFile);
 
         $service = MediaService::singleton();
-        if (!$service->createMediaInstance($xmlFile, $class->getUri(), $lang, basename($xmlFile), true)) {
-            $report = \common_report_Report::createFailure(__('Fail to import Shared Stimulus'));
-        } else {
+        if ($service->createMediaInstance($xmlFile, $class->getUri(), $lang, basename($xmlFile), 'application/qti+xml')) {
             $report = \common_report_Report::createSuccess(__('Shared Stimulus imported successfully'));
+        } else {
+            $report = \common_report_Report::createFailure(__('Fail to import Shared Stimulus'));
         }
 
         return $report;
@@ -223,5 +211,35 @@ class SharedStimulusPackageImporter extends ZipImporter
         }
 
         return $report;
+    }
+    
+    /**
+     * Verify paths and encode the file
+     * 
+     * @param string $basedir
+     * @param string $source
+     * @throws \tao_models_classes_FileNotFoundException
+     * @throws \common_exception_Error
+     * @return string
+     */
+    protected static function secureEncode($basedir, $source)
+    {
+        $components = parse_url($source);
+        if (!isset($components['host'])) {
+            // relative path
+            if (\tao_helpers_File::securityCheck($source, true)) {
+                if (file_exists($basedir . $source)) {
+                    return 'data:' . FsUtils::getMimeType($basedir . $source) . ';'
+                        . 'base64,' . base64_encode(file_get_contents($basedir . $source));
+                } else {
+                    throw new \tao_models_classes_FileNotFoundException($source);
+                }
+            } else {
+                throw new \common_exception_Error('Invalid source path "'.$source.'"');
+            }
+        } else {
+            // url, just return it as is
+            return $source;
+        }
     }
 }

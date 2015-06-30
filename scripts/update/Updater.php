@@ -204,7 +204,7 @@ class Updater extends \common_ext_ExtensionUpdater
                     $media->editPropertyValues(new \core_kernel_classes_Property(MEDIA_MIME_TYPE), $mimeType);
                 } 
             }
-            $currentVersion = '0.2.6';
+            $currentVersion = '0.3.0';
         }
         
         return $currentVersion;

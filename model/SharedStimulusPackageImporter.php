@@ -225,7 +225,7 @@ class SharedStimulusPackageImporter extends ZipImporter
     protected static function secureEncode($basedir, $source)
     {
         $components = parse_url($source);
-        if (!isset($components['host'])) {
+        if (!isset($components['scheme'])) {
             // relative path
             if (\tao_helpers_File::securityCheck($source, true)) {
                 if (file_exists($basedir . $source)) {

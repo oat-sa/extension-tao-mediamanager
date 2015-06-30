@@ -20,6 +20,7 @@
  */
 namespace oat\taoMediaManager\test\model;
 
+use oat\taoMediaManager\model\MediaService;
 
 class MediaSourceTest extends \PHPUnit_Framework_TestCase
 {
@@ -43,7 +44,8 @@ class MediaSourceTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->classUri = 'http://myFancyDomaine.com/myGreatCLassUriToUploadTo';
+        $rootClass = MediaService::singleton()->getRootClass();
+        $this->classUri = $rootClass->createSubClass('great', 'comment')->getUri();
 
         $this->service = $this->getMockBuilder('oat\taoMediaManager\model\MediaService')
             ->disableOriginalConstructor()
@@ -81,14 +83,15 @@ class MediaSourceTest extends \PHPUnit_Framework_TestCase
         $ref = new \ReflectionProperty('tao_models_classes_Service', 'instances');
         $ref->setAccessible(true);
         $ref->setValue(null, array());
+        
+        MediaService::singleton()->deleteClass(new \core_kernel_classes_Class($this->classUri));
 
     }
 
 
     public function testAdd()
     {
-        $classTao = new \core_kernel_classes_Class('http://www.tao.lu/Ontologies/TAO.rdf#TAOObject');
-        $rootClass = $classTao->createSubClass('great', 'comment', $this->classUri);
+        $rootClass = new \core_kernel_classes_Class($this->classUri);
 
         $filePath = dirname(__DIR__) . '/sample/Italy.png';
 
@@ -163,9 +166,6 @@ class MediaSourceTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($instance->exists(), 'The instance still exists');
         $this->assertFalse($removedInstance->exists(), 'The instance still exists');
 
-        //remove created class
-        $rootClass = new \core_kernel_classes_Class($this->classUri);
-        $rootClass->delete(true);
     }
 
     public function testUploadFailNoClass()

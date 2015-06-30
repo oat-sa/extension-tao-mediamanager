@@ -37,6 +37,10 @@ class MediaServiceTest extends \PHPUnit_Framework_TestCase
      */
     private $fileManagerMock = null;
 
+    /**
+     * @var \core_kernel_classes_Class
+     */
+    private $testClass = null;
 
     public function setUp()
     {
@@ -50,11 +54,14 @@ class MediaServiceTest extends \PHPUnit_Framework_TestCase
         $ref = new \ReflectionProperty('oat\taoMediaManager\model\fileManagement\FileManager', 'fileManager');
         $ref->setAccessible(true);
         $ref->setValue(null, $this->fileManagerMock);
+        
+        $this->testClass = $this->mediaService->getRootClass()->createSubClass('test class');
     }
 
     public function tearDown()
     {
         $this->fileManagerMock = null;
+        $this->mediaService->deleteClass($this->testClass);
 
         $ref = new \ReflectionProperty('oat\taoMediaManager\model\fileManagement\FileManager', 'fileManager');
         $ref->setAccessible(true);
@@ -87,16 +94,12 @@ class MediaServiceTest extends \PHPUnit_Framework_TestCase
         $fileTmp = dirname(__DIR__) . '/sample/Brazil.png';
 
         $this->initializeMock($fileTmp);
+        
         $lang = 'EN-en';
-        $classUri = 'http://myFancyDomain.com/myGreatUri';
+        $classUri = $this->testClass->getUri();
 
         //clear previous tests
         $root = new \core_kernel_classes_Class($classUri);
-        $root->setSubClassOf($this->mediaService->getRootClass());
-        $instances = $root->getInstances();
-        foreach ($instances as $inst) {
-            $inst->delete();
-        }
 
         $link = $this->mediaService->createMediaInstance($fileTmp, $classUri, $lang);
 

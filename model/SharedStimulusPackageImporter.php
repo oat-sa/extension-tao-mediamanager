@@ -189,7 +189,7 @@ class SharedStimulusPackageImporter extends ZipImporter
     protected function replaceSharedStimulus($instance, $lang, $xmlFile)
     {
         //if the class does not belong to media classes create a new one with its name (for items)
-        $mediaClass = new core_kernel_classes_Class(MEDIA_URI);
+        $mediaClass = new core_kernel_classes_Class(MediaService::ROOT_CLASS_URI);
         if (!$instance->isInstanceOf($mediaClass)) {
             $report = \common_report_Report::createFailure(
                 'The instance ' . $instance->getUri() . ' is not a Media instance'

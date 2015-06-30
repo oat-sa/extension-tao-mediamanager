@@ -41,7 +41,7 @@ class MediaSource extends Configurable implements MediaManagement
         parent::__construct($options);
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager');
         $this->lang = (isset($options['lang'])) ? $options['lang'] : '';
-        $this->rootClassUri = (isset($options['rootClass'])) ? $options['rootClass'] : MEDIA_URI;
+        $this->rootClassUri = (isset($options['rootClass'])) ? $options['rootClass'] : MediaService::singleton()->getRootClass();
     }
     
     public function getRootClass()

@@ -34,10 +34,11 @@ use oat\taoRevision\model\RevisionService;
  */
 class MediaService extends \tao_models_classes_ClassService
 {
+    const ROOT_CLASS_URI = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Media';
 
     public function getRootClass()
     {
-        return new \core_kernel_classes_Class(MEDIA_URI);
+        return new \core_kernel_classes_Class(self::ROOT_CLASS_URI);
     }
 
 

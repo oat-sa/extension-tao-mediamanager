@@ -27,6 +27,7 @@ use oat\taoMediaManager\model\fileManagement\FileManager;
 use oat\taoMediaManager\model\fileManagement\SimpleFileManagement;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
+use oat\taoMediaManager\model\SharedStimulusImporter;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -181,7 +182,6 @@ class Updater extends \common_ext_ExtensionUpdater
                 $fileLink = $media->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
                 $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
                 $filePath = $fileManager->retrieveFile($fileLink);
-                $media->setPropertyValue(new \core_kernel_classes_Property(MEDIA_MD5), md5_file($filePath));
                 $mimeType = \tao_helpers_File::getMimeType($filePath);
                 $mimeType = ($mimeType === 'application/xhtml+xml') ? 'application/qti+xml' : $mimeType;
                 $media->setPropertyValue(new \core_kernel_classes_Property(MEDIA_MIME_TYPE), $mimeType);
@@ -189,6 +189,24 @@ class Updater extends \common_ext_ExtensionUpdater
             $currentVersion = '0.2.5';
         }
 
+        if ($currentVersion === '0.2.5') {
+            $fileManager = FileManager::getFileManagementModel();
+            $iterator = new \core_kernel_classes_ResourceIterator(array(MediaService::singleton()->getRootClass()));
+            foreach ($iterator as $media) {
+                $fileLink = $media->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
+                $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
+                $filePath = $fileManager->retrieveFile($fileLink);
+                try {
+                    SharedStimulusImporter::isValidSharedStimulus($filePath);
+                    $media->editPropertyValues(new \core_kernel_classes_Property(MEDIA_MIME_TYPE), 'application/qti+xml');
+                } catch (\Exception $e) {
+                    $mimeType = \tao_helpers_File::getMimeType($filePath);
+                    $media->editPropertyValues(new \core_kernel_classes_Property(MEDIA_MIME_TYPE), $mimeType);
+                } 
+            }
+            $currentVersion = '0.2.6';
+        }
+        
         return $currentVersion;
     }
 }

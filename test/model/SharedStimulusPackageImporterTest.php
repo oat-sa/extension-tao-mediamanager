@@ -166,9 +166,7 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
         $xmlDocument->load($directory . '/stimulus.xml');
 
         try {
-            $method = new \ReflectionMethod('oat\taoMediaManager\model\SharedStimulusPackageImporter', 'embedAssets');
-            $method->setAccessible(true);
-            $xmlConverted = $method->invokeArgs($this->packageImporter, array($directory.'/stimulus.xml'));
+            $xmlConverted = SharedStimulusPackageImporter::embedAssets($directory.'/stimulus.xml');
             $xmlDocument->load($xmlConverted);
             $strXml = $xmlDocument->saveToString();
             $xmlDocument->load($converted);

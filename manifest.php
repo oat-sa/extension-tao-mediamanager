@@ -27,7 +27,7 @@ return array(
     'label' => 'extension-tao-mediamanager',
     'description' => 'TAO media manager extension',
     'license' => 'GPL-2.0',
-    'version' => '0.2.5',
+    'version' => '0.3.0',
     'author' => 'Open Assessment Technologies SA',
     'dependencies' => array('tao', 'taoItems'),
     'models' => array(

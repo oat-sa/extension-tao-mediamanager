@@ -37,6 +37,10 @@ class MediaServiceTest extends \PHPUnit_Framework_TestCase
      */
     private $fileManagerMock = null;
 
+    /**
+     * @var \core_kernel_classes_Class
+     */
+    private $testClass = null;
 
     public function setUp()
     {
@@ -44,17 +48,20 @@ class MediaServiceTest extends \PHPUnit_Framework_TestCase
 
         //fileManagerMock
         $this->fileManagerMock = $this->getMockBuilder('oat\taoMediaManager\model\fileManagement\SimpleFileManagement')
-            ->setMethods(array('storeFile'))
+            ->setMethods(array('storeFile', 'deleteFile'))
             ->getMock();
 
         $ref = new \ReflectionProperty('oat\taoMediaManager\model\fileManagement\FileManager', 'fileManager');
         $ref->setAccessible(true);
         $ref->setValue(null, $this->fileManagerMock);
+        
+        $this->testClass = $this->mediaService->getRootClass()->createSubClass('test class');
     }
 
     public function tearDown()
     {
         $this->fileManagerMock = null;
+        $this->mediaService->deleteClass($this->testClass);
 
         $ref = new \ReflectionProperty('oat\taoMediaManager\model\fileManagement\FileManager', 'fileManager');
         $ref->setAccessible(true);
@@ -87,15 +94,12 @@ class MediaServiceTest extends \PHPUnit_Framework_TestCase
         $fileTmp = dirname(__DIR__) . '/sample/Brazil.png';
 
         $this->initializeMock($fileTmp);
+        
         $lang = 'EN-en';
-        $classUri = 'http://myFancyDomain.com/myGreatUri';
+        $classUri = $this->testClass->getUri();
 
         //clear previous tests
         $root = new \core_kernel_classes_Class($classUri);
-        $instances = $root->getInstances();
-        foreach ($instances as $inst) {
-            $inst->delete();
-        }
 
         $link = $this->mediaService->createMediaInstance($fileTmp, $classUri, $lang);
 
@@ -103,7 +107,6 @@ class MediaServiceTest extends \PHPUnit_Framework_TestCase
         $instances = $root->getInstances();
         /** @var \core_kernel_classes_Resource $instance */
         $instance = array_pop($instances);
-
         $thing = $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
         $linkResult = $thing instanceof \core_kernel_classes_Resource ? $thing->getUri() : (string)$thing;
         $this->assertInstanceOf(
@@ -121,6 +124,9 @@ class MediaServiceTest extends \PHPUnit_Framework_TestCase
             'The instance language is wrong'
         );
 
+        $root->delete(true);
+        $root->setSubClassOf($this->mediaService->getRootClass());
+
     }
 
     public function testEditMediaInstance()
@@ -129,12 +135,18 @@ class MediaServiceTest extends \PHPUnit_Framework_TestCase
         $fileTmp = dirname(__DIR__) . '/sample/Italy.png';
         $this->initializeMock($fileTmp);
 
+        $this->fileManagerMock->expects($this->once())
+            ->method('deleteFile')
+            ->with('MyLink')
+            ->willReturn(true);
+
         $lang = 'EN-en';
         $instanceUri = 'http://myFancyDomain.com/myGreatInstanceUri';
+        $instance = new \core_kernel_classes_Class($instanceUri);
+        $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LINK), 'MyLink');
 
         $this->mediaService->editMediaInstance($fileTmp, $instanceUri, $lang);
 
-        $instance = new \core_kernel_classes_Class($instanceUri);
         $this->assertEquals(
             $lang,
             $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LANGUAGE)),

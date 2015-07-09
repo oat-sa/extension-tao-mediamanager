@@ -75,6 +75,6 @@ class ZipExportForm extends \tao_helpers_form_FormContainer
         $nameElt->setUnit(".zip");
         $this->form->addElement($nameElt);
 
-        $this->form->createGroup('options', __('Export Media as Zip file'), array('zip_desc', 'filename', 'ziptpl'));
+        $this->form->createGroup('options', __('Export Media as Zip file'), array('filename', 'ziptpl'));
     }
 }

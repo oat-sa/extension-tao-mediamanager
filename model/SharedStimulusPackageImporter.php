@@ -96,6 +96,42 @@ class SharedStimulusPackageImporter extends ZipImporter
     }
 
     /**
+     * Embed external resources into the XML
+     *
+     * @param string $originalXml
+     * @throws \tao_models_classes_FileNotFoundException
+     * @return string
+     */
+    public static function embedAssets($originalXml)
+    {
+        $basedir = dirname($originalXml).DIRECTORY_SEPARATOR;
+
+        $xmlDocument = new XmlDocument();
+        $xmlDocument->load($originalXml, true);
+
+        //get images and object to base64 their src/data
+        $images = $xmlDocument->getDocumentComponent()->getComponentsByClassName('img');
+        $objects = $xmlDocument->getDocumentComponent()->getComponentsByClassName('object');
+
+        /** @var $image \qtism\data\content\xhtml\Img */
+        foreach ($images as $image) {
+            $source = $image->getSrc();
+            $image->setSrc(self::secureEncode($basedir, $source));
+        }
+
+        /** @var $object \qtism\data\content\xhtml\Object */
+        foreach ($objects as $object) {
+            $data = $object->getData();
+            $object->setData(self::secureEncode($basedir, $data));
+        }
+
+        // save the document to a tempfile
+        $newXml = tempnam(sys_get_temp_dir(), 'sharedStimulus_');
+        $xmlDocument->save($newXml);
+        return $newXml;
+    }
+
+    /**
      * Get the shared stimulus file with assets from the zip
      * 
      * @param string $filePath path of the zip file
@@ -121,55 +157,6 @@ class SharedStimulusPackageImporter extends ZipImporter
     
         throw new \common_Exception('XML not found');
     }
-    
-
-    /**
-     * Embed external resources into the XML
-     * 
-     * @param string $originalXml
-     * @throws \tao_models_classes_FileNotFoundException
-     * @return string
-     */
-    private function embedAssets($originalXml)
-    {
-        $basedir = dirname($originalXml).DIRECTORY_SEPARATOR;
-    
-        $xmlDocument = new XmlDocument();
-        $xmlDocument->load($originalXml, true);
-    
-        //get images and object to base64 their src/data
-        $images = $xmlDocument->getDocumentComponent()->getComponentsByClassName('img');
-        $objects = $xmlDocument->getDocumentComponent()->getComponentsByClassName('object');
-    
-        /** @var $image \qtism\data\content\xhtml\Img */
-        foreach ($images as $image) {
-            $source = $image->getSrc();
-            if (file_exists($basedir . $source)) {
-                $base64 = 'data:' . FsUtils::getMimeType($basedir . $source) . ';'
-                    . 'base64,' . base64_encode(file_get_contents($basedir . $source));
-                $image->setSrc($base64);
-            } else {
-                throw new \tao_models_classes_FileNotFoundException($source);
-            }
-        }
-    
-        /** @var $object \qtism\data\content\xhtml\Object */
-        foreach ($objects as $object) {
-            $data = $object->getData();
-            if (file_exists($basedir . $data)) {
-                $base64 = 'data:' . FsUtils::getMimeType($basedir . $data) . ';'
-                    . 'base64,' . base64_encode(file_get_contents($basedir . $data));
-                $object->setData($base64);
-            } else {
-                throw new \tao_models_classes_FileNotFoundException($data);
-            }
-        }
-        
-        // save the document to a tempfile
-        $newXml = tempnam(sys_get_temp_dir(), 'sharedStimulus_');
-        $xmlDocument->save($newXml);
-        return $newXml;
-    }
 
     /**
      * Validate an xml file, convert file linked inside and store it into media manager
@@ -182,16 +169,11 @@ class SharedStimulusPackageImporter extends ZipImporter
     {
         SharedStimulusImporter::isValidSharedStimulus($xmlFile);
 
-        $name = basename($xmlFile, '.xml');
-        $name .= '.xhtml';
-        $filepath = dirname($xmlFile) . '/' . $name;
-        \tao_helpers_File::copy($xmlFile, $filepath);
-
         $service = MediaService::singleton();
-        if (!$service->createMediaInstance($filepath, $class->getUri(), $lang, basename($filepath))) {
-            $report = \common_report_Report::createFailure(__('Fail to import Shared Stimulus'));
-        } else {
+        if ($service->createMediaInstance($xmlFile, $class->getUri(), $lang, basename($xmlFile), 'application/qti+xml')) {
             $report = \common_report_Report::createSuccess(__('Shared Stimulus imported successfully'));
+        } else {
+            $report = \common_report_Report::createFailure(__('Fail to import Shared Stimulus'));
         }
 
         return $report;
@@ -207,7 +189,7 @@ class SharedStimulusPackageImporter extends ZipImporter
     protected function replaceSharedStimulus($instance, $lang, $xmlFile)
     {
         //if the class does not belong to media classes create a new one with its name (for items)
-        $mediaClass = new core_kernel_classes_Class(MEDIA_URI);
+        $mediaClass = new core_kernel_classes_Class(MediaService::ROOT_CLASS_URI);
         if (!$instance->isInstanceOf($mediaClass)) {
             $report = \common_report_Report::createFailure(
                 'The instance ' . $instance->getUri() . ' is not a Media instance'
@@ -229,5 +211,35 @@ class SharedStimulusPackageImporter extends ZipImporter
         }
 
         return $report;
+    }
+    
+    /**
+     * Verify paths and encode the file
+     * 
+     * @param string $basedir
+     * @param string $source
+     * @throws \tao_models_classes_FileNotFoundException
+     * @throws \common_exception_Error
+     * @return string
+     */
+    protected static function secureEncode($basedir, $source)
+    {
+        $components = parse_url($source);
+        if (!isset($components['scheme'])) {
+            // relative path
+            if (\tao_helpers_File::securityCheck($source, true)) {
+                if (file_exists($basedir . $source)) {
+                    return 'data:' . FsUtils::getMimeType($basedir . $source) . ';'
+                        . 'base64,' . base64_encode(file_get_contents($basedir . $source));
+                } else {
+                    throw new \tao_models_classes_FileNotFoundException($source);
+                }
+            } else {
+                throw new \common_exception_Error('Invalid source path "'.$source.'"');
+            }
+        } else {
+            // url, just return it as is
+            return $source;
+        }
     }
 }

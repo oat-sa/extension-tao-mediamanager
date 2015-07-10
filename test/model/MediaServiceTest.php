@@ -21,10 +21,11 @@
 namespace oat\taoMediaManager\test\model;
 
 use oat\taoMediaManager\model\MediaService;
+use oat\tao\test\TaoPhpUnitTestRunner;
 
 include_once dirname(__FILE__) . '/../../includes/raw_start.php';
 
-class MediaServiceTest extends \PHPUnit_Framework_TestCase
+class MediaServiceTest extends TaoPhpUnitTestRunner
 {
 
     /**
@@ -44,6 +45,8 @@ class MediaServiceTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        // ensure a user is logged in, in case the repository commit gets triggered
+        $this->initTest();
         $this->mediaService = MediaService::singleton();
 
         //fileManagerMock

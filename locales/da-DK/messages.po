@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO v3.1-dev\n"
-"PO-Revision-Date: 2015-06-18T18:40:16\n"
+"Project-Id-Version: TAO v3.1.0-sprint02\n"
+"PO-Revision-Date: 2015-07-08T18:14:16\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: da-DK\n"
@@ -30,10 +30,10 @@ msgstr ""
 msgid "Export Media as Zip file"
 msgstr ""
 
-msgid "Fail to edit Shared Stimulus"
+msgid "Fail to edit shared stimulus"
 msgstr ""
 
-msgid "Fail to edit shared stimulus"
+msgid "Fail to edit Shared Stimulus"
 msgstr ""
 
 msgid "Fail to import media"
@@ -50,6 +50,9 @@ msgstr ""
 
 #, tao-public
 msgid "Import"
+msgstr ""
+
+msgid "Imported %s"
 msgstr ""
 
 msgid "Imported new file"

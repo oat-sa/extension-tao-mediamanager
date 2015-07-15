@@ -130,6 +130,7 @@ class MediaManagerBrowserTest extends \PHPUnit_Framework_TestCase
         $root = new \core_kernel_classes_Class($this->rootClass);
         $instance = $root->createInstance('Brazil.png');
         $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LINK), 'myGreatLink');
+        $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_MIME_TYPE), 'image/png');
 
         $uri = $instance->getUri();
         $this->fileManagerMock->expects($this->once())

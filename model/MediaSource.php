@@ -41,7 +41,12 @@ class MediaSource extends Configurable implements MediaManagement
         parent::__construct($options);
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager');
         $this->lang = (isset($options['lang'])) ? $options['lang'] : '';
-        $this->rootClassUri = (isset($options['rootClass'])) ? $options['rootClass'] : MEDIA_URI;
+        $this->rootClassUri = (isset($options['rootClass'])) ? $options['rootClass'] : MediaService::singleton()->getRootClass();
+    }
+    
+    public function getRootClass()
+    {
+        return new \core_kernel_classes_Class($this->rootClassUri);
     }
 
     /**
@@ -52,19 +57,14 @@ class MediaSource extends Configurable implements MediaManagement
     public function add($source, $fileName, $parent)
     {
         if (!file_exists($source)) {
-            throw new \tao_models_classes_FileNotFoundException('File ' . $source . ' not found');
+            throw new \tao_models_classes_FileNotFoundException($source);
         }
-        $parent = \tao_helpers_uri::decode($parent);
-        if ($parent === '') {
-            $parent = MEDIA_URI;
-        }
-        $class = new \core_kernel_classes_Class($parent);
-        if (!$class->exists()) {
-            throw new \common_exception_Error('Class ' . $parent . ' not found');
-        }
+        
+        $clazz = $this->getOrCreatePath($parent);
+        
         $service = MediaService::singleton();
-        $instanceUri = $service->createMediaInstance($source, $class->getUri(), $this->lang, $fileName);
-
+        $instanceUri = $service->createMediaInstance($source, $clazz->getUri(), $this->lang, $fileName);
+        
         return $this->getFileInfo($instanceUri);
     }
 
@@ -141,7 +141,7 @@ class MediaSource extends Configurable implements MediaManagement
             $file = null;
             $fileManagement = FileManager::getFileManagementModel();
             $filePath = $fileManagement->retrieveFile($fileLink);
-            $mime = \tao_helpers_File::getMimeType($filePath, true);
+            $mime = (string) $resource->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_MIME_TYPE));
 
             if (file_exists($filePath)) {
                 // add the alt text to file array
@@ -183,5 +183,56 @@ class MediaSource extends Configurable implements MediaManagement
         $fileManagement = FileManager::getFileManagementModel();
         $filePath = $fileManagement->retrieveFile($fileLink);
         return $filePath;
+    }
+    
+    /**
+     * Force the mime-type of a resource
+     * 
+     * @param string $link
+     * @param string $mimeType
+     * @return boolean
+     */
+    public function forceMimeType($link, $mimeType)
+    {
+        $resource = new \core_kernel_classes_Resource(\tao_helpers_Uri::decode($link));
+        return $resource->editPropertyValues(new \core_kernel_classes_Property(MEDIA_MIME_TYPE), $mimeType);
+    }
+    
+    /**
+     * 
+     * @param string $path
+     * @return \core_kernel_classes_Class
+     */
+    private function getOrCreatePath($path) {
+        if ($path === '') {
+            $clazz = $this->getRootClass();
+        } else {
+            $clazz = new \core_kernel_classes_Class(\tao_helpers_uri::decode($path));
+            if (!$clazz->isSubClassOf($this->getRootClass()) && !$clazz->equals($this->getRootClass()) && !$clazz->exists()) {
+                // consider $path to be a label
+                $found = false;
+                foreach($this->getRootClass()->getSubClasses() as $subclass){
+                    if($subclass->getLabel() === $path){
+                        $found = true;
+                        $clazz = $subclass;
+                        break;
+                    }
+                }
+                if (!$found) {
+                    $clazz = $this->getRootClass()->createSubClass($path);
+                }
+            }
+        }
+        return $clazz;
+    }
+
+    /**
+     * @param string $md5 representing the file md5
+     * @param \core_kernel_classes_Class $parent parent to add the instance to
+     * @return \core_kernel_classes_Resource instance if file exists or null
+     * @throws \common_exception_Error
+     */
+    private function getInstanceFromFile($md5, $parent){
+        \common_Logger::w('Not yet implemented');
     }
 }

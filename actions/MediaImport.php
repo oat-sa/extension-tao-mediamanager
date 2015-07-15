@@ -43,7 +43,6 @@ class MediaImport extends \tao_actions_Import
     /**
      * overwrite the parent index to add the import handlers
      * 
-     * @requiresRight id WRITE
      * @see tao_actions_Import::index()
      */
     public function index()
@@ -54,7 +53,6 @@ class MediaImport extends \tao_actions_Import
     }
 
     /**
-     * @requiresRight id WRITE
      */
     public function editMedia()
     {

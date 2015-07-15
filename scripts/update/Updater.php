@@ -27,6 +27,7 @@ use oat\taoMediaManager\model\fileManagement\FileManager;
 use oat\taoMediaManager\model\fileManagement\SimpleFileManagement;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
+use oat\taoMediaManager\model\SharedStimulusImporter;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -175,11 +176,43 @@ class Updater extends \common_ext_ExtensionUpdater
         }
 
         if ($currentVersion === '0.2.4') {
+            $mediaClass = MediaService::singleton()->getRootClass();
+            $fileManager = FileManager::getFileManagementModel();
+            foreach($mediaClass->getInstances(true) as $media){
+                $fileLink = $media->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
+                $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
+                $filePath = $fileManager->retrieveFile($fileLink);
+                $mimeType = \tao_helpers_File::getMimeType($filePath);
+                $mimeType = ($mimeType === 'application/xhtml+xml') ? 'application/qti+xml' : $mimeType;
+                $media->setPropertyValue(new \core_kernel_classes_Property(MEDIA_MIME_TYPE), $mimeType);
+            }
+            $currentVersion = '0.2.5';
+        }
+
+        if ($currentVersion === '0.2.5') {
+            $fileManager = FileManager::getFileManagementModel();
+            $iterator = new \core_kernel_classes_ResourceIterator(array(MediaService::singleton()->getRootClass()));
+            foreach ($iterator as $media) {
+                $fileLink = $media->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
+                $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
+                $filePath = $fileManager->retrieveFile($fileLink);
+                try {
+                    SharedStimulusImporter::isValidSharedStimulus($filePath);
+                    $media->editPropertyValues(new \core_kernel_classes_Property(MEDIA_MIME_TYPE), 'application/qti+xml');
+                } catch (\Exception $e) {
+                    $mimeType = \tao_helpers_File::getMimeType($filePath);
+                    $media->editPropertyValues(new \core_kernel_classes_Property(MEDIA_MIME_TYPE), $mimeType);
+                } 
+            }
+            $currentVersion = '0.3.0';
+        }
+
+        if ($currentVersion === '0.3.0') {
             $accessService = \funcAcl_models_classes_AccessService::singleton();
             //grant access to item author
             $itemAuthor = new \core_kernel_classes_Resource('http://www.tao.lu/Ontologies/TAOItem.rdf#ItemAuthor');
             $accessService->revokeModuleAccess($itemAuthor, 'taoMediaManager', 'MediaImport');
-            $currentVersion = '0.2.5';
+            $currentVersion = '0.3.1';
         }
 
         return $currentVersion;

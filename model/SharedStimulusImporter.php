@@ -94,14 +94,8 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
                         self::isValidSharedStimulus($file['uploaded_file']);
                         $filepath = $file['uploaded_file'];
                         $name = $file['name'];
-                        if(in_array($file['type'], array('application/xml', 'text/xml'))){
-                            $name = basename($file['name'], 'xml');
-                            $name .= 'xhtml';
-                            $filepath = dirname($file['name']).'/'.$name;
-                            \tao_helpers_File::copy($file['uploaded_file'], $filepath);
-                        }
 
-                        if (!$service->createMediaInstance($filepath, $classUri, \tao_helpers_Uri::decode($form->getValue('lang')), $name)) {
+                        if (!$service->createMediaInstance($filepath, $classUri, \tao_helpers_Uri::decode($form->getValue('lang')), $name, 'application/qti+xml')) {
                             $report = \common_report_Report::createFailure(__('Fail to import Shared Stimulus'));
                         } else {
                             $report = \common_report_Report::createSuccess(__('Shared Stimulus imported successfully'));
@@ -150,8 +144,8 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
     {
         // No $version given = auto detect.
         $xmlDocument = new XmlDocument();
-        //true as second parameter to validate right away
-        $xmlDocument->load($filename, true);
+        // don't validate because of APIP
+        $xmlDocument->load($filename, false);
 
         // The shared stimulus is qti compliant, see if it is not an interaction, feedback or template
         if (self::hasInteraction($xmlDocument->getDocumentComponent())) {

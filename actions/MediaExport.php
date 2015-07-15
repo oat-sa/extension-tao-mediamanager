@@ -37,16 +37,6 @@ class MediaExport extends \tao_actions_Export
         $this->service = MediaService::singleton();
     }
 
-
-    /**
-     * get the main class
-     * @return \core_kernel_classes_Class
-     */
-    protected function getRootClass()
-    {
-        return new \core_kernel_classes_Class(MEDIA_URI);
-    }
-
     protected function getAvailableExportHandlers()
     {
         return array(

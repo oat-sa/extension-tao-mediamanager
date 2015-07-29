@@ -116,11 +116,6 @@ class MediaSource extends Configurable implements MediaManagement
             foreach ($class->searchInstances($filter) as $instance) {
                 $file = $this->getFileInfo($instance->getUri());
                 if (!is_null($file) && (count($acceptableMime) == 0 || in_array($file['mime'], $acceptableMime))) {
-                    // add the alt text to file array
-                    $altArray = $instance->getPropertyValues(new \core_kernel_classes_Property(MEDIA_ALT_TEXT));
-                    if (count($altArray) > 0) {
-                        $file['alt'] = $altArray[0];
-                    }
                     $children[] = $file;
                 }
             }
@@ -149,12 +144,20 @@ class MediaSource extends Configurable implements MediaManagement
             $mime = (string) $resource->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_MIME_TYPE));
 
             if (file_exists($filePath)) {
+                // add the alt text to file array
+                $altArray = $resource->getPropertyValues(new \core_kernel_classes_Property(MEDIA_ALT_TEXT));
+                $alt = $resource->getLabel();
+                if (count($altArray) > 0) {
+                    $alt = $altArray[0];
+                }
+
                 $file = array(
                     'name' => $resource->getLabel(),
                     'uri' => 'taomedia://mediamanager/' . \tao_helpers_Uri::encode($link),
                     'mime' => $mime,
                     'filePath' => basename($filePath),
-                    'size' => filesize($filePath)
+                    'size' => filesize($filePath),
+                    'alt' => $alt
                 );
             }
             return $file;

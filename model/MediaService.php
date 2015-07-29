@@ -71,7 +71,8 @@ class MediaService extends \tao_models_classes_ClassService
                 MEDIA_LINK => $link,
                 MEDIA_LANGUAGE => $language,
                 MEDIA_MD5 => $md5,
-                MEDIA_MIME_TYPE => $mimeType
+                MEDIA_MIME_TYPE => $mimeType,
+                MEDIA_ALT_TEXT => $label
             ));
 
             if (common_ext_ExtensionsManager::singleton()->isEnabled('taoRevision')) {

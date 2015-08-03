@@ -21,6 +21,9 @@ Template::inc('form_context.tpl', 'tao');
         <?php if(has_data('data')):?>
         <pre><?=get_data('data')?></pre>
         <?php endif;?>
+        <?php if(has_data('error')):?>
+            <div class="feedback-error small"><span class="icon-error small"></span><?=get_data('error')?></div>
+        <?php endif;?>
     </div>
 
 <?php Template::inc('footer.tpl', 'tao'); ?>

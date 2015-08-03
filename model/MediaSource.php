@@ -159,8 +159,11 @@ class MediaSource extends Configurable implements MediaManagement
                     'size' => filesize($filePath),
                     'alt' => $alt
                 );
+                return $file;
             }
-            return $file;
+            else{
+                throw new \tao_models_classes_FileNotFoundException($link);
+            }
         } else {
             throw new \tao_models_classes_FileNotFoundException($link);
         }

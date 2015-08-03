@@ -114,9 +114,13 @@ class MediaSource extends Configurable implements MediaManagement
             $filter = array();
 
             foreach ($class->searchInstances($filter) as $instance) {
-                $file = $this->getFileInfo($instance->getUri());
-                if (!is_null($file) && (count($acceptableMime) == 0 || in_array($file['mime'], $acceptableMime))) {
-                    $children[] = $file;
+                try{
+                    $file = $this->getFileInfo($instance->getUri());
+                    if (!is_null($file) && (count($acceptableMime) == 0 || in_array($file['mime'], $acceptableMime))) {
+                        $children[] = $file;
+                    }
+                }catch(\tao_models_classes_FileNotFoundException $e){
+                    \common_Logger::e($e->getMessage());
                 }
             }
             $data['children'] = $children;

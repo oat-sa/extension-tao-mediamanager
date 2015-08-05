@@ -21,6 +21,8 @@
 
 namespace oat\taoMediaManager\model;
 
+use oat\tao\model\accessControl\func\AclProxy as FuncProxy;
+
 /**
  * Service methods to manage the Media
  *
@@ -38,7 +40,10 @@ class editInstanceForm extends \tao_actions_form_Instance
 
         $edit = \tao_helpers_form_FormFactory::getElement('edit', 'Free');
         $value = '';
-        if($edit){
+        
+        $user = \common_session_SessionManager::getSession()->getUser();
+
+        if($edit && FuncProxy::accessPossible($user, 'oat\\taoMediaManager\\actions\\MediaImport', 'editMedia')){
             $value .=  '<button type="button" id="edit-media" data-classuri="' . $this->getClazz()->getUri() . '" data-uri="' . $this->getInstance()->getUri() . '" class="edit-instance btn-success small"><span class="icon-upload"></span> ' . __('Upload new media') . '</button>';
         }
 

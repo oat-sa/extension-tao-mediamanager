@@ -27,7 +27,7 @@ return array(
     'label' => 'extension-tao-mediamanager',
     'description' => 'TAO media manager extension',
     'license' => 'GPL-2.0',
-    'version' => '0.3.0',
+    'version' => '0.3.1',
     'author' => 'Open Assessment Technologies SA',
     'dependencies' => array('tao', 'taoItems'),
     'models' => array(
@@ -36,7 +36,8 @@ return array(
     'managementRole' => 'http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole',
     'acl' => array(
         array('grant', 'http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole', array('ext' => 'taoMediaManager')),
-        array('grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemAuthor', array('ext'=>'taoMediaManager')),
+        array('grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemAuthor', array('ext'=>'taoMediaManager', 'mod' => 'MediaExport')),
+        array('grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemAuthor', array('ext'=>'taoMediaManager', 'mod' => 'MediaManager')),
     ),
     'install' => array(
         'rdf' => array(

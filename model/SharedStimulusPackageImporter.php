@@ -126,7 +126,7 @@ class SharedStimulusPackageImporter extends ZipImporter
         }
 
         // save the document to a tempfile
-        $newXml = tempnam(sys_get_temp_dir(), 'sharedStimulus_');
+        $newXml = tempnam(sys_get_temp_dir(), 'sharedStimulus_').'.xml';
         $xmlDocument->save($newXml);
         return $newXml;
     }

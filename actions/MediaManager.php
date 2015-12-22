@@ -103,11 +103,17 @@ class MediaManager extends \tao_actions_SaSModule
 
             $mediaSource = new MediaSource(array());
             $filepath = $mediaSource->download($uri);
+            $fileInfo = $mediaSource->getFileInfo($uri);
+
+            if($fileInfo['mime'] === 'application/qti+xml'){
+                \tao_helpers_Http::returnFile($filepath, false);
+                return;
+            }
             if($this->hasRequestParameter('xml')){
                 $this->returnJson(htmlentities(file_get_contents($filepath)));
             }
             else{
-                \tao_helpers_Http::returnFile($filepath, false);
+                \tao_helpers_Http::returnFile($filepath);
             }
         } else {
             throw new \common_exception_Error('invalid media identifier');

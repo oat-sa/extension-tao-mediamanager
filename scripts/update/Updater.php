@@ -207,6 +207,9 @@ class Updater extends \common_ext_ExtensionUpdater
             $currentVersion = '0.3.0';
         }
         
-        return $currentVersion;
+        if ($this->isVersion('0.3.0')) {
+             $this->setVersion('0.3.1');
+        }
+        return null;
     }
 }

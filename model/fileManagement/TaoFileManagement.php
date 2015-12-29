@@ -21,8 +21,11 @@
 namespace oat\taoMediaManager\model\fileManagement;
 
 use oat\oatbox\Configurable;
+use oat\oatbox\service\ConfigurableService;
+use League\Flysystem\Filesystem;
+use GuzzleHttp\Psr7\Stream;
 
-class TaoFileManagement extends Configurable implements FileManagement
+class TaoFileManagement extends ConfigurableService implements FileManagement
 {
 
     protected function getFilesystem()
@@ -42,6 +45,12 @@ class TaoFileManagement extends Configurable implements FileManagement
         }
         return $file->getUri();
     }
+    
+    protected function getLocalPath($link)
+    {
+        $file = new \core_kernel_file_File($link);
+        return $file->getAbsolutePath();
+    }
 
     /**
      * (non-PHPdoc)
@@ -49,8 +58,7 @@ class TaoFileManagement extends Configurable implements FileManagement
      */
     public function retrieveFile($link)
     {
-        $file = new \core_kernel_file_File($link);
-        return $file->getAbsolutePath();
+        return $this->getLocalPath($link);
     }
 
     /**
@@ -59,8 +67,24 @@ class TaoFileManagement extends Configurable implements FileManagement
      */
     public function deleteFile($link)
     {
+        unlink($this->getLocalPath($link));
         $file = new \core_kernel_file_File($link);
-        unlink($file->getAbsolutePath());
         return $file->delete();
+    }
+    
+    public function getFileSize($link)
+    {
+        return filesize($this->getLocalPath($link));
+    }
+    
+    /**
+     *
+     * @param string $link
+     * @return StreamInterface
+     */
+    public function getFileStream($link)
+    {
+        $fh = fopen($this->getLocalPath($link), 'r');
+        return new Stream($fh, ['size' => $this->getFileSize($link)]);
     }
 }

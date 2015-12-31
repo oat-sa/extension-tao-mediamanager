@@ -124,7 +124,7 @@ class MediaService extends \tao_models_classes_ClassService
      * (non-PHPdoc)
      * @see tao_models_classes_ClassService::deleteResource()
      */
-    public function deleteResource($resource)
+    public function deleteResource(\core_kernel_classes_Resource $resource)
     {
         $link = $this->getLink($resource);
         $fileManager = $this->getServiceManager()->get(FileManagement::SERVICE_ID);

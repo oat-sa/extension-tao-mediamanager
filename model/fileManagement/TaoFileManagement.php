@@ -23,7 +23,7 @@ namespace oat\taoMediaManager\model\fileManagement;
 use oat\oatbox\Configurable;
 use oat\oatbox\service\ConfigurableService;
 use League\Flysystem\Filesystem;
-use GuzzleHttp\Psr7\Stream;
+use Slim\Http\Stream;
 
 class TaoFileManagement extends ConfigurableService implements FileManagement
 {

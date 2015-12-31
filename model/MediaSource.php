@@ -75,15 +75,7 @@ class MediaSource extends Configurable implements MediaManagement
      */
     public function delete($link)
     {
-        $instance = new \core_kernel_classes_Class(\tao_helpers_Uri::decode($link));
-        $fileLink = $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
-        $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
-
-        $instance->delete();
-        $fileManager = FileManager::getFileManagementModel();
-        $deleted = $fileManager->deleteFile($fileLink);
-
-        return $deleted;
+        return MediaService::singleton()->deleteResource(new \core_kernel_classes_Resource(\tao_helpers_Uri::decode($link)));
     }
 
     /**

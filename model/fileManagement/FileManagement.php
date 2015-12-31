@@ -26,7 +26,7 @@ use Psr\Http\Message\StreamInterface;
  */
 interface FileManagement
 {
-    const CONFIG_KEY = 'taoMediaManager/fileManager';
+    const SERVICE_ID = 'taoMediaManager/fileManager';
     
     /**
      * @param string $filePath the relative path to the file

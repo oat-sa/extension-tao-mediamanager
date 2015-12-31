@@ -35,7 +35,7 @@ $config = array(
     'uri' => $source->getUri()
 );
 
-ServiceManager::getServiceManager()->register(FileManagement::CONFIG_KEY, new TaoFileManagement($config));
+ServiceManager::getServiceManager()->register(FileManagement::SERVICE_ID, new TaoFileManagement($config));
 
 $mediaManager = new MediaSource();
 

@@ -40,7 +40,7 @@ class FileManager
     public static function getFileManagementModel()
     {
         if (is_null(self::$fileManager)) {
-            $data = ServiceManager::getServiceManager()->get(FileManagement::CONFIG_KEY);
+            $data = ServiceManager::getServiceManager()->get(FileManagement::SERVICE_ID);
             if (is_string($data)) {
                 // legacy
                 if (class_exists($data)) {

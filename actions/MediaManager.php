@@ -107,7 +107,7 @@ class MediaManager extends \tao_actions_SaSModule
             $fileInfo = $mediaSource->getFileInfo($uri);
             $link = $fileInfo['link'];
             
-            $fileManagement = $this->getServiceManager()->get(FileManagement::CONFIG_KEY);
+            $fileManagement = $this->getServiceManager()->get(FileManagement::SERVICE_ID);
             
             if($fileInfo['mime'] === 'application/qti+xml'){
                 \tao_helpers_Http::returnStream($fileManagement->getFileStream($link), $fileManagement->getFileSize($link));

@@ -20,11 +20,12 @@
  */
 namespace oat\taoMediaManager\model\fileManagement;
 
-use oat\oatbox\Configurable;
 use oat\oatbox\service\ConfigurableService;
-use League\Flysystem\Filesystem;
 use Slim\Http\Stream;
 
+/**
+ * File Managemenr relying on the tao 2.x file abstraction
+ */
 class TaoFileManagement extends ConfigurableService implements FileManagement
 {
 
@@ -46,6 +47,13 @@ class TaoFileManagement extends ConfigurableService implements FileManagement
         return $file->getUri();
     }
     
+    /**
+     * Old function to retrieve the local filepath
+     * 
+     * @param string $link
+     * @return string
+     * @deprecated
+     */
     protected function getLocalPath($link)
     {
         $file = new \core_kernel_file_File($link);
@@ -72,15 +80,18 @@ class TaoFileManagement extends ConfigurableService implements FileManagement
         return $file->delete();
     }
     
+    /**
+     * (non-PHPdoc)
+     * @see \oat\taoMediaManager\model\fileManagement\FileManagement::getFileSize()
+     */
     public function getFileSize($link)
     {
         return filesize($this->getLocalPath($link));
     }
     
     /**
-     *
-     * @param string $link
-     * @return StreamInterface
+     * (non-PHPdoc)
+     * @see \oat\taoMediaManager\model\fileManagement\FileManagement::getFileStream()
      */
     public function getFileStream($link)
     {

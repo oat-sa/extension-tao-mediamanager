@@ -21,6 +21,7 @@
 
 namespace oat\taoMediaManager\model\fileManagement;
 
+use oat\oatbox\service\ServiceManager;
 class FileManager
 {
 
@@ -39,9 +40,7 @@ class FileManager
     public static function getFileManagementModel()
     {
         if (is_null(self::$fileManager)) {
-            $data = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager')->getConfig(
-                self::CONFIG_KEY
-            );
+            $data = ServiceManager::getServiceManager()->get(FileManagement::SERVICE_ID);
             if (is_string($data)) {
                 // legacy
                 if (class_exists($data)) {

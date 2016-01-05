@@ -75,15 +75,7 @@ class MediaSource extends Configurable implements MediaManagement
      */
     public function delete($link)
     {
-        $instance = new \core_kernel_classes_Class(\tao_helpers_Uri::decode($link));
-        $fileLink = $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
-        $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
-
-        $instance->delete();
-        $fileManager = FileManager::getFileManagementModel();
-        $deleted = $fileManager->deleteFile($fileLink);
-
-        return $deleted;
+        return MediaService::singleton()->deleteResource(new \core_kernel_classes_Resource(\tao_helpers_Uri::decode($link)));
     }
 
     /**
@@ -144,43 +136,37 @@ class MediaSource extends Configurable implements MediaManagement
             $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
             $file = null;
             $fileManagement = FileManager::getFileManagementModel();
-            $filePath = $fileManagement->retrieveFile($fileLink);
             $mime = (string) $resource->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_MIME_TYPE));
 
-            if (file_exists($filePath)) {
-                // add the alt text to file array
-                $altArray = $resource->getPropertyValues(new \core_kernel_classes_Property(MEDIA_ALT_TEXT));
-                $alt = $resource->getLabel();
-                if (count($altArray) > 0) {
-                    $alt = $altArray[0];
-                }
+            // add the alt text to file array
+            $altArray = $resource->getPropertyValues(new \core_kernel_classes_Property(MEDIA_ALT_TEXT));
+            $alt = $resource->getLabel();
+            if (count($altArray) > 0) {
+                $alt = $altArray[0];
+            }
 
-                $file = array(
-                    'name' => $resource->getLabel(),
-                    'uri' => 'taomedia://mediamanager/' . \tao_helpers_Uri::encode($link),
-                    'mime' => $mime,
-                    'filePath' => basename($filePath),
-                    'size' => filesize($filePath),
-                    'alt' => $alt
-                );
-                return $file;
-            }
-            else{
-                throw new \tao_models_classes_FileNotFoundException($link);
-            }
+            $file = array(
+                'name' => $resource->getLabel(),
+                'uri' => 'taomedia://mediamanager/' . \tao_helpers_Uri::encode($link),
+                'mime' => $mime,
+                'size' => $fileManagement->getFileSize($fileLink),
+                'alt' => $alt,
+                'link' => $fileLink
+            );
+            return $file;
         } else {
             throw new \tao_models_classes_FileNotFoundException($link);
         }
     }
-
+    
     /**
-     * (non-PHPdoc)
-     *
-     * @see \oat\tao\model\media\MediaBrowser::download
+     * 
+     * @param string $link
+     * @throws \tao_models_classes_FileNotFoundException
+     * @return \Psr\Http\Message\StreamInterface
      */
-    public function download($link)
+    public function getFileStream($link)
     {
-        // get the media link from the resource
         $resource = new \core_kernel_classes_Resource(\tao_helpers_Uri::decode($link));
         $fileLink = $resource->getOnePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
         if (is_null($fileLink)) {
@@ -188,8 +174,27 @@ class MediaSource extends Configurable implements MediaManagement
         }
         $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
         $fileManagement = FileManager::getFileManagementModel();
-        $filePath = $fileManagement->retrieveFile($fileLink);
-        return $filePath;
+        return $fileManagement->getFileStream($fileLink);
+        
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \oat\tao\model\media\MediaBrowser::download
+     * @deprecated
+     */
+    public function download($link)
+    {
+        \common_Logger::w('Deprecated, creates tmpfiles');
+        $stream = $this->getFileStream($link);
+        $filename = tempnam(sys_get_temp_dir(), 'media');
+        $fh = fopen($filename, 'w');
+        while (!$stream->eof()) {
+            fwrite($fh, $stream->read(1048576));
+        }
+        fclose($fh);
+        return $filename;
     }
     
     /**

@@ -20,9 +20,13 @@
  */
 namespace oat\taoMediaManager\model\fileManagement;
 
-use oat\oatbox\Configurable;
+use oat\oatbox\service\ConfigurableService;
+use Slim\Http\Stream;
 
-class TaoFileManagement extends Configurable implements FileManagement
+/**
+ * File Managemenr relying on the tao 2.x file abstraction
+ */
+class TaoFileManagement extends ConfigurableService implements FileManagement
 {
 
     protected function getFilesystem()
@@ -42,6 +46,19 @@ class TaoFileManagement extends Configurable implements FileManagement
         }
         return $file->getUri();
     }
+    
+    /**
+     * Old function to retrieve the local filepath
+     * 
+     * @param string $link
+     * @return string
+     * @deprecated
+     */
+    protected function getLocalPath($link)
+    {
+        $file = new \core_kernel_file_File($link);
+        return $file->getAbsolutePath();
+    }
 
     /**
      * (non-PHPdoc)
@@ -49,8 +66,7 @@ class TaoFileManagement extends Configurable implements FileManagement
      */
     public function retrieveFile($link)
     {
-        $file = new \core_kernel_file_File($link);
-        return $file->getAbsolutePath();
+        return $this->getLocalPath($link);
     }
 
     /**
@@ -59,8 +75,27 @@ class TaoFileManagement extends Configurable implements FileManagement
      */
     public function deleteFile($link)
     {
+        unlink($this->getLocalPath($link));
         $file = new \core_kernel_file_File($link);
-        unlink($file->getAbsolutePath());
         return $file->delete();
+    }
+    
+    /**
+     * (non-PHPdoc)
+     * @see \oat\taoMediaManager\model\fileManagement\FileManagement::getFileSize()
+     */
+    public function getFileSize($link)
+    {
+        return filesize($this->getLocalPath($link));
+    }
+    
+    /**
+     * (non-PHPdoc)
+     * @see \oat\taoMediaManager\model\fileManagement\FileManagement::getFileStream()
+     */
+    public function getFileStream($link)
+    {
+        $fh = fopen($this->getLocalPath($link), 'r');
+        return new Stream($fh, ['size' => $this->getFileSize($link)]);
     }
 }

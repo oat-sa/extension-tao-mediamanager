@@ -24,6 +24,8 @@ namespace oat\taoMediaManager\actions;
 use oat\taoMediaManager\model\editInstanceForm;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
+use oat\taoMediaManager\model\fileManagement\FileManager;
+use oat\taoMediaManager\model\fileManagement\FileManagement;
 
 class MediaManager extends \tao_actions_SaSModule
 {
@@ -102,18 +104,20 @@ class MediaManager extends \tao_actions_SaSModule
             $uri = urldecode($this->getRequestParameter('uri'));
 
             $mediaSource = new MediaSource(array());
-            $filepath = $mediaSource->download($uri);
             $fileInfo = $mediaSource->getFileInfo($uri);
-
+            $link = $fileInfo['link'];
+            
+            $fileManagement = $this->getServiceManager()->get(FileManagement::SERVICE_ID);
+            
             if($fileInfo['mime'] === 'application/qti+xml'){
-                \tao_helpers_Http::returnFile($filepath, false);
+                \tao_helpers_Http::returnStream($fileManagement->getFileStream($link), $fileManagement->getFileSize($link));
                 return;
             }
             if($this->hasRequestParameter('xml')){
-                $this->returnJson(htmlentities(file_get_contents($filepath)));
+                $this->returnJson(htmlentities((string)$fileManagement->getFileStream($link)));
             }
             else{
-                \tao_helpers_Http::returnFile($filepath);
+                \tao_helpers_Http::returnStream($fileManagement->getFileStream($link), $fileManagement->getFileSize($link), $fileInfo['mime']);
             }
         } else {
             throw new \common_exception_Error('invalid media identifier');

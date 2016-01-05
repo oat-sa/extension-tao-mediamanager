@@ -20,23 +20,35 @@
  */
 namespace oat\taoMediaManager\model\fileManagement;
 
-
+use Psr\Http\Message\StreamInterface;
+/**
+ * Interface to manage the storage of the taoMediaManager files
+ */
 interface FileManagement
 {
-
-
+    const SERVICE_ID = 'taoMediaManager/fileManager';
+    
     /**
      * @param string $filePath the relative path to the file
      * @return string a link to the file in order to retrieve it later
      */
     public function storeFile($filePath, $label);
-
+    
     /**
-     *
-     * @param string $link the link provided by storeFile
-     * @return string the file that match the link
+     * Returns the Size of the file
+     * 
+     * @param string $link
+     * @return string size of file in bytes
      */
-    public function retrieveFile($link);
+    public function getFileSize($link);
+    
+    /**
+     * Returns a stream of the file content
+     *
+     * @param string $link
+     * @return StreamInterface
+     */
+    public function getFileStream($link);
 
     /**
      * @param $link

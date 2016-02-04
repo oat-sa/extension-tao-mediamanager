@@ -116,13 +116,13 @@ class SharedStimulusPackageImporter extends ZipImporter
         /** @var $image \qtism\data\content\xhtml\Img */
         foreach ($images as $image) {
             $source = $image->getSrc();
-            $image->setSrc(self::secureEncode($basedir, $source));
+            $image->setSrc(self::storeEmbeded($basedir, $source));
         }
 
         /** @var $object \qtism\data\content\xhtml\Object */
         foreach ($objects as $object) {
             $data = $object->getData();
-            $object->setData(self::secureEncode($basedir, $data));
+            $object->setData(self::storeEmbeded($basedir, $data));
         }
 
         // save the document to a tempfile
@@ -214,7 +214,7 @@ class SharedStimulusPackageImporter extends ZipImporter
     }
     
     /**
-     * Verify paths and encode the file
+     * Verify paths, store the file and return a link to it
      * 
      * @param string $basedir
      * @param string $source
@@ -222,24 +222,10 @@ class SharedStimulusPackageImporter extends ZipImporter
      * @throws \common_exception_Error
      * @return string
      */
-    protected static function secureEncode($basedir, $source)
+    protected static function storeEmbeded($basedir, $source)
     {
-        $components = parse_url($source);
-        if (!isset($components['scheme'])) {
-            // relative path
-            if (\tao_helpers_File::securityCheck($source, true)) {
-                if (file_exists($basedir . $source)) {
-                    return 'data:' . FsUtils::getMimeType($basedir . $source) . ';'
-                        . 'base64,' . base64_encode(file_get_contents($basedir . $source));
-                } else {
-                    throw new \tao_models_classes_FileNotFoundException($source);
-                }
-            } else {
-                throw new \common_exception_Error('Invalid source path "'.$source.'"');
-            }
-        } else {
-            // url, just return it as is
-            return $source;
-        }
+        $mediaSource = new MediaSource();
+        $fileInfo = $mediaSource->add($basedir.DIRECTORY_SEPARATOR.$source, basename($source), 'test');
+        return $fileInfo['uri'];
     }
 }

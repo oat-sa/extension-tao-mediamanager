@@ -29,7 +29,7 @@ use oat\taoMediaManager\model\fileManagement\SimpleFileManagement;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\rendering\BaseRenderer;
-use oat\taoMediaManager\model\SharedStimulusImporter;
+use oat\taoQtiItem\model\sharedStimulus\SharedStimulusImporter;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -216,8 +216,11 @@ class Updater extends \common_ext_ExtensionUpdater
         if($this->isVersion('0.3.1')){
             $mediaRenderer = new BaseRenderer();
             $this->getServiceManager()->register(MediaRendererInterface::SERVICE_ID, $mediaRenderer);
-            $this->setVersion('0.4.0');
 
+            $extension = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager');
+            $handlers = array('oat\taoMediaManager\model\FileImporter');
+            $extension->setConfig('importHandlers', $handlers);
+            $this->setVersion('0.4.0');
         }
     }
 }

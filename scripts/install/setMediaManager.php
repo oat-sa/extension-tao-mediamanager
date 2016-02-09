@@ -19,22 +19,20 @@
  *
  */
 
+use oat\oatbox\service\ServiceManager;
+use oat\oatbox\filesystem\FileSystemService;
+use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
+use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\tao\model\media\MediaService;
-use oat\taoMediaManager\model\fileManagement\FileManager;
-use oat\taoMediaManager\model\fileManagement\TaoFileManagement;
 use oat\taoMediaManager\model\MediaSource;
 
-$dataPath = FILES_PATH . 'taoMediaManager' . DIRECTORY_SEPARATOR . 'media' . DIRECTORY_SEPARATOR;
-if (file_exists($dataPath)) {
-    helpers_File::emptyDirectory($dataPath);
-}
+$serviceManager = ServiceManager::getServiceManager();
+$fsService = $serviceManager->get(FileSystemService::SERVICE_ID); 
+$fsService->createLocalFileSystem('mediaManager');
+$serviceManager->register(FileSystemService::SERVICE_ID, $fsService);
 
-$source = tao_models_classes_FileSourceService::singleton()->addLocalSource('MediaManager', $dataPath);
-$config = array(
-    'uri' => $source->getUri()
-);
-FileManager::setFileManagementModel(new TaoFileManagement($config));
+$flySystemManagement = new FlySystemManagement(array(FlySystemManagement::OPTION_FS => 'mediaManager'));
+$serviceManager->register(FileManagement::SERVICE_ID, $flySystemManagement);
 
 $mediaManager = new MediaSource();
-
 MediaService::singleton()->addMediaSource($mediaManager);

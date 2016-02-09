@@ -20,7 +20,10 @@
  */
 namespace oat\taoMediaManager\model\fileManagement;
 
-
+/**
+ * Proof of concept File Manager, do not use
+ * @deprecated
+ */
 class SimpleFileManagement implements FileManagement
 {
 
@@ -74,6 +77,25 @@ class SimpleFileManagement implements FileManagement
             throw new \common_exception_Error('Unsecure file link found');
         }
         return $this->getBaseDir() . $link;
+    }
+    
+    /**
+     * (non-PHPdoc)
+     * @see \oat\taoMediaManager\model\fileManagement\FileManagement::getFileSize()
+     */
+    public function getFileSize($link)
+    {
+        return filesize($this->getBaseDir() . $link);
+    }
+    
+    /**
+     * (non-PHPdoc)
+     * @see \oat\taoMediaManager\model\fileManagement\FileManagement::getFileStream()
+     */
+    public function getFileStream($link)
+    {
+        $fh = fopen($this->getBaseDir() . $link, 'r');
+        return new Stream($fh, ['size' => $this->getFileSize($link)]);
     }
 
     /**

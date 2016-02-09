@@ -24,6 +24,7 @@ namespace oat\taoMediaManager\model;
 use oat\taoMediaManager\model\fileManagement\FileManager;
 use common_ext_ExtensionsManager;
 use oat\taoRevision\model\RevisionService;
+use oat\taoMediaManager\model\fileManagement\FileManagement;
 
 /**
  * Service methods to manage the Media
@@ -94,8 +95,7 @@ class MediaService extends \tao_models_classes_ClassService
     public function editMediaInstance($fileTmp, $instanceUri, $language)
     {
         $instance = new \core_kernel_classes_Resource($instanceUri);
-        $link = $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
-        $link = $link instanceof \core_kernel_classes_Resource ? $link->getUri() : (string)$link;
+        $link = $this->getLink($instance);
 
         $fileManager = FileManager::getFileManagementModel();
         $fileManager->deleteFile($link);
@@ -119,5 +119,27 @@ class MediaService extends \tao_models_classes_ClassService
         return ($link !== false) ? true : false;
 
     }
-
+    
+    /**
+     * (non-PHPdoc)
+     * @see tao_models_classes_ClassService::deleteResource()
+     */
+    public function deleteResource(\core_kernel_classes_Resource $resource)
+    {
+        $link = $this->getLink($resource);
+        $fileManager = $this->getServiceManager()->get(FileManagement::SERVICE_ID);
+        return parent::deleteResource($resource) && $fileManager->deleteFile($link);
+    }
+    
+    /**
+     * Returns the link of a media resource
+     * 
+     * @param \core_kernel_classes_Resource $resource
+     * @return string
+     */
+    protected function getLink(\core_kernel_classes_Resource $resource)
+    {
+        $instance = $resource->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
+        return $instance instanceof \core_kernel_classes_Resource ? $instance->getUri() : (string)$instance;
+    }
 }

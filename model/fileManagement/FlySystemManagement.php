@@ -21,52 +21,56 @@
 namespace oat\taoMediaManager\model\fileManagement;
 
 use oat\oatbox\service\ConfigurableService;
+use League\Flysystem\Filesystem;
 use Slim\Http\Stream;
+use Psr\Http\Message\StreamInterface;
+use oat\oatbox\filesystem\FileSystemService;
 
-/**
- * File Managemenr relying on the tao 2.x file abstraction
- */
-class TaoFileManagement extends ConfigurableService implements FileManagement
+class FlySystemManagement extends ConfigurableService implements FileManagement
 {
-
-    protected function getFilesystem()
-    {
-        return new \core_kernel_fileSystem_FileSystem($this->getOption('uri'));
-    }
-
+    const OPTION_FS = 'fs';
+    
     /**
      * (non-PHPdoc)
      * @see \oat\taoMediaManager\model\fileManagement\FileManagement::storeFile()
      */
     public function storeFile($filePath, $label)
     {
-        $file = $this->getFilesystem()->spawnFile($filePath, $label);
-        if (is_null($file)) {
-            throw new \common_Exception('Unable to spawn file for ' . $filePath);
-        }
-        return $file->getUri();
+        $filesystem = $this->getFileSystem();
+        $filename = $this->getUniqueFilename(basename($filePath));
+        
+        $stream = fopen($filePath, 'r+');
+        $filesystem->writeStream($filename, $stream);
+        fclose($stream);
+        
+        return $filename;
     }
     
-    /**
-     * Old function to retrieve the local filepath
-     * 
-     * @param string $link
-     * @return string
-     * @deprecated
-     */
-    protected function getLocalPath($link)
+    public function getFileSize($link)
     {
-        $file = new \core_kernel_file_File($link);
-        return $file->getAbsolutePath();
+        $this->getFilesystem()->getSize($link);
     }
 
+    /**
+     * 
+     * @param string $link
+     * @return StreamInterface
+     */
+    public function getFileStream($link)
+    {
+        $resource = $this->getFilesystem()->readStream($link); 
+        return new Stream($resource, ['size' => $this->getFileSize($link)]); 
+    }
+    
+    
     /**
      * (non-PHPdoc)
      * @see \oat\taoMediaManager\model\fileManagement\FileManagement::retrieveFile()
      */
     public function retrieveFile($link)
     {
-        return $this->getLocalPath($link);
+        \common_Logger::w('Deprecated');
+        return null;
     }
 
     /**
@@ -75,27 +79,33 @@ class TaoFileManagement extends ConfigurableService implements FileManagement
      */
     public function deleteFile($link)
     {
-        unlink($this->getLocalPath($link));
-        $file = new \core_kernel_file_File($link);
-        return $file->delete();
+        return $this->getFilesystem()->delete($link);
     }
     
     /**
-     * (non-PHPdoc)
-     * @see \oat\taoMediaManager\model\fileManagement\FileManagement::getFileSize()
+     * @return Filesystem
      */
-    public function getFileSize($link)
+    protected function getFilesystem()
     {
-        return filesize($this->getLocalPath($link));
+        $fs = $this->getServiceManager()->get(FileSystemService::SERVICE_ID);
+        return $fs->getFileSystem($this->getOption(self::OPTION_FS));
     }
     
     /**
-     * (non-PHPdoc)
-     * @see \oat\taoMediaManager\model\fileManagement\FileManagement::getFileStream()
+     * Create a new unique filename based on an existing filename
+     * 
+     * @param string $fileName
+     * @return string
      */
-    public function getFileStream($link)
+    protected function getUniqueFilename($fileName)
     {
-        $fh = fopen($this->getLocalPath($link), 'r');
-        return new Stream($fh, ['size' => $this->getFileSize($link)]);
+        $returnValue = uniqid(hash('crc32', $fileName));
+    
+        $ext = @pathinfo($fileName, PATHINFO_EXTENSION);
+        if (!empty($ext)){
+            $returnValue .= '.' . $ext;
+        }
+    
+        return $returnValue;
     }
 }

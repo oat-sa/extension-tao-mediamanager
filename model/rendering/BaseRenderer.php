@@ -38,10 +38,6 @@ class BaseRenderer extends ConfigurableService implements MediaRendererInterface
             echo json_encode(htmlentities((string)$fileManagement->getFileStream($link)));
         }
         else{
-            if ($fileInfo['mime'] === 'application/x-gzip') {
-                $fileInfo['mime'] = 'image/svg+xml';
-                \common_Logger::i(print_r($fileManagement->getFileSize($link),true));
-            }
             \tao_helpers_Http::returnStream($fileManagement->getFileStream($link), $fileManagement->getFileSize($link), $fileInfo['mime']);
         }
     }

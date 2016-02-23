@@ -187,8 +187,9 @@ class MediaSource extends Configurable implements MediaManagement
     public function download($link)
     {
         \common_Logger::w('Deprecated, creates tmpfiles');
+        $ext = $this->getExtension($link);
         $stream = $this->getFileStream($link);
-        $filename = tempnam(sys_get_temp_dir(), 'media');
+        $filename = tempnam(sys_get_temp_dir(), 'media').'.'.$ext;
         $fh = fopen($filename, 'w');
         while (!$stream->eof()) {
             fwrite($fh, $stream->read(1048576));
@@ -208,6 +209,14 @@ class MediaSource extends Configurable implements MediaManagement
     {
         $resource = new \core_kernel_classes_Resource(\tao_helpers_Uri::decode($link));
         return $resource->editPropertyValues(new \core_kernel_classes_Property(MEDIA_MIME_TYPE), $mimeType);
+    }
+
+
+    private function getExtension($link){
+        $fileInfo = $this->getFileInfo($link);
+        $mime = $fileInfo['mime'];
+        $ext = \tao_helpers_File::getExtention($mime);
+        return ($ext !== '')?$ext:'xml';
     }
     
     /**

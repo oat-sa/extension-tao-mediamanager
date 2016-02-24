@@ -21,7 +21,9 @@
 namespace oat\taoMediaManager\model;
 
 use oat\oatbox\Configurable;
+use oat\oatbox\service\ServiceManager;
 use oat\tao\model\media\MediaManagement;
+use oat\tao\model\media\MediaRendererInterface;
 use oat\taoMediaManager\model\fileManagement\FileManager;
 
 class MediaSource extends Configurable implements MediaManagement
@@ -197,7 +199,17 @@ class MediaSource extends Configurable implements MediaManagement
         fclose($fh);
         return $filename;
     }
-    
+
+    /**
+     * (non-PHPdoc)
+     * @see \oat\tao\model\media\MediaBrowser::render
+     */
+    public function render($link)
+    {
+        $renderer = $this->getServiceManager()->get(MediaRendererInterface::SERVICE_ID);
+        $renderer->render($link);
+    }
+
     /**
      * Force the mime-type of a resource
      * 
@@ -255,5 +267,9 @@ class MediaSource extends Configurable implements MediaManagement
      */
     private function getInstanceFromFile($md5, $parent){
         \common_Logger::w('Not yet implemented');
+    }
+
+    private function getServiceManager(){
+        return ServiceManager::getServiceManager();
     }
 }

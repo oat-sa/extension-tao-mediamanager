@@ -209,18 +209,16 @@ class Updater extends \common_ext_ExtensionUpdater
             $currentVersion = '0.3.0';
         }
         
-        if ($this->isVersion('0.3.0')) {
-             $this->setVersion('0.3.1');
-        }
+        $this->skip('0.3.0','0.4.0');
 
-        if($this->isVersion('0.3.1')){
+        if($this->isVersion('0.4.0')){
             $mediaRenderer = new BaseRenderer();
             $this->getServiceManager()->register(MediaRendererInterface::SERVICE_ID, $mediaRenderer);
 
             $extension = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager');
             $handlers = array('oat\taoMediaManager\model\FileImporter');
             $extension->setConfig('importHandlers', $handlers);
-            $this->setVersion('0.4.0');
+            $this->setVersion('0.5.0');
         }
     }
 }

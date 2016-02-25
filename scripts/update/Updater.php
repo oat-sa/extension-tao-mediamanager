@@ -217,7 +217,7 @@ class Updater extends \common_ext_ExtensionUpdater
 
             $extension = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager');
             $handlers = array('oat\taoMediaManager\model\FileImporter');
-            $config = (is_array($extension->getConfig('importHandler')))?$extension->getConfig('importHandler'):array();
+            $config = ($extension->hasConfig('importHandlers'))?$extension->getConfig('importHandlers'):array();
             $extension->setConfig('importHandlers', array_merge($config, $handlers));
             $this->setVersion('0.5.0');
         }

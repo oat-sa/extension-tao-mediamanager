@@ -21,13 +21,15 @@
 
 namespace oat\taoMediaManager\scripts\update;
 
+use oat\tao\model\media\MediaRendererInterface;
 use oat\tao\model\media\MediaService as TaoMediaService;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\taoMediaManager\model\fileManagement\FileManager;
 use oat\taoMediaManager\model\fileManagement\SimpleFileManagement;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
-use oat\taoMediaManager\model\SharedStimulusImporter;
+use oat\taoMediaManager\model\rendering\BaseRenderer;
+use oat\taoQtiItem\model\sharedStimulus\SharedStimulusImporter;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -208,7 +210,16 @@ class Updater extends \common_ext_ExtensionUpdater
         }
         
         $this->skip('0.3.0','0.4.0');
-        
-        return null;
+
+        if($this->isVersion('0.4.0')){
+            $mediaRenderer = new BaseRenderer();
+            $this->getServiceManager()->register(MediaRendererInterface::SERVICE_ID, $mediaRenderer);
+
+            $extension = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager');
+            $handlers = array('oat\taoMediaManager\model\FileImporter');
+            $config = ($extension->hasConfig('importHandlers'))?$extension->getConfig('importHandlers'):array();
+            $extension->setConfig('importHandlers', array_merge($config, $handlers));
+            $this->setVersion('0.5.0');
+        }
     }
 }

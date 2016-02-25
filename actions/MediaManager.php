@@ -21,6 +21,7 @@
 
 namespace oat\taoMediaManager\actions;
 
+use oat\tao\model\media\MediaRendererInterface;
 use oat\taoMediaManager\model\editInstanceForm;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
@@ -102,23 +103,10 @@ class MediaManager extends \tao_actions_SaSModule
 
         if ($this->hasRequestParameter('uri')) {
             $uri = urldecode($this->getRequestParameter('uri'));
-
-            $mediaSource = new MediaSource(array());
-            $fileInfo = $mediaSource->getFileInfo($uri);
-            $link = $fileInfo['link'];
-            
-            $fileManagement = $this->getServiceManager()->get(FileManagement::SERVICE_ID);
-            
-            if($fileInfo['mime'] === 'application/qti+xml'){
-                \tao_helpers_Http::returnStream($fileManagement->getFileStream($link), $fileManagement->getFileSize($link));
-                return;
-            }
-            if($this->hasRequestParameter('xml')){
-                $this->returnJson(htmlentities((string)$fileManagement->getFileStream($link)));
-            }
-            else{
-                \tao_helpers_Http::returnStream($fileManagement->getFileStream($link), $fileManagement->getFileSize($link), $fileInfo['mime']);
-            }
+            $xml = $this->getRequestParameter('xml');
+            $renderer = $this->getServiceManager()->get(MediaRendererInterface::SERVICE_ID);
+            $renderer->setXml($xml);
+            $renderer->render($uri);
         } else {
             throw new \common_exception_Error('invalid media identifier');
         }

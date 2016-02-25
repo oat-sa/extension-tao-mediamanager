@@ -21,9 +21,7 @@
 
 namespace oat\taoMediaManager\actions;
 
-use oat\taoMediaManager\model\FileImporter;
 use oat\taoMediaManager\model\MediaService;
-use oat\taoMediaManager\model\SharedStimulusImporter;
 
 /**
  * This controller provide the actions to import medias
@@ -71,12 +69,24 @@ class MediaImport extends \tao_actions_Import
         return $this->importHandlers;
     }
 
+    protected function addAvailableImportHandler(\tao_models_classes_import_ImportHandler $importer){
+        $this->importHandlers[] = $importer;
+    }
+
+    protected function resetAvailableImportHandler(){
+        $this->importHandlers = array();
+    }
+
     protected function setAvailableImportHandlers($id = null)
     {
-        $this->importHandlers = array(
-            new FileImporter($id),
-            new SharedStimulusImporter($id)
-        );
+        $extension = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager');
+        $importers = $extension->getConfig('importHandlers');
+
+        $this->resetAvailableImportHandler();
+        foreach($importers as $importerClass){
+            $importer = new $importerClass($id);
+            $this->addAvailableImportHandler($importer);
+        }
 
         return $this;
     }

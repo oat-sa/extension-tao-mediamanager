@@ -36,3 +36,6 @@ $serviceManager->register(FileManagement::SERVICE_ID, $flySystemManagement);
 
 $mediaManager = new MediaSource();
 MediaService::singleton()->addMediaSource($mediaManager);
+
+$mediaRenderer = new \oat\taoMediaManager\model\rendering\BaseRenderer();
+$serviceManager->register(\oat\tao\model\media\MediaRendererInterface::SERVICE_ID, $mediaRenderer);

@@ -28,6 +28,7 @@ use oat\taoMediaManager\model\fileManagement\SimpleFileManagement;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\SharedStimulusImporter;
+use oat\taoQtiItem\model\qti\Parser;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -210,6 +211,46 @@ class Updater extends \common_ext_ExtensionUpdater
         if ($this->isBetween('0.3.0','0.3.2')) {
              $this->setVersion('0.3.2');
         }
-        return null;
+
+        if($this->isVersion('0.3.2')){
+            $medias = MediaService::singleton()->getRootClass()->getInstances(true);
+
+            $fileManager = FileManager::getFileManagementModel();
+            foreach($medias as $media){
+                $link = $media->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
+                $link = $link instanceof \core_kernel_classes_Resource ? $link->getUri() : (string)$link;
+                $mimeType = $media->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_MIME_TYPE));
+                $mimeType = $mimeType instanceof \core_kernel_classes_Resource ? $mimeType->getUri() : (string)$mimeType;
+                if($mimeType !== 'application/qti+xml'){
+                    continue;
+                }
+                $file = $fileManager->retrieveFile($link);
+                \common_Logger::w($media->getUri());
+                $xml = new \DOMDocument();
+                $xml->load($file);
+                $xpath = new \DOMXpath($xml);
+
+                /** @var \DOMElement $elementWithSrc */
+                foreach ($xpath->query("//*[@src]") as $elementWithSrc) {
+                    $count = 0;
+                    $src = $elementWithSrc->getAttribute('src');
+                    $newSrc = preg_replace_callback(
+                        '#data:application/x-gzip;base64,(.+)#',
+                        function ($matches) {
+                            return 'data:image/svg+xml;base64,' . base64_encode(gzdecode(base64_decode($matches[1])));
+                        },
+                        $src,
+                        -1,
+                        $count
+                    );
+                    if($count !== 0){
+                        $elementWithSrc->setAttribute('src', $newSrc);
+                        $xml->C14NFile($file);
+                    }
+                }
+            }
+
+            $this->setVersion('0.3.2');
+        }
     }
 }

@@ -229,8 +229,14 @@ class SharedStimulusPackageImporter extends ZipImporter
             // relative path
             if (\tao_helpers_File::securityCheck($source, true)) {
                 if (file_exists($basedir . $source)) {
-                    return 'data:' . FsUtils::getMimeType($basedir . $source) . ';'
-                        . 'base64,' . base64_encode(file_get_contents($basedir . $source));
+                    $data = file_get_contents($basedir . $source);
+                    $fileMime = FsUtils::getMimeType($basedir . $source);
+                    if($fileMime === 'application/x-gzip'){
+                        $data = gzdecode(file_get_contents($basedir . $source));
+                        $fileMime = 'image/svg+xml';
+                    }
+                    return 'data:' . $fileMime . ';'
+                        . 'base64,' . base64_encode($data);
                 } else {
                     throw new \tao_models_classes_FileNotFoundException($source);
                 }

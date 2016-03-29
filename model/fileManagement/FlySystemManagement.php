@@ -59,7 +59,7 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
     public function getFileStream($link)
     {
         $resource = $this->getFilesystem()->readStream($link); 
-        return new Stream($resource, ['size' => $this->getFileSize($link)]); 
+        return new Stream($resource); 
     }
     
     

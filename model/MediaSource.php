@@ -196,7 +196,13 @@ class MediaSource extends Configurable implements MediaManagement
         fclose($fh);
         return $filename;
     }
-    
+
+    public function getBaseName($link)
+    {
+        $stream = $this->getFileStream($link);
+        return basename($stream->getMetadata('uri'));
+    }
+
     /**
      * Force the mime-type of a resource
      * 

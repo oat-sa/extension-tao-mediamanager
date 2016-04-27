@@ -207,8 +207,6 @@ class Updater extends \common_ext_ExtensionUpdater
             $currentVersion = '0.3.0';
         }
         
-        $this->skip('0.3.0','0.4.3');
-        
-        return null;
+        $this->skip('0.3.0','0.5.0');
     }
 }

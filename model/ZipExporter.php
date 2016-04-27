@@ -23,7 +23,8 @@ namespace oat\taoMediaManager\model;
 
 use core_kernel_classes_Class;
 use core_kernel_classes_Resource;
-use oat\taoMediaManager\model\fileManagement\FileManager;
+use oat\oatbox\service\ServiceManager;
+use oat\taoMediaManager\model\fileManagement\FileManagement;
 use tao_helpers_form_Form;
 
 /**
@@ -130,7 +131,10 @@ class ZipExporter implements \tao_models_classes_export_ExportHandler
                     if ($link instanceof \core_kernel_classes_Literal) {
                         $link = $link->literal;
                     }
-                    $zip->addFile(FileManager::getFileManagementModel()->retrieveFile($link), $archivePath . $file->getLabel());
+
+                    /** @var FileManagement $fileManagement */
+                    $fileManagement = $this->getServiceManager()->get(FileManagement::SERVICE_ID);
+                    $zip->addFromString($archivePath . $file->getLabel(), $fileManagement->getFileStream($link)->getContents());
                 }
 
             }
@@ -142,5 +146,10 @@ class ZipExporter implements \tao_models_classes_export_ExportHandler
 
         return $path;
 
+    }
+
+    public function getServiceManager()
+    {
+        return ServiceManager::getServiceManager();
     }
 }

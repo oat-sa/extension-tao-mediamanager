@@ -36,6 +36,13 @@ class SharedStimulusPackageImporter extends ZipImporter
 {
 
     /**
+    * List of regexp of media that should not be import in media manager
+    */
+    private static $BLACKLIST = array(
+        '/^data:[^\/]+\/[^;]+(;charset=[\w]+)?;base64,/'
+    );
+
+    /**
      * Starts the import based on the form
      *
      * @param \core_kernel_classes_Class $class
@@ -48,10 +55,10 @@ class SharedStimulusPackageImporter extends ZipImporter
         try {
             $fileInfo = $form->getValue('source');
             $xmlFile = $this->getSharedStimulusFile($fileInfo['uploaded_file']);
-            
+
             // throws an exception of invalid
             SharedStimulusImporter::isValidSharedStimulus($xmlFile);
-            
+
             $embeddedFile = $this->embedAssets($xmlFile);
             $report = $this->storeSharedStimulus(
                 $class,
@@ -78,10 +85,10 @@ class SharedStimulusPackageImporter extends ZipImporter
 
             $fileInfo = $form->getValue('source');
             $xmlFile = $this->getSharedStimulusFile($fileInfo['uploaded_file']);
-            
+
             // throws an exception of invalid
             SharedStimulusImporter::isValidSharedStimulus($xmlFile);
-            
+
             $embeddedFile = $this->embedAssets($xmlFile);
             $report = $this->replaceSharedStimulus(
                     $instance,
@@ -116,13 +123,19 @@ class SharedStimulusPackageImporter extends ZipImporter
         /** @var $image \qtism\data\content\xhtml\Img */
         foreach ($images as $image) {
             $source = $image->getSrc();
-            $image->setSrc(self::secureEncode($basedir, $source));
+            $image->setSrc(self::storeEmbeded($basedir, $source));
         }
 
         /** @var $object \qtism\data\content\xhtml\Object */
         foreach ($objects as $object) {
+            foreach($object->getContent() as $content){
+                if(method_exists($content, 'getValue')){
+                    $value = $content->getValue();
+                    $content->setValue(self::storeEmbeded($basedir, $value));
+                }
+            }
             $data = $object->getData();
-            $object->setData(self::secureEncode($basedir, $data));
+            $object->setData(self::storeEmbeded($basedir, $data));
         }
 
         // save the document to a tempfile
@@ -133,18 +146,18 @@ class SharedStimulusPackageImporter extends ZipImporter
 
     /**
      * Get the shared stimulus file with assets from the zip
-     * 
+     *
      * @param string $filePath path of the zip file
      * @return string path to the xml
      */
     private function getSharedStimulusFile($filePath)
     {
         $extractPath = $this->extractArchive($filePath);
-    
+
         $iterator = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($extractPath),
             \RecursiveIteratorIterator::LEAVES_ONLY);
-    
+
         /** @var $file \SplFileInfo */
         foreach ($iterator as $file) {
             //check each file to see if it can be the shared stimulus file
@@ -154,7 +167,7 @@ class SharedStimulusPackageImporter extends ZipImporter
                 }
             }
         }
-    
+
         throw new \common_Exception('XML not found');
     }
 
@@ -212,40 +225,31 @@ class SharedStimulusPackageImporter extends ZipImporter
 
         return $report;
     }
-    
+
     /**
      * Verify paths and encode the file
-     * 
+     *
      * @param string $basedir
      * @param string $source
      * @throws \tao_models_classes_FileNotFoundException
      * @throws \common_exception_Error
      * @return string
      */
-    protected static function secureEncode($basedir, $source)
+    protected static function storeEmbeded($basedir, $source)
     {
-        $components = parse_url($source);
-        if (!isset($components['scheme'])) {
-            // relative path
-            if (\tao_helpers_File::securityCheck($source, true)) {
-                if (file_exists($basedir . $source)) {
-                    $data = file_get_contents($basedir . $source);
-                    $fileMime = FsUtils::getMimeType($basedir . $source);
-                    if($fileMime === 'application/x-gzip'){
-                        $data = gzdecode(file_get_contents($basedir . $source));
-                        $fileMime = 'image/svg+xml';
-                    }
-                    return 'data:' . $fileMime . ';'
-                        . 'base64,' . base64_encode($data);
-                } else {
-                    throw new \tao_models_classes_FileNotFoundException($source);
-                }
-            } else {
-                throw new \common_exception_Error('Invalid source path "'.$source.'"');
-            }
-        } else {
-            // url, just return it as is
+        //do nothing to a url
+        if(filter_var($source, FILTER_VALIDATE_URL)){
             return $source;
         }
+
+        foreach (self::$BLACKLIST as $blacklist) {
+            if (preg_match($blacklist, $source) === 1) {
+                return $source;
+            }
+        }
+
+        $mediaSource = new MediaSource();
+        $fileInfo = $mediaSource->add($basedir.DIRECTORY_SEPARATOR.$source, basename($source), 'assets');
+        return $fileInfo['uri'];
     }
 }

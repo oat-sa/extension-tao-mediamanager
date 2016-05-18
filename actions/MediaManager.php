@@ -24,6 +24,7 @@ namespace oat\taoMediaManager\actions;
 use oat\taoMediaManager\model\editInstanceForm;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
+use oat\taoMediaManager\helpers\SharedStimulus;
 
 class MediaManager extends \tao_actions_SaSModule
 {
@@ -106,7 +107,9 @@ class MediaManager extends \tao_actions_SaSModule
             $fileInfo = $mediaSource->getFileInfo($uri);
 
             if($fileInfo['mime'] === 'application/qti+xml'){
-                \tao_helpers_Http::returnFile($filepath, false);
+                //xinclude, try to get embedded files
+                $file = SharedStimulus::embeddedAsset($filepath);
+                \tao_helpers_Http::returnFile($file, false);
                 return;
             }
             if($this->hasRequestParameter('xml')){

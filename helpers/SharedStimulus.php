@@ -42,4 +42,48 @@ class SharedStimulus
         file_put_contents($file, $content);
         return $file;
     }
+
+    public static function prepareExportedFile(&$file, $resolver)
+    {
+        $fileContent = file_get_contents($file);
+        $files = array();
+        $replacements = array();
+        $out = array();
+        preg_match_all('/taomedia:\/\/mediamanager\/[^"]+/', $fileContent, $out, PREG_SET_ORDER);
+        foreach($out as $key => $matches){
+            try{
+                $replacement = $matches[0];
+                $mediaAsset = $resolver->resolve($matches[0]);
+                $mediaSource = $mediaAsset->getMediaSource();
+                if (get_class($mediaSource) !== 'oat\tao\model\media\sourceStrategy\HttpSource') {
+                    $srcPath = $mediaSource->download($mediaAsset->getMediaIdentifier());
+                    $fileInfo = $mediaSource->getFileInfo($mediaAsset->getMediaIdentifier());
+                    $replacement = $mediaAsset->getMediaIdentifier();
+
+                    if(isset($fileInfo['filePath'])){
+                        $filename = $fileInfo['filePath'];
+                        if($mediaAsset->getMediaIdentifier() !== $fileInfo['uri']){
+                            $replacement = $filename;
+                        }
+                        $destPath = ltrim($filename,'/');
+                    } else {
+                        $destPath = $replacement = basename($srcPath);
+                    }
+                    if (file_exists($srcPath)) {
+                        $files[$destPath] = $srcPath;
+                    }
+                }
+            } catch(\tao_models_classes_FileNotFoundException $e){
+                $replacement = '';
+            }
+            $replacements[$matches[0]] = $replacement;
+        }
+        foreach($replacements as $base => $final){
+            $fileContent = str_replace($base, $final, $fileContent);
+        }
+        $file = \tao_helpers_File::createTempDir().'shared.xml';
+        file_put_contents($file, $fileContent);
+        return $files;
+
+    }
 }

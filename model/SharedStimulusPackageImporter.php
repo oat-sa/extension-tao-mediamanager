@@ -114,7 +114,7 @@ class SharedStimulusPackageImporter extends ZipImporter
         $basedir = dirname($originalXml).DIRECTORY_SEPARATOR;
 
         $xmlDocument = new XmlDocument();
-        $xmlDocument->load($originalXml, true);
+        $xmlDocument->load($originalXml);
 
         //get images and object to base64 their src/data
         $images = $xmlDocument->getDocumentComponent()->getComponentsByClassName('img');

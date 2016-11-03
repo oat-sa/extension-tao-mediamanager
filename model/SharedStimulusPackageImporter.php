@@ -227,7 +227,7 @@ class SharedStimulusPackageImporter extends ZipImporter
         $components = parse_url($source);
         if (!isset($components['scheme'])) {
             // relative path
-            if (\tao_helpers_File::securityCheck($source, true)) {
+            if (\tao_helpers_File::securityCheck($source, false)) {
                 if (file_exists($basedir . $source)) {
                     return 'data:' . FsUtils::getMimeType($basedir . $source) . ';'
                         . 'base64,' . base64_encode(file_get_contents($basedir . $source));

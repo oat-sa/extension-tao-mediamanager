@@ -23,8 +23,8 @@ namespace oat\taoMediaManager\model;
 
 use core_kernel_classes_Class;
 use Jig\Utils\FsUtils;
+use oat\tao\helpers\uploadReferencerTrait;
 use qtism\data\storage\xml\XmlDocument;
-use tao_helpers_form_Form;
 
 /**
  * Service methods to manage the Media
@@ -34,7 +34,7 @@ use tao_helpers_form_Form;
  */
 class SharedStimulusPackageImporter extends ZipImporter
 {
-
+    use uploadReferencerTrait;
     /**
      * Starts the import based on the form
      *
@@ -47,7 +47,8 @@ class SharedStimulusPackageImporter extends ZipImporter
         \helpers_TimeOutHelper::setTimeOutLimit(\helpers_TimeOutHelper::LONG);
         try {
             $fileInfo = $form->getValue('source');
-            $xmlFile = $this->getSharedStimulusFile($fileInfo['uploaded_file']);
+            $uploadedFile = $this->getLocalCopy($fileInfo['uploaded_file']);
+            $xmlFile = $this->getSharedStimulusFile($uploadedFile);
             
             // throws an exception of invalid
             SharedStimulusImporter::isValidSharedStimulus($xmlFile);
@@ -77,7 +78,8 @@ class SharedStimulusPackageImporter extends ZipImporter
         try {
 
             $fileInfo = $form->getValue('source');
-            $xmlFile = $this->getSharedStimulusFile($fileInfo['uploaded_file']);
+            $uploadedFile = $this->getLocalCopy($fileInfo['uploaded_file']);
+            $xmlFile = $this->getSharedStimulusFile($uploadedFile);
             
             // throws an exception of invalid
             SharedStimulusImporter::isValidSharedStimulus($xmlFile);

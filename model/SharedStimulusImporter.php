@@ -21,7 +21,7 @@
 
 namespace oat\taoMediaManager\model;
 
-use core_kernel_classes_Class;
+use oat\tao\helpers\uploadReferencerTrait;
 use qtism\data\QtiComponent;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
@@ -36,7 +36,7 @@ use tao_helpers_form_Form;
  */
 class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
 {
-
+    use uploadReferencerTrait;
     /**
      * @var SharedStimulusPackageImporter
      */
@@ -84,7 +84,7 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
         session_write_close();
         try {
             $file = $form->getValue('source');
-            $uploadedFilePath = $file['uploaded_file'];
+            $uploadedFilePath = $this->getLocalCopy($file['uploaded_file']);
             $service = MediaService::singleton();
             $classUri = $class->getUri();
             if (is_null($this->instanceUri) || $this->instanceUri === $classUri) {

@@ -41,6 +41,7 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
      * @var SharedStimulusPackageImporter
      */
     private $zipImporter = null;
+    private $instanceUri;
 
     public function __construct($instanceUri = null)
     {
@@ -83,6 +84,7 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
         session_write_close();
         try {
             $file = $form->getValue('source');
+            $uploadedFilePath = $file['uploaded_file'];
             $service = MediaService::singleton();
             $classUri = $class->getUri();
             if (is_null($this->instanceUri) || $this->instanceUri === $classUri) {
@@ -91,11 +93,12 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
 
                     try {
 
-                        self::isValidSharedStimulus($file['uploaded_file']);
-                        $filepath = $file['uploaded_file'];
+                        self::isValidSharedStimulus($uploadedFilePath);
                         $name = $file['name'];
 
-                        if (!$service->createMediaInstance($filepath, $classUri, \tao_helpers_Uri::decode($form->getValue('lang')), $name, 'application/qti+xml')) {
+                        if (!$service->createMediaInstance($uploadedFilePath, $classUri,
+                            \tao_helpers_Uri::decode($form->getValue('lang')), $name, 'application/qti+xml')
+                        ) {
                             $report = \common_report_Report::createFailure(__('Fail to import Shared Stimulus'));
                         } else {
                             $report = \common_report_Report::createSuccess(__('Shared Stimulus imported successfully'));
@@ -109,13 +112,12 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
                 }
             } else {
                 if ($file['type'] !== 'application/zip') {
-                    self::isValidSharedStimulus($file['uploaded_file']);
-                    $filepath = $file['uploaded_file'];
+                    self::isValidSharedStimulus($uploadedFilePath);
                     if(in_array($file['type'], array('application/xml', 'text/xml'))){
                         $name = basename($file['name'], 'xml');
                         $name .= 'xhtml';
-                        $filepath = dirname($file['name']).'/'.$name;
-                        \tao_helpers_File::copy($file['uploaded_file'], $filepath);
+                        $filepath = \tao_helpers_File::concat([dirname($file['name']), $name]);
+                        \tao_helpers_File::copy($uploadedFilePath, $filepath);
                     }
                     if (!$service->editMediaInstance($filepath, $this->instanceUri, \tao_helpers_Uri::decode($form->getValue('lang')))) {
                         $report = \common_report_Report::createFailure(__('Fail to edit shared stimulus'));

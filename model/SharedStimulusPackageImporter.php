@@ -23,7 +23,8 @@ namespace oat\taoMediaManager\model;
 
 use core_kernel_classes_Class;
 use Jig\Utils\FsUtils;
-use oat\tao\helpers\uploadReferencerTrait;
+use oat\oatbox\service\ServiceManager;
+use oat\tao\model\upload\UploadService;
 use qtism\data\storage\xml\XmlDocument;
 
 /**
@@ -34,7 +35,6 @@ use qtism\data\storage\xml\XmlDocument;
  */
 class SharedStimulusPackageImporter extends ZipImporter
 {
-    use uploadReferencerTrait;
     /**
      * Starts the import based on the form
      *
@@ -47,13 +47,13 @@ class SharedStimulusPackageImporter extends ZipImporter
         \helpers_TimeOutHelper::setTimeOutLimit(\helpers_TimeOutHelper::LONG);
         try {
             $fileInfo = $form->getValue('source');
-            $uploadedFile = $this->getLocalCopy($fileInfo['uploaded_file']);
+            $uploadedFile = ServiceManager::getServiceManager()->get(UploadService::SERVICE_ID)->getLocalCopy($fileInfo['uploaded_file']);
             $xmlFile = $this->getSharedStimulusFile($uploadedFile);
             
             // throws an exception of invalid
             SharedStimulusImporter::isValidSharedStimulus($xmlFile);
-            
-            $embeddedFile = $this->embedAssets($xmlFile);
+
+            $embeddedFile = static::embedAssets($xmlFile);
             $report = $this->storeSharedStimulus(
                 $class,
                 \tao_helpers_Uri::decode($form->getValue('lang')),
@@ -78,13 +78,13 @@ class SharedStimulusPackageImporter extends ZipImporter
         try {
 
             $fileInfo = $form->getValue('source');
-            $uploadedFile = $this->getLocalCopy($fileInfo['uploaded_file']);
+            $uploadedFile = ServiceManager::getServiceManager()->get(UploadService::SERVICE_ID)->getLocalCopy($fileInfo['uploaded_file']);
             $xmlFile = $this->getSharedStimulusFile($uploadedFile);
             
             // throws an exception of invalid
             SharedStimulusImporter::isValidSharedStimulus($xmlFile);
-            
-            $embeddedFile = $this->embedAssets($xmlFile);
+
+            $embeddedFile = static::embedAssets($xmlFile);
             $report = $this->replaceSharedStimulus(
                     $instance,
                     \tao_helpers_Uri::decode($form->getValue('lang')),

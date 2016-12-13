@@ -21,7 +21,8 @@
 
 namespace oat\taoMediaManager\model;
 
-use oat\tao\helpers\uploadReferencerTrait;
+use oat\oatbox\service\ServiceManager;
+use oat\tao\model\upload\UploadService;
 use tao_helpers_form_Form;
 
 /**
@@ -33,7 +34,6 @@ use tao_helpers_form_Form;
  */
 class FileImporter implements \tao_models_classes_import_ImportHandler
 {
-    use uploadReferencerTrait;
 
     private $instanceUri;
 
@@ -80,7 +80,10 @@ class FileImporter implements \tao_models_classes_import_ImportHandler
 
             $service = MediaService::singleton();
             $classUri = $class->getUri();
-            $uploadedFile = $this->getLocalCopy($file['uploaded_file']);
+            /** @var  UploadService $uploadService */
+            $uploadService = ServiceManager::getServiceManager()->get(UploadService::SERVICE_ID);
+            $uploadedFile = $uploadService->getLocalCopy($file['uploaded_file']);
+
             if (is_null($this->instanceUri) || $this->instanceUri === $classUri) {
                 //if the file is a zip do a zip import
                 if ($file['type'] !== 'application/zip') {
@@ -105,12 +108,13 @@ class FileImporter implements \tao_models_classes_import_ImportHandler
                 }
             }
 
-
-            return $report;
-
         } catch (\Exception $e) {
             $report = \common_report_Report::createFailure($e->getMessage());
-            return $report;
         }
+
+        $uploadService->remove($uploadedFile);
+
+        return $report;
     }
+
 }

@@ -21,11 +21,11 @@
 
 namespace oat\taoMediaManager\model;
 
-use oat\tao\helpers\uploadReferencerTrait;
+use oat\oatbox\service\ServiceManager;
+use oat\tao\model\upload\UploadService;
 use qtism\data\QtiComponent;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
-use SebastianBergmann\Exporter\Exception;
 use tao_helpers_form_Form;
 
 /**
@@ -36,7 +36,6 @@ use tao_helpers_form_Form;
  */
 class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
 {
-    use uploadReferencerTrait;
     /**
      * @var SharedStimulusPackageImporter
      */
@@ -84,7 +83,11 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
         session_write_close();
         try {
             $file = $form->getValue('source');
-            $uploadedFilePath = $this->getLocalCopy($file['uploaded_file']);
+
+            /** @var  UploadService $uploadService */
+            $uploadService = ServiceManager::getServiceManager()->get(UploadService::SERVICE_ID);
+            $uploadedFilePath = $uploadService->getLocalCopy($file['uploaded_file']);
+
             $service = MediaService::singleton();
             $classUri = $class->getUri();
             if (is_null($this->instanceUri) || $this->instanceUri === $classUri) {
@@ -129,12 +132,13 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
                 }
             }
 
-            return $report;
-
         } catch (\Exception $e) {
             $report = \common_report_Report::createFailure($e->getMessage());
-            return $report;
         }
+
+        $uploadService->remove($uploadedFilePath);
+
+        return $report;
     }
 
     /**

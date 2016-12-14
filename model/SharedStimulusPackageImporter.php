@@ -47,7 +47,7 @@ class SharedStimulusPackageImporter extends ZipImporter
         \helpers_TimeOutHelper::setTimeOutLimit(\helpers_TimeOutHelper::LONG);
         try {
             $fileInfo = $form->getValue('source');
-            $uploadedFile = ServiceManager::getServiceManager()->get(UploadService::SERVICE_ID)->getLocalCopy($fileInfo['uploaded_file']);
+            $uploadedFile = ServiceManager::getServiceManager()->get(UploadService::SERVICE_ID)->getUploadedFile($fileInfo['uploaded_file']);
             $xmlFile = $this->getSharedStimulusFile($uploadedFile);
             
             // throws an exception of invalid
@@ -78,7 +78,7 @@ class SharedStimulusPackageImporter extends ZipImporter
         try {
 
             $fileInfo = $form->getValue('source');
-            $uploadedFile = ServiceManager::getServiceManager()->get(UploadService::SERVICE_ID)->getLocalCopy($fileInfo['uploaded_file']);
+            $uploadedFile = ServiceManager::getServiceManager()->get(UploadService::SERVICE_ID)->getUploadedFile($fileInfo['uploaded_file']);
             $xmlFile = $this->getSharedStimulusFile($uploadedFile);
             
             // throws an exception of invalid

@@ -86,7 +86,7 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
 
             /** @var  UploadService $uploadService */
             $uploadService = ServiceManager::getServiceManager()->get(UploadService::SERVICE_ID);
-            $uploadedFilePath = $uploadService->getLocalCopy($file['uploaded_file']);
+            $uploadedFilePath = $uploadService->getUploadedFile($file['uploaded_file']);
 
             $service = MediaService::singleton();
             $classUri = $class->getUri();

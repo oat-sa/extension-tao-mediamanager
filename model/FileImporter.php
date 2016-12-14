@@ -82,7 +82,7 @@ class FileImporter implements \tao_models_classes_import_ImportHandler
             $classUri = $class->getUri();
             /** @var  UploadService $uploadService */
             $uploadService = ServiceManager::getServiceManager()->get(UploadService::SERVICE_ID);
-            $uploadedFile = $uploadService->getLocalCopy($file['uploaded_file']);
+            $uploadedFile = $uploadService->getUploadedFile($file['uploaded_file']);
 
             if (is_null($this->instanceUri) || $this->instanceUri === $classUri) {
                 //if the file is a zip do a zip import

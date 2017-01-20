@@ -75,10 +75,9 @@ class MediaServiceTest extends TaoPhpUnitTestRunner
 
     public function testGetRootClass()
     {
-        $rootClass = new \core_kernel_classes_Class('http://www.tao.lu/Ontologies/TAOMedia.rdf#Media');
         $this->assertEquals(
-            $rootClass,
-            $this->mediaService->getRootClass(),
+            'http://www.tao.lu/Ontologies/TAOMedia.rdf#Media',
+            $this->mediaService->getRootClass()->getUri(),
             'The root class of the service is not correct'
         );
     }

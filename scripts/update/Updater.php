@@ -93,7 +93,7 @@ class Updater extends \common_ext_ExtensionUpdater
                 $itemContent = preg_replace_callback('/src="mediamanager\/([^"]+)"/', function ($matches) {
                     $mediaClass = MediaService::singleton()->getRootClass();
                     $medias = $mediaClass->searchInstances(array(
-                        MEDIA_LINK => $matches[1]
+                        MediaService::PROPERTY_LINK => $matches[1]
                     ), array('recursive' => true));
                     $media = array_pop($medias);
                     $uri = '';
@@ -179,12 +179,12 @@ class Updater extends \common_ext_ExtensionUpdater
             $mediaClass = MediaService::singleton()->getRootClass();
             $fileManager = FileManager::getFileManagementModel();
             foreach($mediaClass->getInstances(true) as $media){
-                $fileLink = $media->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
+                $fileLink = $media->getUniquePropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LINK));
                 $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
                 $filePath = $fileManager->retrieveFile($fileLink);
                 $mimeType = \tao_helpers_File::getMimeType($filePath);
                 $mimeType = ($mimeType === 'application/xhtml+xml') ? 'application/qti+xml' : $mimeType;
-                $media->setPropertyValue(new \core_kernel_classes_Property(MEDIA_MIME_TYPE), $mimeType);
+                $media->setPropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_MIME_TYPE), $mimeType);
             }
             $currentVersion = '0.2.5';
         }
@@ -193,15 +193,15 @@ class Updater extends \common_ext_ExtensionUpdater
             $fileManager = FileManager::getFileManagementModel();
             $iterator = new \core_kernel_classes_ResourceIterator(array(MediaService::singleton()->getRootClass()));
             foreach ($iterator as $media) {
-                $fileLink = $media->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
+                $fileLink = $media->getUniquePropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LINK));
                 $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
                 $filePath = $fileManager->retrieveFile($fileLink);
                 try {
                     SharedStimulusImporter::isValidSharedStimulus($filePath);
-                    $media->editPropertyValues(new \core_kernel_classes_Property(MEDIA_MIME_TYPE), 'application/qti+xml');
+                    $media->editPropertyValues(new \core_kernel_classes_Property(MediaService::PROPERTY_MIME_TYPE), 'application/qti+xml');
                 } catch (\Exception $e) {
                     $mimeType = \tao_helpers_File::getMimeType($filePath);
-                    $media->editPropertyValues(new \core_kernel_classes_Property(MEDIA_MIME_TYPE), $mimeType);
+                    $media->editPropertyValues(new \core_kernel_classes_Property(MediaService::PROPERTY_MIME_TYPE), $mimeType);
                 } 
             }
             $currentVersion = '0.3.0';

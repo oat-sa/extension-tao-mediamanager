@@ -127,7 +127,7 @@ class ZipExporter implements \tao_models_classes_export_ExportHandler
 
                 foreach ($files as $file) {
                     //add each file in the correct directory
-                    $link = $file->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
+                    $link = $file->getUniquePropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LINK));
                     if ($link instanceof \core_kernel_classes_Literal) {
                         $link = $link->literal;
                     }

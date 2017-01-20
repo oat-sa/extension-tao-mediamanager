@@ -49,7 +49,7 @@ class MediaService extends \tao_models_classes_ClassService
      */
     public function getRootClass()
     {
-        return new \core_kernel_classes_Class(self::ROOT_CLASS_URI);
+        return $this->getClass(self::ROOT_CLASS_URI);
     }
 
 
@@ -79,11 +79,11 @@ class MediaService extends \tao_models_classes_ClassService
             $mimeType = is_null($mimeType) ? \tao_helpers_File::getMimeType($fileSource) : $mimeType;
             $instance = $clazz->createInstanceWithProperties(array(
                 RDFS_LABEL => $label,
-                MEDIA_LINK => $link,
-                MEDIA_LANGUAGE => $language,
-                MEDIA_MD5 => $md5,
-                MEDIA_MIME_TYPE => $mimeType,
-                MEDIA_ALT_TEXT => $label
+                self::PROPERTY_LINK => $link,
+                self::PROPERTY_LANGUAGE => $language,
+                self::PROPERTY_MD5 => $md5,
+                self::PROPERTY_MIME_TYPE => $mimeType,
+                self::PROPERTY_ALT_TEXT => $label
             ));
 
             if (common_ext_ExtensionsManager::singleton()->isEnabled('taoRevision')) {
@@ -116,9 +116,9 @@ class MediaService extends \tao_models_classes_ClassService
             $md5 = md5_file($fileTmp);
             /** @var $instance  \core_kernel_classes_Resource */
             if (!is_null($instance) && $instance instanceof \core_kernel_classes_Resource) {
-                $instance->editPropertyValues(new \core_kernel_classes_Property(MEDIA_LINK), $link);
-                $instance->editPropertyValues(new \core_kernel_classes_Property(MEDIA_LANGUAGE), $language);
-                $instance->editPropertyValues(new \core_kernel_classes_Property(MEDIA_MD5), $md5);
+                $instance->editPropertyValues($this->getProperty(self::PROPERTY_LINK), $link);
+                $instance->editPropertyValues($this->getProperty(self::PROPERTY_LANGUAGE), $language);
+                $instance->editPropertyValues($this->getProperty(self::PROPERTY_MD5), $md5);
             }
             
             if (common_ext_ExtensionsManager::singleton()->isEnabled('taoRevision')) {
@@ -149,7 +149,7 @@ class MediaService extends \tao_models_classes_ClassService
      */
     protected function getLink(\core_kernel_classes_Resource $resource)
     {
-        $instance = $resource->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
+        $instance = $resource->getUniquePropertyValue($this->getProperty(self::PROPERTY_LINK));
         return $instance instanceof \core_kernel_classes_Resource ? $instance->getUri() : (string)$instance;
     }
 }

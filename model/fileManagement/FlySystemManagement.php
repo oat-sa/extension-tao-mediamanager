@@ -39,7 +39,7 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
         $filesystem = $this->getFileSystem();
         $filename = $this->getUniqueFilename(basename($filePath));
         
-        $stream = fopen($filePath, 'r+');
+        $stream = fopen($filePath, 'r');
         $filesystem->writeStream($filename, $stream);
         fclose($stream);
         

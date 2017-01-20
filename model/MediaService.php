@@ -37,6 +37,16 @@ class MediaService extends \tao_models_classes_ClassService
 {
     const ROOT_CLASS_URI = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Media';
 
+    const PROPERTY_LINK = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Link';
+    const PROPERTY_LANGUAGE = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Language';
+    const PROPERTY_ALT_TEXT = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AltText';
+    const PROPERTY_MD5 =  'http://www.tao.lu/Ontologies/TAOMedia.rdf#md5';
+    const PROPERTY_MIME_TYPE = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#mimeType';
+
+    /**
+     * (non-PHPdoc)
+     * @see tao_models_classes_ClassService::getRootClass()
+     */
     public function getRootClass()
     {
         return new \core_kernel_classes_Class(self::ROOT_CLASS_URI);

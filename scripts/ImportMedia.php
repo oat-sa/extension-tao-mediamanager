@@ -14,7 +14,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2016 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2017 (original work) Open Assessment Technologies SA;
  *
  *
  */
@@ -25,20 +25,12 @@ use common_report_Report as Report;
 use oat\taoMediaManager\model\MediaService;
 
 /**
- * Class RecompileDelivery
- * @package oat\taoDeliveryRdf\scripts
- * @author Aleh Hutnikau, <hutnikau@1pt.com>
+ * Class ImportMedia
  *
- * Run examples:
+ * Used to import media from the command line
  *
- * - Show list of deliveries:
  * ```
- * sudo -u www-data php index.php 'oat\taoDeliveryRdf\scripts\RecompileDelivery' list
- * ```
- *
- * - Recompile delivery by identifier
- * ```
- * sudo -u www-data php index.php 'oat\taoDeliveryRdf\scripts\RecompileDelivery' compile 'http://sample/first.rdf#i1464967192451980'
+ * sudo -u www-data php index.php 'oat\taoMediaManager\scripts\ImportMedia' big_bad_video.mp4 'http://sample/mediaclass.rdf#i1464967192451980'
  * ```
  */
 class ImportMedia implements Action

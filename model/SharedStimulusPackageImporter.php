@@ -22,7 +22,6 @@
 namespace oat\taoMediaManager\model;
 
 use core_kernel_classes_Class;
-use Jig\Utils\FsUtils;
 use oat\oatbox\service\ServiceManager;
 use oat\tao\model\upload\UploadService;
 use qtism\data\storage\xml\XmlDocument;

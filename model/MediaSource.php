@@ -132,14 +132,14 @@ class MediaSource extends Configurable implements MediaManagement
         // get the media link from the resource
         $resource = new \core_kernel_classes_Resource(\tao_helpers_Uri::decode($link));
         if ($resource->exists()) {
-            $fileLink = $resource->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
+            $fileLink = $resource->getUniquePropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LINK));
             $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
             $file = null;
             $fileManagement = FileManager::getFileManagementModel();
-            $mime = (string) $resource->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_MIME_TYPE));
+            $mime = (string) $resource->getUniquePropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_MIME_TYPE));
 
             // add the alt text to file array
-            $altArray = $resource->getPropertyValues(new \core_kernel_classes_Property(MEDIA_ALT_TEXT));
+            $altArray = $resource->getPropertyValues(new \core_kernel_classes_Property(MediaService::PROPERTY_ALT_TEXT));
             $alt = $resource->getLabel();
             if (count($altArray) > 0) {
                 $alt = $altArray[0];
@@ -168,7 +168,7 @@ class MediaSource extends Configurable implements MediaManagement
     public function getFileStream($link)
     {
         $resource = new \core_kernel_classes_Resource(\tao_helpers_Uri::decode($link));
-        $fileLink = $resource->getOnePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
+        $fileLink = $resource->getOnePropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LINK));
         if (is_null($fileLink)) {
             throw new \tao_models_classes_FileNotFoundException($link);
         }
@@ -213,7 +213,7 @@ class MediaSource extends Configurable implements MediaManagement
     public function forceMimeType($link, $mimeType)
     {
         $resource = new \core_kernel_classes_Resource(\tao_helpers_Uri::decode($link));
-        return $resource->editPropertyValues(new \core_kernel_classes_Property(MEDIA_MIME_TYPE), $mimeType);
+        return $resource->editPropertyValues(new \core_kernel_classes_Property(MediaService::PROPERTY_MIME_TYPE), $mimeType);
     }
     
     /**

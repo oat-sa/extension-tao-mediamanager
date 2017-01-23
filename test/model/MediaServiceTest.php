@@ -75,10 +75,9 @@ class MediaServiceTest extends TaoPhpUnitTestRunner
 
     public function testGetRootClass()
     {
-        $rootClass = new \core_kernel_classes_Class('http://www.tao.lu/Ontologies/TAOMedia.rdf#Media');
         $this->assertEquals(
-            $rootClass,
-            $this->mediaService->getRootClass(),
+            'http://www.tao.lu/Ontologies/TAOMedia.rdf#Media',
+            $this->mediaService->getRootClass()->getUri(),
             'The root class of the service is not correct'
         );
     }
@@ -110,7 +109,7 @@ class MediaServiceTest extends TaoPhpUnitTestRunner
         $instances = $root->getInstances();
         /** @var \core_kernel_classes_Resource $instance */
         $instance = array_pop($instances);
-        $thing = $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LINK));
+        $thing = $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LINK));
         $linkResult = $thing instanceof \core_kernel_classes_Resource ? $thing->getUri() : (string)$thing;
         $this->assertInstanceOf(
             '\core_kernel_classes_Resource',
@@ -123,7 +122,7 @@ class MediaServiceTest extends TaoPhpUnitTestRunner
         $this->assertEquals($linkResult, 'MyGreatLink', 'The returned link is wrong');
         $this->assertEquals(
             $lang,
-            $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LANGUAGE)),
+            $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LANGUAGE)),
             'The instance language is wrong'
         );
 
@@ -146,13 +145,13 @@ class MediaServiceTest extends TaoPhpUnitTestRunner
         $lang = 'EN-en';
         $instanceUri = 'http://myFancyDomain.com/myGreatInstanceUri';
         $instance = new \core_kernel_classes_Class($instanceUri);
-        $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LINK), 'MyLink');
+        $instance->setPropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LINK), 'MyLink');
 
         $this->mediaService->editMediaInstance($fileTmp, $instanceUri, $lang);
 
         $this->assertEquals(
             $lang,
-            $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MEDIA_LANGUAGE)),
+            $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LANGUAGE)),
             'The instance language is wrong'
         );
 

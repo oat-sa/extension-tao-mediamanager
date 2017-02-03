@@ -78,7 +78,7 @@ class FileImportForm extends \tao_helpers_form_FormContainer
         $dataLang = 'http://www.tao.lu/Ontologies/TAO.rdf#Lang'.$dataLang;
         if(!is_null($this->instanceUri)){
             $instance = new \core_kernel_classes_Resource($this->instanceUri);
-            $lang = $instance->getOnePropertyValue(new \core_kernel_classes_Property(MEDIA_LANGUAGE));
+            $lang = $instance->getOnePropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LANGUAGE));
             if($lang instanceof \core_kernel_classes_Resource){
                 $dataLang = $lang->getUri();
             }

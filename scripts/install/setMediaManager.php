@@ -28,7 +28,7 @@ use oat\taoMediaManager\model\MediaSource;
 
 $serviceManager = ServiceManager::getServiceManager();
 $fsService = $serviceManager->get(FileSystemService::SERVICE_ID); 
-$fsService->createLocalFileSystem('mediaManager');
+$fsService->createFileSystem('mediaManager');
 $serviceManager->register(FileSystemService::SERVICE_ID, $fsService);
 
 $flySystemManagement = new FlySystemManagement(array(FlySystemManagement::OPTION_FS => 'mediaManager'));

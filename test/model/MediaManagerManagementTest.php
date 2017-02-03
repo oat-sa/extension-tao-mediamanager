@@ -96,7 +96,7 @@ class MediaSourceTest extends \PHPUnit_Framework_TestCase
         $filePath = dirname(__DIR__) . '/sample/Italy.png';
 
         $instance = $rootClass->createInstance();
-        $instance->setPropertyValue(new \core_kernel_classes_Property(MEDIA_LINK), 'myGreatLink');
+        $instance->setPropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LINK), 'myGreatLink');
         $returnedLink = $instance->getUri();
         $this->service->expects($this->once())
             ->method('createMediaInstance')

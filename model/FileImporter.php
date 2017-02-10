@@ -112,7 +112,7 @@ class FileImporter implements \tao_models_classes_import_ImportHandler
             $report = \common_report_Report::createFailure($e->getMessage());
         }
 
-        $uploadService->remove($uploadedFile);
+        $uploadService->remove($uploadService->getUploadedFlyFile($file['uploaded_file']));
 
         return $report;
     }

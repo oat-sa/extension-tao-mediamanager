@@ -22,8 +22,9 @@
 namespace oat\taoMediaManager\model;
 
 use core_kernel_classes_Class;
+use oat\oatbox\service\ServiceManager;
+use oat\tao\model\upload\UploadService;
 use qtism\data\storage\xml\XmlDocument;
-use tao_helpers_form_Form;
 
 /**
  * Service methods to manage the Media
@@ -33,7 +34,6 @@ use tao_helpers_form_Form;
  */
 class SharedStimulusPackageImporter extends ZipImporter
 {
-
     /**
      * Starts the import based on the form
      *
@@ -46,12 +46,16 @@ class SharedStimulusPackageImporter extends ZipImporter
         \helpers_TimeOutHelper::setTimeOutLimit(\helpers_TimeOutHelper::LONG);
         try {
             $fileInfo = $form->getValue('source');
-            $xmlFile = $this->getSharedStimulusFile($fileInfo['uploaded_file']);
+            /** @var UploadService $uploadService */
+            $uploadService = ServiceManager::getServiceManager()->get(UploadService::SERVICE_ID);
+            $uploadedFile = $uploadService->getUploadedFile($fileInfo['uploaded_file']);
+            
+            $xmlFile = $this->getSharedStimulusFile($uploadedFile);
             
             // throws an exception of invalid
             SharedStimulusImporter::isValidSharedStimulus($xmlFile);
-            
-            $embeddedFile = $this->embedAssets($xmlFile);
+
+            $embeddedFile = static::embedAssets($xmlFile);
             $report = $this->storeSharedStimulus(
                 $class,
                 \tao_helpers_Uri::decode($form->getValue('lang')),
@@ -60,6 +64,9 @@ class SharedStimulusPackageImporter extends ZipImporter
         } catch (\Exception $e) {
             $report = \common_report_Report::createFailure($e->getMessage());
         }
+
+        $uploadService->remove($uploadService->getUploadedFlyFile($fileInfo['uploaded_file']));
+
         \helpers_TimeOutHelper::reset();
         return $report;
     }
@@ -76,12 +83,15 @@ class SharedStimulusPackageImporter extends ZipImporter
         try {
 
             $fileInfo = $form->getValue('source');
-            $xmlFile = $this->getSharedStimulusFile($fileInfo['uploaded_file']);
+            /** @var UploadService $uploadService */
+            $uploadService = ServiceManager::getServiceManager()->get(UploadService::SERVICE_ID);
+            $uploadedFile = $uploadService->getUploadedFile($fileInfo['uploaded_file']);
+            $xmlFile = $this->getSharedStimulusFile($uploadedFile);
             
             // throws an exception of invalid
             SharedStimulusImporter::isValidSharedStimulus($xmlFile);
-            
-            $embeddedFile = $this->embedAssets($xmlFile);
+
+            $embeddedFile = static::embedAssets($xmlFile);
             $report = $this->replaceSharedStimulus(
                     $instance,
                     \tao_helpers_Uri::decode($form->getValue('lang')),
@@ -90,6 +100,8 @@ class SharedStimulusPackageImporter extends ZipImporter
         } catch (\Exception $e) {
             $report = \common_report_Report::createFailure($e->getMessage());
         }
+
+        $uploadService->remove($uploadService->getUploadedFlyFile($fileInfo['uploaded_file']));
         \helpers_TimeOutHelper::reset();
         return $report;
     }

@@ -22,6 +22,8 @@
 namespace oat\taoMediaManager\model;
 
 use core_kernel_classes_Class;
+use oat\oatbox\service\ServiceManager;
+use oat\tao\model\upload\UploadService;
 use tao_helpers_form_Form;
 
 /**
@@ -56,9 +58,13 @@ class ZipImporter
             $file = $form->getValue('source');
             $resource = new core_kernel_classes_Class($form->getValue('classUri'));
 
+            /** @var  UploadService $uploadService */
+            $uploadService = ServiceManager::getServiceManager()->get(UploadService::SERVICE_ID);
+            $uploadedFile = $uploadService->getUploadedFile($file['uploaded_file']);
+
             // unzip the file
             try {
-                $directory = $this->extractArchive($file['uploaded_file']);
+                $directory = $this->extractArchive($uploadedFile);
             } catch (\Exception $e) {
                 return \common_report_Report::createFailure(__('Unable to extract the archive'));
             }

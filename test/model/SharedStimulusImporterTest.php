@@ -23,6 +23,7 @@ namespace oat\taoMediaManager\test\model;
 use oat\taoMediaManager\model\SharedStimulusImporter;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
+use Prophecy\Argument;
 
 include_once dirname(__FILE__) . '/../../../tao/includes/raw_start.php';
 
@@ -119,7 +120,7 @@ class SharedStimulusImporterTest extends \PHPUnit_Framework_TestCase
         $tmpDir = \tao_helpers_File::createTempDir();
         copy($filename, $tmpDir . basename($filename));
         $filename = $tmpDir . basename($filename);
-        $finalFilename = $tmpDir.'sharedStimulus.xhtml';
+        $finalFilename = \tao_helpers_File::concat([trim($tmpDir, '/\\'), 'sharedStimulus.xhtml']);
 
         $myClass = new \core_kernel_classes_Class('http://fancyDomain.com/tao.rdf#fancyUri');
         $info = finfo_open(FILEINFO_MIME_TYPE);
@@ -127,7 +128,6 @@ class SharedStimulusImporterTest extends \PHPUnit_Framework_TestCase
         finfo_close($info);
         $file['uploaded_file'] = $filename;
         $file['name'] = $filename;
-
 
         $form = $sharedImporter->getForm();
         $form->setValues(array('source' => $file, 'lang' => 'EN_en'));

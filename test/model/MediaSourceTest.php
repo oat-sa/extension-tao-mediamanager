@@ -50,23 +50,23 @@ class MediaSourceTest extends \PHPUnit_Framework_TestCase
         $this->classUri = $rootClass->createSubClass('great', 'comment')->getUri();
         $this->service = MediaService::singleton();
         $this->mediaSource = new MediaSource();
-        $fileManager = new FlySystemManagement([
+
+        $fileManager = ServiceManager::getServiceManager()->get(FileManagement::SERVICE_ID);
+        $fileManager->setOptions([
             'fs' => 'testFs'
         ]);
-        $fs = new FileSystemService(array(
+        $fs = ServiceManager::getServiceManager()->get(FileSystemService::SERVICE_ID);
+        $fs->setOptions([
             'filesPath' => dirname(__DIR__) . '\\sample',
-            'adapters' => array(
-                'testFs' => array(
+            'adapters' => [
+                'testFs' => [
                     'class' => 'Local',
-                    'options' => array(
+                    'options' => [
                         'root' => dirname(__DIR__) . '\\sample\\fs'
-                    )
-                )
-            )
-        ));
-
-        ServiceManager::getServiceManager()->register(FileManagement::SERVICE_ID, $fileManager);
-        ServiceManager::getServiceManager()->register(FileSystemService::SERVICE_ID, $fs);
+                    ]
+                ]
+            ]
+        ]);
     }
 
     public function tearDown()

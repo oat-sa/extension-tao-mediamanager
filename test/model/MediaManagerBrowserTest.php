@@ -125,19 +125,12 @@ class MediaManagerBrowserTest extends \PHPUnit_Framework_TestCase
 
     public function testGetFileInfo()
     {
-
-        $fileTmp = dirname(__DIR__) . '/sample/Brazil.png';
-
         $root = new \core_kernel_classes_Class($this->rootClass);
         $instance = $root->createInstance('Brazil.png');
         $instance->setPropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LINK), 'myGreatLink');
         $instance->setPropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_MIME_TYPE), 'image/png');
 
         $uri = $instance->getUri();
-        $this->fileManagerMock->expects($this->once())
-            ->method('retrieveFile')
-            ->with('myGreatLink')
-            ->willReturn($fileTmp);
 
         $fileInfo = $this->mediaManagerManagement->getFileInfo($uri);
         $instance->delete(true);

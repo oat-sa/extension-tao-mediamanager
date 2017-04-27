@@ -23,7 +23,6 @@ namespace oat\taoMediaManager\test\model;
 use oat\taoMediaManager\model\SharedStimulusImporter;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
-use Prophecy\Argument;
 
 include_once dirname(__FILE__) . '/../../../tao/includes/raw_start.php';
 
@@ -48,6 +47,13 @@ class SharedStimulusImporterTest extends \PHPUnit_Framework_TestCase
         $ref = new \ReflectionProperty('tao_models_classes_Service', 'instances');
         $ref->setAccessible(true);
         $ref->setValue(null, array());
+        $tmpDir = dirname(__DIR__) . '/sample/fs/';
+        $iterator = new \DirectoryIterator ($tmpDir);
+        foreach ($iterator as $info) {
+            if ($info->isFile() && $info->getBasename() !== '.gitignore') {
+                unlink($info->getPath() . '/' . $info->getFilename());
+            }
+        }
     }
 
     public function testGetLabel()
@@ -117,10 +123,10 @@ class SharedStimulusImporterTest extends \PHPUnit_Framework_TestCase
         $sharedImporter = new SharedStimulusImporter($instance->getUri());
         $filename = dirname(__DIR__) . '/sample/sharedStimulus/sharedStimulus.xml';
 
-        $tmpDir = \tao_helpers_File::createTempDir();
+        $tmpDir = dirname(__DIR__) . '/sample/fs/';
         copy($filename, $tmpDir . basename($filename));
         $filename = $tmpDir . basename($filename);
-        $finalFilename = \tao_helpers_File::concat([trim($tmpDir, '/\\'), 'sharedStimulus.xhtml']);
+        $finalFilename = $tmpDir . 'sharedStimulus.xhtml';
 
         $myClass = new \core_kernel_classes_Class('http://fancyDomain.com/tao.rdf#fancyUri');
         $info = finfo_open(FILEINFO_MIME_TYPE);
@@ -141,6 +147,7 @@ class SharedStimulusImporterTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(__('Shared Stimulus edited successfully'), $report->getMessage(), __('Report message is wrong'));
         $this->assertEquals(\common_report_Report::TYPE_SUCCESS, $report->getType(), __('Report should be success'));
+        $this->assertTrue(file_exists($finalFilename));
     }
 
     public function testImportPackage()

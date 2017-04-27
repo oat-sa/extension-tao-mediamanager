@@ -27,6 +27,8 @@ use oat\taoMediaManager\model\fileManagement\FileManager;
 class MediaSource extends Configurable implements MediaManagement
 {
 
+    const SCHEME_NAME = 'taomedia://mediamanager/';
+
     private $lang;
 
     private $rootClassUri;
@@ -92,7 +94,7 @@ class MediaSource extends Configurable implements MediaManagement
         }
 
         $data = array(
-            'path' => 'taomedia://mediamanager/' . \tao_helpers_Uri::encode($class->getUri()),
+            'path' => self::SCHEME_NAME . \tao_helpers_Uri::encode($class->getUri()),
             'label' => $class->getLabel()
         );
 
@@ -147,7 +149,7 @@ class MediaSource extends Configurable implements MediaManagement
 
             $file = array(
                 'name' => $resource->getLabel(),
-                'uri' => 'taomedia://mediamanager/' . \tao_helpers_Uri::encode($link),
+                'uri' => self::SCHEME_NAME . \tao_helpers_Uri::encode($link),
                 'mime' => $mime,
                 'size' => $fileManagement->getFileSize($fileLink),
                 'alt' => $alt,

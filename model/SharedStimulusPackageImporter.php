@@ -49,7 +49,10 @@ class SharedStimulusPackageImporter extends ZipImporter
             /** @var UploadService $uploadService */
             $uploadService = ServiceManager::getServiceManager()->get(UploadService::SERVICE_ID);
             $uploadedFile = $uploadService->getUploadedFile($fileInfo['uploaded_file']);
-            
+
+            if (!$uploadedFile) {
+                throw new \common_exception_FileSystemError(__('Unable to get uploaded file'));
+            }
             $xmlFile = $this->getSharedStimulusFile($uploadedFile);
             
             // throws an exception of invalid
@@ -86,6 +89,9 @@ class SharedStimulusPackageImporter extends ZipImporter
             /** @var UploadService $uploadService */
             $uploadService = ServiceManager::getServiceManager()->get(UploadService::SERVICE_ID);
             $uploadedFile = $uploadService->getUploadedFile($fileInfo['uploaded_file']);
+            if (!$uploadedFile) {
+                throw new \common_exception_FileSystemError(__('Unable to get uploaded file'));
+            }
             $xmlFile = $this->getSharedStimulusFile($uploadedFile);
             
             // throws an exception of invalid

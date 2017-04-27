@@ -141,7 +141,7 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
             $method = new \ReflectionMethod('oat\taoMediaManager\model\SharedStimulusPackageImporter', 'getSharedStimulusFile');
             $method->setAccessible(true);
             $xmlFile = $method->invokeArgs($this->packageImporter, array($filename));
-
+            $xmlFile = str_replace('\\', '/', $xmlFile);
             $this->assertContains(basename($filename, '.zip') . '/stimulus.xml', $xmlFile);
         } catch (\common_Exception $e) {
             $this->assertNotNull($exception, __('It should not throw an exception'));
@@ -210,7 +210,7 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
     {
         $sampleDir = dirname(__DIR__) . '/sample/sharedStimulus/';
         return array(
-            array($sampleDir . 'UnknowFile.zip', \common_report_Report::createFailure(__('Unable to open archive '.$sampleDir . 'UnknowFile.zip')), false),
+            array($sampleDir . 'UnknowFile.zip', \common_report_Report::createFailure(__('Unable to get uploaded file')), false),
             array($sampleDir . 'missingXmlArchive.zip', \common_report_Report::createFailure('XML not found'), false),
             array($sampleDir . 'stimulusPackage.zip', \common_report_Report::createSuccess(__('Shared Stimulus %s successfully')), true),
         );

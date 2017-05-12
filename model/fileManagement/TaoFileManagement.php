@@ -20,6 +20,8 @@
  */
 namespace oat\taoMediaManager\model\fileManagement;
 
+use oat\generis\model\fileReference\FileReferenceSerializer;
+use oat\oatbox\filesystem\File;
 use oat\oatbox\service\ConfigurableService;
 use Slim\Http\Stream;
 
@@ -32,6 +34,17 @@ class TaoFileManagement extends ConfigurableService implements FileManagement
     protected function getFilesystem()
     {
         return new \core_kernel_fileSystem_FileSystem($this->getOption('uri'));
+    }
+
+    /**
+     * @param string $link
+     * @return File
+     */
+    protected function getFile($link)
+    {
+        /** @var FileReferenceSerializer $fileService */
+        $fileService = $this->getServiceManager()->get(FileReferenceSerializer::SERVICE_ID);
+        return $fileService->unserialize($link);
     }
 
     /**
@@ -48,25 +61,12 @@ class TaoFileManagement extends ConfigurableService implements FileManagement
     }
     
     /**
-     * Old function to retrieve the local filepath
-     * 
-     * @param string $link
-     * @return string
-     * @deprecated
-     */
-    protected function getLocalPath($link)
-    {
-        $file = new \core_kernel_file_File($link);
-        return $file->getAbsolutePath();
-    }
-
-    /**
      * (non-PHPdoc)
      * @see \oat\taoMediaManager\model\fileManagement\FileManagement::retrieveFile()
      */
     public function retrieveFile($link)
     {
-        return $this->getLocalPath($link);
+        return $this->getFile($link)->getPrefix();
     }
 
     /**
@@ -75,9 +75,7 @@ class TaoFileManagement extends ConfigurableService implements FileManagement
      */
     public function deleteFile($link)
     {
-        unlink($this->getLocalPath($link));
-        $file = new \core_kernel_file_File($link);
-        return $file->delete();
+        return $this->getFile($link)->delete();
     }
     
     /**
@@ -86,7 +84,7 @@ class TaoFileManagement extends ConfigurableService implements FileManagement
      */
     public function getFileSize($link)
     {
-        return filesize($this->getLocalPath($link));
+        return $this->getFile($link)->getSize();
     }
     
     /**
@@ -95,7 +93,6 @@ class TaoFileManagement extends ConfigurableService implements FileManagement
      */
     public function getFileStream($link)
     {
-        $fh = fopen($this->getLocalPath($link), 'r');
-        return new Stream($fh, ['size' => $this->getFileSize($link)]);
+        return $this->getFile($link)->readPsrStream();
     }
 }

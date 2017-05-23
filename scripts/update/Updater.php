@@ -31,6 +31,7 @@ use oat\taoMediaManager\model\fileManagement\SimpleFileManagement;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\SharedStimulusImporter;
+use oat\taoQtiItem\model\qti\Service;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -92,7 +93,9 @@ class Updater extends \common_ext_ExtensionUpdater
             $items = $service->getAllByModel('http://www.tao.lu/Ontologies/TAOItem.rdf#QTI');
 
             foreach ($items as $item) {
-                $itemContent = $service->getItemContent($item);
+                $itemContent  = Service::singleton()
+                    ->getDataItemByRdfItem($item)
+                    ->toXML();
                 $itemContent = preg_replace_callback('/src="mediamanager\/([^"]+)"/', function ($matches) {
                     $mediaClass = MediaService::singleton()->getRootClass();
                     $medias = $mediaClass->searchInstances(array(
@@ -113,8 +116,7 @@ class Updater extends \common_ext_ExtensionUpdater
 
                 }, $itemContent);
 
-                $service->setItemContent($item, $itemContent);
-
+                Service::singleton()->saveXmlItemToRdfItem($itemContent, $item);
             }
 
             $currentVersion = '0.2.0';

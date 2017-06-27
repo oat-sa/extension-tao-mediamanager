@@ -13,6 +13,7 @@
                           rootNode="http://www.tao.lu/Ontologies/TAOMedia.rdf#Media"
                           selectClass="media-class-properties"
                           selectInstance="media-properties"
+                          moveInstance="media-move"
                           delete="media-delete"
                             />
                 </trees>
@@ -29,6 +30,9 @@
                     <action id="media-delete" name="Delete" binding="removeNode" url="/taoMediaManager/MediaManager/delete"
                             context="resource" group="tree">
                         <icon id="icon-bin"/>
+                    </action>
+                    <action id="media-move" name="Move" url="/taoMediaManager/MediaManager/moveInstance" context="instance" group="none" binding="moveNode">
+                        <icon id="icon-move-item"/>
                     </action>
                     <action id="media-import" name="Import" url="/taoMediaManager/MediaImport/index" group="tree"
                             context="resource">

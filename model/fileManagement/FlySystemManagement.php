@@ -20,6 +20,7 @@
  */
 namespace oat\taoMediaManager\model\fileManagement;
 
+use oat\oatbox\filesystem\File;
 use oat\oatbox\service\ConfigurableService;
 use League\Flysystem\Filesystem;
 use Slim\Http\Stream;
@@ -43,6 +44,22 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
         $filesystem->writeStream($filename, $stream);
         fclose($stream);
         
+        return $filename;
+    }
+
+    /**
+     * @see \oat\taoMediaManager\model\fileManagement\FileManagement::storeFlyFile()
+     *
+     * @param File $file
+     * @return string
+     */
+    public function storeFlyFile(File $file)
+    {
+        $filesystem = $this->getFileSystem();
+        $filename = $this->getUniqueFilename(basename($file->getPrefix()));
+        $resource = $file->readPsrStream();
+        $filesystem->write($filename, $resource);
+        $resource->close();
         return $filename;
     }
     

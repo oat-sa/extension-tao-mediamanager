@@ -20,6 +20,7 @@
  */
 namespace oat\taoMediaManager\model\fileManagement;
 
+use oat\oatbox\filesystem\File;
 use Psr\Http\Message\StreamInterface;
 /**
  * Interface to manage the storage of the taoMediaManager files
@@ -33,7 +34,13 @@ interface FileManagement
      * @return string a link to the file in order to retrieve it later
      */
     public function storeFile($filePath, $label);
-    
+
+    /**
+     * @param File $file The file object to store
+     * @return string a link to the file in order to retrieve it later
+     */
+    public function storeFlyFile(File $file);
+
     /**
      * Returns the Size of the file
      * 

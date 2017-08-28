@@ -14,11 +14,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
- *
+ * Copyright (c) 2014-2017 (original work) Open Assessment Technologies SA;
  *
  */
+
 namespace oat\taoMediaManager\model\fileManagement;
+
+use oat\oatbox\filesystem\File;
 
 /**
  * Proof of concept File Manager, do not use
@@ -43,6 +45,19 @@ class SimpleFileManagement implements FileManagement
 
 
     /**
+     * @see \oat\taoMediaManager\model\fileManagement\FileManagement::storeFlyFile()
+     * @deprecated
+     *
+     * @param File $file
+     * @return void
+     * @throws \common_exception_NotImplemented
+     */
+    public function storeFlyFile(File $file)
+    {
+        throw new \common_exception_NotImplemented(__CLASS__ . ' is deprecated and should not be used anymore.');
+    }
+
+    /**
      * store the file and provide a link to retrieve it
      * @param string $filePath the relative path to the file
      * @return string $link to the file
@@ -64,6 +79,7 @@ class SimpleFileManagement implements FileManagement
         }
         throw new \common_exception_Error('Unable to move uploaded file');
     }
+
 
     /**
      * get the link and return the file that match it

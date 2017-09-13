@@ -5,6 +5,9 @@
  * @license GPLv2  http://www.opensource.org/licenses/gpl-2.0.php
  * 
  */
+/**
+ * @deprecated
+ */
 $todefine = array(
     'MEDIA_LINK'        => 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Link',
     'MEDIA_LANGUAGE'    => 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Language',

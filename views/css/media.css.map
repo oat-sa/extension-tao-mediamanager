@@ -1,7 +1,14 @@
 {
-"version": 3,
-"mappings": "AAGE,iBAAM,CACJ,UAAU,CAAE,KAAK,CACjB,KAAK,CAAE,IAAI",
-"sources": ["../scss/media.scss"],
-"names": [],
-"file": "media.css"
+	"version": 3,
+	"file": "media.css",
+	"sources": [
+		"../scss/media.scss",
+		"../../../tao/views/scss/inc/_bootstrap.scss",
+		"../../../tao/views/scss/inc/_variables.scss",
+		"../../../tao/views/scss/inc/_functions.scss",
+		"../../../tao/views/scss/inc/_colors.scss",
+		"../../../tao/views/scss/inc/fonts/_tao-icon-vars.scss"
+	],
+	"names": [],
+	"mappings": "AAEA,AACE,UADQ,CACR,MAAM,AAAA,CACJ,UAAU,CAAE,KAAK,CACjB,KAAK,CAAE,IAAI,CACZ"
 }

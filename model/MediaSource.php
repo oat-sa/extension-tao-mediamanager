@@ -176,6 +176,7 @@ class MediaSource extends Configurable implements MediaManagement
         }
         $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
         $fileManagement = FileManager::getFileManagementModel();
+
         return $fileManagement->getFileStream($fileLink);
         
     }
@@ -202,7 +203,15 @@ class MediaSource extends Configurable implements MediaManagement
     public function getBaseName($link)
     {
         $stream = $this->getFileStream($link);
-        return basename($stream->getMetadata('uri'));
+        $filename = $stream->getMetadata('uri');
+        
+        if ($filename === 'php://temp') {
+            // We are currently retrieving a remote resource (e.g. on Amazon S3).
+            $fileinfo = $this->getFileInfo($link);
+            $filename = $fileinfo['link'];
+        }
+        
+        return basename($filename);
     }
 
     /**

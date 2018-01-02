@@ -21,6 +21,7 @@
 
 namespace oat\taoMediaManager\model;
 
+use oat\generis\model\OntologyRdfs;
 use oat\taoMediaManager\model\fileManagement\FileManager;
 use common_ext_ExtensionsManager;
 use oat\taoRevision\model\RevisionService;
@@ -78,7 +79,7 @@ class MediaService extends \tao_models_classes_ClassService
         if ($link !== false) {
             $mimeType = is_null($mimeType) ? \tao_helpers_File::getMimeType($fileSource) : $mimeType;
             $instance = $clazz->createInstanceWithProperties(array(
-                RDFS_LABEL => $label,
+                OntologyRdfs::RDFS_LABEL => $label,
                 self::PROPERTY_LINK => $link,
                 self::PROPERTY_LANGUAGE => $language,
                 self::PROPERTY_MD5 => $md5,

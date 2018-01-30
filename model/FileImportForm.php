@@ -20,6 +20,7 @@
  */
 
 namespace oat\taoMediaManager\model;
+use oat\tao\helpers\ApplicationHelper;
 use oat\tao\model\TaoOntology;
 
 /**
@@ -68,7 +69,7 @@ class FileImportForm extends \tao_helpers_form_FormContainer
             $fileElt->addValidator(\tao_helpers_form_FormFactory::getValidator('NotEmpty', array('message' => '')));
         }
         $fileElt->addValidators(array(
-            \tao_helpers_form_FormFactory::getValidator('FileSize', array('max' => \tao_helpers_Environment::getFileUploadLimit()))
+            \tao_helpers_form_FormFactory::getValidator('FileSize', array('max' => ApplicationHelper::getFileUploadLimit()))
         ));
 
         $this->form->addElement($fileElt);

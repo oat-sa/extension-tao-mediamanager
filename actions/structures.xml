@@ -44,6 +44,9 @@
                             context="resource">
                         <icon id="icon-export"/>
                     </action>
+                    <action id="media-copy-to" name="Copy To" url="/taoMediaManager/MediaManager/copyInstance" context="instance" group="tree" binding="copyTo">
+                        <icon id="icon-copy"/>
+                    </action>
                 </actions>
             </section>
         </sections>

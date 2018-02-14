@@ -18,8 +18,11 @@
                             />
                 </trees>
                 <actions>
-                    <action id="media-class-properties" name="Properties" url="/tao/PropertiesAuthoring/index" group="content" context="class">
+                    <action id="media-class-properties" name="Properties" url="/taoMediaManager/MediaManager/editClassLabel" group="content" context="class">
                         <icon id="icon-edit"/>
+                    </action>
+                    <action id="media-class-schema" name="Manage Schema" url="/tao/PropertiesAuthoring/index" group="content" context="class">
+                        <icon id="icon-property-add"/>
                     </action>
                     <action id="media-properties" name="Properties"  url="/taoMediaManager/MediaManager/editInstance" group="content" context="instance">
                         <icon id="icon-edit"/>

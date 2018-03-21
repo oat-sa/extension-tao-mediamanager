@@ -92,10 +92,8 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
             $classUri = $class->getUri();
             if (is_null($this->instanceUri) || $this->instanceUri === $classUri) {
                 //if the file is a zip do a zip import
-                if ($file['type'] !== 'application/zip') {
-
+                if (!\helpers_File::isZipMimeType($file['type'])) {
                     try {
-
                         self::isValidSharedStimulus($uploadedFilePath);
                         $name = $file['name'];
 
@@ -114,7 +112,7 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
                     $report = $this->zipImporter->import($class, $form);
                 }
             } else {
-                if ($file['type'] !== 'application/zip') {
+                if (!\helpers_File::isZipMimeType($file['type'])) {
                     self::isValidSharedStimulus($uploadedFilePath);
                     if(in_array($file['type'], array('application/xml', 'text/xml'))){
                         $name = basename($file['name'], 'xml');

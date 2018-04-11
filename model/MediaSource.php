@@ -23,9 +23,12 @@ namespace oat\taoMediaManager\model;
 use oat\oatbox\Configurable;
 use oat\tao\model\media\MediaManagement;
 use oat\taoMediaManager\model\fileManagement\FileManager;
+use oat\oatbox\log\LoggerAwareTrait;
 
 class MediaSource extends Configurable implements MediaManagement
 {
+
+    use LoggerAwareTrait;
 
     const SCHEME_NAME = 'taomedia://mediamanager/';
 
@@ -189,7 +192,7 @@ class MediaSource extends Configurable implements MediaManagement
      */
     public function download($link)
     {
-        \common_Logger::w('Deprecated, creates tmpfiles');
+        $this->logInfo('Deprecated, creates tmpfiles');
         $stream = $this->getFileStream($link);
         $filename = tempnam(sys_get_temp_dir(), 'media');
         $fh = fopen($filename, 'w');

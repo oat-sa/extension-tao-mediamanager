@@ -59,7 +59,9 @@ class ZipImporter
 
             // unzip the file
             try {
+                \helpers_TimeOutHelper::setTimeOutLimit(\helpers_TimeOutHelper::LONG);
                 $directory = $this->extractArchive($uploadedFile);
+                \helpers_TimeOutHelper::reset();
             } catch (\Exception $e) {
                 return \common_report_Report::createFailure(__('Unable to extract the archive'));
             }

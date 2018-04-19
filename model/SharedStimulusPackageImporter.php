@@ -55,10 +55,7 @@ class SharedStimulusPackageImporter extends ZipImporter
                 throw new \common_exception_FileSystemError(__('Unable to get uploaded file'));
             }
 
-            \helpers_TimeOutHelper::setTimeOutLimit(\helpers_TimeOutHelper::LONG);
             $xmlFile = $this->getSharedStimulusFile($uploadedFile);
-            \helpers_TimeOutHelper::reset();
-
             $uploadService->remove($uploadedFile);
 
             // throws an exception of invalid
@@ -98,10 +95,7 @@ class SharedStimulusPackageImporter extends ZipImporter
                 throw new \common_exception_FileSystemError(__('Unable to get uploaded file'));
             }
 
-            \helpers_TimeOutHelper::setTimeOutLimit(\helpers_TimeOutHelper::LONG);
             $xmlFile = $this->getSharedStimulusFile($uploadedFile);
-            \helpers_TimeOutHelper::reset();
-
             $uploadService->remove($uploadedFile);
 
             // throws an exception of invalid
@@ -174,8 +168,10 @@ class SharedStimulusPackageImporter extends ZipImporter
      */
     private function getSharedStimulusFile($filePath)
     {
+        \helpers_TimeOutHelper::setTimeOutLimit(\helpers_TimeOutHelper::LONG);
         $extractPath = $this->extractArchive($filePath);
-    
+        \helpers_TimeOutHelper::reset();
+
         $iterator = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($extractPath),
             \RecursiveIteratorIterator::LEAVES_ONLY);

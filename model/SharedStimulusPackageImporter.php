@@ -14,15 +14,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
- *
+ * Copyright (c) 2014-2018 (original work) Open Assessment Technologies SA;
  *
  */
 
 namespace oat\taoMediaManager\model;
 
 use core_kernel_classes_Class;
-use oat\oatbox\service\ServiceManager;
 use oat\tao\model\upload\UploadService;
 use qtism\data\storage\xml\XmlDocument;
 
@@ -37,24 +35,33 @@ class SharedStimulusPackageImporter extends ZipImporter
     /**
      * Starts the import based on the form
      *
-     * @param \core_kernel_classes_Class $class
+     * @param core_kernel_classes_Class $class
      * @param \tao_helpers_form_Form $form
      * @return \common_report_Report
      */
     public function import($class, $form)
     {
-        \helpers_TimeOutHelper::setTimeOutLimit(\helpers_TimeOutHelper::LONG);
         try {
+            if (!isset($fileInfo['uploaded_file'])) {
+                throw new \common_exception_FileSystemError('No source file for import');
+            }
+
             $fileInfo = $form->getValue('source');
-            /** @var UploadService $uploadService */
-            $uploadService = ServiceManager::getServiceManager()->get(UploadService::SERVICE_ID);
-            $uploadedFile = $uploadService->getUploadedFile($fileInfo['uploaded_file']);
+
+            /** @var  UploadService $uploadService */
+            $uploadService = $this->getServiceLocator()->get(UploadService::SERVICE_ID);
+            $uploadedFile = $uploadService->getUploadedFlyFile($fileInfo['uploaded_file']);
 
             if (!$uploadedFile) {
                 throw new \common_exception_FileSystemError(__('Unable to get uploaded file'));
             }
+
+            \helpers_TimeOutHelper::setTimeOutLimit(\helpers_TimeOutHelper::LONG);
             $xmlFile = $this->getSharedStimulusFile($uploadedFile);
-            
+            \helpers_TimeOutHelper::reset();
+
+            $uploadService->remove($uploadedFile);
+
             // throws an exception of invalid
             SharedStimulusImporter::isValidSharedStimulus($xmlFile);
 
@@ -68,12 +75,8 @@ class SharedStimulusPackageImporter extends ZipImporter
             $report = \common_report_Report::createFailure($e->getMessage());
         }
 
-        $uploadService->remove($uploadService->getUploadedFlyFile($fileInfo['uploaded_file']));
-
-        \helpers_TimeOutHelper::reset();
         return $report;
     }
-
 
     /**
      * @param \core_kernel_classes_Resource $instance
@@ -82,18 +85,27 @@ class SharedStimulusPackageImporter extends ZipImporter
      */
     public function edit($instance, $form)
     {
-        \helpers_TimeOutHelper::setTimeOutLimit(\helpers_TimeOutHelper::LONG);
         try {
+            if (!isset($fileInfo['uploaded_file'])) {
+                throw new \common_exception_FileSystemError('No source file for import');
+            }
 
             $fileInfo = $form->getValue('source');
+
             /** @var UploadService $uploadService */
-            $uploadService = ServiceManager::getServiceManager()->get(UploadService::SERVICE_ID);
-            $uploadedFile = $uploadService->getUploadedFile($fileInfo['uploaded_file']);
+            $uploadService = $this->getServiceLocator()->get(UploadService::SERVICE_ID);
+            $uploadedFile = $uploadService->getUploadedFlyFile($fileInfo['uploaded_file']);
+
             if (!$uploadedFile) {
                 throw new \common_exception_FileSystemError(__('Unable to get uploaded file'));
             }
+
+            \helpers_TimeOutHelper::setTimeOutLimit(\helpers_TimeOutHelper::LONG);
             $xmlFile = $this->getSharedStimulusFile($uploadedFile);
-            
+            \helpers_TimeOutHelper::reset();
+
+            $uploadService->remove($uploadedFile);
+
             // throws an exception of invalid
             SharedStimulusImporter::isValidSharedStimulus($xmlFile);
 
@@ -107,17 +119,17 @@ class SharedStimulusPackageImporter extends ZipImporter
             $report = \common_report_Report::createFailure($e->getMessage());
         }
 
-        $uploadService->remove($uploadService->getUploadedFlyFile($fileInfo['uploaded_file']));
-        \helpers_TimeOutHelper::reset();
         return $report;
     }
 
     /**
      * Embed external resources into the XML
      *
-     * @param string $originalXml
-     * @throws \tao_models_classes_FileNotFoundException
+     * @param $originalXml
      * @return string
+     * @throws \common_exception_Error
+     * @throws \qtism\data\storage\xml\XmlStorageException
+     * @throws \tao_models_classes_FileNotFoundException
      */
     public static function embedAssets($originalXml)
     {
@@ -149,10 +161,18 @@ class SharedStimulusPackageImporter extends ZipImporter
     }
 
     /**
-     * Get the shared stimulus file with assets from the zip
+     *
      * 
      * @param string $filePath path of the zip file
      * @return string path to the xml
+     */
+
+    /**
+     * Get the shared stimulus file with assets from the zip
+     *
+     * @param string $filePath path of the zip file
+     * @return string path to the xml
+     * @throws \common_Exception
      */
     private function getSharedStimulusFile($filePath)
     {
@@ -177,10 +197,13 @@ class SharedStimulusPackageImporter extends ZipImporter
 
     /**
      * Validate an xml file, convert file linked inside and store it into media manager
+     *
      * @param \core_kernel_classes_Resource $class the class under which we will store the shared stimulus (can be an item)
      * @param string $lang language of the shared stimulus
      * @param string $xmlFile File to store
      * @return \common_report_Report
+     *
+     * @throws \qtism\data\storage\xml\XmlStorageException
      */
     protected function storeSharedStimulus($class, $lang, $xmlFile)
     {
@@ -198,10 +221,13 @@ class SharedStimulusPackageImporter extends ZipImporter
 
     /**
      * Validate an xml file, convert file linked inside and store it into media manager
+     *
      * @param \core_kernel_classes_Resource $instance the instance to edit
      * @param string $lang language of the shared stimulus
      * @param string $xmlFile File to store
      * @return \common_report_Report
+     *
+     * @throws \qtism\data\storage\xml\XmlStorageException
      */
     protected function replaceSharedStimulus($instance, $lang, $xmlFile)
     {

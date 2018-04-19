@@ -14,17 +14,16 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
- *
+ * Copyright (c) 2014-2018 (original work) Open Assessment Technologies SA;
  *
  */
 
 namespace oat\taoMediaManager\model;
 
 use core_kernel_classes_Class;
+use oat\oatbox\filesystem\File;
 use oat\oatbox\service\ServiceManager;
 use oat\tao\model\upload\UploadService;
-use tao_helpers_form_Form;
 
 /**
  * Service methods to manage the Media
@@ -37,10 +36,6 @@ class ZipImporter
 {
 
     protected $directoryMap = array();
-    
-    public function __construct()
-    {
-    }
 
     /**
      * Starts the import based on the form
@@ -59,8 +54,8 @@ class ZipImporter
             $resource = new core_kernel_classes_Class($form->getValue('classUri'));
 
             /** @var  UploadService $uploadService */
-            $uploadService = ServiceManager::getServiceManager()->get(UploadService::SERVICE_ID);
-            $uploadedFile = $uploadService->getUploadedFile($file['uploaded_file']);
+            $uploadService = $this->getServiceLocator()->get(UploadService::SERVICE_ID);
+            $uploadedFile = $uploadService->getUploadedFlyFile($file['uploaded_file']);
 
             // unzip the file
             try {
@@ -105,7 +100,13 @@ class ZipImporter
         }
     }
 
-    protected function createClass($relPath) {
+    /**
+     * @param $relPath
+     * @return string
+     * @throws \common_exception_Error
+     */
+    protected function createClass($relPath)
+    {
         $parentPath = dirname($relPath);
         if (isset($this->directoryMap[$parentPath])) {
             $parentUri = $this->directoryMap[$parentPath];
@@ -123,9 +124,23 @@ class ZipImporter
      *
      * @param $archiveFile
      * @return string temporary directory zipfile was extracted to
+     *
+     * @throws \common_Exception
      */
     protected function extractArchive($archiveFile)
     {
+        if ($archiveFile instanceof File) {
+            $tmpDir = \tao_helpers_File::createTempDir();
+            $tmpFilePath = \tao_helpers_File::createTempDir() . uniqid('sharedStimulus-import') . '.zip';
+            $tmpFile = fopen($tmpDir . $tmpFilePath, 'w');
+            $originalPackage = $archiveFile->readStream();
+            stream_copy_to_stream($originalPackage, $tmpFile);
+            fclose($originalPackage);
+            fclose($tmpFile);
+
+            $archiveFile = $tmpFilePath;
+        }
+
         $archiveDir = \tao_helpers_File::createTempDir();
         $archiveObj = new \ZipArchive();
         $archiveHandle = $archiveObj->open($archiveFile);
@@ -138,7 +153,25 @@ class ZipImporter
             throw new \common_Exception('Unable to extract to '.$archiveDir);
         }
         $archiveObj->close();
+
+        if (isset($tmpFilePath) && file_exists($tmpFilePath)) {
+            unlink($tmpFilePath);
+        }
+        if (isset($tmpDir) && file_exists($tmpDir)) {
+            rmdir($tmpDir);
+        }
+
         return $archiveDir;
+    }
+
+    /**
+     * Get the service Locator
+     *
+     * @return ServiceManager
+     */
+    protected function getServiceLocator()
+    {
+        return ServiceManager::getServiceManager();
     }
 
 }

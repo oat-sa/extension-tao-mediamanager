@@ -42,11 +42,10 @@ class SharedStimulusPackageImporter extends ZipImporter
     public function import($class, $form)
     {
         try {
+            $fileInfo = $form->getValue('source');
             if (!isset($fileInfo['uploaded_file'])) {
                 throw new \common_exception_FileSystemError('No source file for import');
             }
-
-            $fileInfo = $form->getValue('source');
 
             /** @var  UploadService $uploadService */
             $uploadService = $this->getServiceLocator()->get(UploadService::SERVICE_ID);
@@ -86,11 +85,10 @@ class SharedStimulusPackageImporter extends ZipImporter
     public function edit($instance, $form)
     {
         try {
+            $fileInfo = $form->getValue('source');
             if (!isset($fileInfo['uploaded_file'])) {
                 throw new \common_exception_FileSystemError('No source file for import');
             }
-
-            $fileInfo = $form->getValue('source');
 
             /** @var UploadService $uploadService */
             $uploadService = $this->getServiceLocator()->get(UploadService::SERVICE_ID);

@@ -131,8 +131,8 @@ class ZipImporter
     {
         if ($archiveFile instanceof File) {
             $tmpDir = \tao_helpers_File::createTempDir();
-            $tmpFilePath = \tao_helpers_File::createTempDir() . uniqid('sharedStimulus-import') . '.zip';
-            $tmpFile = fopen($tmpDir . $tmpFilePath, 'w');
+            $tmpFilePath = $tmpDir . uniqid('sharedStimulus-import') . '.zip';
+            $tmpFile = fopen($tmpFilePath, 'w');
             $originalPackage = $archiveFile->readStream();
             stream_copy_to_stream($originalPackage, $tmpFile);
             fclose($originalPackage);

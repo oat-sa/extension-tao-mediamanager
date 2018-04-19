@@ -14,13 +14,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
- *
+ * Copyright (c) 2014-2018 (original work) Open Assessment Technologies SA;
  *
  */
 
 namespace oat\taoMediaManager\model;
 
+use oat\oatbox\filesystem\File;
 use oat\oatbox\service\ServiceManager;
 use oat\tao\model\upload\UploadService;
 use qtism\data\QtiComponent;
@@ -45,7 +45,6 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
     public function __construct($instanceUri = null)
     {
         $this->instanceUri = $instanceUri;
-        $this->zipImporter = new SharedStimulusPackageImporter();
     }
 
     /**
@@ -83,21 +82,25 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
         session_write_close();
         try {
             $file = $form->getValue('source');
+            if (!isset($file['uploaded_file'])) {
+                throw new \common_Exception('No source file for import');
+            }
 
             /** @var  UploadService $uploadService */
-            $uploadService = ServiceManager::getServiceManager()->get(UploadService::SERVICE_ID);
-            $uploadedFilePath = $uploadService->getUploadedFile($file['uploaded_file']);
+            $uploadService = $this->getServiceLocator()->get(UploadService::SERVICE_ID);
+            $uploadedFile = $uploadService->getUploadedFlyFile($file['uploaded_file']);
 
             $service = MediaService::singleton();
             $classUri = $class->getUri();
+
             if (is_null($this->instanceUri) || $this->instanceUri === $classUri) {
                 //if the file is a zip do a zip import
                 if (!\helpers_File::isZipMimeType($file['type'])) {
                     try {
-                        self::isValidSharedStimulus($uploadedFilePath);
+                        self::isValidSharedStimulus($uploadedFile);
                         $name = $file['name'];
 
-                        if (!$service->createMediaInstance($uploadedFilePath, $classUri,
+                        if (!$service->createMediaInstance($uploadedFile, $classUri,
                             \tao_helpers_Uri::decode($form->getValue('lang')), $name, 'application/qti+xml')
                         ) {
                             $report = \common_report_Report::createFailure(__('Fail to import Shared Stimulus'));
@@ -109,16 +112,20 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
                         $report = \common_report_Report::createFailure($e->getMessage());
                     }
                 } else {
-                    $report = $this->zipImporter->import($class, $form);
+                    $report = $this->getZipImporter()->import($class, $form);
                 }
             } else {
                 if (!\helpers_File::isZipMimeType($file['type'])) {
-                    self::isValidSharedStimulus($uploadedFilePath);
-                    if(in_array($file['type'], array('application/xml', 'text/xml'))){
+                    self::isValidSharedStimulus($uploadedFile);
+                    if (in_array($file['type'], array('application/xml', 'text/xml'))) {
                         $name = basename($file['name'], 'xml');
                         $name .= 'xhtml';
                         $filepath = \tao_helpers_File::concat([dirname($file['name']), $name]);
-                        \tao_helpers_File::copy($uploadedFilePath, $filepath);
+                        $fileResource = fopen($filepath, 'r');
+                        $uploadedFileResource = $uploadedFile->readStream();
+                        stream_copy_to_stream($uploadedFileResource, $fileResource);
+                        fclose($fileResource);
+                        fclose($uploadedFileResource);
                     }
                     if (!$service->editMediaInstance($filepath, $this->instanceUri, \tao_helpers_Uri::decode($form->getValue('lang')))) {
                         $report = \common_report_Report::createFailure(__('Fail to edit shared stimulus'));
@@ -126,30 +133,35 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
                         $report = \common_report_Report::createSuccess(__('Shared Stimulus edited successfully'));
                     }
                 } else {
-                    $report = $this->zipImporter->edit(new \core_kernel_classes_Resource($this->instanceUri), $form);
+                    $report = $this->getZipImporter()->edit(new \core_kernel_classes_Resource($this->instanceUri), $form);
                 }
             }
+
+            $uploadService->remove($uploadedFile);
 
         } catch (\Exception $e) {
             $report = \common_report_Report::createFailure($e->getMessage());
         }
 
-        $uploadService->remove($uploadService->getUploadedFlyFile($file['uploaded_file']));
-
         return $report;
     }
 
     /**
-     * @param $filename
+     * @param $file
      * @return XmlDocument
      * @throws \qtism\data\storage\xml\XmlStorageException
      */
-    public static function isValidSharedStimulus($filename)
+    public static function isValidSharedStimulus($file)
     {
         // No $version given = auto detect.
         $xmlDocument = new XmlDocument();
+
         // don't validate because of APIP
-        $xmlDocument->load($filename, false);
+        if ($file instanceof File) {
+            $xmlDocument->loadFromString($file->read(), false);
+        } elseif (is_file($file) && is_readable($file)) {
+            $xmlDocument->load($file, false);
+        }
 
         // The shared stimulus is qti compliant, see if it is not an interaction, feedback or template
         if (self::hasInteraction($xmlDocument->getDocumentComponent())) {
@@ -166,15 +178,14 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
         return $xmlDocument;
     }
 
-
     /**
      * Check if the document contains interactions element
+     *
      * @param QtiComponent $domDocument
      * @return bool
      */
     private static function hasInteraction(QtiComponent $domDocument)
     {
-
         $interactions = array(
             'endAttemptInteraction',
             'inlineChoiceInteraction',
@@ -209,7 +220,6 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
      */
     private static function hasFeedback(QtiComponent $domDocument)
     {
-
         $feedback = array(
             'feedbackBlock',
             'feedbackInline'
@@ -224,7 +234,6 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
      */
     private static function hasTemplate(QtiComponent $domDocument)
     {
-
         $templates = 'templateDeclaration';
         return self::hasComponents($domDocument, $templates);
     }
@@ -236,13 +245,8 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
      */
     private static function hasComponents(QtiComponent $domDocument, $className)
     {
-
         $components = $domDocument->getComponentsByClassName($className);
-        if ($components->count() > 0) {
-            return true;
-        }
-
-        return false;
+        return $components->count() > 0;
     }
 
     /**
@@ -255,5 +259,26 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
         return $this;
     }
 
+    /**
+     * Get the zip importer for shared stimulus
+     *
+     * @return SharedStimulusPackageImporter
+     */
+    protected function getZipImporter()
+    {
+        if (!$this->zipImporter) {
+            $this->zipImporter = new SharedStimulusPackageImporter();
+        }
+        return $this->zipImporter;
+    }
 
+    /**
+     * Get the service Locator
+     *
+     * @return ServiceManager
+     */
+    protected function getServiceLocator()
+    {
+        return ServiceManager::getServiceManager();
+    }
 }

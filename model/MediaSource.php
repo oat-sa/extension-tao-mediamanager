@@ -21,12 +21,12 @@
 namespace oat\taoMediaManager\model;
 
 use oat\oatbox\Configurable;
+use oat\oatbox\service\ServiceManager;
 use oat\tao\model\media\MediaManagement;
-use oat\taoMediaManager\model\fileManagement\FileManager;
+use oat\taoMediaManager\model\fileManagement\FileManagement;
 
 class MediaSource extends Configurable implements MediaManagement
 {
-
     const SCHEME_NAME = 'taomedia://mediamanager/';
 
     private $lang;
@@ -133,39 +133,39 @@ class MediaSource extends Configurable implements MediaManagement
     {
         // get the media link from the resource
         $resource = new \core_kernel_classes_Resource(\tao_helpers_Uri::decode($link));
-        if ($resource->exists()) {
-            $fileLink = $resource->getUniquePropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LINK));
-            $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
-            $file = null;
-            $fileManagement = FileManager::getFileManagementModel();
-            $mime = (string) $resource->getUniquePropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_MIME_TYPE));
-
-            // add the alt text to file array
-            $altArray = $resource->getPropertyValues(new \core_kernel_classes_Property(MediaService::PROPERTY_ALT_TEXT));
-            $alt = $resource->getLabel();
-            if (count($altArray) > 0) {
-                $alt = $altArray[0];
-            }
-
-            $file = array(
-                'name' => $resource->getLabel(),
-                'uri' => self::SCHEME_NAME . \tao_helpers_Uri::encode($link),
-                'mime' => $mime,
-                'size' => $fileManagement->getFileSize($fileLink),
-                'alt' => $alt,
-                'link' => $fileLink
-            );
-            return $file;
-        } else {
+        if (!$resource->exists()) {
             throw new \tao_models_classes_FileNotFoundException($link);
         }
+
+        $fileLink = $resource->getUniquePropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LINK));
+        $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
+        $file = null;
+        $mime = (string) $resource->getUniquePropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_MIME_TYPE));
+
+        // add the alt text to file array
+        $altArray = $resource->getPropertyValues(new \core_kernel_classes_Property(MediaService::PROPERTY_ALT_TEXT));
+        $alt = $resource->getLabel();
+        if (count($altArray) > 0) {
+            $alt = $altArray[0];
+        }
+
+        $file = array(
+            'name' => $resource->getLabel(),
+            'uri' => self::SCHEME_NAME . \tao_helpers_Uri::encode($link),
+            'mime' => $mime,
+            'size' => $this->getServiceLocator()->get(FileManagement::SERVICE_ID)->getFileSize($fileLink),
+            'alt' => $alt,
+            'link' => $fileLink
+        );
+
+        return $file;
     }
-    
+
     /**
-     * 
      * @param string $link
-     * @throws \tao_models_classes_FileNotFoundException
      * @return \Psr\Http\Message\StreamInterface
+     * @throws \core_kernel_persistence_Exception
+     * @throws \tao_models_classes_FileNotFoundException
      */
     public function getFileStream($link)
     {
@@ -175,9 +175,7 @@ class MediaSource extends Configurable implements MediaManagement
             throw new \tao_models_classes_FileNotFoundException($link);
         }
         $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
-        $fileManagement = FileManager::getFileManagementModel();
-
-        return $fileManagement->getFileStream($fileLink);
+        return $this->getServiceLocator()->get(FileManagement::SERVICE_ID)->getFileStream($fileLink);
         
     }
 
@@ -200,6 +198,12 @@ class MediaSource extends Configurable implements MediaManagement
         return $filename;
     }
 
+    /**
+     * @param string $link
+     * @return string
+     * @throws \core_kernel_persistence_Exception
+     * @throws \tao_models_classes_FileNotFoundException
+     */
     public function getBaseName($link)
     {
         $stream = $this->getFileStream($link);
@@ -232,7 +236,8 @@ class MediaSource extends Configurable implements MediaManagement
      * @param string $path
      * @return \core_kernel_classes_Class
      */
-    private function getOrCreatePath($path) {
+    private function getOrCreatePath($path)
+    {
         if ($path === '') {
             $clazz = $this->getRootClass();
         } else {
@@ -256,12 +261,12 @@ class MediaSource extends Configurable implements MediaManagement
     }
 
     /**
-     * @param string $md5 representing the file md5
-     * @param \core_kernel_classes_Class $parent parent to add the instance to
-     * @return \core_kernel_classes_Resource instance if file exists or null
-     * @throws \common_exception_Error
+     * Get the service Locator
+     *
+     * @return ServiceManager
      */
-    private function getInstanceFromFile($md5, $parent){
-        \common_Logger::w('Not yet implemented');
+    protected function getServiceLocator()
+    {
+        return ServiceManager::getServiceManager();
     }
 }

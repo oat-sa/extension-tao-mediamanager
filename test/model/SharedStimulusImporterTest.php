@@ -150,6 +150,11 @@ class SharedStimulusImporterTest extends TaoPhpUnitTestRunner
         $this->assertEquals(__('Shared Stimulus edited successfully'), $report->getMessage(), __('Report message is wrong'));
         $this->assertEquals(\common_report_Report::TYPE_SUCCESS, $report->getType(), __('Report should be success'));
         $this->assertTrue($file->exists());
+
+        $xhtmlFile = dirname($filename) . DIRECTORY_SEPARATOR . basename($filename, 'xml') . 'xhtml';
+        if (file_exists($xhtmlFile)) {
+            unlink($xhtmlFile);
+        }
     }
 
     public function testImportPackage()

@@ -20,6 +20,7 @@
  */
 namespace oat\taoMediaManager\model;
 
+use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\Configurable;
 use oat\oatbox\service\ServiceManager;
 use oat\tao\model\media\MediaManagement;
@@ -29,26 +30,15 @@ class MediaSource extends Configurable implements MediaManagement
 {
     const SCHEME_NAME = 'taomedia://mediamanager/';
 
-    private $lang;
+    use OntologyAwareTrait;
 
-    private $rootClassUri;
+    protected $mediaService;
 
-    /**
-     * get the lang of the class in case we want to filter the media on language
-     *
-     * @param array $options
-     */
-    public function __construct($options = array())
-    {
-        parent::__construct($options);
-        \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager');
-        $this->lang = (isset($options['lang'])) ? $options['lang'] : '';
-        $this->rootClassUri = (isset($options['rootClass'])) ? $options['rootClass'] : MediaService::singleton()->getRootClass();
-    }
-    
+    protected $fileManagementService;
+
     public function getRootClass()
     {
-        return new \core_kernel_classes_Class($this->rootClassUri);
+        return $this->getClass($this->getRootClassUri());
     }
 
     /**
@@ -64,9 +54,10 @@ class MediaSource extends Configurable implements MediaManagement
         
         $clazz = $this->getOrCreatePath($parent);
         
-        $service = MediaService::singleton();
-        $instanceUri = $service->createMediaInstance($source, $clazz->getUri(), $this->lang, $fileName, $mimetype);
-        
+        $service = $this->getMediaService();
+        $instanceUri = $service->createMediaInstance($source, $clazz->getUri(), $this->getLang(), $fileName, $mimetype);
+
+
         return $this->getFileInfo($instanceUri);
     }
 
@@ -77,7 +68,7 @@ class MediaSource extends Configurable implements MediaManagement
      */
     public function delete($link)
     {
-        return MediaService::singleton()->deleteResource(new \core_kernel_classes_Resource(\tao_helpers_Uri::decode($link)));
+        return $this->getMediaService()->deleteResource($this->getResource(\tao_helpers_Uri::decode($link)));
     }
 
     /**
@@ -88,7 +79,7 @@ class MediaSource extends Configurable implements MediaManagement
     public function getDirectory($parentLink = '', $acceptableMime = array(), $depth = 1)
     {
         if ($parentLink == '') {
-            $class = new \core_kernel_classes_Class($this->rootClassUri);
+            $class = new \core_kernel_classes_Class($this->getRootClassUri());
         } else {
             $class = new \core_kernel_classes_Class(\tao_helpers_Uri::decode($parentLink));
         }
@@ -132,18 +123,18 @@ class MediaSource extends Configurable implements MediaManagement
     public function getFileInfo($link)
     {
         // get the media link from the resource
-        $resource = new \core_kernel_classes_Resource(\tao_helpers_Uri::decode($link));
+        $resource = $this->getResource(\tao_helpers_Uri::decode($link));
         if (!$resource->exists()) {
             throw new \tao_models_classes_FileNotFoundException($link);
         }
 
-        $fileLink = $resource->getUniquePropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LINK));
+        $fileLink = $resource->getUniquePropertyValue($this->getProperty(MediaService::PROPERTY_LINK));
         $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
         $file = null;
-        $mime = (string) $resource->getUniquePropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_MIME_TYPE));
+        $mime = (string) $resource->getUniquePropertyValue($this->getProperty(MediaService::PROPERTY_MIME_TYPE));
 
         // add the alt text to file array
-        $altArray = $resource->getPropertyValues(new \core_kernel_classes_Property(MediaService::PROPERTY_ALT_TEXT));
+        $altArray = $resource->getPropertyValues($this->getProperty(MediaService::PROPERTY_ALT_TEXT));
         $alt = $resource->getLabel();
         if (count($altArray) > 0) {
             $alt = $altArray[0];
@@ -153,7 +144,7 @@ class MediaSource extends Configurable implements MediaManagement
             'name' => $resource->getLabel(),
             'uri' => self::SCHEME_NAME . \tao_helpers_Uri::encode($link),
             'mime' => $mime,
-            'size' => $this->getServiceLocator()->get(FileManagement::SERVICE_ID)->getFileSize($fileLink),
+            'size' => $this->getFileManagement()->getFileSize($fileLink),
             'alt' => $alt,
             'link' => $fileLink
         );
@@ -175,7 +166,7 @@ class MediaSource extends Configurable implements MediaManagement
             throw new \tao_models_classes_FileNotFoundException($link);
         }
         $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
-        return $this->getServiceLocator()->get(FileManagement::SERVICE_ID)->getFileStream($fileLink);
+        return $this->getFileManagement()->getFileStream($fileLink);
         
     }
 
@@ -241,7 +232,7 @@ class MediaSource extends Configurable implements MediaManagement
         if ($path === '') {
             $clazz = $this->getRootClass();
         } else {
-            $clazz = new \core_kernel_classes_Class(\tao_helpers_uri::decode($path));
+            $clazz = $this->getClass(\tao_helpers_Uri::decode($path));
             if (!$clazz->isSubClassOf($this->getRootClass()) && !$clazz->equals($this->getRootClass()) && !$clazz->exists()) {
                 // consider $path to be a label
                 $found = false;
@@ -268,5 +259,37 @@ class MediaSource extends Configurable implements MediaManagement
     protected function getServiceLocator()
     {
         return ServiceManager::getServiceManager();
+    }
+
+    protected function getRootClassUri()
+    {
+        return $this->hasOption('rootClass') ? $this->getOption('rootClass') : MediaService::singleton()->getRootClass();
+    }
+
+    protected function getLang()
+    {
+        return $this->hasOption('lang') ? $this->getOption('lang') : '';
+    }
+
+    /**
+     * @return MediaService
+     */
+    protected function getMediaService()
+    {
+        if (!$this->mediaService) {
+            $this->mediaService = MediaService::singleton();
+        }
+        return $this->mediaService;
+    }
+
+    /**
+     * @return FileManagement
+     */
+    protected function getFileManagement()
+    {
+        if (!$this->fileManagementService) {
+            $this->fileManagementService = $this->getServiceLocator()->get(FileManagement::SERVICE_ID);
+        }
+        return $this->fileManagementService;
     }
 }

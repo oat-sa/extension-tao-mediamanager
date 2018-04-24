@@ -94,12 +94,13 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
             $classUri = $class->getUri();
 
             if (is_null($this->instanceUri) || $this->instanceUri === $classUri) {
+
+
                 //if the file is a zip do a zip import
                 if (!\helpers_File::isZipMimeType($file['type'])) {
                     try {
                         self::isValidSharedStimulus($uploadedFile);
                         $name = $file['name'];
-
                         if (!$service->createMediaInstance($uploadedFile, $classUri,
                             \tao_helpers_Uri::decode($form->getValue('lang')), $name, 'application/qti+xml')
                         ) {
@@ -121,7 +122,7 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
                         $name = basename($file['name'], 'xml');
                         $name .= 'xhtml';
                         $filepath = \tao_helpers_File::concat([dirname($file['name']), $name]);
-                        $fileResource = fopen($filepath, 'r');
+                        $fileResource = fopen($filepath, 'w');
                         $uploadedFileResource = $uploadedFile->readStream();
                         stream_copy_to_stream($uploadedFileResource, $fileResource);
                         fclose($fileResource);
@@ -162,6 +163,7 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
         } elseif (is_file($file) && is_readable($file)) {
             $xmlDocument->load($file, false);
         }
+
 
         // The shared stimulus is qti compliant, see if it is not an interaction, feedback or template
         if (self::hasInteraction($xmlDocument->getDocumentComponent())) {

@@ -153,13 +153,6 @@ class SharedStimulusPackageImporter extends ZipImporter
     }
 
     /**
-     *
-     * 
-     * @param string $filePath path of the zip file
-     * @return string path to the xml
-     */
-
-    /**
      * Get the shared stimulus file with assets from the zip
      *
      * @param string $filePath path of the zip file
@@ -186,7 +179,7 @@ class SharedStimulusPackageImporter extends ZipImporter
             }
         }
     
-        throw new \common_Exception('XML not found');
+        throw new \common_Exception('XML not found in the package');
     }
 
     /**

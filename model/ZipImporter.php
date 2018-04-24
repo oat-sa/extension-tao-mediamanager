@@ -132,6 +132,9 @@ class ZipImporter
     protected function extractArchive($archiveFile)
     {
         if ($archiveFile instanceof File) {
+            if (!$archiveFile->exists()) {
+                throw new \common_Exception('Unable to open archive ' . '/' . $archiveFile->getPrefix());
+            }
             $tmpDir = \tao_helpers_File::createTempDir();
             $tmpFilePath = $tmpDir . uniqid('sharedStimulus-import') . '.zip';
             $tmpFile = fopen($tmpFilePath, 'w');

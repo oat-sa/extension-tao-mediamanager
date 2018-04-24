@@ -47,6 +47,8 @@ class MediaService extends \tao_models_classes_ClassService
 
     use OntologyAwareTrait;
 
+    protected $fileManager;
+
     /**
      * (non-PHPdoc)
      * @see tao_models_classes_ClassService::getRootClass()
@@ -165,6 +167,9 @@ class MediaService extends \tao_models_classes_ClassService
      */
     protected function getFileManager()
     {
-        return $this->getServiceLocator()->get(FileManagement::SERVICE_ID);
+        if (!$this->fileManager) {
+            $this->fileManager = $this->getServiceLocator()->get(FileManagement::SERVICE_ID);
+        }
+        return $this->fileManager;
     }
 }

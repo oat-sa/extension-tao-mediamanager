@@ -21,91 +21,90 @@
 
 namespace oat\taoMediaManager\model;
 
+use common_report_Report as Report;
+use oat\oatbox\filesystem\File;
+use tao_helpers_form_Form as Form;
 use core_kernel_classes_Class;
-use oat\oatbox\service\ServiceManager;
-use oat\tao\model\upload\UploadService;
-use tao_helpers_form_Form;
+use oat\tao\model\import\ImportHandlerHelperTrait;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
 /**
  * Service methods to manage the Media
  *
- * @access public
- * @author Antoine Robin, <antoine.robin@vesperiagroup.com>
+ * @access  public
+ * @author  Antoine Robin, <antoine.robin@vesperiagroup.com>
  * @package taoMediaManager
  */
-class ZipImporter
+class ZipImporter implements ServiceLocatorAwareInterface
 {
+    use ImportHandlerHelperTrait;
 
-    protected $directoryMap = array();
-    
-    public function __construct()
-    {
-    }
+    protected $directoryMap = [];
 
     /**
-     * Starts the import based on the form
+     * Starts the import based on the form values
      *
-     * @param \core_kernel_classes_Class $class
-     * @param \tao_helpers_form_Form $form
+     * @param \core_kernel_classes_Class   $class
+     * @param \tao_helpers_form_Form|array $form
      * @return \common_report_Report
      */
     public function import($class, $form)
     {
-        //as upload may be called multiple times, we remove the session lock as soon as possible
-        session_write_close();
-
         try {
-            $file = $form->getValue('source');
-            $resource = new core_kernel_classes_Class($form->getValue('classUri'));
-
-            /** @var  UploadService $uploadService */
-            $uploadService = ServiceManager::getServiceManager()->get(UploadService::SERVICE_ID);
-            $uploadedFile = $uploadService->getUploadedFile($file['uploaded_file']);
+            $uploadedFile = $this->fetchUploadedFile($form);
+            $resource = new core_kernel_classes_Class($form instanceof Form ? $form->getValue('classUri') : $form['classUri']);
 
             // unzip the file
             try {
                 $directory = $this->extractArchive($uploadedFile);
             } catch (\Exception $e) {
-                return \common_report_Report::createFailure(__('Unable to extract the archive'));
+                $report = Report::createFailure(__('Unable to extract the archive'));
+                $report->setData(['uriResource' => '']);
+
+                return $report;
             }
 
             // get list of directory in order to create classes
             $iterator = new \RecursiveIteratorIterator(
                 new \RecursiveDirectoryIterator($directory, \RecursiveDirectoryIterator::CURRENT_AS_FILEINFO | \RecursiveDirectoryIterator::SKIP_DOTS),
-                \RecursiveIteratorIterator::LEAVES_ONLY);
-            
-            $service = MediaService::singleton();
-            $language = $form->getValue('lang');
-
-            $this->directoryMap = array(
-            	rtrim($directory, DIRECTORY_SEPARATOR) => $resource->getUri()
+                \RecursiveIteratorIterator::LEAVES_ONLY
             );
+
+            $service = MediaService::singleton();
+            $language = $form instanceof Form ? $form->getValue('lang') : $form['lang'];
+
+            $this->directoryMap = [
+                rtrim($directory, DIRECTORY_SEPARATOR) => $resource->getUri()
+            ];
+            $report = Report::createSuccess(__('Media imported successfully'));
+
             /** @var $file \SplFileInfo */
-            $report = \common_report_Report::createSuccess(__('Media imported successfully'));
             foreach ($iterator as $file) {
-                
                 if ($file->isFile()) {
-                    \common_Logger::i('File '.$file->getPathname());
+                    \common_Logger::i('File ' . $file->getPathname());
                     if (isset($this->directoryMap[$file->getPath()])) {
                         $classUri = $this->directoryMap[$file->getPath()];
                     } else {
                         $classUri = $this->createClass($file->getPath());
                     }
-                    
-                    $service->createMediaInstance($file->getRealPath(), $classUri, $language, $file->getFilename());
-                    $report->add(\common_report_Report::createSuccess(__('Imported %s', substr($file->getRealPath(), strlen($directory)))));
+
+                    $mediaResourceUri = $service->createMediaInstance($file->getRealPath(), $classUri, $language, $file->getFilename());
+                    $report->add(Report::createSuccess(
+                        __('Imported %s', substr($file->getRealPath(), strlen($directory))),
+                        ['uriResource' => $mediaResourceUri] // 'uriResource' key is needed by javascript in tao/views/templates/form/import.tpl
+                    ));
                 }
             }
-
-            return $report;
-
         } catch (\Exception $e) {
-            $report = \common_report_Report::createFailure($e->getMessage());
-            return $report;
+            $report = Report::createFailure($e->getMessage());
+            $report->setData(['uriResource' => '']);
         }
+
+        return $report;
     }
 
-    protected function createClass($relPath) {
+    protected function createClass($relPath)
+    {
         $parentPath = dirname($relPath);
         if (isset($this->directoryMap[$parentPath])) {
             $parentUri = $this->directoryMap[$parentPath];
@@ -115,29 +114,43 @@ class ZipImporter
         $parentClass = new \core_kernel_classes_Class($parentUri);
         $childClazz = MediaService::singleton()->createSubClass($parentClass, basename($relPath));
         $this->directoryMap[$relPath] = $childClazz->getUri();
+
         return $childClazz->getUri();
     }
-    
+
     /**
      * Unzip archive from the upload form
      *
-     * @param $archiveFile
+     * @param string|File $archiveFile
      * @return string temporary directory zipfile was extracted to
      */
     protected function extractArchive($archiveFile)
     {
         $archiveDir = \tao_helpers_File::createTempDir();
         $archiveObj = new \ZipArchive();
+
+        if ($archiveFile instanceof File) {
+            // get a local copy of zip
+            $tmpName = \tao_helpers_File::concat([\tao_helpers_File::createTempDir(), $archiveFile->getBasename()]);
+            if (($resource = fopen($tmpName, 'wb')) !== false) {
+                stream_copy_to_stream($archiveFile->readStream(), $resource);
+                fclose($resource);
+            }
+
+            $archiveFile = $tmpName;
+        }
+
         $archiveHandle = $archiveObj->open($archiveFile);
         if (true !== $archiveHandle) {
-            throw new \common_Exception('Unable to open archive '.$archiveFile);
+            throw new \common_Exception('Unable to open archive ' . $archiveFile);
         }
 
         if (!$archiveObj->extractTo($archiveDir)) {
             $archiveObj->close();
-            throw new \common_Exception('Unable to extract to '.$archiveDir);
+            throw new \common_Exception('Unable to extract to ' . $archiveDir);
         }
         $archiveObj->close();
+
         return $archiveDir;
     }
 

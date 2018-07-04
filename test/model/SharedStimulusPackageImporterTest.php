@@ -18,6 +18,7 @@
  *
  *
  */
+
 namespace oat\taoMediaManager\test\model;
 
 use oat\taoMediaManager\model\FileImportForm;
@@ -25,7 +26,6 @@ use oat\taoMediaManager\model\SharedStimulusPackageImporter;
 use qtism\data\storage\xml\XmlDocument;
 
 include_once dirname(__FILE__) . '/../../includes/raw_start.php';
-
 
 class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
 {
@@ -50,14 +50,14 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
 
         $ref = new \ReflectionProperty('tao_models_classes_Service', 'instances');
         $ref->setAccessible(true);
-        $ref->setValue(null, array('oat\taoMediaManager\model\MediaService' => $this->service));
+        $ref->setValue(null, ['oat\taoMediaManager\model\MediaService' => $this->service]);
     }
 
     public function tearDown()
     {
         $ref = new \ReflectionProperty('tao_models_classes_Service', 'instances');
         $ref->setAccessible(true);
-        $ref->setValue(null, array());
+        $ref->setValue(null, []);
     }
 
     /**
@@ -77,7 +77,7 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
 
         $form = new FileImportForm($myClass->getUri());
         $form = $form->getForm();
-        $form->setValues(array('source' => $file, 'lang' => 'EN_en'));
+        $form->setValues(['source' => $file, 'lang' => 'EN_en']);
 
         if ($called) {
             $this->service->expects($this->once())
@@ -87,7 +87,7 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
 
         $report = $this->packageImporter->import($myClass, $form);
 
-        /** @var \common_report_Report $expectedReport*/
+        /** @var \common_report_Report $expectedReport */
         $expectedReport->setMessage(preg_replace('/%s/', 'imported', $expectedReport->getMessage()));
         $this->assertEquals($expectedReport->getType(), $report->getType(), __('Report should be success'));
         $this->assertEquals($expectedReport->getMessage(), $report->getMessage(), __('Report message is wrong'));
@@ -113,7 +113,7 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
 
         $form = new FileImportForm($instance->getUri());
         $form = $form->getForm();
-        $form->setValues(array('source' => $file, 'lang' => 'EN_en'));
+        $form->setValues(['source' => $file, 'lang' => 'EN_en']);
 
         if ($called) {
             $this->service->expects($this->once())
@@ -123,24 +123,22 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
 
         $report = $this->packageImporter->edit($instance, $form);
 
-        /** @var \common_report_Report $expectedReport*/
+        /** @var \common_report_Report $expectedReport */
         $expectedReport->setMessage(preg_replace('/%s/', 'edited', $expectedReport->getMessage()));
         $this->assertEquals($expectedReport->getMessage(), $report->getMessage(), __('Report message is wrong'));
         $this->assertEquals($expectedReport->getType(), $report->getType(), __('Report should be success'));
         $instance->delete(true);
     }
 
-
     /**
      * @dataProvider sharedStimulusPackage
      */
     public function testGetSharedStimulusFile($filename, $exception)
     {
-
         try {
             $method = new \ReflectionMethod('oat\taoMediaManager\model\SharedStimulusPackageImporter', 'getSharedStimulusFile');
             $method->setAccessible(true);
-            $xmlFile = $method->invokeArgs($this->packageImporter, array($filename));
+            $xmlFile = $method->invokeArgs($this->packageImporter, [$filename]);
             $xmlFile = str_replace('\\', '/', $xmlFile);
             $this->assertContains(basename($filename, '.zip') . '/stimulus.xml', $xmlFile);
         } catch (\common_Exception $e) {
@@ -152,8 +150,6 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
                 }
             }
         }
-
-
     }
 
     /**
@@ -166,7 +162,7 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
         $xmlDocument->load($directory . '/stimulus.xml');
 
         try {
-            $xmlConverted = SharedStimulusPackageImporter::embedAssets($directory.'/stimulus.xml');
+            $xmlConverted = SharedStimulusPackageImporter::embedAssets($directory . '/stimulus.xml');
             $xmlDocument->load($xmlConverted);
             $strXml = $xmlDocument->saveToString();
             $xmlDocument->load($converted);
@@ -182,39 +178,38 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
                 }
             }
         }
-
-
     }
-
 
     public function sharedStimulusConvertProvider()
     {
         $sampleDir = dirname(__DIR__) . '/sample/sharedStimulus/';
-        return array(
-            array($sampleDir . 'stimulusPackage', null, $sampleDir . 'converted.xml'),
-            array($sampleDir . 'missingAssetArchive', new \tao_models_classes_FileNotFoundException('images/image1.jpg'), null),
-        );
+
+        return [
+            [$sampleDir . 'stimulusPackage', null, $sampleDir . 'converted.xml'],
+            [$sampleDir . 'missingAssetArchive', new \tao_models_classes_FileNotFoundException('images/image1.jpg'), null],
+        ];
     }
 
     public function sharedStimulusPackage()
     {
         $sampleDir = dirname(__DIR__) . '/sample/sharedStimulus/';
-        return array(
-            array($sampleDir . 'UnknowFile.zip', new \common_Exception('Unable to open archive '.$sampleDir . 'UnknowFile.zip')),
-            array($sampleDir . 'missingXmlArchive.zip', new \common_Exception('XML not found')),
-            array($sampleDir . 'stimulusPackage.zip', null),
-        );
+
+        return [
+            [$sampleDir . 'UnknowFile.zip', new \common_Exception('Unable to open archive ' . $sampleDir . 'UnknowFile.zip')],
+            [$sampleDir . 'missingXmlArchive.zip', new \common_Exception('XML not found')],
+            [$sampleDir . 'stimulusPackage.zip', null],
+        ];
     }
 
     public function sharedStimulusImportProvider()
     {
         $sampleDir = dirname(__DIR__) . '/sample/sharedStimulus/';
-        return array(
-            array($sampleDir . 'UnknowFile.zip', \common_report_Report::createFailure(__('Unable to get uploaded file')), false),
-            array($sampleDir . 'missingXmlArchive.zip', \common_report_Report::createFailure('XML not found'), false),
-            array($sampleDir . 'stimulusPackage.zip', \common_report_Report::createSuccess(__('Shared Stimulus %s successfully')), true),
-        );
-    }
 
+        return [
+            [$sampleDir . 'UnknowFile.zip', \common_report_Report::createFailure(__('Unable to open archive ' . $sampleDir . 'UnknowFile.zip')), false],
+            [$sampleDir . 'missingXmlArchive.zip', \common_report_Report::createFailure('XML not found'), false],
+            [$sampleDir . 'stimulusPackage.zip', \common_report_Report::createSuccess(__('Shared Stimulus %s successfully')), true],
+        ];
+    }
 }
  

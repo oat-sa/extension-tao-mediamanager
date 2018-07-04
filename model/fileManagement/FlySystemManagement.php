@@ -20,6 +20,7 @@
  */
 namespace oat\taoMediaManager\model\fileManagement;
 
+use oat\oatbox\filesystem\File;
 use oat\oatbox\service\ConfigurableService;
 use League\Flysystem\Filesystem;
 use Slim\Http\Stream;
@@ -29,19 +30,25 @@ use oat\oatbox\filesystem\FileSystemService;
 class FlySystemManagement extends ConfigurableService implements FileManagement
 {
     const OPTION_FS = 'fs';
-    
+
     /**
-     * (non-PHPdoc)
-     * @see \oat\taoMediaManager\model\fileManagement\FileManagement::storeFile()
+     * @param string|File $file
+     * @param string $label
+     * @return string
+     * @throws \League\Flysystem\FileExistsException
      */
-    public function storeFile($filePath, $label)
+    public function storeFile($file, $label)
     {
         $filesystem = $this->getFileSystem();
-        $filename = $this->getUniqueFilename(basename($filePath));
-        
-        $stream = fopen($filePath, 'r');
-        $filesystem->writeStream($filename, $stream);
-        fclose($stream);
+        $filename = $this->getUniqueFilename($file instanceof File ? $file->getBasename() : basename($file));
+
+        if ($file instanceof File) {
+            $filesystem->writeStream($filename, $file->readStream());
+        } else {
+            $stream = fopen($file, 'r');
+            $filesystem->writeStream($filename, $stream);
+            fclose($stream);
+        }
         
         return $filename;
     }

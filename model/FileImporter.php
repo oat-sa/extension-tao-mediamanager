@@ -103,7 +103,10 @@ class FileImporter implements \tao_models_classes_import_ImportHandler, ServiceL
                         $report->setData(['uriResource' => '']);
                     } else {
                         $report = Report::createSuccess(__('Media imported successfully'));
-                        $report->setData(['uriResource' => $mediaResourceUri]); // 'uriResource' key is needed by javascript in tao/views/templates/form/import.tpl
+                        $report->add(Report::createSuccess(
+                            __('Imported %s', $fileInfo['name']),
+                            ['uriResource' => $mediaResourceUri] // 'uriResource' key is needed by javascript in tao/views/templates/form/import.tpl
+                        ));
                     }
                 } else {
                     $zipImporter = new ZipImporter();
@@ -119,11 +122,14 @@ class FileImporter implements \tao_models_classes_import_ImportHandler, ServiceL
                         \tao_helpers_Uri::decode($form instanceof Form ? $form->getValue('lang') : $form['lang'])
                     );
                     $report = Report::createSuccess(__('Media imported successfully'));
+                    $report->add(Report::createSuccess(
+                        __('Edited %s', $fileInfo['name']),
+                        ['uriResource' => $instanceUri] // 'uriResource' key is needed by javascript in tao/views/templates/form/import.tpl
+                    ));
                 } else {
                     $report = Report::createFailure(__('You can\'t upload a zip file as a media'));
+                    $report->setData(['uriResource' => $instanceUri]);
                 }
-
-                $report->setData(['uriResource' => $instanceUri]);
             }
         } catch (\Exception $e) {
             $report = Report::createFailure($e->getMessage());

@@ -182,7 +182,7 @@ class SharedStimulusPackageImporter extends ZipImporter
 
         $service = MediaService::singleton();
         if ($mediaResourceUri = $service->createMediaInstance($xmlFile, $class->getUri(), $lang, basename($xmlFile), 'application/qti+xml')) {
-            $report = Report::createSuccess(__('Shared Stimulus imported successfully'));
+            $report = Report::createSuccess(__('Imported %s', basename($xmlFile)));
             $report->setData(['uriResource' => $mediaResourceUri]);
         } else {
             $report = Report::createFailure(__('Fail to import Shared Stimulus'));

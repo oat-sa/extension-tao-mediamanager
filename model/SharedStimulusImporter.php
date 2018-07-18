@@ -117,7 +117,10 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
                             $report->setData(['uriResource' => '']);
                         } else {
                             $report = Report::createSuccess(__('Shared Stimulus imported successfully'));
-                            $report->setData(['uriResource' => $mediaResourceUri]);
+                            $report->add(Report::createSuccess(
+                                __('Imported %s', $fileInfo['name']),
+                                ['uriResource' => $mediaResourceUri] // 'uriResource' key is needed by javascript in tao/views/templates/form/import.tpl
+                            ));
                         }
                     } catch (XmlStorageException $e) {
                         // The shared stimulus is not qti compliant, display error
@@ -126,7 +129,9 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
                     }
                 } else {
                     $this->zipImporter->setServiceLocator($this->getServiceLocator());
-                    $report = $this->zipImporter->import($class, $form);
+                    $subReport = $this->zipImporter->import($class, $form);
+                    $report = Report::createSuccess(__('Shared Stimulus imported successfully'));
+                    $report->add($subReport);
                 }
             } else {
                 if (!\helpers_File::isZipMimeType($fileInfo['type'])) {

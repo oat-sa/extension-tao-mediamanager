@@ -24,34 +24,38 @@ use oat\oatbox\Configurable;
 use oat\tao\model\media\MediaManagement;
 use oat\taoMediaManager\model\fileManagement\FileManager;
 use oat\oatbox\log\LoggerAwareTrait;
+use oat\generis\model\OntologyAwareTrait;
 
 class MediaSource extends Configurable implements MediaManagement
 {
 
     use LoggerAwareTrait;
+    use OntologyAwareTrait;
 
     const SCHEME_NAME = 'taomedia://mediamanager/';
 
-    private $lang;
-
-    private $rootClassUri;
+    /**
+     * Returns the lanuage URI to be used
+     * @return string
+     */
+    public function getLanguage()
+    {
+        return $this->hasOption('lang')
+            ? $this->getOption('lang')
+            : ''
+        ;
+    }
 
     /**
-     * get the lang of the class in case we want to filter the media on language
-     *
-     * @param array $options
+     * Return the root class of the mediasource
+     * @return \core_kernel_classes_Class
      */
-    public function __construct($options = array())
-    {
-        parent::__construct($options);
-        \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager');
-        $this->lang = (isset($options['lang'])) ? $options['lang'] : '';
-        $this->rootClassUri = (isset($options['rootClass'])) ? $options['rootClass'] : MediaService::singleton()->getRootClass();
-    }
-    
     public function getRootClass()
     {
-        return new \core_kernel_classes_Class($this->rootClassUri);
+        return $this->getClass($this->hasOption('rootClass')
+            ? $this->getOption('rootClass')
+            : MediaService::ROOT_CLASS_URI
+        );
     }
 
     /**
@@ -68,7 +72,7 @@ class MediaSource extends Configurable implements MediaManagement
         $clazz = $this->getOrCreatePath($parent);
         
         $service = MediaService::singleton();
-        $instanceUri = $service->createMediaInstance($source, $clazz->getUri(), $this->lang, $fileName, $mimetype);
+        $instanceUri = $service->createMediaInstance($source, $clazz->getUri(), $this->getLanguage(), $fileName, $mimetype);
         
         return $this->getFileInfo($instanceUri);
     }
@@ -91,7 +95,7 @@ class MediaSource extends Configurable implements MediaManagement
     public function getDirectory($parentLink = '', $acceptableMime = array(), $depth = 1)
     {
         if ($parentLink == '') {
-            $class = new \core_kernel_classes_Class($this->rootClassUri);
+            $class = $this->getRootClass();
         } else {
             $class = new \core_kernel_classes_Class(\tao_helpers_Uri::decode($parentLink));
         }

@@ -38,7 +38,7 @@ class MediaSource extends Configurable implements MediaManagement
      * Returns the lanuage URI to be used
      * @return string
      */
-    public function getLanguage()
+    protected function getLanguage()
     {
         return $this->hasOption('lang')
             ? $this->getOption('lang')

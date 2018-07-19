@@ -56,11 +56,15 @@ class SharedStimulusPackageImporter extends ZipImporter
 
             $embeddedFile = static::embedAssets($xmlFile);
 
-            $report = $this->storeSharedStimulus(
+            $report = Report::createSuccess(__('Shared Stimulus imported successfully'));
+
+            $subReport = $this->storeSharedStimulus(
                 $class,
                 \tao_helpers_Uri::decode($form instanceof Form ? $form->getValue('lang') : $form['lang']),
                 $embeddedFile
             );
+
+            $report->add($subReport);
         } catch (\Exception $e) {
             $report = Report::createFailure($e->getMessage());
         }

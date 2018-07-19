@@ -129,9 +129,7 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
                     }
                 } else {
                     $this->zipImporter->setServiceLocator($this->getServiceLocator());
-                    $subReport = $this->zipImporter->import($class, $form);
-                    $report = Report::createSuccess(__('Shared Stimulus imported successfully'));
-                    $report->add($subReport);
+                    $report = $this->zipImporter->import($class, $form);
                 }
             } else {
                 if (!\helpers_File::isZipMimeType($fileInfo['type'])) {

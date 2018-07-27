@@ -46,7 +46,7 @@ class MediaService extends \tao_models_classes_ClassService
 
     /**
      * (non-PHPdoc)
-     * @see tao_models_classes_ClassService::getRootClass()
+     * @see \tao_models_classes_ClassService::getRootClass()
      */
     public function getRootClass()
     {
@@ -133,7 +133,7 @@ class MediaService extends \tao_models_classes_ClassService
     
     /**
      * (non-PHPdoc)
-     * @see tao_models_classes_ClassService::deleteResource()
+     * @see \tao_models_classes_ClassService::deleteResource()
      */
     public function deleteResource(\core_kernel_classes_Resource $resource)
     {

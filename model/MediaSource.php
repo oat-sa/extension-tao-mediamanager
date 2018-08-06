@@ -20,25 +20,43 @@
  */
 namespace oat\taoMediaManager\model;
 
-use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\Configurable;
 use oat\oatbox\service\ServiceManager;
 use oat\tao\model\media\MediaManagement;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
+use oat\oatbox\log\LoggerAwareTrait;
+use oat\generis\model\OntologyAwareTrait;
 
 class MediaSource extends Configurable implements MediaManagement
 {
-    const SCHEME_NAME = 'taomedia://mediamanager/';
-
+    use LoggerAwareTrait;
     use OntologyAwareTrait;
+  
+    const SCHEME_NAME = 'taomedia://mediamanager/';
 
     protected $mediaService;
 
     protected $fileManagementService;
 
+  
+    /**
+     * Returns the lanuage URI to be used
+     * @return string
+     */
+    protected function getLanguage()
+    {
+        return $this->hasOption('lang')
+            ? $this->getOption('lang')
+            : ''
+        ;
+    }
+  
     public function getRootClass()
     {
-        return $this->getClass($this->getRootClassUri());
+        return $this->getClass($this->hasOption('rootClass')
+            ? $this->getOption('rootClass')
+            : $this->getRootClassUri()
+        );
     }
 
     /**
@@ -56,7 +74,6 @@ class MediaSource extends Configurable implements MediaManagement
         
         $service = $this->getMediaService();
         $instanceUri = $service->createMediaInstance($source, $clazz->getUri(), $this->getLang(), $fileName, $mimetype);
-
 
         return $this->getFileInfo($instanceUri);
     }
@@ -80,6 +97,7 @@ class MediaSource extends Configurable implements MediaManagement
     {
         if ($parentLink == '') {
             $class = new \core_kernel_classes_Class($this->getRootClassUri());
+
         } else {
             $class = new \core_kernel_classes_Class(\tao_helpers_Uri::decode($parentLink));
         }
@@ -178,7 +196,7 @@ class MediaSource extends Configurable implements MediaManagement
      */
     public function download($link)
     {
-        \common_Logger::w('Deprecated, creates tmpfiles');
+        $this->logInfo('Deprecated, creates tmpfiles');
         $stream = $this->getFileStream($link);
         $filename = tempnam(sys_get_temp_dir(), 'media');
         $fh = fopen($filename, 'w');

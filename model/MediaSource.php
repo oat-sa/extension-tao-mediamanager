@@ -53,10 +53,7 @@ class MediaSource extends Configurable implements MediaManagement
   
     public function getRootClass()
     {
-        return $this->getClass($this->hasOption('rootClass')
-            ? $this->getOption('rootClass')
-            : $this->getRootClassUri()
-        );
+        return $this->getClass($this->getRootClassUri());
     }
 
     /**

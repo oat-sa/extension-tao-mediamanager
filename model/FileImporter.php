@@ -77,12 +77,14 @@ class FileImporter implements \tao_models_classes_import_ImportHandler
         session_write_close();
         try {
             $file = $form->getValue('source');
-
+            if (!isset($file['uploaded_file'])) {
+                throw new \common_Exception('No source file for import');
+            }
             $service = MediaService::singleton();
             $classUri = $class->getUri();
             /** @var  UploadService $uploadService */
-            $uploadService = ServiceManager::getServiceManager()->get(UploadService::SERVICE_ID);
-            $uploadedFile = $uploadService->getUploadedFile($file['uploaded_file']);
+            $uploadService = $this->getServiceLocator()->get(UploadService::SERVICE_ID);
+            $uploadedFile = $uploadService->getUploadedFlyFile($file['uploaded_file']);
 
             if (is_null($this->instanceUri) || $this->instanceUri === $classUri) {
                 //if the file is a zip do a zip import
@@ -108,13 +110,23 @@ class FileImporter implements \tao_models_classes_import_ImportHandler
                 }
             }
 
+            $uploadService->remove($uploadedFile);
+
         } catch (\Exception $e) {
             $report = \common_report_Report::createFailure($e->getMessage());
         }
 
-        $uploadService->remove($uploadService->getUploadedFlyFile($file['uploaded_file']));
 
         return $report;
     }
 
+    /**
+     * Get the service Locator
+     *
+     * @return ServiceManager
+     */
+    protected function getServiceLocator()
+    {
+        return ServiceManager::getServiceManager();
+    }
 }

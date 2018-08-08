@@ -58,11 +58,7 @@ class SharedStimulusPackageImporter extends ZipImporter
 
             $report = Report::createSuccess(__('Shared Stimulus imported successfully'));
 
-            $subReport = $this->storeSharedStimulus(
-                $class,
-                \tao_helpers_Uri::decode($form instanceof Form ? $form->getValue('lang') : $form['lang']),
-                $embeddedFile
-            );
+            $subReport = $this->storeSharedStimulus($class, $this->getDecodedUri($form), $embeddedFile);
 
             $report->add($subReport);
         } catch (\Exception $e) {
@@ -95,11 +91,7 @@ class SharedStimulusPackageImporter extends ZipImporter
 
             $embeddedFile = static::embedAssets($xmlFile);
 
-            $report = $this->replaceSharedStimulus(
-                $instance,
-                \tao_helpers_Uri::decode($form instanceof Form ? $form->getValue('lang') : $form['lang']),
-                $embeddedFile
-            );
+            $report = $this->replaceSharedStimulus($instance, $this->getDecodedUri($form), $embeddedFile);
         } catch (\Exception $e) {
             $report = Report::createFailure($e->getMessage());
             $report->setData(['uriResource' => '']);
@@ -261,5 +253,14 @@ class SharedStimulusPackageImporter extends ZipImporter
             // url, just return it as is
             return $source;
         }
+    }
+
+    /**
+     * @param array|Form $form
+     * @return string
+     */
+    private function getDecodedUri($form)
+    {
+        return \tao_helpers_Uri::decode($form instanceof Form ? $form->getValue('lang') : $form['lang']);
     }
 }

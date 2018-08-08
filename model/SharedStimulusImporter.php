@@ -162,7 +162,7 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
     }
 
     /**
-     * @param string|File $filename
+     * @param string|File $file
      * @return XmlDocument
      * @throws \qtism\data\storage\xml\XmlStorageException
      */

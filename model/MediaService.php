@@ -109,14 +109,14 @@ class MediaService extends \tao_models_classes_ClassService
         if ($file instanceof File) {
             // get a local copy to be able to get the hash
             $tmpName = \tao_helpers_File::concat([\tao_helpers_File::createTempDir(), $file->getBasename()]);
-            if (($resource = fopen($tmpName, 'wb')) !== false) {
+            if (($resource = @fopen($tmpName, 'wb')) !== false) {
                 stream_copy_to_stream($file->readStream(), $resource);
-                fclose($resource);
+                @fclose($resource);
             }
 
             $md5 = md5_file($tmpName);
 
-            unlink($tmpName);
+            @unlink($tmpName);
         } else {
             $md5 = md5_file($file);
         }

@@ -18,7 +18,7 @@
  *
  *
  */
-namespace oat\taoMediaManager\test\model;
+namespace oat\taoMediaManager\test\integration\model;
 
 use oat\oatbox\service\ServiceManager;
 use oat\tao\model\upload\UploadService;
@@ -28,7 +28,9 @@ use Prophecy\Argument;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
 
-class SharedStimulusImporterTest extends TaoPhpUnitTestRunner
+include_once dirname(__FILE__) . '/../../../../tao/includes/raw_start.php';
+
+class SharedStimulusImporterTest extends \PHPUnit_Framework_TestCase
 {
     private $service = null;
 

@@ -18,7 +18,7 @@
  *
  *
  */
-namespace oat\taoMediaManager\test\model;
+namespace oat\taoMediaManager\test\integration\model;
 
 use oat\oatbox\service\ServiceManager;
 use oat\tao\model\upload\UploadService;
@@ -27,6 +27,9 @@ use oat\taoMediaManager\model\FileImportForm;
 use oat\taoMediaManager\model\SharedStimulusPackageImporter;
 use Prophecy\Argument;
 use qtism\data\storage\xml\XmlDocument;
+
+include_once dirname(__FILE__) . '/../../../includes/raw_start.php';
+
 
 class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
 {
@@ -41,14 +44,14 @@ class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
             ->disableOriginalConstructor()
             ->getMock();
 
-        $ref = new \ReflectionProperty('tao_models_classes_Service', 'instances');
+        $ref = new \ReflectionProperty(\tao_models_classes_Service::class, 'instances');
         $ref->setAccessible(true);
         $ref->setValue(null, array('oat\taoMediaManager\model\MediaService' => $this->service));
     }
 
     public function tearDown()
     {
-        $ref = new \ReflectionProperty('tao_models_classes_Service', 'instances');
+        $ref = new \ReflectionProperty(\tao_models_classes_Service::class, 'instances');
         $ref->setAccessible(true);
         $ref->setValue(null, array());
 
@@ -118,6 +121,8 @@ class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
 
         $clazz = new \core_kernel_classes_Class('http://www.tao.lu/Ontologies/TAOMedia.rdf#Media');
         $instance = $clazz->createInstance('my Label');
+        $file['uploaded_file'] = $filename;
+        $file['name'] = basename($filename);
 
         $form = new FileImportForm($instance->getUri());
         $form = $form->getForm();

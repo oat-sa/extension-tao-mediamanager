@@ -18,7 +18,7 @@
  *
  *
  */
-namespace oat\taoMediaManager\test\model;
+namespace oat\taoMediaManager\test\integration\model;
 
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
@@ -26,6 +26,8 @@ use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\oatbox\service\ServiceManager;
 use oat\oatbox\filesystem\FileSystemService;
+
+// @todo fix "Service "taoMediaManager/fileManager" not found"
 
 /**
  * Class MediaSourceTest

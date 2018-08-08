@@ -18,13 +18,13 @@
  *
  *
  */
-namespace oat\taoMediaManager\test\model;
+namespace oat\taoMediaManager\test\integration\model;
 
 use oat\taoMediaManager\model\SharedStimulusImporter;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
 
-include_once dirname(__FILE__) . '/../../../tao/includes/raw_start.php';
+include_once dirname(__FILE__) . '/../../../../tao/includes/raw_start.php';
 
 class SharedStimulusImporterTest extends \PHPUnit_Framework_TestCase
 {

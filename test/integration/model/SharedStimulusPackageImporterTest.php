@@ -18,13 +18,13 @@
  *
  *
  */
-namespace oat\taoMediaManager\test\model;
+namespace oat\taoMediaManager\test\integration\model;
 
 use oat\taoMediaManager\model\FileImportForm;
 use oat\taoMediaManager\model\SharedStimulusPackageImporter;
 use qtism\data\storage\xml\XmlDocument;
 
-include_once dirname(__FILE__) . '/../../includes/raw_start.php';
+include_once dirname(__FILE__) . '/../../../includes/raw_start.php';
 
 
 class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
@@ -48,14 +48,14 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $ref = new \ReflectionProperty('tao_models_classes_Service', 'instances');
+        $ref = new \ReflectionProperty(\tao_models_classes_Service::class, 'instances');
         $ref->setAccessible(true);
         $ref->setValue(null, array('oat\taoMediaManager\model\MediaService' => $this->service));
     }
 
     public function tearDown()
     {
-        $ref = new \ReflectionProperty('tao_models_classes_Service', 'instances');
+        $ref = new \ReflectionProperty(\tao_models_classes_Service::class, 'instances');
         $ref->setAccessible(true);
         $ref->setValue(null, array());
     }

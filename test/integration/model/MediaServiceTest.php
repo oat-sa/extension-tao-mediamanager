@@ -18,12 +18,12 @@
  *
  *
  */
-namespace oat\taoMediaManager\test\model;
+namespace oat\taoMediaManager\test\integration\model;
 
 use oat\taoMediaManager\model\MediaService;
 use oat\tao\test\TaoPhpUnitTestRunner;
 
-include_once dirname(__FILE__) . '/../../includes/raw_start.php';
+include_once dirname(__FILE__) . '/../../../includes/raw_start.php';
 
 class MediaServiceTest extends TaoPhpUnitTestRunner
 {

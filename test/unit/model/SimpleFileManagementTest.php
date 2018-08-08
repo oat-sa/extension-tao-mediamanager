@@ -18,7 +18,7 @@
  *
  *
  */
-namespace oat\taoMediaManager\test\model;
+namespace oat\taoMediaManager\test\unit\model;
 
 use oat\taoMediaManager\model\fileManagement\SimpleFileManagement;
 
@@ -43,7 +43,7 @@ class SimpleFileManagementTest extends \PHPUnit_Framework_TestCase
         mkdir($storageDir);
 
         //force baseDir
-        $ref = new \ReflectionProperty('oat\taoMediaManager\model\fileManagement\SimpleFileManagement', 'baseDir');
+        $ref = new \ReflectionProperty(SimpleFileManagement::class, 'baseDir');
         $ref->setAccessible(true);
         $ref->setValue($this->fileManagement, $storageDir);
         $ref->setAccessible(false);

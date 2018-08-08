@@ -32,24 +32,18 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
     const OPTION_FS = 'fs';
 
     /**
-     * @param string|File $file
+     * @param string|File $fileSource
      * @param string $label
      * @return string
      * @throws \League\Flysystem\FileExistsException
      */
-    public function storeFile($file, $label)
+    public function storeFile($fileSource, $label)
     {
-        $filesystem = $this->getFileSystem();
-        $filename = $this->getUniqueFilename($file instanceof File ? $file->getBasename() : basename($file));
+        $filename = $this->getUniqueFilename($label);
+        $stream = $fileSource instanceof File ? $fileSource->readStream() : fopen($fileSource, 'r');
+        $this->getFileSystem()->writeStream($filename, $stream);
+        fclose($stream);
 
-        if ($file instanceof File) {
-            $filesystem->writeStream($filename, $file->readStream());
-        } else {
-            $stream = fopen($file, 'r');
-            $filesystem->writeStream($filename, $stream);
-            fclose($stream);
-        }
-        
         return $filename;
     }
     
@@ -76,7 +70,7 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
      */
     public function retrieveFile($link)
     {
-        \common_Logger::w('Deprecated');
+        $this->logWarning('Deprecated');
         return null;
     }
 
@@ -94,7 +88,7 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
      */
     protected function getFilesystem()
     {
-        $fs = $this->getServiceManager()->get(FileSystemService::SERVICE_ID);
+        $fs = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
         return $fs->getFileSystem($this->getOption(self::OPTION_FS));
     }
     

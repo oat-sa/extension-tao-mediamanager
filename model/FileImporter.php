@@ -81,7 +81,7 @@ class FileImporter implements \tao_models_classes_import_ImportHandler, ServiceL
             $service = MediaService::singleton();
             $classUri = $class->getUri();
 
-            if (!$form instanceof Form || !is_array($form)) {
+            if (!$form instanceof Form && !is_array($form)) {
                 throw new \InvalidArgumentException('Import form should be either a Form object or an array.');
             }
 

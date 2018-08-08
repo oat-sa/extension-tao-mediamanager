@@ -14,8 +14,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
- *
+ * Copyright (c) 2014-2018 (original work) Open Assessment Technologies SA;
  *
  */
 
@@ -56,7 +55,9 @@ class ZipImporter implements ServiceLocatorAwareInterface
 
             // unzip the file
             try {
+                \helpers_TimeOutHelper::setTimeOutLimit(\helpers_TimeOutHelper::LONG);
                 $directory = $this->extractArchive($uploadedFile);
+                \helpers_TimeOutHelper::reset();
             } catch (\Exception $e) {
                 $report = Report::createFailure(__('Unable to extract the archive'));
                 $report->setData(['uriResource' => '']);
@@ -103,6 +104,11 @@ class ZipImporter implements ServiceLocatorAwareInterface
         return $report;
     }
 
+    /**
+     * @param $relPath
+     * @return string
+     * @throws \common_exception_Error
+     */
     protected function createClass($relPath)
     {
         $parentPath = dirname($relPath);
@@ -123,9 +129,26 @@ class ZipImporter implements ServiceLocatorAwareInterface
      *
      * @param string|File $archiveFile
      * @return string temporary directory zipfile was extracted to
+     *
+     * @throws \common_Exception
      */
     protected function extractArchive($archiveFile)
     {
+        if ($archiveFile instanceof File) {
+            if (!$archiveFile->exists()) {
+                throw new \common_Exception('Unable to open archive ' . '/' . $archiveFile->getPrefix());
+            }
+            $tmpDir = \tao_helpers_File::createTempDir();
+            $tmpFilePath = $tmpDir . uniqid('sharedStimulus-import') . '.zip';
+            $tmpFile = fopen($tmpFilePath, 'w');
+            $originalPackage = $archiveFile->readStream();
+            stream_copy_to_stream($originalPackage, $tmpFile);
+            fclose($originalPackage);
+            fclose($tmpFile);
+
+            $archiveFile = $tmpFilePath;
+        }
+
         $archiveDir = \tao_helpers_File::createTempDir();
         $archiveObj = new \ZipArchive();
 
@@ -151,7 +174,13 @@ class ZipImporter implements ServiceLocatorAwareInterface
         }
         $archiveObj->close();
 
+        if (isset($tmpFilePath) && file_exists($tmpFilePath)) {
+            unlink($tmpFilePath);
+        }
+        if (isset($tmpDir) && file_exists($tmpDir)) {
+            rmdir($tmpDir);
+        }
+
         return $archiveDir;
     }
-
 }

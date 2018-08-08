@@ -21,20 +21,16 @@
 
 namespace oat\taoMediaManager\test\model;
 
+use oat\oatbox\service\ServiceManager;
+use oat\tao\model\upload\UploadService;
+use oat\tao\test\TaoPhpUnitTestRunner;
 use oat\taoMediaManager\model\FileImportForm;
 use oat\taoMediaManager\model\SharedStimulusPackageImporter;
+use Prophecy\Argument;
 use qtism\data\storage\xml\XmlDocument;
 
-include_once dirname(__FILE__) . '/../../includes/raw_start.php';
-
-class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
+class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
 {
-
-    /**
-     * @var $packageImporter SharedStimulusPackageImporter
-     */
-    private $packageImporter = null;
-
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
@@ -42,8 +38,6 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->packageImporter = new SharedStimulusPackageImporter();
-
         $this->service = $this->getMockBuilder('oat\taoMediaManager\model\MediaService')
             ->disableOriginalConstructor()
             ->getMock();
@@ -57,7 +51,9 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
     {
         $ref = new \ReflectionProperty('tao_models_classes_Service', 'instances');
         $ref->setAccessible(true);
-        $ref->setValue(null, []);
+        $ref->setValue(null, array());
+
+        $this->removeTempFileSystem();
     }
 
     /**
@@ -65,19 +61,26 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
      */
     public function testImport($filename, $expectedReport, $called)
     {
+        $file = $this->getTempDirectory()->getFile('fixture');
+
+        $fileinfo = [];
+        $fileinfo['uploaded_file'] = $filename;
+        $fileinfo['name'] = basename($filename);
+
         if (file_exists($filename)) {
-            $tmpDir = \tao_helpers_File::createTempDir();
-            copy($filename, $tmpDir . basename($filename));
-            $filename = $tmpDir . basename($filename);
+            $file->put(file_get_contents($filename));
+            $info = finfo_open(FILEINFO_MIME_TYPE);
+            $fileinfo['type'] = finfo_file($info, $filename);
+            finfo_close($info);
+        } else {
+            $file = null;
         }
 
         $myClass = new \core_kernel_classes_Class('http://fancyDomain.com/tao.rdf#fancyUri');
-        $file['uploaded_file'] = $filename;
-        $file['name'] = basename($filename);
 
         $form = new FileImportForm($myClass->getUri());
         $form = $form->getForm();
-        $form->setValues(['source' => $file, 'lang' => 'EN_en']);
+        $form->setValues(array('source' => $fileinfo, 'lang' => 'EN_en'));
 
         if ($called) {
             $this->service->expects($this->once())
@@ -85,7 +88,7 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
                 ->willReturn('myGreatLink');
         }
 
-        $report = $this->packageImporter->import($myClass, $form);
+        $report = $this->getPackageImporter($file)->import($myClass, $form);
 
         /** @var \common_report_Report $expectedReport */
         $expectedReport->setMessage(preg_replace('/%s/', 'imported', $expectedReport->getMessage()));
@@ -99,21 +102,27 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
      */
     public function testEdit($filename, $expectedReport, $called)
     {
+        $file = $this->getTempDirectory()->getFile('fixture');
+
+        $fileinfo = [];
+        $fileinfo['uploaded_file'] = $filename;
+        $fileinfo['name'] = basename($filename);
 
         if (file_exists($filename)) {
-            $tmpDir = \tao_helpers_File::createTempDir();
-            copy($filename, $tmpDir . basename($filename));
-            $filename = $tmpDir . basename($filename);
+            $file->put(file_get_contents($filename));
+            $info = finfo_open(FILEINFO_MIME_TYPE);
+            $fileinfo['type'] = finfo_file($info, $filename);
+            finfo_close($info);
+        } else {
+            $file = null;
         }
 
         $clazz = new \core_kernel_classes_Class('http://www.tao.lu/Ontologies/TAOMedia.rdf#Media');
         $instance = $clazz->createInstance('my Label');
-        $file['uploaded_file'] = $filename;
-        $file['name'] = basename($filename);
 
         $form = new FileImportForm($instance->getUri());
         $form = $form->getForm();
-        $form->setValues(['source' => $file, 'lang' => 'EN_en']);
+        $form->setValues(array('source' => $fileinfo, 'lang' => 'EN_en'));
 
         if ($called) {
             $this->service->expects($this->once())
@@ -121,7 +130,7 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
                 ->willReturn(true);
         }
 
-        $report = $this->packageImporter->edit($instance, $form);
+        $report = $this->getPackageImporter($file)->edit($instance, $form);
 
         /** @var \common_report_Report $expectedReport */
         $expectedReport->setMessage(preg_replace('/%s/', 'edited', $expectedReport->getMessage()));
@@ -135,13 +144,18 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetSharedStimulusFile($filename, $exception)
     {
+        $file = $this->getTempDirectory()->getFile($filename);
+        if (file_exists($filename)) {
+            $file->put(file_get_contents($filename));
+        }
         try {
             $method = new \ReflectionMethod('oat\taoMediaManager\model\SharedStimulusPackageImporter', 'getSharedStimulusFile');
             $method->setAccessible(true);
-            $xmlFile = $method->invokeArgs($this->packageImporter, [$filename]);
+            $packageImporter = new SharedStimulusPackageImporter();;
+            $xmlFile = $method->invokeArgs($packageImporter, array($file));
             $xmlFile = str_replace('\\', '/', $xmlFile);
-            $this->assertContains(basename($filename, '.zip') . '/stimulus.xml', $xmlFile);
-        } catch (\common_Exception $e) {
+            $this->assertContains('stimulus.xml', $xmlFile);
+        } catch (\Exception $e) {
             $this->assertNotNull($exception, __('It should not throw an exception'));
             if (!is_null($e)) {
                 $this->assertInstanceOf(get_class($exception), $e, __('The exception class is wrong'));
@@ -162,7 +176,7 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
         $xmlDocument->load($directory . '/stimulus.xml');
 
         try {
-            $xmlConverted = SharedStimulusPackageImporter::embedAssets($directory . '/stimulus.xml');
+            $xmlConverted = SharedStimulusPackageImporter::embedAssets($directory.'/stimulus.xml');
             $xmlDocument->load($xmlConverted);
             $strXml = $xmlDocument->saveToString();
             $xmlDocument->load($converted);
@@ -183,33 +197,58 @@ class SharedStimulusPackageImporterTest extends \PHPUnit_Framework_TestCase
     public function sharedStimulusConvertProvider()
     {
         $sampleDir = dirname(__DIR__) . '/sample/sharedStimulus/';
-
-        return [
-            [$sampleDir . 'stimulusPackage', null, $sampleDir . 'converted.xml'],
-            [$sampleDir . 'missingAssetArchive', new \tao_models_classes_FileNotFoundException('images/image1.jpg'), null],
-        ];
+        return array(
+            array($sampleDir . 'stimulusPackage', null, $sampleDir . 'converted.xml'),
+            array($sampleDir . 'missingAssetArchive', new \tao_models_classes_FileNotFoundException('images/image1.jpg'), null),
+        );
     }
 
     public function sharedStimulusPackage()
     {
         $sampleDir = dirname(__DIR__) . '/sample/sharedStimulus/';
-
-        return [
-            [$sampleDir . 'UnknowFile.zip', new \common_Exception('Unable to open archive ' . $sampleDir . 'UnknowFile.zip')],
-            [$sampleDir . 'missingXmlArchive.zip', new \common_Exception('XML not found')],
-            [$sampleDir . 'stimulusPackage.zip', null],
-        ];
+        return array(
+            array($sampleDir . 'UnknowFile.zip', new \common_Exception('Unable to open archive '.$sampleDir . 'UnknowFile.zip')),
+            array($sampleDir . 'missingXmlArchive.zip', new \common_Exception('XML not found in the package')),
+            array($sampleDir . 'stimulusPackage.zip', null),
+        );
     }
 
     public function sharedStimulusImportProvider()
     {
         $sampleDir = dirname(__DIR__) . '/sample/sharedStimulus/';
+        return array(
+            array($sampleDir . 'UnknowFile.zip', \common_report_Report::createFailure(__('Unable to get uploaded file')), false),
+            array($sampleDir . 'missingXmlArchive.zip', \common_report_Report::createFailure('XML not found in the package'), false),
+            array($sampleDir . 'stimulusPackage.zip', \common_report_Report::createSuccess(__('Shared Stimulus %s successfully')), true),
+        );
+    }
 
-        return [
-            [$sampleDir . 'UnknowFile.zip', \common_report_Report::createFailure(__('Unable to open archive ' . $sampleDir . 'UnknowFile.zip')), false],
-            [$sampleDir . 'missingXmlArchive.zip', \common_report_Report::createFailure('XML not found'), false],
-            [$sampleDir . 'stimulusPackage.zip', \common_report_Report::createSuccess(__('Shared Stimulus %s successfully')), true],
-        ];
+    private function getPackageImporter($file, $uri = null)
+    {
+        $uploadServiceMock = $this->getMockBuilder(UploadService::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $uploadServiceMock->expects($this->once())
+            ->method('getUploadedFlyFile')
+            ->willReturn($file);
+        $uploadServiceMock->expects($this->any())
+            ->method('remove')
+            ->willReturn(true);
+
+        $sm = $this->prophesize(ServiceManager::class);
+        $sm->get(Argument::is(UploadService::SERVICE_ID))->willReturn($uploadServiceMock);
+
+        $importer = $this->getMockBuilder(SharedStimulusPackageImporter::class)->setMethods(['getServiceLocator']);
+        if (!is_null($uri)) {
+            $importer->setConstructorArgs([$uri]);
+        }
+        $importer = $importer->getMock();
+        $importer->expects($this->once())
+            ->method('getServiceLocator')
+            ->willReturn($sm->reveal());
+
+        return $importer;
     }
 }
  

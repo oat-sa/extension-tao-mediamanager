@@ -14,8 +14,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
- *
+ * Copyright (c) 2014-2018 (original work) Open Assessment Technologies SA;
  *
  */
 
@@ -44,13 +43,13 @@ class SharedStimulusPackageImporter extends ZipImporter
      */
     public function import($class, $form)
     {
-        \helpers_TimeOutHelper::setTimeOutLimit(\helpers_TimeOutHelper::LONG);
-
         try {
             $uploadedFile = $this->fetchUploadedFile($form);
 
             $xmlFile = $this->getSharedStimulusFile($uploadedFile);
-            
+
+            $this->getUploadService()->remove($uploadedFile);
+
             // throws an exception of invalid
             SharedStimulusImporter::isValidSharedStimulus($xmlFile);
 
@@ -65,11 +64,8 @@ class SharedStimulusPackageImporter extends ZipImporter
             $report = Report::createFailure($e->getMessage());
         }
 
-        \helpers_TimeOutHelper::reset();
-
         return $report;
     }
-
 
     /**
      * @param \core_kernel_classes_Resource $instance
@@ -79,13 +75,13 @@ class SharedStimulusPackageImporter extends ZipImporter
      */
     public function edit(Resource $instance, $form)
     {
-        \helpers_TimeOutHelper::setTimeOutLimit(\helpers_TimeOutHelper::LONG);
-
         try {
             $uploadedFile = $this->fetchUploadedFile($form);
 
             $xmlFile = $this->getSharedStimulusFile($uploadedFile);
-            
+
+            $this->getUploadService()->remove($uploadedFile);
+
             // throws an exception of invalid
             SharedStimulusImporter::isValidSharedStimulus($xmlFile);
 
@@ -97,17 +93,17 @@ class SharedStimulusPackageImporter extends ZipImporter
             $report->setData(['uriResource' => '']);
         }
 
-        \helpers_TimeOutHelper::reset();
-
         return $report;
     }
 
     /**
      * Embed external resources into the XML
      *
-     * @param string $originalXml
-     * @throws \tao_models_classes_FileNotFoundException
+     * @param $originalXml
      * @return string
+     * @throws \common_exception_Error
+     * @throws \qtism\data\storage\xml\XmlStorageException
+     * @throws \tao_models_classes_FileNotFoundException
      */
     public static function embedAssets($originalXml)
     {
@@ -140,14 +136,17 @@ class SharedStimulusPackageImporter extends ZipImporter
 
     /**
      * Get the shared stimulus file with assets from the zip
-     * 
+     *
      * @param string $filePath path of the zip file
      * @return string path to the xml
+     * @throws \common_Exception
      */
     private function getSharedStimulusFile($filePath)
     {
+        \helpers_TimeOutHelper::setTimeOutLimit(\helpers_TimeOutHelper::LONG);
         $extractPath = $this->extractArchive($filePath);
-    
+        \helpers_TimeOutHelper::reset();
+
         $iterator = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($extractPath),
             \RecursiveIteratorIterator::LEAVES_ONLY);
@@ -162,15 +161,18 @@ class SharedStimulusPackageImporter extends ZipImporter
             }
         }
     
-        throw new \common_Exception('XML not found');
+        throw new \common_Exception('XML not found in the package');
     }
 
     /**
      * Validate an xml file, convert file linked inside and store it into media manager
+     *
      * @param \core_kernel_classes_Resource $class the class under which we will store the shared stimulus (can be an item)
      * @param string $lang language of the shared stimulus
      * @param string $xmlFile File to store
      * @return \common_report_Report
+     *
+     * @throws \qtism\data\storage\xml\XmlStorageException
      */
     protected function storeSharedStimulus($class, $lang, $xmlFile)
     {
@@ -190,10 +192,13 @@ class SharedStimulusPackageImporter extends ZipImporter
 
     /**
      * Validate an xml file, convert file linked inside and store it into media manager
+     *
      * @param \core_kernel_classes_Resource $instance the instance to edit
      * @param string $lang language of the shared stimulus
      * @param string $xmlFile File to store
      * @return \common_report_Report
+     *
+     * @throws \qtism\data\storage\xml\XmlStorageException
      */
     protected function replaceSharedStimulus($instance, $lang, $xmlFile)
     {

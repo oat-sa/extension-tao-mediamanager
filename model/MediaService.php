@@ -21,6 +21,7 @@
 
 namespace oat\taoMediaManager\model;
 
+use oat\generis\model\OntologyAwareTrait;
 use oat\generis\model\OntologyRdfs;
 use oat\oatbox\filesystem\File;
 use oat\taoMediaManager\model\fileManagement\FileManager;
@@ -45,6 +46,10 @@ class MediaService extends \tao_models_classes_ClassService
     const PROPERTY_MD5 =  'http://www.tao.lu/Ontologies/TAOMedia.rdf#md5';
     const PROPERTY_MIME_TYPE = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#mimeType';
 
+    use OntologyAwareTrait;
+
+    protected $fileManager;
+
     /**
      * (non-PHPdoc)
      * @see \tao_models_classes_ClassService::getRootClass()
@@ -66,17 +71,15 @@ class MediaService extends \tao_models_classes_ClassService
      */
     public function createMediaInstance($fileSource, $classUri, $language, $label = null, $mimeType = null)
     {
-        $clazz = new \core_kernel_classes_Class($classUri);
-
-        $md5 = $this->getMd5Hash($fileSource);
+        $clazz = $this->getClass($classUri);
 
         //create media instance
         if (is_null($label)) {
             $label = $fileSource instanceof File ? $fileSource->getBasename() : basename($fileSource);
         }
+        $md5 = $fileSource instanceof File ? md5($fileSource->read()) : md5_file($fileSource);
 
-        $fileManager = FileManager::getFileManagementModel();
-        $link = $fileManager->storeFile($fileSource, $label);
+        $link = $this->getFileManager()->storeFile($fileSource, $label);
 
         if ($link !== false) {
             if (is_null($mimeType)) {
@@ -91,7 +94,7 @@ class MediaService extends \tao_models_classes_ClassService
                 self::PROPERTY_ALT_TEXT => $label
             ));
 
-            if (common_ext_ExtensionsManager::singleton()->isEnabled('taoRevision')) {
+            if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
                 \common_Logger::i('Auto generating initial revision');
                 RevisionService::commit($instance, __('Initial import'));
             }
@@ -101,50 +104,24 @@ class MediaService extends \tao_models_classes_ClassService
     }
 
     /**
-     * @param string|File $file
-     * @return string
-     */
-    protected function getMd5Hash($file)
-    {
-        if ($file instanceof File) {
-            // get a local copy to be able to get the hash
-            $tmpName = \tao_helpers_File::concat([\tao_helpers_File::createTempDir(), $file->getBasename()]);
-            if (($resource = @fopen($tmpName, 'wb')) !== false) {
-                stream_copy_to_stream($file->readStream(), $resource);
-                @fclose($resource);
-            }
-
-            $md5 = md5_file($tmpName);
-
-            @unlink($tmpName);
-        } else {
-            $md5 = md5_file($file);
-        }
-
-        return $md5;
-    }
-
-    /**
      * Edit a media instance with a new file and/or a new language
      *
-     * @param string|File $file
+     * @param string|File $fileSource
      * @param string $instanceUri
      * @param string $language
-     * @return bool
-     * @throws \common_exception_Error
+     * @return bool $instanceUri or false on error
      */
-    public function editMediaInstance($file, $instanceUri, $language)
+    public function editMediaInstance($fileSource, $instanceUri, $language)
     {
-        $instance = new \core_kernel_classes_Resource($instanceUri);
+        $instance = $this->getResource($instanceUri);
         $link = $this->getLink($instance);
 
-        $fileManager = FileManager::getFileManagementModel();
+        $fileManager = $this->getFileManager();
         $fileManager->deleteFile($link);
-        $link = $fileManager->storeFile($file, $instance->getLabel());
+        $link = $fileManager->storeFile($fileSource, $instance->getLabel());
 
         if ($link !== false) {
-            $md5 = $this->getMd5Hash($file);
-
+            $md5 = $fileSource instanceof File ? md5($fileSource->read()) : md5_file($fileSource);
             /** @var $instance  \core_kernel_classes_Resource */
             if (!is_null($instance) && $instance instanceof \core_kernel_classes_Resource) {
                 $instance->editPropertyValues($this->getProperty(self::PROPERTY_LINK), $link);
@@ -152,7 +129,7 @@ class MediaService extends \tao_models_classes_ClassService
                 $instance->editPropertyValues($this->getProperty(self::PROPERTY_MD5), $md5);
             }
             
-            if (common_ext_ExtensionsManager::singleton()->isEnabled('taoRevision')) {
+            if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
                 \common_Logger::i('Auto generating revision');
                 RevisionService::commit($instance, __('Imported new file'));
             }
@@ -168,8 +145,7 @@ class MediaService extends \tao_models_classes_ClassService
     public function deleteResource(\core_kernel_classes_Resource $resource)
     {
         $link = $this->getLink($resource);
-        $fileManager = $this->getServiceManager()->get(FileManagement::SERVICE_ID);
-        return parent::deleteResource($resource) && $fileManager->deleteFile($link);
+        return parent::deleteResource($resource) && $this->getFileManager()->deleteFile($link);
     }
     
     /**
@@ -182,5 +158,16 @@ class MediaService extends \tao_models_classes_ClassService
     {
         $instance = $resource->getUniquePropertyValue($this->getProperty(self::PROPERTY_LINK));
         return $instance instanceof \core_kernel_classes_Resource ? $instance->getUri() : (string)$instance;
+    }
+
+    /**
+     * @return FileManagement
+     */
+    protected function getFileManager()
+    {
+        if (!$this->fileManager) {
+            $this->fileManager = $this->getServiceLocator()->get(FileManagement::SERVICE_ID);
+        }
+        return $this->fileManager;
     }
 }

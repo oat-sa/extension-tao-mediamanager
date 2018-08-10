@@ -121,8 +121,6 @@ class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
 
         $clazz = new \core_kernel_classes_Class('http://www.tao.lu/Ontologies/TAOMedia.rdf#Media');
         $instance = $clazz->createInstance('my Label');
-        $file['uploaded_file'] = $filename;
-        $file['name'] = basename($filename);
 
         $form = new FileImportForm($instance->getUri());
         $form = $form->getForm();

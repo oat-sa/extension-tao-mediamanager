@@ -30,7 +30,7 @@ use qtism\data\storage\xml\XmlStorageException;
 
 include_once dirname(__FILE__) . '/../../../../tao/includes/raw_start.php';
 
-class SharedStimulusImporterTest extends \PHPUnit_Framework_TestCase
+class SharedStimulusImporterTest extends TaoPhpUnitTestRunner
 {
     private $service = null;
 

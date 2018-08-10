@@ -24,7 +24,6 @@ namespace oat\taoMediaManager\actions;
 use oat\taoMediaManager\model\editInstanceForm;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
-use oat\taoMediaManager\model\fileManagement\FileManager;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 
 class MediaManager extends \tao_actions_SaSModule

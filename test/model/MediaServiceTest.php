@@ -14,30 +14,17 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
- *
+ * Copyright (c) 2014-2018 (original work) Open Assessment Technologies SA;
  *
  */
+
 namespace oat\taoMediaManager\test\model;
 
+use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\taoMediaManager\model\MediaService;
-use oat\tao\test\TaoPhpUnitTestRunner;
 
-include_once dirname(__FILE__) . '/../../includes/raw_start.php';
-
-class MediaServiceTest extends TaoPhpUnitTestRunner
+class MediaServiceTest extends \PHPUnit_Framework_TestCase
 {
-
-    /**
-     * @var MediaService
-     */
-    private $mediaService = null;
-
-    /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
-     */
-    private $fileManagerMock = null;
-
     /**
      * @var \core_kernel_classes_Class
      */
@@ -45,70 +32,73 @@ class MediaServiceTest extends TaoPhpUnitTestRunner
 
     public function setUp()
     {
-        // ensure a user is logged in, in case the repository commit gets triggered
-        $this->initTest();
-        $this->mediaService = MediaService::singleton();
-
-        //fileManagerMock
-        $this->fileManagerMock = $this->getMockBuilder('oat\taoMediaManager\model\fileManagement\SimpleFileManagement')
-            ->setMethods(array('storeFile', 'deleteFile'))
-            ->getMock();
-
-        $ref = new \ReflectionProperty('oat\taoMediaManager\model\fileManagement\FileManager', 'fileManager');
-        $ref->setAccessible(true);
-        $ref->setValue(null, $this->fileManagerMock);
-        
-        $this->testClass = $this->mediaService->getRootClass()->createSubClass('test class');
+        $this->testClass = (MediaService::singleton())->getRootClass()->createSubClass('test class');
     }
 
     public function tearDown()
     {
-        $this->fileManagerMock = null;
-        $this->mediaService->deleteClass($this->testClass);
-
-        $ref = new \ReflectionProperty('oat\taoMediaManager\model\fileManagement\FileManager', 'fileManager');
-        $ref->setAccessible(true);
-        $ref->setValue(null, null);
-        $ref->setAccessible(false);
-
+        (MediaService::singleton())->deleteClass($this->testClass);
     }
 
     public function testGetRootClass()
     {
         $this->assertEquals(
             'http://www.tao.lu/Ontologies/TAOMedia.rdf#Media',
-            $this->mediaService->getRootClass()->getUri(),
+            (MediaService::singleton())->getRootClass()->getUri(),
             'The root class of the service is not correct'
         );
     }
 
-    private function initializeMock($fileTmp)
+    private function initializeMockForCreateInstance($fileTmp)
     {
-        $this->fileManagerMock->expects($this->once())
+        $fileManagerMock = $this->getMockBuilder(FlySystemManagement::class)
+            ->setMethods(array('storeFile', 'deleteFile'))
+            ->getMock();
+
+        $fileManagerMock->expects($this->once())
             ->method('storeFile')
-            ->with($fileTmp)
+            ->with($fileTmp, basename($fileTmp))
             ->willReturn('MyGreatLink');
+
+        $mediaService = MediaService::singleton();
+
+        $ref = new \ReflectionProperty(MediaService::class, 'fileManager');
+        $ref->setAccessible(true);
+        $ref->setValue($mediaService, $fileManagerMock);
+
+        return $mediaService;
+    }
+
+    private function initializeMockForEditInstance($fileTmp)
+    {
+        $fileManagerMock = $this->getMockBuilder(FlySystemManagement::class)
+            ->setMethods(array('storeFile', 'deleteFile'))
+            ->getMock();
+
+        $fileManagerMock->expects($this->once())
+            ->method('deleteFile')
+            ->with($fileTmp)
+            ->willReturn(true);
+
+        $mediaService = MediaService::singleton();
+
+        $ref = new \ReflectionProperty(MediaService::class, 'fileManager');
+        $ref->setAccessible(true);
+        $ref->setValue($mediaService, $fileManagerMock);
+
+        return $mediaService;
     }
 
     public function testCreateMediaInstance()
     {
-
         $fileTmp = dirname(__DIR__) . '/sample/Brazil.png';
-
-        $this->initializeMock($fileTmp);
-        
         $lang = 'EN-en';
         $classUri = $this->testClass->getUri();
 
-        //clear previous tests
-        $root = new \core_kernel_classes_Class($classUri);
+        $mediaService = $this->initializeMockForCreateInstance($fileTmp);
+        $uri = $mediaService->createMediaInstance($fileTmp, $classUri, $lang);
 
-        $link = $this->mediaService->createMediaInstance($fileTmp, $classUri, $lang);
-
-        $root = new \core_kernel_classes_Class($classUri);
-        $instances = $root->getInstances();
-        /** @var \core_kernel_classes_Resource $instance */
-        $instance = array_pop($instances);
+        $instance = new \core_kernel_classes_Resource($uri);
         $thing = $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LINK));
         $linkResult = $thing instanceof \core_kernel_classes_Resource ? $thing->getUri() : (string)$thing;
         $this->assertInstanceOf(
@@ -117,8 +107,7 @@ class MediaServiceTest extends TaoPhpUnitTestRunner
             'It should create an instance under the class in parameter'
         );
         $this->assertEquals('Brazil.png', $instance->getLabel(), 'The instance label is wrong');
-        $this->assertInternalType('string', $link, 'The method return should be a string');
-        $this->assertEquals($instance->getUri(), $link, 'The instance link is wrong');
+        $this->assertInternalType('string', $uri, 'The method return should be a string');
         $this->assertEquals($linkResult, 'MyGreatLink', 'The returned link is wrong');
         $this->assertEquals(
             $lang,
@@ -126,28 +115,20 @@ class MediaServiceTest extends TaoPhpUnitTestRunner
             'The instance language is wrong'
         );
 
-        $root->delete(true);
-        $root->setSubClassOf($this->mediaService->getRootClass());
-
+        $this->assertTrue($instance->delete(true));
     }
 
     public function testEditMediaInstance()
     {
-
         $fileTmp = dirname(__DIR__) . '/sample/Italy.png';
-        $this->initializeMock($fileTmp);
-
-        $this->fileManagerMock->expects($this->once())
-            ->method('deleteFile')
-            ->with('MyLink')
-            ->willReturn(true);
-
         $lang = 'EN-en';
+
         $instanceUri = 'http://myFancyDomain.com/myGreatInstanceUri';
         $instance = new \core_kernel_classes_Class($instanceUri);
         $instance->setPropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LINK), 'MyLink');
 
-        $this->mediaService->editMediaInstance($fileTmp, $instanceUri, $lang);
+        $mediaService = $this->initializeMockForEditInstance('MyLink');
+        $mediaService->editMediaInstance($fileTmp, $instanceUri, $lang);
 
         $this->assertEquals(
             $lang,
@@ -157,8 +138,7 @@ class MediaServiceTest extends TaoPhpUnitTestRunner
 
         // remove what has been done
         $inst = new \core_kernel_classes_Resource($instanceUri);
-        $inst->delete();
-
+        $this->assertTrue($inst->delete());
     }
 }
  

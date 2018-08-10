@@ -14,30 +14,24 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
- *
+ * Copyright (c) 2014-2018 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  *
  */
 
+namespace oat\taoMediaManager\scripts\uninstall;
+
+use oat\oatbox\extension\UninstallAction;
 use oat\tao\model\media\MediaService;
-use oat\taoMediaManager\model\fileManagement\FileManager;
+use oat\taoMediaManager\model\fileManagement\FileManagement;
 
-//remove possible /media folder in taoMediaManager
-$dir = dirname(dirname(__DIR__)) . '/media';
-if(file_exists($dir)){
-    $it = new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS);
-    $files = new \RecursiveIteratorIterator($it,
-        \RecursiveIteratorIterator::CHILD_FIRST);
-    foreach($files as $file) {
-        if ($file->isDir()){
-            rmdir($file->getRealPath());
-        } else {
-            unlink($file->getRealPath());
-        }
+class UninstallMediaManager extends UninstallAction
+{
+    public function __invoke($params)
+    {
+        MediaService::singleton()->removeMediaSource('mediamanager');
+        $this->unregisterService(FileManagement::SERVICE_ID);
+
+        return \common_report_Report::createInfo('Media manager extension successfully uninstalled.');
     }
-    rmdir($dir);
+
 }
-
-MediaService::singleton()->removeMediaSource('mediamanager');
-
-\common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager')->unsetConfig(FileManager::CONFIG_KEY);

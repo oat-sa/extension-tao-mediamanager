@@ -30,10 +30,12 @@ use oat\oatbox\filesystem\FileSystemService;
 class FlySystemManagement extends ConfigurableService implements FileManagement
 {
     const OPTION_FS = 'fs';
-    
+
     /**
-     * (non-PHPdoc)
-     * @see \oat\taoMediaManager\model\fileManagement\FileManagement::storeFile()
+     * @param string|File $fileSource
+     * @param string $label
+     * @return string
+     * @throws \League\Flysystem\FileExistsException
      */
     public function storeFile($fileSource, $label)
     {
@@ -41,7 +43,7 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
         $stream = $fileSource instanceof File ? $fileSource->readStream() : fopen($fileSource, 'r');
         $this->getFileSystem()->writeStream($filename, $stream);
         fclose($stream);
-        
+
         return $filename;
     }
     

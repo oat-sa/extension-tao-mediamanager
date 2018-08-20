@@ -23,14 +23,19 @@ namespace oat\taoMediaManager\test\model;
 use oat\oatbox\service\ServiceManager;
 use oat\tao\model\upload\UploadService;
 use oat\tao\test\TaoPhpUnitTestRunner;
+use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\SharedStimulusImporter;
 use Prophecy\Argument;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 class SharedStimulusImporterTest extends TaoPhpUnitTestRunner
 {
-    private $service = null;
+    /**
+     * @var MediaService|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $service;
 
     public function setUp()
     {
@@ -85,8 +90,6 @@ class SharedStimulusImporterTest extends TaoPhpUnitTestRunner
                 }
             }
         }
-
-
     }
 
     public function testImportXml()
@@ -164,6 +167,17 @@ class SharedStimulusImporterTest extends TaoPhpUnitTestRunner
             ->getMock();
 
         $sharedImporter = new SharedStimulusImporter();
+
+        $serviceMangerMock = $this->getMock(ServiceLocatorInterface::class);
+        $uploadServiceMock = $this->getMock(UploadService::class);
+
+        $serviceMangerMock->expects($this->atLeastOnce())
+            ->method('get')
+            ->with(UploadService::SERVICE_ID)
+            ->willReturn($uploadServiceMock);
+
+        $sharedImporter->setServiceLocator($serviceMangerMock);
+
         $filename = dirname(__DIR__) . '/sample/sharedStimulus/stimulusPackage.zip';
         $myClass = new \core_kernel_classes_Class('http://fancyDomain.com/tao.rdf#fancyUri');
         $file['type'] = 'application/zip';
@@ -192,6 +206,17 @@ class SharedStimulusImporterTest extends TaoPhpUnitTestRunner
 
         $instance = new \core_kernel_classes_Resource('http://fancyDomain.com/tao.rdf#fancyInstanceUri');
         $sharedImporter = new SharedStimulusImporter($instance->getUri());
+
+        $serviceMangerMock = $this->getMock(ServiceLocatorInterface::class);
+        $uploadServiceMock = $this->getMock(UploadService::class);
+
+        $serviceMangerMock->expects($this->atLeastOnce())
+            ->method('get')
+            ->with(UploadService::SERVICE_ID)
+            ->willReturn($uploadServiceMock);
+
+        $sharedImporter->setServiceLocator($serviceMangerMock);
+
         $filename = dirname(__DIR__) . '/sample/sharedStimulus/stimulusPackage.zip';
         $myClass = new \core_kernel_classes_Class('http://fancyDomain.com/tao.rdf#fancyUri');
         $file['type'] = 'application/zip';

@@ -18,6 +18,7 @@
  *
  *
  */
+
 namespace oat\taoMediaManager\test\model;
 
 use oat\oatbox\service\ServiceManager;
@@ -43,7 +44,7 @@ class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
 
         $ref = new \ReflectionProperty('tao_models_classes_Service', 'instances');
         $ref->setAccessible(true);
-        $ref->setValue(null, array('oat\taoMediaManager\model\MediaService' => $this->service));
+        $ref->setValue(null, ['oat\taoMediaManager\model\MediaService' => $this->service]);
     }
 
     public function tearDown()
@@ -89,7 +90,7 @@ class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
 
         $report = $this->getPackageImporter($file)->import($myClass, $form);
 
-        /** @var \common_report_Report $expectedReport*/
+        /** @var \common_report_Report $expectedReport */
         $expectedReport->setMessage(preg_replace('/%s/', 'imported', $expectedReport->getMessage()));
         $this->assertEquals($expectedReport->getType(), $report->getType(), __('Report should be success'));
         $this->assertEquals($expectedReport->getMessage(), $report->getMessage(), __('Report message is wrong'));
@@ -131,13 +132,12 @@ class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
 
         $report = $this->getPackageImporter($file)->edit($instance, $form);
 
-        /** @var \common_report_Report $expectedReport*/
+        /** @var \common_report_Report $expectedReport */
         $expectedReport->setMessage(preg_replace('/%s/', 'edited', $expectedReport->getMessage()));
         $this->assertEquals($expectedReport->getMessage(), $report->getMessage(), __('Report message is wrong'));
         $this->assertEquals($expectedReport->getType(), $report->getType(), __('Report should be success'));
         $instance->delete(true);
     }
-
 
     /**
      * @dataProvider sharedStimulusPackage
@@ -164,8 +164,6 @@ class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
                 }
             }
         }
-
-
     }
 
     /**
@@ -194,8 +192,6 @@ class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
                 }
             }
         }
-
-
     }
 
     public function sharedStimulusConvertProvider()

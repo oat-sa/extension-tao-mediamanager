@@ -21,19 +21,22 @@
 
 namespace oat\taoMediaManager\model;
 
-use oat\oatbox\service\ServiceManager;
-use oat\tao\model\upload\UploadService;
-use tao_helpers_form_Form;
+use common_report_Report as Report;
+use tao_helpers_form_Form as Form;
+use oat\tao\model\import\ImportHandlerHelperTrait;
+use oat\tao\model\import\TaskParameterProviderInterface;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
 /**
  * Service methods to manage the Media
  *
- * @access public
- * @author Antoine Robin, <antoine.robin@vesperiagroup.com>
+ * @access  public
+ * @author  Antoine Robin, <antoine.robin@vesperiagroup.com>
  * @package taoMediaManager
  */
-class FileImporter implements \tao_models_classes_import_ImportHandler
+class FileImporter implements \tao_models_classes_import_ImportHandler, ServiceLocatorAwareInterface, TaskParameterProviderInterface
 {
+    use ImportHandlerHelperTrait { getTaskParameters as getDefaultTaskParameters; }
 
     private $instanceUri;
 
@@ -56,77 +59,105 @@ class FileImporter implements \tao_models_classes_import_ImportHandler
      * Returns a form in order to prepare the import
      * if the import is from a file, the form should include the file element
      *
-     * @return tao_helpers_form_Form
+     * @return Form
      */
     public function getForm()
     {
-        $form = new FileImportForm($this->instanceUri);
-        return $form->getForm();
+        return (new FileImportForm($this->instanceUri))
+            ->getForm();
     }
 
     /**
-     * Starts the import based on the form
-     *
      * @param \core_kernel_classes_Class $class
-     * @param \tao_helpers_form_Form $form
-     * @return \common_report_Report $report
+     * @param Form|array $form
+     * @return Report
+     * @throws \common_exception_Error
      */
     public function import($class, $form)
     {
-        //as upload may be called multiple times, we remove the session lock as soon as possible
-        session_write_close();
+        $uploadedFile = $this->fetchUploadedFile($form);
+
         try {
-            $file = $form->getValue('source');
-            if (!isset($file['uploaded_file'])) {
-                throw new \common_Exception('No source file for import');
-            }
             $service = MediaService::singleton();
             $classUri = $class->getUri();
-            /** @var  UploadService $uploadService */
-            $uploadService = $this->getServiceLocator()->get(UploadService::SERVICE_ID);
-            $uploadedFile = $uploadService->getUploadedFlyFile($file['uploaded_file']);
 
-            if (is_null($this->instanceUri) || $this->instanceUri === $classUri) {
+            if (!$form instanceof Form && !is_array($form)) {
+                throw new \InvalidArgumentException('Import form should be either a Form object or an array.');
+            }
+
+            $instanceUri = $form instanceof Form
+                ? $form->getValue('instanceUri')
+                : (isset($form['instanceUri']) ? $form['instanceUri'] : null);
+
+            $fileInfo = $form instanceof Form
+                ? $form->getValue('source')
+                : $form['source'];
+
+            // importing new media
+            if (!$instanceUri || $instanceUri === $classUri) {
                 //if the file is a zip do a zip import
-                if (!\helpers_File::isZipMimeType($file['type'])) {
-                    if (!$service->createMediaInstance($uploadedFile, $classUri,
-                        \tao_helpers_Uri::decode($form->getValue('lang')), $file["name"])
-                    ) {
-                        $report = \common_report_Report::createFailure(__('Fail to import media'));
+                if (!\helpers_File::isZipMimeType($fileInfo['type'])) {
+                    $mediaResourceUri = $service->createMediaInstance(
+                        $uploadedFile,
+                        $classUri,
+                        \tao_helpers_Uri::decode($form instanceof Form ? $form->getValue('lang') : $form['lang']),
+                        $fileInfo['name']
+                    );
+
+                    if (!$mediaResourceUri) {
+                        $report = Report::createFailure(__('Fail to import media'));
+                        $report->setData(['uriResource' => '']);
                     } else {
-                        $report = \common_report_Report::createSuccess(__('Media imported successfully'));
+                        $report = Report::createSuccess(__('Media imported successfully'));
+                        $report->add(Report::createSuccess(
+                            __('Imported %s', $fileInfo['name']),
+                            ['uriResource' => $mediaResourceUri] // 'uriResource' key is needed by javascript in tao/views/templates/form/import.tpl
+                        ));
                     }
                 } else {
                     $zipImporter = new ZipImporter();
+                    $zipImporter->setServiceLocator($this->getServiceLocator());
                     $report = $zipImporter->import($class, $form);
                 }
             } else {
-                if (!\helpers_File::isZipMimeType($file['type'])) {
-                    $service->editMediaInstance($uploadedFile, $this->instanceUri,
-                        \tao_helpers_Uri::decode($form->getValue('lang')));
-                    $report = \common_report_Report::createSuccess(__('Media imported successfully'));
+                // editing existing media
+                if (!\helpers_File::isZipMimeType($fileInfo['type'])) {
+                    $service->editMediaInstance(
+                        $uploadedFile,
+                        $instanceUri,
+                        \tao_helpers_Uri::decode($form instanceof Form ? $form->getValue('lang') : $form['lang'])
+                    );
+                    $report = Report::createSuccess(__('Media imported successfully'));
+                    $report->add(Report::createSuccess(
+                        __('Edited %s', $fileInfo['name']),
+                        ['uriResource' => $instanceUri] // 'uriResource' key is needed by javascript in tao/views/templates/form/import.tpl
+                    ));
                 } else {
-                    $report = \common_report_Report::createFailure(__('You can\'t upload a zip file as a media'));
+                    $report = Report::createFailure(__('You can\'t upload a zip file as a media'));
+                    $report->setData(['uriResource' => $instanceUri]);
                 }
             }
-
-            $uploadService->remove($uploadedFile);
-
         } catch (\Exception $e) {
-            $report = \common_report_Report::createFailure($e->getMessage());
+            $report = Report::createFailure($e->getMessage());
+            $report->setData(['uriResource' => '']);
         }
 
+        $this->getUploadService()->remove($uploadedFile);
 
         return $report;
     }
 
     /**
-     * Get the service Locator
+     * Defines the task parameters to be stored for later use.
      *
-     * @return ServiceManager
+     * @param Form $form
+     * @return array
      */
-    protected function getServiceLocator()
+    public function getTaskParameters(Form $form)
     {
-        return ServiceManager::getServiceManager();
+        return array_merge(
+            $form->getValues(),
+            $this->getDefaultTaskParameters($form)
+        );
     }
 }

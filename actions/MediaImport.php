@@ -30,30 +30,25 @@ use oat\taoMediaManager\model\SharedStimulusImporter;
  */
 class MediaImport extends \tao_actions_Import
 {
-
     private $importHandlers;
 
     public function __construct()
     {
-
         parent::__construct();
         $this->service = MediaService::singleton();
     }
 
     /**
-     * overwrite the parent index to add the import handlers
-     * 
+     * Overwrites the parent index to add the import handlers
+     *
      * @see tao_actions_Import::index()
      */
     public function index()
     {
         $this->setAvailableImportHandlers();
         parent::index();
-
     }
 
-    /**
-     */
     public function editMedia()
     {
         $id = null;
@@ -62,6 +57,7 @@ class MediaImport extends \tao_actions_Import
         } else {
             $id = $this->getRequestParameter('id');
         }
+
         $this->setAvailableImportHandlers($id);
         parent::index();
     }
@@ -73,12 +69,11 @@ class MediaImport extends \tao_actions_Import
 
     protected function setAvailableImportHandlers($id = null)
     {
-        $this->importHandlers = array(
+        $this->importHandlers = [
             new FileImporter($id),
             new SharedStimulusImporter($id)
-        );
+        ];
 
         return $this;
     }
-
 }

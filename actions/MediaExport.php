@@ -21,7 +21,6 @@
 
 namespace oat\taoMediaManager\actions;
 
-use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\ZipExporter;
 
 /**
@@ -29,18 +28,10 @@ use oat\taoMediaManager\model\ZipExporter;
  */
 class MediaExport extends \tao_actions_Export
 {
-
-    public function __construct()
-    {
-
-        parent::__construct();
-        $this->service = MediaService::singleton();
-    }
-
     protected function getAvailableExportHandlers()
     {
-        return array(
+        return [
             new ZipExporter()
-        );
+        ];
     }
 }

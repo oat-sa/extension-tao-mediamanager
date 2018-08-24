@@ -20,8 +20,10 @@
 
 namespace oat\taoMediaManager\model;
 
+use core_kernel_classes_Resource as Resource;
+use common_report_Report as Report;
+use tao_helpers_form_Form as Form;
 use core_kernel_classes_Class;
-use oat\tao\model\upload\UploadService;
 use qtism\data\storage\xml\XmlDocument;
 
 /**
@@ -35,40 +37,31 @@ class SharedStimulusPackageImporter extends ZipImporter
     /**
      * Starts the import based on the form
      *
-     * @param core_kernel_classes_Class $class
-     * @param \tao_helpers_form_Form $form
-     * @return \common_report_Report
+     * @param \core_kernel_classes_Class $class
+     * @param Form|array $form
+     * @return Report
      */
     public function import($class, $form)
     {
         try {
-            $fileInfo = $form->getValue('source');
-            if (!isset($fileInfo['uploaded_file'])) {
-                throw new \common_exception_FileSystemError('No source file for import');
-            }
-
-            /** @var  UploadService $uploadService */
-            $uploadService = $this->getServiceLocator()->get(UploadService::SERVICE_ID);
-            $uploadedFile = $uploadService->getUploadedFlyFile($fileInfo['uploaded_file']);
-
-            if (!$uploadedFile) {
-                throw new \common_exception_FileSystemError(__('Unable to get uploaded file'));
-            }
+            $uploadedFile = $this->fetchUploadedFile($form);
 
             $xmlFile = $this->getSharedStimulusFile($uploadedFile);
-            $uploadService->remove($uploadedFile);
+
+            $this->getUploadService()->remove($uploadedFile);
 
             // throws an exception of invalid
             SharedStimulusImporter::isValidSharedStimulus($xmlFile);
 
             $embeddedFile = static::embedAssets($xmlFile);
-            $report = $this->storeSharedStimulus(
-                $class,
-                \tao_helpers_Uri::decode($form->getValue('lang')),
-                $embeddedFile
-            );
+
+            $report = Report::createSuccess(__('Shared Stimulus imported successfully'));
+
+            $subReport = $this->storeSharedStimulus($class, $this->getDecodedUri($form), $embeddedFile);
+
+            $report->add($subReport);
         } catch (\Exception $e) {
-            $report = \common_report_Report::createFailure($e->getMessage());
+            $report = Report::createFailure($e->getMessage());
         }
 
         return $report;
@@ -76,39 +69,28 @@ class SharedStimulusPackageImporter extends ZipImporter
 
     /**
      * @param \core_kernel_classes_Resource $instance
-     * @param \tao_helpers_form_Form $form
-     * @return \common_report_Report
+     * @param Form|array $form
+     * @return Report
+     * @throws \common_exception_NotAcceptable
      */
-    public function edit($instance, $form)
+    public function edit(Resource $instance, $form)
     {
         try {
-            $fileInfo = $form->getValue('source');
-            if (!isset($fileInfo['uploaded_file'])) {
-                throw new \common_exception_FileSystemError('No source file for import');
-            }
-
-            /** @var UploadService $uploadService */
-            $uploadService = $this->getServiceLocator()->get(UploadService::SERVICE_ID);
-            $uploadedFile = $uploadService->getUploadedFlyFile($fileInfo['uploaded_file']);
-
-            if (!$uploadedFile) {
-                throw new \common_exception_FileSystemError(__('Unable to get uploaded file'));
-            }
+            $uploadedFile = $this->fetchUploadedFile($form);
 
             $xmlFile = $this->getSharedStimulusFile($uploadedFile);
-            $uploadService->remove($uploadedFile);
+
+            $this->getUploadService()->remove($uploadedFile);
 
             // throws an exception of invalid
             SharedStimulusImporter::isValidSharedStimulus($xmlFile);
 
             $embeddedFile = static::embedAssets($xmlFile);
-            $report = $this->replaceSharedStimulus(
-                    $instance,
-                    \tao_helpers_Uri::decode($form->getValue('lang')),
-                    $embeddedFile
-                );
+
+            $report = $this->replaceSharedStimulus($instance, $this->getDecodedUri($form), $embeddedFile);
         } catch (\Exception $e) {
-            $report = \common_report_Report::createFailure($e->getMessage());
+            $report = Report::createFailure($e->getMessage());
+            $report->setData(['uriResource' => '']);
         }
 
         return $report;
@@ -197,10 +179,12 @@ class SharedStimulusPackageImporter extends ZipImporter
         SharedStimulusImporter::isValidSharedStimulus($xmlFile);
 
         $service = MediaService::singleton();
-        if ($service->createMediaInstance($xmlFile, $class->getUri(), $lang, basename($xmlFile), 'application/qti+xml')) {
-            $report = \common_report_Report::createSuccess(__('Shared Stimulus imported successfully'));
+        if ($mediaResourceUri = $service->createMediaInstance($xmlFile, $class->getUri(), $lang, basename($xmlFile), 'application/qti+xml')) {
+            $report = Report::createSuccess(__('Imported %s', basename($xmlFile)));
+            $report->setData(['uriResource' => $mediaResourceUri]);
         } else {
-            $report = \common_report_Report::createFailure(__('Fail to import Shared Stimulus'));
+            $report = Report::createFailure(__('Fail to import Shared Stimulus'));
+            $report->setData(['uriResource' => '']);
         }
 
         return $report;
@@ -221,9 +205,10 @@ class SharedStimulusPackageImporter extends ZipImporter
         //if the class does not belong to media classes create a new one with its name (for items)
         $mediaClass = new core_kernel_classes_Class(MediaService::ROOT_CLASS_URI);
         if (!$instance->isInstanceOf($mediaClass)) {
-            $report = \common_report_Report::createFailure(
+            $report = Report::createFailure(
                 'The instance ' . $instance->getUri() . ' is not a Media instance'
             );
+            $report->setData(['uriResource' => '']);
             return $report;
         }
 
@@ -235,10 +220,12 @@ class SharedStimulusPackageImporter extends ZipImporter
 
         $service = MediaService::singleton();
         if (!$service->editMediaInstance($filepath, $instance->getUri(), $lang)) {
-            $report = \common_report_Report::createFailure(__('Fail to edit Shared Stimulus'));
+            $report = Report::createFailure(__('Fail to edit Shared Stimulus'));
         } else {
-            $report = \common_report_Report::createSuccess(__('Shared Stimulus edited successfully'));
+            $report = Report::createSuccess(__('Shared Stimulus edited successfully'));
         }
+
+        $report->setData(['uriResource' => $instance->getUri()]);
 
         return $report;
     }
@@ -271,5 +258,14 @@ class SharedStimulusPackageImporter extends ZipImporter
             // url, just return it as is
             return $source;
         }
+    }
+
+    /**
+     * @param array|Form $form
+     * @return string
+     */
+    private function getDecodedUri($form)
+    {
+        return \tao_helpers_Uri::decode($form instanceof Form ? $form->getValue('lang') : $form['lang']);
     }
 }

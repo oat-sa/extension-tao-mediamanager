@@ -24,6 +24,7 @@ namespace oat\taoMediaManager\model;
 use oat\generis\model\OntologyAwareTrait;
 use oat\generis\model\OntologyRdfs;
 use oat\oatbox\filesystem\File;
+use oat\taoMediaManager\model\fileManagement\FileManager;
 use common_ext_ExtensionsManager;
 use oat\taoRevision\model\RevisionService;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
@@ -58,11 +59,10 @@ class MediaService extends \tao_models_classes_ClassService
         return $this->getClass(self::ROOT_CLASS_URI);
     }
 
-
     /**
      * Create a media instance from a file, and define its class and language
      *
-     * @param string $fileSource path to the file to create instance from
+     * @param string|File $fileSource path to the file to create instance from
      * @param string $classUri parent to add the instance to
      * @param string $language language of the content
      * @param string $label label of the instance
@@ -85,7 +85,6 @@ class MediaService extends \tao_models_classes_ClassService
             if (is_null($mimeType)) {
                 $mimeType = $fileSource instanceof File ? $fileSource->getMimeType() : \tao_helpers_File::getMimeType($fileSource);
             }
-
             $instance = $clazz->createInstanceWithProperties(array(
                 OntologyRdfs::RDFS_LABEL => $label,
                 self::PROPERTY_LINK => $link,
@@ -107,9 +106,9 @@ class MediaService extends \tao_models_classes_ClassService
     /**
      * Edit a media instance with a new file and/or a new language
      *
-     * @param $fileSource
-     * @param $instanceUri
-     * @param $language
+     * @param string|File $fileSource
+     * @param string $instanceUri
+     * @param string $language
      * @return bool $instanceUri or false on error
      */
     public function editMediaInstance($fileSource, $instanceUri, $language)
@@ -122,7 +121,6 @@ class MediaService extends \tao_models_classes_ClassService
         $link = $fileManager->storeFile($fileSource, $instance->getLabel());
 
         if ($link !== false) {
-            //get the file MD5
             $md5 = $fileSource instanceof File ? md5($fileSource->read()) : md5_file($fileSource);
             /** @var $instance  \core_kernel_classes_Resource */
             if (!is_null($instance) && $instance instanceof \core_kernel_classes_Resource) {

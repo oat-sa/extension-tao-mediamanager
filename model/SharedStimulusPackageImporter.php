@@ -20,11 +20,11 @@
 
 namespace oat\taoMediaManager\model;
 
-use core_kernel_classes_Resource as Resource;
 use common_report_Report as Report;
-use tao_helpers_form_Form as Form;
 use core_kernel_classes_Class;
+use core_kernel_classes_Resource as Resource;
 use qtism\data\storage\xml\XmlDocument;
+use tao_helpers_form_Form as Form;
 
 /**
  * Service methods to manage the Media
@@ -100,10 +100,12 @@ class SharedStimulusPackageImporter extends ZipImporter
      * Embed external resources into the XML
      *
      * @param $originalXml
+     *
      * @return string
      * @throws \common_exception_Error
      * @throws \qtism\data\storage\xml\XmlStorageException
      * @throws \tao_models_classes_FileNotFoundException
+     * @throws \taoItems_models_classes_Import_ImportException
      */
     public static function embedAssets($originalXml)
     {
@@ -119,6 +121,7 @@ class SharedStimulusPackageImporter extends ZipImporter
         /** @var $image \qtism\data\content\xhtml\Img */
         foreach ($images as $image) {
             $source = $image->getSrc();
+            static::validateSourcePath($basedir, $source);
             $image->setSrc(self::secureEncode($basedir, $source));
         }
 
@@ -132,6 +135,21 @@ class SharedStimulusPackageImporter extends ZipImporter
         $newXml = tempnam(sys_get_temp_dir(), 'sharedStimulus_').'.xml';
         $xmlDocument->save($newXml);
         return $newXml;
+    }
+
+    /**
+     * @param string $basePath
+     * @param string $sourcePath
+     *
+     * @throws \taoItems_models_classes_Import_ImportException
+     */
+    private static function validateSourcePath($basePath, $sourcePath)
+    {
+        if (0 !== strpos(realpath($basePath . $sourcePath), $basePath)) {
+            throw new \taoItems_models_classes_Import_ImportException(
+                __('The path to the source file %s is outside the base path', $sourcePath)
+            );
+        }
     }
 
     /**

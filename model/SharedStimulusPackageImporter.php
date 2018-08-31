@@ -60,6 +60,8 @@ class SharedStimulusPackageImporter extends ZipImporter
             $subReport = $this->storeSharedStimulus($class, $this->getDecodedUri($form), $embeddedFile);
 
             $report->add($subReport);
+        } catch (InvalidSourcePathException $e) {
+            $report = Report::createFailure(__('Invalid path of a source.'));
         } catch (\Exception $e) {
             $report = Report::createFailure($e->getMessage());
         }
@@ -102,10 +104,10 @@ class SharedStimulusPackageImporter extends ZipImporter
      * @param $originalXml
      *
      * @return string
+     * @throws InvalidSourcePathException
      * @throws \common_exception_Error
      * @throws \qtism\data\storage\xml\XmlStorageException
      * @throws \tao_models_classes_FileNotFoundException
-     * @throws \taoItems_models_classes_Import_ImportException
      */
     public static function embedAssets($originalXml)
     {
@@ -141,14 +143,12 @@ class SharedStimulusPackageImporter extends ZipImporter
      * @param string $basePath
      * @param string $sourcePath
      *
-     * @throws \taoItems_models_classes_Import_ImportException
+     * @throws InvalidSourcePathException
      */
     private static function validateSourcePath($basePath, $sourcePath)
     {
         if (0 !== strpos(realpath($basePath . $sourcePath), $basePath)) {
-            throw new \taoItems_models_classes_Import_ImportException(
-                __('The path to the source file %s is outside the base path', $sourcePath)
-            );
+            throw new InvalidSourcePathException($basePath, $sourcePath);
         }
     }
 

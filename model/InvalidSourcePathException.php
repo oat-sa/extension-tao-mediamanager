@@ -32,8 +32,8 @@ class InvalidSourcePathException extends common_Exception implements common_exce
     private $sourcePath;
 
     /**
-     * @param string         $basePath
-     * @param string         $sourcePath
+     * @param string $basePath
+     * @param string $sourcePath
      * @param Exception|null $previous
      */
     public function __construct($basePath, $sourcePath, Exception $previous = null)
@@ -55,6 +55,9 @@ class InvalidSourcePathException extends common_Exception implements common_exce
      */
     public function getUserMessage()
     {
-        return __('Invalid path of a source "%s". Check the source in stimulus.xml. Path must point to the file inside the package.', $this->sourcePath);
+        return __(
+            'Invalid path of a source "%s". Check the source in stimulus.xml. Path must point to the existed file inside the package.',
+            $this->sourcePath
+        );
     }
 }

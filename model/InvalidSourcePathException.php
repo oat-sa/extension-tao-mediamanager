@@ -21,10 +21,16 @@
 namespace oat\taoMediaManager\model;
 
 use common_Exception;
+use common_exception_UserReadableException;
 use Exception;
 
-class InvalidSourcePathException extends common_Exception
+class InvalidSourcePathException extends common_Exception implements common_exception_UserReadableException
 {
+    /**
+     * @var string
+     */
+    private $sourcePath;
+
     /**
      * @param string         $basePath
      * @param string         $sourcePath
@@ -32,8 +38,23 @@ class InvalidSourcePathException extends common_Exception
      */
     public function __construct($basePath, $sourcePath, Exception $previous = null)
     {
+        $this->sourcePath = $sourcePath;
+
         $message = sprintf('The path to the source file "%s" is outside the base path "%s"', $sourcePath, $basePath);
 
         parent::__construct($message, 0, $previous);
+
+    }
+
+    /**
+     * Get the human-readable message for the end-user. It is supposed
+     * to be translated and does not contain any confidential information
+     * about the system and its sensitive data.
+     *
+     * @return string A human-readable message.
+     */
+    public function getUserMessage()
+    {
+        return __('Invalid path of a source "%s". Check the source in stimulus.xml. Path must point to the file inside the package.', $this->sourcePath);
     }
 }

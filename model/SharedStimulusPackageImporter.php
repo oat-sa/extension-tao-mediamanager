@@ -20,6 +20,7 @@
 
 namespace oat\taoMediaManager\model;
 
+use common_exception_UserReadableException;
 use common_report_Report as Report;
 use core_kernel_classes_Class;
 use core_kernel_classes_Resource as Resource;
@@ -60,8 +61,8 @@ class SharedStimulusPackageImporter extends ZipImporter
             $subReport = $this->storeSharedStimulus($class, $this->getDecodedUri($form), $embeddedFile);
 
             $report->add($subReport);
-        } catch (InvalidSourcePathException $e) {
-            $report = Report::createFailure(__('Invalid path of a source.'));
+        } catch (common_exception_UserReadableException $e) {
+            $report = Report::createFailure($e->getUserMessage());
         } catch (\Exception $e) {
             $report = Report::createFailure($e->getMessage());
         }

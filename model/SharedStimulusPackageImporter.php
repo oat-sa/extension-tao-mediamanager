@@ -150,8 +150,6 @@ class SharedStimulusPackageImporter extends ZipImporter
     {
         $realPath = realpath($basePath . $sourcePath);
 
-        var_dump($realPath);
-
         if ($realPath === false || 0 !== strpos($realPath, $basePath)) {
             throw new InvalidSourcePathException($basePath, $sourcePath);
         }

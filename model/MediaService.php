@@ -24,7 +24,6 @@ namespace oat\taoMediaManager\model;
 use oat\generis\model\OntologyAwareTrait;
 use oat\generis\model\OntologyRdfs;
 use oat\oatbox\filesystem\File;
-use oat\taoMediaManager\model\fileManagement\FileManager;
 use common_ext_ExtensionsManager;
 use oat\taoRevision\model\RevisionService;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
@@ -48,6 +47,9 @@ class MediaService extends \tao_models_classes_ClassService
 
     use OntologyAwareTrait;
 
+    /**
+     * @var FileManagement
+     */
     protected $fileManager;
 
     /**

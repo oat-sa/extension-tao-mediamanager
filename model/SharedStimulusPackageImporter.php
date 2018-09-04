@@ -20,11 +20,12 @@
 
 namespace oat\taoMediaManager\model;
 
-use core_kernel_classes_Resource as Resource;
+use common_exception_UserReadableException;
 use common_report_Report as Report;
-use tao_helpers_form_Form as Form;
 use core_kernel_classes_Class;
+use core_kernel_classes_Resource as Resource;
 use qtism\data\storage\xml\XmlDocument;
+use tao_helpers_form_Form as Form;
 
 /**
  * Service methods to manage the Media
@@ -60,6 +61,8 @@ class SharedStimulusPackageImporter extends ZipImporter
             $subReport = $this->storeSharedStimulus($class, $this->getDecodedUri($form), $embeddedFile);
 
             $report->add($subReport);
+        } catch (common_exception_UserReadableException $e) {
+            $report = Report::createFailure($e->getUserMessage());
         } catch (\Exception $e) {
             $report = Report::createFailure($e->getMessage());
         }
@@ -100,7 +103,9 @@ class SharedStimulusPackageImporter extends ZipImporter
      * Embed external resources into the XML
      *
      * @param $originalXml
+     *
      * @return string
+     * @throws InvalidSourcePathException
      * @throws \common_exception_Error
      * @throws \qtism\data\storage\xml\XmlStorageException
      * @throws \tao_models_classes_FileNotFoundException
@@ -119,6 +124,7 @@ class SharedStimulusPackageImporter extends ZipImporter
         /** @var $image \qtism\data\content\xhtml\Img */
         foreach ($images as $image) {
             $source = $image->getSrc();
+            static::validateSourcePath($basedir, $source);
             $image->setSrc(self::secureEncode($basedir, $source));
         }
 
@@ -132,6 +138,21 @@ class SharedStimulusPackageImporter extends ZipImporter
         $newXml = tempnam(sys_get_temp_dir(), 'sharedStimulus_').'.xml';
         $xmlDocument->save($newXml);
         return $newXml;
+    }
+
+    /**
+     * @param string $basePath
+     * @param string $sourcePath
+     *
+     * @throws InvalidSourcePathException
+     */
+    private static function validateSourcePath($basePath, $sourcePath)
+    {
+        $realPath = realpath($basePath . $sourcePath);
+
+        if ($realPath === false || 0 !== strpos($realPath, $basePath)) {
+            throw new InvalidSourcePathException($basePath, $sourcePath);
+        }
     }
 
     /**

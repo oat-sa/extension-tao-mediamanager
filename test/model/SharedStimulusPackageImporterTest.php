@@ -25,6 +25,7 @@ use oat\oatbox\service\ServiceManager;
 use oat\tao\model\upload\UploadService;
 use oat\tao\test\TaoPhpUnitTestRunner;
 use oat\taoMediaManager\model\FileImportForm;
+use oat\taoMediaManager\model\InvalidSourcePathException;
 use oat\taoMediaManager\model\SharedStimulusPackageImporter;
 use Prophecy\Argument;
 use qtism\data\storage\xml\XmlDocument;
@@ -140,7 +141,7 @@ class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
     }
 
     /**
-     * @dataProvider sharedStimulusPackage
+     * @dataProvider sharedStimulusPackageProvider
      */
     public function testGetSharedStimulusFile($filename, $exception)
     {
@@ -168,42 +169,70 @@ class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
 
     /**
      * @dataProvider sharedStimulusConvertProvider
+     *
+     * @param string $directory
+     * @param string $converted
+     *
+     * @throws InvalidSourcePathException
+     * @throws \common_exception_Error
+     * @throws \qtism\data\storage\xml\XmlStorageException
+     * @throws \tao_models_classes_FileNotFoundException
      */
-    public function testEmbedAssets($directory, $exception, $converted)
+    public function testEmbedAssets($directory, $converted)
     {
-
         $xmlDocument = new XmlDocument();
         $xmlDocument->load($directory . '/stimulus.xml');
 
-        try {
-            $xmlConverted = SharedStimulusPackageImporter::embedAssets($directory.'/stimulus.xml');
-            $xmlDocument->load($xmlConverted);
-            $strXml = $xmlDocument->saveToString();
-            $xmlDocument->load($converted);
-            $convertStr = $xmlDocument->saveToString();
+        $xmlConverted = SharedStimulusPackageImporter::embedAssets($directory . '/stimulus.xml');
+        $xmlDocument->load($xmlConverted);
+        $strXml = $xmlDocument->saveToString();
+        $xmlDocument->load($converted);
+        $convertStr = $xmlDocument->saveToString();
 
-            $this->assertEquals($convertStr, $strXml, __('Conversion return a wrong string'));
-        } catch (\tao_models_classes_FileNotFoundException $e) {
-            $this->assertNotNull($exception, __('It should not throw an exception'));
-            if (!is_null($e)) {
-                $this->assertInstanceOf(get_class($exception), $e, __('The exception class is wrong'));
-                if ($exception->getMessage() !== '') {
-                    $this->assertEquals($exception->getMessage(), $e->getMessage(), __('The exception message is wrong'));
-                }
-            }
-        }
+        $this->assertEquals($convertStr, $strXml, 'Conversion return a wrong string');
     }
 
     public function sharedStimulusConvertProvider()
     {
         $sampleDir = dirname(__DIR__) . '/sample/sharedStimulus/';
         return array(
-            array($sampleDir . 'stimulusPackage', null, $sampleDir . 'converted.xml'),
-            array($sampleDir . 'missingAssetArchive', new \tao_models_classes_FileNotFoundException('images/image1.jpg'), null),
+            array($sampleDir . 'stimulusPackage', $sampleDir . 'converted.xml'),
         );
     }
 
-    public function sharedStimulusPackage()
+    /**
+     * @expectedException \oat\taoMediaManager\model\InvalidSourcePathException
+     * @dataProvider sharedStimulusOutOfThePackageProvider
+     *
+     * @param string $directory
+     *
+     * @throws InvalidSourcePathException
+     * @throws \common_exception_Error
+     * @throws \qtism\data\storage\xml\XmlStorageException
+     * @throws \tao_models_classes_FileNotFoundException
+     */
+    public function testEmbedAssetsExceptions($directory)
+    {
+        SharedStimulusPackageImporter::embedAssets($directory . '/stimulus.xml');
+    }
+
+    /**
+     * Providerr that returns packages that are missing files
+     * @return string[][]
+     */
+    public function sharedStimulusOutOfThePackageProvider()
+    {
+        $sampleDir = dirname(__DIR__) . '/sample/sharedStimulus/';
+        return array(
+            [$sampleDir . 'missingAssetArchive'],
+            [$sampleDir . 'fileOutOfThePackage'],
+        );
+    }
+
+    /**
+     * Provider that returns packages with the corresponding exception
+     */
+    public function sharedStimulusPackageProvider()
     {
         $sampleDir = dirname(__DIR__) . '/sample/sharedStimulus/';
         return array(
@@ -228,10 +257,6 @@ class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
         $uploadServiceMock = $this->getMockBuilder(UploadService::class)
             ->disableOriginalConstructor()
             ->getMock();
-
-        $uploadServiceMock->expects($this->once())
-            ->method('getUploadedFlyFile')
-            ->willReturn($file);
         $uploadServiceMock->expects($this->any())
             ->method('remove')
             ->willReturn(true);
@@ -244,7 +269,7 @@ class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
             $importer->setConstructorArgs([$uri]);
         }
         $importer = $importer->getMock();
-        $importer->expects($this->once())
+        $importer->expects($this->any())
             ->method('getServiceLocator')
             ->willReturn($sm->reveal());
 

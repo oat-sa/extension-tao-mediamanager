@@ -257,10 +257,6 @@ class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
         $uploadServiceMock = $this->getMockBuilder(UploadService::class)
             ->disableOriginalConstructor()
             ->getMock();
-
-        $uploadServiceMock->expects($this->once())
-            ->method('getUploadedFlyFile')
-            ->willReturn($file);
         $uploadServiceMock->expects($this->any())
             ->method('remove')
             ->willReturn(true);
@@ -273,7 +269,7 @@ class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
             $importer->setConstructorArgs([$uri]);
         }
         $importer = $importer->getMock();
-        $importer->expects($this->once())
+        $importer->expects($this->any())
             ->method('getServiceLocator')
             ->willReturn($sm->reveal());
 

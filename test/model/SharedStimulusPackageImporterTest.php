@@ -141,7 +141,7 @@ class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
     }
 
     /**
-     * @dataProvider sharedStimulusPackage
+     * @dataProvider sharedStimulusPackageProvider
      */
     public function testGetSharedStimulusFile($filename, $exception)
     {
@@ -202,7 +202,7 @@ class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
 
     /**
      * @expectedException \oat\taoMediaManager\model\InvalidSourcePathException
-     * @dataProvider sharedStimulusOutOfThePackage
+     * @dataProvider sharedStimulusOutOfThePackageProvider
      *
      * @param string $directory
      *
@@ -216,7 +216,11 @@ class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
         SharedStimulusPackageImporter::embedAssets($directory . '/stimulus.xml');
     }
 
-    public function sharedStimulusOutOfThePackage()
+    /**
+     * Providerr that returns packages that are missing files
+     * @return string[][]
+     */
+    public function sharedStimulusOutOfThePackageProvider()
     {
         $sampleDir = dirname(__DIR__) . '/sample/sharedStimulus/';
         return array(
@@ -225,7 +229,10 @@ class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
         );
     }
 
-    public function sharedStimulusPackage()
+    /**
+     * Provider that returns packages with the corresponding exception
+     */
+    public function sharedStimulusPackageProvider()
     {
         $sampleDir = dirname(__DIR__) . '/sample/sharedStimulus/';
         return array(

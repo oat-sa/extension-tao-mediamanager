@@ -148,6 +148,10 @@ class SharedStimulusPackageImporter extends ZipImporter
      */
     private static function validateSourcePath($basePath, $sourcePath)
     {
+        if (preg_match('/^data:image\/([a-zA-Z]*);base64,/', $sourcePath)) {
+            return;
+        }
+
         $realPath = realpath($basePath . $sourcePath);
 
         if ($realPath === false || 0 !== strpos($realPath, $basePath)) {

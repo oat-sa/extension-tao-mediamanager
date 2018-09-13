@@ -239,6 +239,7 @@ class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
             array($sampleDir . 'UnknowFile.zip', new \common_Exception('Unable to open archive '.$sampleDir . 'UnknowFile.zip')),
             array($sampleDir . 'missingXmlArchive.zip', new \common_Exception('XML not found in the package')),
             array($sampleDir . 'stimulusPackage.zip', null),
+            array($sampleDir . 'encodedImage.zip', null),
         );
     }
 

@@ -249,6 +249,8 @@ class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
             array($sampleDir . 'missingXmlArchive.zip', \common_report_Report::createFailure('XML not found in the package'), false),
             array($sampleDir . 'stimulusPackage.zip', \common_report_Report::createSuccess(__('Shared Stimulus %s successfully')), true),
             array($sampleDir . 'encodedImage.zip', \common_report_Report::createSuccess(), false),
+            array($sampleDir . 'objectOutOfThePackage.zip', \common_report_Report::createFailure(''), false),
+            array($sampleDir . 'fileOutOfThePackage.zip', \common_report_Report::createFailure(''), false),
         );
     }
 

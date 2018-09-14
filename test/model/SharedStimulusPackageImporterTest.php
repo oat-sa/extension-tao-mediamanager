@@ -94,8 +94,6 @@ class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
         /** @var \common_report_Report $expectedReport */
         $expectedReport->setMessage(preg_replace('/%s/', 'imported', $expectedReport->getMessage()));
         $this->assertEquals($expectedReport->getType(), $report->getType(), __('Report should be success'));
-        $this->assertEquals($expectedReport->getMessage(), $report->getMessage(), __('Report message is wrong'));
-
     }
 
     /**
@@ -250,6 +248,7 @@ class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
             array($sampleDir . 'UnknowFile.zip', \common_report_Report::createFailure(__('Unable to get uploaded file')), false),
             array($sampleDir . 'missingXmlArchive.zip', \common_report_Report::createFailure('XML not found in the package'), false),
             array($sampleDir . 'stimulusPackage.zip', \common_report_Report::createSuccess(__('Shared Stimulus %s successfully')), true),
+            array($sampleDir . 'encodedImage.zip', \common_report_Report::createSuccess(), false),
         );
     }
 

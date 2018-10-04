@@ -1,0 +1,52 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO 3.3.0-sprint86\n"
+"PO-Revision-Date: 2018-09-26T12:04:41\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: nl-NL\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: nl-NL\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#Media
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Media"
+msgstr "Media"
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#Media
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Media"
+msgstr "Media"
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AltText
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Alternative Text"
+msgstr "Alternatieve tekst"
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AltText
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Alternative Text"
+msgstr "Alternatieve tekst"
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#Language
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Language"
+msgstr "Talen"
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#Language
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Language"
+msgstr "Talen"
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Media Manager"
+msgstr "Media beheer"
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "The Media Manager Role"
+msgstr "De media beheerder rol"
+

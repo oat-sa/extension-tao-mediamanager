@@ -26,6 +26,9 @@ use oat\taoMediaManager\model\ZipExporter;
 
 class ZipExporterTest extends TaoPhpUnitTestRunner
 {
+    /**
+     * @return string[]
+     */
     public function pathProvider()
     {
         return [
@@ -34,6 +37,7 @@ class ZipExporterTest extends TaoPhpUnitTestRunner
             ['../../../../../tmp/filename', 'filename'],
             ['../../../../../tmp/filename.zip', 'filename.zip'],
             ['.......filename.zip'],
+            ['........zip'],
         ];
     }
 
@@ -43,7 +47,7 @@ class ZipExporterTest extends TaoPhpUnitTestRunner
      * @param $originalPath
      * @param $expectedResultingPath
      */
-    public function testExportPassesFinePaths($originalPath, $expectedResultingPath = null)
+    public function testExportIsProtectedFromPathTraversal($originalPath, $expectedResultingPath = null)
     {
         if ($expectedResultingPath === null) {
             $expectedResultingPath = $originalPath;

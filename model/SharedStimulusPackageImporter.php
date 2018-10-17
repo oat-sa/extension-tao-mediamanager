@@ -124,13 +124,14 @@ class SharedStimulusPackageImporter extends ZipImporter
         /** @var $image \qtism\data\content\xhtml\Img */
         foreach ($images as $image) {
             $source = $image->getSrc();
-            static::validateSourcePath($basedir, $source);
+            static::validateSource($basedir, $source);
             $image->setSrc(self::secureEncode($basedir, $source));
         }
 
         /** @var $object \qtism\data\content\xhtml\Object */
         foreach ($objects as $object) {
             $data = $object->getData();
+            static::validateSource($basedir, $data);
             $object->setData(self::secureEncode($basedir, $data));
         }
 
@@ -146,8 +147,13 @@ class SharedStimulusPackageImporter extends ZipImporter
      *
      * @throws InvalidSourcePathException
      */
-    private static function validateSourcePath($basePath, $sourcePath)
+    private static function validateSource($basePath, $sourcePath)
     {
+        $urlData = parse_url($sourcePath);
+        if (!empty($urlData['scheme'])) {
+            return;
+        }
+
         $realPath = realpath($basePath . $sourcePath);
 
         if ($realPath === false || 0 !== strpos($realPath, $basePath)) {
@@ -171,7 +177,7 @@ class SharedStimulusPackageImporter extends ZipImporter
         $iterator = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($extractPath),
             \RecursiveIteratorIterator::LEAVES_ONLY);
-    
+
         /** @var $file \SplFileInfo */
         foreach ($iterator as $file) {
             //check each file to see if it can be the shared stimulus file
@@ -181,7 +187,7 @@ class SharedStimulusPackageImporter extends ZipImporter
                 }
             }
         }
-    
+
         throw new \common_Exception('XML not found in the package');
     }
 
@@ -250,10 +256,10 @@ class SharedStimulusPackageImporter extends ZipImporter
 
         return $report;
     }
-    
+
     /**
      * Verify paths and encode the file
-     * 
+     *
      * @param string $basedir
      * @param string $source
      * @throws \tao_models_classes_FileNotFoundException

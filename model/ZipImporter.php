@@ -167,7 +167,9 @@ class ZipImporter implements ServiceLocatorAwareInterface
         if (true !== $archiveHandle) {
             throw new \common_Exception('Unable to open archive ' . $archiveFile);
         }
-
+        if (\tao_helpers_File::checkWhetherArchiveIsBomb($archiveObj)) {
+            throw new \common_Exception(sprintf('Source "%s" seems to be a ZIP bomb', $archiveFile));
+        }
         if (!$archiveObj->extractTo($archiveDir)) {
             $archiveObj->close();
             throw new \common_Exception('Unable to extract to ' . $archiveDir);

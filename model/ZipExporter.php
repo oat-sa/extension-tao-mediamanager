@@ -101,7 +101,9 @@ class ZipExporter implements \tao_models_classes_export_ExportHandler
             $exportData = [$class->getLabel() => [$class]];
         }
 
-        $file = $this->createZipFile($formValues['filename'], $exportClasses, $exportData);
+        $safePath = $this->getSavePath($formValues['filename']);
+
+        $file = $this->createZipFile($safePath, $exportClasses, $exportData);
 
         $report->setData($file);
         $report->setMessage(__('Media successfully exported.'));
@@ -109,7 +111,21 @@ class ZipExporter implements \tao_models_classes_export_ExportHandler
         return $report;
     }
 
-    private function createZipFile($filename, array $exportClasses = [], array $exportFiles = [])
+    /**
+     * @param $unsafePath
+     * @return string safe path
+     */
+    private function getSavePath($unsafePath)
+    {
+        $pathInfo = pathinfo($unsafePath);
+        $safePath = $pathInfo['filename'];
+        if (array_key_exists('extension', $pathInfo)) {
+            $safePath .= '.' . $pathInfo['extension'];
+        }
+        return $safePath;
+    }
+
+    protected function createZipFile($filename, array $exportClasses = [], array $exportFiles = [])
     {
         $zip = new \ZipArchive();
         $baseDir = \tao_helpers_Export::getExportPath();

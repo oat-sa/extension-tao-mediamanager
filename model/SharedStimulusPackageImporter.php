@@ -24,6 +24,7 @@ use common_exception_UserReadableException;
 use common_report_Report as Report;
 use core_kernel_classes_Class;
 use core_kernel_classes_Resource as Resource;
+use oat\tao\model\import\InvalidSourcePathException;
 use qtism\data\storage\xml\XmlDocument;
 use tao_helpers_form_Form as Form;
 
@@ -154,9 +155,7 @@ class SharedStimulusPackageImporter extends ZipImporter
             return;
         }
 
-        $realPath = realpath($basePath . $sourcePath);
-
-        if ($realPath === false || 0 !== strpos($realPath, $basePath)) {
+        if (\helpers_File::isFileInsideDirectory($sourcePath, $basePath)) {
             throw new InvalidSourcePathException($basePath, $sourcePath);
         }
     }

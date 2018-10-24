@@ -34,7 +34,7 @@ class Updater extends \common_ext_ExtensionUpdater
         if ($this->isBetween('0.0.0', '0.2.5')) {
             throw new \common_exception_NotImplemented('Updates from versions prior to Tao 3.1 are not longer supported, please update to Tao 3.1 first');
         }
-        
-        $this->skip('0.3.0', '4.0.0');
+
+        $this->skip('0.3.0', '5.0.0');
     }
 }

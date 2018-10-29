@@ -21,6 +21,7 @@
 
 namespace oat\taoMediaManager\model;
 
+use common_report_Report as Report;
 use core_kernel_classes_Class;
 use core_kernel_classes_Resource;
 use oat\oatbox\service\ServiceManager;
@@ -30,14 +31,12 @@ use tao_helpers_form_Form;
 /**
  * Service methods to manage the Media
  *
- * @access public
- * @author Antoine Robin, <antoine.robin@vesperiagroup.com>
+ * @access  public
+ * @author  Antoine Robin, <antoine.robin@vesperiagroup.com>
  * @package taoMediaManager
  */
 class ZipExporter implements \tao_models_classes_export_ExportHandler
 {
-
-
     /**
      * Returns a textual description of the import format
      *
@@ -48,7 +47,6 @@ class ZipExporter implements \tao_models_classes_export_ExportHandler
         return __('Zip');
     }
 
-
     /**
      * Returns a form in order to prepare the
      *
@@ -57,61 +55,86 @@ class ZipExporter implements \tao_models_classes_export_ExportHandler
      */
     public function getExportForm(core_kernel_classes_Resource $resource)
     {
-
-        $formData = array('resource' => $resource);
-        $form = new ZipExportForm($formData);
-        return $form->getForm();
+        return (new ZipExportForm(['resource' => $resource]))
+            ->getForm();
     }
 
     /**
-     * Export the resources to a file stored in $destinations
-     *
-     * @param array $formValues the values returned by the form provided by getForm
-     * @param string $destPath path to export the resources to
-     * @return string filepath
+     * @param array  $formValues
+     * @param string $destPath
+     * @return \common_report_Report|null|string
+     * @throws \common_Exception
+     * @throws \common_exception_Error
      */
     public function export($formValues, $destPath)
     {
-        $file = null;
-        if (isset($formValues['filename']) && isset($formValues['id'])) {
-
-            $class = new core_kernel_classes_Class($formValues['id']);
-            \common_Logger::i('Exporting ' . $class->getUri());
-
-            $exportClasses = array();
-            if ($class->isClass()) {
-                $subClasses = $class->getSubClasses(true);
-                $exportData = array($class->getLabel() => $class->getInstances());
-                foreach ($subClasses as $subClass) {
-                    $instances = $subClass->getInstances();
-                    $exportData[$subClass->getLabel()] = $instances;
-
-                    //get Class path
-                    $parents = $subClass->getParentClasses();
-                    $parent = array_shift($parents);
-                    if (array_key_exists($parent->getLabel(), $exportClasses)) {
-                        $exportClasses[$subClass->getLabel()] = $exportClasses[$parent->getLabel()] . '/' . $subClass->getLabel();
-                    } else {
-                        $exportClasses[$subClass->getLabel()] = $subClass->getLabel();
-                    }
-                }
-            } else {
-                $exportData = array($class->getLabel() => array($class));
-            }
-
-            $file = $this->createZipFile($formValues['filename'], $exportClasses, $exportData);
+        if (!isset($formValues['filename'])) {
+            return Report::createFailure('Missing filename for export using ' . __CLASS__);
         }
-        return $file;
+
+        if (!isset($formValues['id'])) {
+            return Report::createFailure('No id for export using ' . __CLASS__);
+        }
+
+        $report = Report::createSuccess();
+
+        $class = new core_kernel_classes_Class($formValues['id']);
+
+        $exportClasses = [];
+        if ($class->isClass()) {
+            $subClasses = $class->getSubClasses(true);
+            $exportData = [$class->getLabel() => $class->getInstances()];
+            foreach ($subClasses as $subClass) {
+                $instances = $subClass->getInstances();
+                $exportData[$subClass->getLabel()] = $instances;
+
+                //get Class path
+                $parents = $subClass->getParentClasses();
+                $parent = array_shift($parents);
+                if (array_key_exists($parent->getLabel(), $exportClasses)) {
+                    $exportClasses[$subClass->getLabel()] = $exportClasses[$parent->getLabel()] . '/' . $subClass->getLabel();
+                } else {
+                    $exportClasses[$subClass->getLabel()] = $subClass->getLabel();
+                }
+            }
+        } else {
+            $exportData = [$class->getLabel() => [$class]];
+        }
+
+        $safePath = $this->getSavePath($formValues['filename']);
+
+        $file = $this->createZipFile($safePath, $exportClasses, $exportData);
+
+        $report->setData($file);
+        $report->setMessage(__('Media successfully exported.'));
+
+        return $report;
     }
 
-    private function createZipFile($filename, $exportClasses = array(), $exportFiles = array())
+    /**
+     * @param $unsafePath
+     * @return string safe path
+     */
+    private function getSavePath($unsafePath)
+    {
+        $pathInfo = pathinfo($unsafePath);
+        $safePath = $pathInfo['filename'];
+        if (array_key_exists('extension', $pathInfo)) {
+            $safePath .= '.' . $pathInfo['extension'];
+        }
+        return $safePath;
+    }
+
+    protected function createZipFile($filename, array $exportClasses = [], array $exportFiles = [])
     {
         $zip = new \ZipArchive();
         $baseDir = \tao_helpers_Export::getExportPath();
         $path = $baseDir . '/' . $filename . '.zip';
-        if ($zip->open($path, \ZipArchive::CREATE) !== TRUE) {
+
+        if ($zip->open($path, \ZipArchive::CREATE) !== true) {
             throw new \common_Exception('Unable to create zipfile ' . $path);
         }
+
         if ($zip->numFiles === 0) {
             $nbFiles = 0;
             foreach ($exportFiles as $label => $files) {
@@ -138,14 +161,11 @@ class ZipExporter implements \tao_models_classes_export_ExportHandler
                 }
 
             }
-
-            \common_Logger::i("Number of file : " . $zip->numFiles . " / " . $nbFiles);
         }
 
         $zip->close();
 
         return $path;
-
     }
 
     public function getServiceManager()

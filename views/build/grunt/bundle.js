@@ -1,50 +1,43 @@
-module.exports = function(grunt) { 
+/**
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; under version 2
+ * of the License (non-upgradable).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * Copyright (c) 2014-2018 (original work) Open Assessment Technologies SA;
+ */
 
-    var requirejs   = grunt.config('requirejs') || {};
-    var clean       = grunt.config('clean') || {};
-    var copy        = grunt.config('copy') || {};
+/**
+ * configure the extension bundles
+ * @author Bertrand Chevrier <bertrand@taotesting.com>
+ */
+module.exports = function(grunt) {
+    'use strict';
 
-    var root        = grunt.option('root');
-    var libs        = grunt.option('mainlibs');
-    var ext         = require(root + '/tao/views/build/tasks/helpers/extensions')(grunt, root);
-    var out         = 'output';
-
-    /**
-     * Remove bundled and bundling files
-     */
-    clean.taomediamanagerbundle = [out];
-    
-    /**
-     * Compile tao files into a bundle 
-     */
-    requirejs.taomediamanagerbundle = {
-        options: {
-            baseUrl : '../js',
-            dir : out,
-            mainConfigFile : './config/requirejs.build.js',
-            paths : { 'taoMediaManager' : root + '/taoMediaManager/views/js' },
-            modules : [{
-                name: 'taoMediaManager/controller/routes',
-                include : ext.getExtensionsControllers(['taoMediaManager']),
-                exclude : ['mathJax'].concat(libs)
-            }]
+    grunt.config.merge({
+        bundle : {
+            taomediamanager : {
+                options : {
+                    extension : 'taoMediaManager',
+                    outputDir : 'loader',
+                    bundles : [{
+                        name : 'taoMediaManager',
+                        default : true
+                    }]
+                }
+            }
         }
-    };
-
-    /**
-     * copy the bundles to the right place
-     */
-    copy.taomediamanagerbundle = {
-        files: [
-            { src: [out + '/taoMediaManager/controller/routes.js'],  dest: root + '/taoMediaManager/views/js/controllers.min.js' },
-            { src: [out + '/taoMediaManager/controller/routes.js.map'],  dest: root + '/taoMediaManager/views/js/controllers.min.js.map' }
-        ]
-    };
-
-    grunt.config('clean', clean);
-    grunt.config('requirejs', requirejs);
-    grunt.config('copy', copy);
+    });
 
     // bundle task
-    grunt.registerTask('taomediamanagerbundle', ['clean:taomediamanagerbundle', 'requirejs:taomediamanagerbundle', 'copy:taomediamanagerbundle']);
+    grunt.registerTask('taomediamanagerbundle', ['bundle:taomediamanager']);
 };

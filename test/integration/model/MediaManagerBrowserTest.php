@@ -18,7 +18,7 @@
  *
  */
 
-namespace oat\taoMediaManager\test\model;
+namespace oat\taoMediaManager\test\integration\model;
 
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\taoMediaManager\model\MediaSource;

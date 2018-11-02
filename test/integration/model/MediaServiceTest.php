@@ -17,11 +17,12 @@
  * Copyright (c) 2014-2018 (original work) Open Assessment Technologies SA;
  *
  */
-
-namespace oat\taoMediaManager\test\model;
+namespace oat\taoMediaManager\test\integration\model;
 
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\taoMediaManager\model\MediaService;
+
+include_once dirname(__FILE__) . '/../../../includes/raw_start.php';
 
 class MediaServiceTest extends \PHPUnit_Framework_TestCase
 {

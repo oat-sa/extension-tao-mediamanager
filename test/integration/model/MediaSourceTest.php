@@ -17,8 +17,7 @@
  * Copyright (c) 2014-2018 (original work) Open Assessment Technologies SA;
  *
  */
-
-namespace oat\taoMediaManager\test\model;
+namespace oat\taoMediaManager\test\integration\model;
 
 use GuzzleHttp\Psr7\Stream;
 use oat\taoMediaManager\model\MediaService;

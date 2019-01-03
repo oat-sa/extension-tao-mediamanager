@@ -19,7 +19,7 @@
  *
  */
 
-namespace oat\taoMediaManager\test\model;
+namespace oat\taoMediaManager\test\integration\model;
 
 use oat\oatbox\service\ServiceManager;
 use oat\tao\model\import\InvalidSourcePathException;
@@ -43,14 +43,14 @@ class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
             ->disableOriginalConstructor()
             ->getMock();
 
-        $ref = new \ReflectionProperty('tao_models_classes_Service', 'instances');
+        $ref = new \ReflectionProperty(\tao_models_classes_Service::class, 'instances');
         $ref->setAccessible(true);
         $ref->setValue(null, ['oat\taoMediaManager\model\MediaService' => $this->service]);
     }
 
     public function tearDown()
     {
-        $ref = new \ReflectionProperty('tao_models_classes_Service', 'instances');
+        $ref = new \ReflectionProperty(\tao_models_classes_Service::class, 'instances');
         $ref->setAccessible(true);
         $ref->setValue(null, array());
 
@@ -217,10 +217,7 @@ class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
         );
     }
 
-    /**
-     * Provider that returns packages with the corresponding exception
-     */
-    public function sharedStimulusPackageProvider()
+    public function sharedStimulusPackage()
     {
         $sampleDir = dirname(__DIR__) . '/sample/sharedStimulus/';
         return array(

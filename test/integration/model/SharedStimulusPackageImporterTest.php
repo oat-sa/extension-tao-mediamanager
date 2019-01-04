@@ -22,10 +22,10 @@
 namespace oat\taoMediaManager\test\integration\model;
 
 use oat\oatbox\service\ServiceManager;
+use oat\tao\model\import\InvalidSourcePathException;
 use oat\tao\model\upload\UploadService;
 use oat\tao\test\TaoPhpUnitTestRunner;
 use oat\taoMediaManager\model\FileImportForm;
-use oat\taoMediaManager\model\InvalidSourcePathException;
 use oat\taoMediaManager\model\SharedStimulusPackageImporter;
 use Prophecy\Argument;
 use qtism\data\storage\xml\XmlDocument;
@@ -189,7 +189,7 @@ class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
     }
 
     /**
-     * @expectedException \oat\taoMediaManager\model\InvalidSourcePathException
+     * @expectedException \oat\tao\model\import\InvalidSourcePathException
      * @dataProvider sharedStimulusOutOfThePackageProvider
      *
      * @param string $directory

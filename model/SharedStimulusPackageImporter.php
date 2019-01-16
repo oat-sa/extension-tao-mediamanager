@@ -155,7 +155,7 @@ class SharedStimulusPackageImporter extends ZipImporter
             return;
         }
 
-        if (\helpers_File::isFileInsideDirectory($sourcePath, $basePath)) {
+        if (!\helpers_File::isFileInsideDirectory($sourcePath, $basePath)) {
             throw new InvalidSourcePathException($basePath, $sourcePath);
         }
     }

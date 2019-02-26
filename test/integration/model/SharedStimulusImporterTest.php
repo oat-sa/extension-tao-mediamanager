@@ -170,8 +170,8 @@ class SharedStimulusImporterTest extends TaoPhpUnitTestRunner
 
         $sharedImporter = new SharedStimulusImporter();
 
-        $serviceMangerMock = $this->getMock(ServiceLocatorInterface::class);
-        $uploadServiceMock = $this->getMock(UploadService::class);
+        $serviceMangerMock = $this->createMock(ServiceLocatorInterface::class);
+        $uploadServiceMock = $this->createMock(UploadService::class);
 
         $serviceMangerMock->expects($this->atLeastOnce())
             ->method('get')
@@ -209,8 +209,8 @@ class SharedStimulusImporterTest extends TaoPhpUnitTestRunner
         $instance = new \core_kernel_classes_Resource('http://fancyDomain.com/tao.rdf#fancyInstanceUri');
         $sharedImporter = new SharedStimulusImporter($instance->getUri());
 
-        $serviceMangerMock = $this->getMock(ServiceLocatorInterface::class);
-        $uploadServiceMock = $this->getMock(UploadService::class);
+        $serviceMangerMock = $this->createMock(ServiceLocatorInterface::class);
+        $uploadServiceMock = $this->createMock(UploadService::class);
 
         $serviceMangerMock->expects($this->atLeastOnce())
             ->method('get')

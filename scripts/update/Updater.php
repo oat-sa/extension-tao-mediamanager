@@ -24,7 +24,7 @@ namespace oat\taoMediaManager\scripts\update;
 class Updater extends \common_ext_ExtensionUpdater
 {
     /**
-     * @param $initialVersion
+     * @param string $initialVersion
      * @return string|void
      * @throws \common_exception_NotImplemented
      */

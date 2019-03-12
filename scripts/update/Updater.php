@@ -23,11 +23,10 @@ namespace oat\taoMediaManager\scripts\update;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
-
     /**
-     *
      * @param string $initialVersion
-     * @return string $versionUpdatedTo
+     * @return string|void
+     * @throws \common_exception_NotImplemented
      */
     public function update($initialVersion)
     {
@@ -35,6 +34,6 @@ class Updater extends \common_ext_ExtensionUpdater
             throw new \common_exception_NotImplemented('Updates from versions prior to Tao 3.1 are not longer supported, please update to Tao 3.1 first');
         }
 
-        $this->skip('0.3.0', '5.0.3');
+        $this->skip('0.3.0', '6.0.0');
     }
 }

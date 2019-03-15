@@ -21,6 +21,7 @@
 
 namespace oat\taoMediaManager\actions;
 
+use oat\tao\model\routing\AnnotationReader\security;
 use oat\taoMediaManager\model\FileImporter;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\SharedStimulusImporter;
@@ -32,6 +33,10 @@ class MediaImport extends \tao_actions_Import
 {
     private $importHandlers;
 
+    /**
+     * MediaImport constructor.
+     * @security("hide")
+     */
     public function __construct()
     {
         parent::__construct();

@@ -21,6 +21,7 @@
 
 namespace oat\taoMediaManager\actions;
 
+use oat\tao\model\routing\AnnotationReader\security;
 use oat\taoMediaManager\model\editInstanceForm;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
@@ -34,6 +35,11 @@ class MediaManager extends \tao_actions_SaSModule
         return MediaService::singleton();
     }
 
+    /**
+     * MediaManager constructor.
+     * @throws \common_ext_ExtensionException
+     * @security("hide")
+     */
     public function __construct()
     {
 

@@ -70,10 +70,11 @@ class FileImporter implements \tao_models_classes_import_ImportHandler, ServiceL
     /**
      * @param \core_kernel_classes_Class $class
      * @param Form|array $form
+     * @param string|null $userId owner of the resource
      * @return Report
      * @throws \common_exception_Error
      */
-    public function import($class, $form)
+    public function import($class, $form, $userId = null)
     {
         $uploadedFile = $this->fetchUploadedFile($form);
 
@@ -101,7 +102,9 @@ class FileImporter implements \tao_models_classes_import_ImportHandler, ServiceL
                         $uploadedFile,
                         $classUri,
                         \tao_helpers_Uri::decode($form instanceof Form ? $form->getValue('lang') : $form['lang']),
-                        $fileInfo['name']
+                        $fileInfo['name'],
+                        null,
+                        $userId
                     );
 
                     if (!$mediaResourceUri) {
@@ -117,7 +120,7 @@ class FileImporter implements \tao_models_classes_import_ImportHandler, ServiceL
                 } else {
                     $zipImporter = new ZipImporter();
                     $zipImporter->setServiceLocator($this->getServiceLocator());
-                    $report = $zipImporter->import($class, $form);
+                    $report = $zipImporter->import($class, $form, $userId);
                 }
             } else {
                 // editing existing media

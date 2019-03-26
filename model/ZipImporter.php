@@ -45,9 +45,10 @@ class ZipImporter implements ServiceLocatorAwareInterface
      *
      * @param \core_kernel_classes_Class   $class
      * @param \tao_helpers_form_Form|array $form
+     * @param string|null $userId owner of the resource
      * @return \common_report_Report
      */
-    public function import($class, $form)
+    public function import($class, $form, $userId = null)
     {
         try {
             $uploadedFile = $this->fetchUploadedFile($form);
@@ -89,7 +90,7 @@ class ZipImporter implements ServiceLocatorAwareInterface
                         $classUri = $this->createClass($file->getPath());
                     }
 
-                    $mediaResourceUri = $service->createMediaInstance($file->getRealPath(), $classUri, $language, $file->getFilename());
+                    $mediaResourceUri = $service->createMediaInstance($file->getRealPath(), $classUri, $language, $file->getFilename(), null, $userId);
                     $report->add(Report::createSuccess(
                         __('Imported %s', substr($file->getRealPath(), strlen($directory))),
                         ['uriResource' => $mediaResourceUri] // 'uriResource' key is needed by javascript in tao/views/templates/form/import.tpl

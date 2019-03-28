@@ -78,10 +78,11 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
      *
      * @param \core_kernel_classes_Class   $class
      * @param Form|array $form
+     * @param string|null $userId owner of the resource
      * @return Report $report
      * @throws \common_exception_NotAcceptable
      */
-    public function import($class, $form)
+    public function import($class, $form, $userId = null)
     {
         $uploadedFile = $this->fetchUploadedFile($form);
 
@@ -107,7 +108,8 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
                             $classUri,
                             \tao_helpers_Uri::decode($form instanceof Form ? $form->getValue('lang') : $form['lang']),
                             $fileInfo['name'],
-                            'application/qti+xml'
+                            'application/qti+xml',
+                            $userId
                         );
 
                         if (!$mediaResourceUri) {
@@ -127,7 +129,7 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
                     }
                 } else {
                     $this->getZipImporter()->setServiceLocator($this->getServiceLocator());
-                    $report = $this->getZipImporter()->import($class, $form);
+                    $report = $this->getZipImporter()->import($class, $form, $userId);
                 }
             } else {
                 if (!\helpers_File::isZipMimeType($fileInfo['type'])) {

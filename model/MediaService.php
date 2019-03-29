@@ -69,9 +69,10 @@ class MediaService extends \tao_models_classes_ClassService
      * @param string $language language of the content
      * @param string $label label of the instance
      * @param string $mimeType mimeType of the file
+     * @param string|null $userId owner of the resource
      * @return string | bool $instanceUri or false on error
      */
-    public function createMediaInstance($fileSource, $classUri, $language, $label = null, $mimeType = null)
+    public function createMediaInstance($fileSource, $classUri, $language, $label = null, $mimeType = null, $userId = null)
     {
         $clazz = $this->getClass($classUri);
 
@@ -98,7 +99,7 @@ class MediaService extends \tao_models_classes_ClassService
 
             if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
                 \common_Logger::i('Auto generating initial revision');
-                RevisionService::commit($instance, __('Initial import'));
+                RevisionService::commit($instance, __('Initial import'), null, $userId);
             }
             return $instance->getUri();
         }

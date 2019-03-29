@@ -41,9 +41,10 @@ class SharedStimulusPackageImporter extends ZipImporter
      *
      * @param \core_kernel_classes_Class $class
      * @param Form|array $form
+     * @param string|null $userId owner of the resource
      * @return Report
      */
-    public function import($class, $form)
+    public function import($class, $form, $userId = null)
     {
         try {
             $uploadedFile = $this->fetchUploadedFile($form);
@@ -59,7 +60,7 @@ class SharedStimulusPackageImporter extends ZipImporter
 
             $report = Report::createSuccess(__('Shared Stimulus imported successfully'));
 
-            $subReport = $this->storeSharedStimulus($class, $this->getDecodedUri($form), $embeddedFile);
+            $subReport = $this->storeSharedStimulus($class, $this->getDecodedUri($form), $embeddedFile, $userId);
 
             $report->add($subReport);
         } catch (common_exception_UserReadableException $e) {
@@ -196,16 +197,17 @@ class SharedStimulusPackageImporter extends ZipImporter
      * @param \core_kernel_classes_Resource $class the class under which we will store the shared stimulus (can be an item)
      * @param string $lang language of the shared stimulus
      * @param string $xmlFile File to store
+     * @param string|null $userId owner of the resource
      * @return \common_report_Report
      *
      * @throws \qtism\data\storage\xml\XmlStorageException
      */
-    protected function storeSharedStimulus($class, $lang, $xmlFile)
+    protected function storeSharedStimulus($class, $lang, $xmlFile, $userId = null)
     {
         SharedStimulusImporter::isValidSharedStimulus($xmlFile);
 
         $service = MediaService::singleton();
-        if ($mediaResourceUri = $service->createMediaInstance($xmlFile, $class->getUri(), $lang, basename($xmlFile), 'application/qti+xml')) {
+        if ($mediaResourceUri = $service->createMediaInstance($xmlFile, $class->getUri(), $lang, basename($xmlFile), 'application/qti+xml', $userId)) {
             $report = Report::createSuccess(__('Imported %s', basename($xmlFile)));
             $report->setData(['uriResource' => $mediaResourceUri]);
         } else {

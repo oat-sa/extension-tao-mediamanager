@@ -59,18 +59,17 @@ class MediaManager extends \tao_actions_SaSModule
         $myFormContainer = new editInstanceForm($clazz, $instance);
 
         $myForm = $myFormContainer->getForm();
-        if ($myForm->isSubmited()) {
-            if ($myForm->isValid()) {
+        $myForm->addCsrfTokenProtection();
+        if ($myForm->isSubmited() && $myForm->isValid()) {
+            $this->validateCsrf();
+            $values = $myForm->getValues();
+            // save properties
+            $binder = new \tao_models_classes_dataBinding_GenerisFormDataBinder($instance);
+            $instance = $binder->bind($values);
+            $message = __('Instance saved');
 
-                $values = $myForm->getValues();
-                // save properties
-                $binder = new \tao_models_classes_dataBinding_GenerisFormDataBinder($instance);
-                $instance = $binder->bind($values);
-                $message = __('Instance saved');
-
-                $this->setData('message', $message);
-                $this->setData('reload', true);
-            }
+            $this->setData('message', $message);
+            $this->setData('reload', true);
         }
 
         $this->setData('formTitle', __('Edit Instance'));
@@ -111,9 +110,9 @@ class MediaManager extends \tao_actions_SaSModule
             $mediaSource = new MediaSource(array());
             $fileInfo = $mediaSource->getFileInfo($uri);
             $link = $fileInfo['link'];
-            
+
             $fileManagement = $this->getServiceManager()->get(FileManagement::SERVICE_ID);
-            
+
             if($fileInfo['mime'] === 'application/qti+xml'){
                 \tao_helpers_Http::returnStream($fileManagement->getFileStream($link));
                 return;

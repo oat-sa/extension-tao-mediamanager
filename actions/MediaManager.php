@@ -61,7 +61,6 @@ class MediaManager extends \tao_actions_SaSModule
         $myForm = $myFormContainer->getForm();
         $myForm->addCsrfTokenProtection();
         if ($myForm->isSubmited() && $myForm->isValid()) {
-            $this->validateCsrf();
             $values = $myForm->getValues();
             // save properties
             $binder = new \tao_models_classes_dataBinding_GenerisFormDataBinder($instance);
@@ -70,12 +69,6 @@ class MediaManager extends \tao_actions_SaSModule
 
             $this->setData('message', $message);
             $this->setData('reload', true);
-
-            $this->returnJson([
-                'success' => true,
-                'message' => $message
-            ]);
-            return;
         }
 
         $this->setData('formTitle', __('Edit Instance'));

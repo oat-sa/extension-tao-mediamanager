@@ -76,11 +76,11 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
     /**
      * Starts the import based on the form
      *
-     * @param \core_kernel_classes_Class   $class
+     * @param \core_kernel_classes_Class $class
      * @param Form|array $form
      * @param string|null $userId owner of the resource
      * @return Report $report
-     * @throws \common_exception_NotAcceptable
+     * @throws \common_exception_Error
      */
     public function import($class, $form, $userId = null)
     {
@@ -148,7 +148,8 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
                     if (!$service->editMediaInstance(
                         isset($filepath) ? $filepath : $uploadedFile,
                         $instanceUri,
-                        \tao_helpers_Uri::decode($form instanceof Form ? $form->getValue('lang') : $form['lang'])
+                        \tao_helpers_Uri::decode($form instanceof Form ? $form->getValue('lang') : $form['lang']),
+                        $userId
                     )) {
                         $report = Report::createFailure(__('Fail to edit shared stimulus'));
                     } else {
@@ -158,12 +159,13 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
                     $report->setData(['uriResource' => $instanceUri]);
                 } else {
                     $this->getZipImporter()->setServiceLocator($this->getServiceLocator());
-                    $report = $this->getZipImporter()->edit(new \core_kernel_classes_Resource($instanceUri), $form);
+                    $report = $this->getZipImporter()->edit(new \core_kernel_classes_Resource($instanceUri), $form, $userId);
                 }
             }
 
         } catch (\Exception $e) {
-            $report = Report::createFailure($e->getMessage());
+            $report = Report::createFailure(__('An error has occurred. Please contact your administrator.'));
+            \common_Logger::e($e->getMessage());
             $report->setData(['uriResource' => '']);
         }
 

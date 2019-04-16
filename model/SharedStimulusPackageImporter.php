@@ -78,7 +78,7 @@ class SharedStimulusPackageImporter extends ZipImporter
      * @return Report
      * @throws \common_exception_NotAcceptable
      */
-    public function edit(Resource $instance, $form)
+    public function edit(Resource $instance, $form, $userId = null)
     {
         try {
             $uploadedFile = $this->fetchUploadedFile($form);
@@ -92,7 +92,7 @@ class SharedStimulusPackageImporter extends ZipImporter
 
             $embeddedFile = static::embedAssets($xmlFile);
 
-            $report = $this->replaceSharedStimulus($instance, $this->getDecodedUri($form), $embeddedFile);
+            $report = $this->replaceSharedStimulus($instance, $this->getDecodedUri($form), $embeddedFile, $userId);
         } catch (\Exception $e) {
             $report = Report::createFailure($e->getMessage());
             $report->setData(['uriResource' => '']);
@@ -224,11 +224,13 @@ class SharedStimulusPackageImporter extends ZipImporter
      * @param \core_kernel_classes_Resource $instance the instance to edit
      * @param string $lang language of the shared stimulus
      * @param string $xmlFile File to store
+     * @param null $userId
      * @return \common_report_Report
      *
+     * @throws \common_exception_Error
      * @throws \qtism\data\storage\xml\XmlStorageException
      */
-    protected function replaceSharedStimulus($instance, $lang, $xmlFile)
+    protected function replaceSharedStimulus($instance, $lang, $xmlFile, $userId = null)
     {
         //if the class does not belong to media classes create a new one with its name (for items)
         $mediaClass = new core_kernel_classes_Class(MediaService::ROOT_CLASS_URI);
@@ -247,7 +249,7 @@ class SharedStimulusPackageImporter extends ZipImporter
         \tao_helpers_File::copy($xmlFile, $filepath);
 
         $service = MediaService::singleton();
-        if (!$service->editMediaInstance($filepath, $instance->getUri(), $lang)) {
+        if (!$service->editMediaInstance($filepath, $instance->getUri(), $lang, $userId)) {
             $report = Report::createFailure(__('Fail to edit Shared Stimulus'));
         } else {
             $report = Report::createSuccess(__('Shared Stimulus edited successfully'));

@@ -128,7 +128,8 @@ class FileImporter implements \tao_models_classes_import_ImportHandler, ServiceL
                     $service->editMediaInstance(
                         $uploadedFile,
                         $instanceUri,
-                        \tao_helpers_Uri::decode($form instanceof Form ? $form->getValue('lang') : $form['lang'])
+                        \tao_helpers_Uri::decode($form instanceof Form ? $form->getValue('lang') : $form['lang']),
+                        $userId
                     );
                     $report = Report::createSuccess(__('Media imported successfully'));
                     $report->add(Report::createSuccess(

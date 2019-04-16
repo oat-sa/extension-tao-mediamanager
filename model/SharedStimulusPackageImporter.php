@@ -63,10 +63,12 @@ class SharedStimulusPackageImporter extends ZipImporter
             $subReport = $this->storeSharedStimulus($class, $this->getDecodedUri($form), $embeddedFile, $userId);
 
             $report->add($subReport);
-        } catch (common_exception_UserReadableException $e) {
-            $report = Report::createFailure($e->getUserMessage());
         } catch (\Exception $e) {
-            $report = Report::createFailure($e->getMessage());
+            $message = $e instanceof common_exception_UserReadableException
+                ? $e->getUserMessage()
+                : __('An error has occurred. Please contact your administrator.');
+            $report = Report::createFailure($message);
+            $this->logError($e->getMessage());
         }
 
         return $report;
@@ -94,7 +96,11 @@ class SharedStimulusPackageImporter extends ZipImporter
 
             $report = $this->replaceSharedStimulus($instance, $this->getDecodedUri($form), $embeddedFile, $userId);
         } catch (\Exception $e) {
-            $report = Report::createFailure($e->getMessage());
+            $message = $e instanceof common_exception_UserReadableException
+                ? $e->getUserMessage()
+                : __('An error has occurred. Please contact your administrator.');
+            $report = Report::createFailure($message);
+            $this->logError($e->getMessage());
             $report->setData(['uriResource' => '']);
         }
 

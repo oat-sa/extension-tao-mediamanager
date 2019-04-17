@@ -26,6 +26,7 @@ use oat\taoMediaManager\model\editInstanceForm;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
+use tao_helpers_form_FormContainer as FormContainer;
 
 class MediaManager extends \tao_actions_SaSModule
 {
@@ -56,10 +57,9 @@ class MediaManager extends \tao_actions_SaSModule
     {
         $clazz = $this->getCurrentClass();
         $instance = $this->getCurrentInstance();
-        $myFormContainer = new editInstanceForm($clazz, $instance);
+        $myFormContainer = new editInstanceForm($clazz, $instance, [FormContainer::CSRF_PROTECTION_OPTION => true]);
 
         $myForm = $myFormContainer->getForm();
-        $myForm->addCsrfTokenProtection();
         if ($myForm->isSubmited() && $myForm->isValid()) {
             $values = $myForm->getValues();
             // save properties

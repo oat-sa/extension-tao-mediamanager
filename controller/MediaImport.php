@@ -19,7 +19,7 @@
  *
  */
 
-namespace oat\taoMediaManager\actions;
+namespace oat\taoMediaManager\controller;
 
 use oat\tao\model\routing\AnnotationReader\security;
 use oat\taoMediaManager\model\FileImporter;

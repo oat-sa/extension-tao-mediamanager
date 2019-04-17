@@ -57,7 +57,6 @@ return array(
         )
     ),
     'classLoaderPackages' => array(
-        dirname(__FILE__) . '/actions/',
         dirname(__FILE__) . '/helpers/'
     ),
     // 'autoload' => array (
@@ -66,11 +65,11 @@ return array(
     //       )
     //   ),
     'routes' => array(
-        '/taoMediaManager' => 'oat\\taoMediaManager\\actions'
+        '/taoMediaManager' => 'oat\\taoMediaManager\\controller'
     ),
     'constants' => array(
         # actions directory
-        "DIR_ACTIONS" => $extpath . "actions" . DIRECTORY_SEPARATOR,
+        "DIR_ACTIONS" => $extpath . "controller" . DIRECTORY_SEPARATOR,
 
         # models directory
         "DIR_MODELS" => $extpath . "models" . DIRECTORY_SEPARATOR,

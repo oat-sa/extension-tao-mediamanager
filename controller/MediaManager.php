@@ -18,7 +18,7 @@
  *
  */
 
-namespace oat\taoMediaManager\actions;
+namespace oat\taoMediaManager\controller;
 
 use oat\taoMediaManager\model\editInstanceForm;
 use oat\taoMediaManager\model\MediaService;

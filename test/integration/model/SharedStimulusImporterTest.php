@@ -59,13 +59,6 @@ class SharedStimulusImporterTest extends TestCase
         $ref = new \ReflectionProperty('tao_models_classes_Service', 'instances');
         $ref->setAccessible(true);
         $ref->setValue(null, array());
-        $tmpDir = dirname(__DIR__) . '/sample/fs/';
-        $iterator = new \DirectoryIterator ($tmpDir);
-        foreach ($iterator as $info) {
-            if ($info->isFile() && $info->getBasename() !== '.gitignore') {
-                unlink($info->getPath() . '/' . $info->getFilename());
-            }
-        }
 
         $this->removeTempFileSystem();
     }

@@ -22,6 +22,8 @@ namespace oat\taoMediaManager\model;
 
 use oat\oatbox\filesystem\File;
 use common_report_Report as Report;
+use oat\oatbox\log\LoggerAwareTrait;
+use oat\oatbox\log\TaoLoggerAwareInterface;
 use tao_helpers_form_Form as Form;
 use oat\tao\model\import\ImportHandlerHelperTrait;
 use oat\tao\model\import\TaskParameterProviderInterface;
@@ -36,9 +38,14 @@ use Zend\ServiceManager\ServiceLocatorAwareInterface;
  * @access  public
  * @package taoMediaManager
  */
-class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler, ServiceLocatorAwareInterface, TaskParameterProviderInterface
+class SharedStimulusImporter implements
+    \tao_models_classes_import_ImportHandler,
+    ServiceLocatorAwareInterface,
+    TaskParameterProviderInterface,
+    TaoLoggerAwareInterface
 {
     use ImportHandlerHelperTrait { getTaskParameters as getDefaultTaskParameters; }
+    use LoggerAwareTrait;
 
     /**
      * @var SharedStimulusPackageImporter
@@ -76,11 +83,11 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
     /**
      * Starts the import based on the form
      *
-     * @param \core_kernel_classes_Class   $class
+     * @param \core_kernel_classes_Class $class
      * @param Form|array $form
      * @param string|null $userId owner of the resource
      * @return Report $report
-     * @throws \common_exception_NotAcceptable
+     * @throws \common_exception_Error
      */
     public function import($class, $form, $userId = null)
     {
@@ -128,7 +135,6 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
                         $report->setData(['uriResource' => '']);
                     }
                 } else {
-                    $this->getZipImporter()->setServiceLocator($this->getServiceLocator());
                     $report = $this->getZipImporter()->import($class, $form, $userId);
                 }
             } else {
@@ -148,7 +154,8 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
                     if (!$service->editMediaInstance(
                         isset($filepath) ? $filepath : $uploadedFile,
                         $instanceUri,
-                        \tao_helpers_Uri::decode($form instanceof Form ? $form->getValue('lang') : $form['lang'])
+                        \tao_helpers_Uri::decode($form instanceof Form ? $form->getValue('lang') : $form['lang']),
+                        $userId
                     )) {
                         $report = Report::createFailure(__('Fail to edit shared stimulus'));
                     } else {
@@ -157,14 +164,17 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
 
                     $report->setData(['uriResource' => $instanceUri]);
                 } else {
-                    $this->getZipImporter()->setServiceLocator($this->getServiceLocator());
-                    $report = $this->getZipImporter()->edit(new \core_kernel_classes_Resource($instanceUri), $form);
+                    $report = $this->getZipImporter()->edit(new \core_kernel_classes_Resource($instanceUri), $form, $userId);
                 }
             }
 
         } catch (\Exception $e) {
-            $report = Report::createFailure($e->getMessage());
+            $message = $e instanceof \common_exception_UserReadableException
+                ? $e->getUserMessage()
+                : __('An error has occurred. Please contact your administrator.');
+            $report = Report::createFailure($message);
             $report->setData(['uriResource' => '']);
+            $this->logError($e->getMessage());
         }
 
         $this->getUploadService()->remove($uploadedFile);
@@ -298,6 +308,7 @@ class SharedStimulusImporter implements \tao_models_classes_import_ImportHandler
     {
         if (!$this->zipImporter) {
             $this->zipImporter = new SharedStimulusPackageImporter();
+            $this->zipImporter->setServiceLocator($this->getServiceLocator());
         }
         return $this->zipImporter;
     }

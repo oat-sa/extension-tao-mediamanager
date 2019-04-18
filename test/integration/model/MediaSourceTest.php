@@ -14,9 +14,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2018 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2014-2019 (original work) Open Assessment Technologies SA;
  *
  */
+
 namespace oat\taoMediaManager\test\integration\model;
 
 use GuzzleHttp\Psr7\Stream;
@@ -25,6 +26,8 @@ use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use Prophecy\Argument;
 use Psr\Http\Message\StreamInterface;
+
+include __DIR__ . '/../../../includes/raw_start.php';
 
 /**
  * Class MediaSourceTest
@@ -72,7 +75,7 @@ class MediaSourceTest extends \PHPUnit_Framework_TestCase
         $resourceProphecy = $this->prophesize(\core_kernel_classes_Resource::class);
         $resourceProphecy->exists()->willReturn(true);
         $resourceProphecy->getUniquePropertyValue(Argument::any())->willReturn($link, $mime);
-        $resourceProphecy->getPropertyValues(Argument::any())->willReturn(0);
+        $resourceProphecy->getPropertyValues(Argument::any())->willReturn([]);
         $resourceProphecy->getLabel()->willReturn($label);
 
         $linkPropertyProphecy = $this->prophesize(\core_kernel_classes_Property::class);
@@ -184,4 +187,3 @@ class MediaSourceTest extends \PHPUnit_Framework_TestCase
         fclose($resource);
     }
 }
- 

@@ -21,21 +21,25 @@
 
 namespace oat\taoMediaManager\test\integration\model;
 
+use oat\generis\test\TestCase;
+use oat\oatbox\filesystem\FileSystemService;
+use oat\oatbox\log\LoggerService;
 use oat\oatbox\service\ServiceManager;
 use oat\tao\model\import\InvalidSourcePathException;
 use oat\tao\model\upload\UploadService;
-use oat\tao\test\TaoPhpUnitTestRunner;
 use oat\taoMediaManager\model\FileImportForm;
 use oat\taoMediaManager\model\SharedStimulusPackageImporter;
 use Prophecy\Argument;
+use Psr\Log\NullLogger;
 use qtism\data\storage\xml\XmlDocument;
 
-class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
+class SharedStimulusPackageImporterTest extends TestCase
 {
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $service = null;
+    private $tempDirectoryPath;
 
     public function setUp()
     {
@@ -136,26 +140,6 @@ class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
     }
 
     /**
-     * @dataProvider sharedStimulusPackageProvider
-     */
-    public function testGetSharedStimulusFile($filename, $exception)
-    {
-        if (!is_null($exception)) {
-            $this->expectException(get_class($exception));
-        }
-        $file = $this->getTempDirectory()->getFile($filename);
-        if (file_exists($filename)) {
-            $file->put(file_get_contents($filename));
-        }
-        $method = new \ReflectionMethod('oat\taoMediaManager\model\SharedStimulusPackageImporter', 'getSharedStimulusFile');
-        $method->setAccessible(true);
-        $packageImporter = new SharedStimulusPackageImporter();;
-        $xmlFile = $method->invokeArgs($packageImporter, array($file));
-        $xmlFile = str_replace('\\', '/', $xmlFile);
-        $this->assertContains('stimulus.xml', $xmlFile);
-    }
-
-    /**
      * @dataProvider sharedStimulusConvertProvider
      *
      * @param string $directory
@@ -199,7 +183,7 @@ class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
      * @throws \qtism\data\storage\xml\XmlStorageException
      * @throws \tao_models_classes_FileNotFoundException
      */
-    public function testEmbedAssetsExceptions($directory)
+    public function  testEmbedAssetsExceptions($directory)
     {
         SharedStimulusPackageImporter::embedAssets($directory . '/stimulus.xml');
     }
@@ -232,16 +216,16 @@ class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
     {
         $sampleDir = dirname(__DIR__) . '/sample/sharedStimulus/';
         return array(
-            array($sampleDir . 'stimulusPackage.zip', true),
             array($sampleDir . 'encodedImage.zip', true),
             array($sampleDir . 'UnknowFile.zip', false),
             array($sampleDir . 'missingXmlArchive.zip', false),
+            array($sampleDir . 'stimulusPackage.zip', true),
             array($sampleDir . 'objectOutOfThePackage.zip', false),
             array($sampleDir . 'fileOutOfThePackage.zip', false),
         );
     }
 
-    private function getPackageImporter($file, $uri = null)
+    private function getPackageImporter()
     {
         $uploadServiceMock = $this->getMockBuilder(UploadService::class)
             ->disableOriginalConstructor()
@@ -252,17 +236,57 @@ class SharedStimulusPackageImporterTest extends TaoPhpUnitTestRunner
 
         $sm = $this->prophesize(ServiceManager::class);
         $sm->get(Argument::is(UploadService::SERVICE_ID))->willReturn($uploadServiceMock);
+        $sm->get(Argument::is(LoggerService::SERVICE_ID))->willReturn(new NullLogger());
 
-        $importer = $this->getMockBuilder(SharedStimulusPackageImporter::class)->setMethods(['getServiceLocator']);
-        if (!is_null($uri)) {
-            $importer->setConstructorArgs([$uri]);
-        }
-        $importer = $importer->getMock();
-        $importer->expects($this->any())
-            ->method('getServiceLocator')
-            ->willReturn($sm->reveal());
+        $importer = new SharedStimulusPackageImporter();
+        $importer->setServiceLocator($sm->reveal());
 
         return $importer;
     }
+
+    protected function getTempDirectory()
+    {
+        $this->tempDirectoryPath = '/tmp/testing-' . uniqid('test');
+        $directoryName = 'test-dir-' . uniqid();
+
+        $fileSystemService = new FileSystemService([
+            FileSystemService::OPTION_FILE_PATH => '/tmp/testing',
+            FileSystemService::OPTION_ADAPTERS => [
+                $directoryName => [
+                    'class' => FileSystemService::FLYSYSTEM_LOCAL_ADAPTER,
+                    'options' => array('root' => $this->tempDirectoryPath)
+                ]
+            ],
+        ]);
+
+        $fileSystemService->setServiceLocator($this->getServiceLocatorMock(array(
+            FileSystemService::SERVICE_ID => $fileSystemService
+        )));
+
+        return $fileSystemService->getDirectory($directoryName);
+    }
+
+    protected function removeTempFileSystem()
+    {
+        if ($this->getTempDirectory()->exists()) {
+            $this->rrmdir($this->tempDirectoryPath);
+        }
+    }
+
+    /**
+     * Remove a local directory recursively
+     *
+     * @param $dir
+     */
+    protected function rrmdir($dir)
+    {
+        foreach(glob($dir . '/*') as $file) {
+            if(is_dir($file)) {
+                $this->rrmdir($file);
+            } else {
+                unlink($file);
+            }
+        }
+        rmdir($dir);
+    }
 }
- 

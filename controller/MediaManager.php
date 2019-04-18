@@ -62,7 +62,7 @@ class MediaManager extends \tao_actions_SaSModule
             $fileInfo = $mediaSource->getFileInfo($uri);
 
             $mimeType = $fileInfo['mime'];
-            $xml = in_array($mimeType, array('application/xml','text/xml'));
+            $xml = in_array($mimeType, array('application/xml', 'text/xml'));
             $url = \tao_helpers_Uri::url(
                 'getFile',
                 'MediaManager',
@@ -75,7 +75,7 @@ class MediaManager extends \tao_actions_SaSModule
             $this->setData('fileurl', $url);
             $this->setData('mimeType', $mimeType);
 
-        } catch(\tao_models_classes_FileNotFoundException $e) {
+        } catch (\tao_models_classes_FileNotFoundException $e) {
             $this->setData('error', __('No file found for this media'));
         }
         $this->setView('form.tpl');

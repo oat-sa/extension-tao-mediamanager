@@ -75,10 +75,12 @@ class SharedStimulusPackageImporter extends ZipImporter
     }
 
     /**
+     * Edit a shared stimulus package
+     *
      * @param \core_kernel_classes_Resource $instance
      * @param Form|array $form
+     * @param null|string $userId
      * @return Report
-     * @throws \common_exception_NotAcceptable
      */
     public function edit(Resource $instance, $form, $userId = null)
     {
@@ -120,7 +122,7 @@ class SharedStimulusPackageImporter extends ZipImporter
      */
     public static function embedAssets($originalXml)
     {
-        $basedir = dirname($originalXml).DIRECTORY_SEPARATOR;
+        $basedir = dirname($originalXml) . DIRECTORY_SEPARATOR;
 
         $xmlDocument = new XmlDocument();
         $xmlDocument->load($originalXml, true);
@@ -144,7 +146,7 @@ class SharedStimulusPackageImporter extends ZipImporter
         }
 
         // save the document to a tempfile
-        $newXml = tempnam(sys_get_temp_dir(), 'sharedStimulus_').'.xml';
+        $newXml = tempnam(sys_get_temp_dir(), 'sharedStimulus_') . '.xml';
         $xmlDocument->save($newXml);
         return $newXml;
     }
@@ -230,7 +232,7 @@ class SharedStimulusPackageImporter extends ZipImporter
      * @param \core_kernel_classes_Resource $instance the instance to edit
      * @param string $lang language of the shared stimulus
      * @param string $xmlFile File to store
-     * @param null $userId
+     * @param null|string $userId
      * @return \common_report_Report
      *
      * @throws \common_exception_Error
@@ -288,7 +290,7 @@ class SharedStimulusPackageImporter extends ZipImporter
                     throw new \tao_models_classes_FileNotFoundException($source);
                 }
             } else {
-                throw new \common_exception_Error('Invalid source path "'.$source.'"');
+                throw new \common_exception_Error('Invalid source path "' . $source . '"');
             }
         } else {
             // url, just return it as is

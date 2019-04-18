@@ -14,10 +14,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
- *
+ * Copyright (c) 2014-2019 (original work) Open Assessment Technologies SA;
  *
  */
+
 namespace oat\taoMediaManager\test\integration\model;
 
 use oat\generis\test\TestCase;
@@ -32,6 +32,8 @@ use Psr\Log\NullLogger;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
 use Zend\ServiceManager\ServiceLocatorInterface;
+
+include __DIR__ . '/../../../includes/raw_start.php';
 
 class SharedStimulusImporterTest extends TestCase
 {

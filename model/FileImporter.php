@@ -42,7 +42,9 @@ class FileImporter implements
     TaskParameterProviderInterface,
     TaoLoggerAwareInterface
 {
-    use ImportHandlerHelperTrait { getTaskParameters as getDefaultTaskParameters; }
+    use ImportHandlerHelperTrait {
+        getTaskParameters as getDefaultTaskParameters;
+    }
     use LoggerAwareTrait;
 
     private $instanceUri;
@@ -173,6 +175,7 @@ class FileImporter implements
             $this->getDefaultTaskParameters($form)
         );
     }
+
     /**
      * Get the zip importer for shared stimulus
      *

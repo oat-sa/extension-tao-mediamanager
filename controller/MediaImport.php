@@ -41,6 +41,16 @@ class MediaImport extends \tao_actions_Import
         parent::index();
     }
 
+    protected function setAvailableImportHandlers($id = null)
+    {
+        $this->importHandlers = [
+            new FileImporter($id),
+            new SharedStimulusImporter($id)
+        ];
+
+        return $this;
+    }
+
     public function editMedia()
     {
         $id = null;
@@ -57,15 +67,5 @@ class MediaImport extends \tao_actions_Import
     protected function getAvailableImportHandlers()
     {
         return $this->importHandlers;
-    }
-
-    protected function setAvailableImportHandlers($id = null)
-    {
-        $this->importHandlers = [
-            new FileImporter($id),
-            new SharedStimulusImporter($id)
-        ];
-
-        return $this;
     }
 }

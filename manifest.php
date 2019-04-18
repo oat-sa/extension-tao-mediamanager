@@ -40,7 +40,7 @@ return array(
     'managementRole' => 'http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole',
     'acl' => array(
         array('grant', 'http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole', array('ext' => 'taoMediaManager')),
-        array('grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemAuthor', array('ext'=>'taoMediaManager')),
+        array('grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemAuthor', array('ext' => 'taoMediaManager')),
     ),
     'install' => array(
         'rdf' => array(
@@ -95,5 +95,8 @@ return array(
         #TAO extension Paths
         'TAOVIEW_PATH' => $taopath . 'views' . DIRECTORY_SEPARATOR,
         'TAO_TPL_PATH' => $taopath . 'views' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR,
-    )
+    ),
+    'extra' => [
+        'structures' => __DIR__ . DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'structures.xml',
+    ]
 );

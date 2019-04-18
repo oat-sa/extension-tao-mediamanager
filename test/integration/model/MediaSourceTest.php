@@ -72,7 +72,7 @@ class MediaSourceTest extends \PHPUnit_Framework_TestCase
         $resourceProphecy = $this->prophesize(\core_kernel_classes_Resource::class);
         $resourceProphecy->exists()->willReturn(true);
         $resourceProphecy->getUniquePropertyValue(Argument::any())->willReturn($link, $mime);
-        $resourceProphecy->getPropertyValues(Argument::any())->willReturn(0);
+        $resourceProphecy->getPropertyValues(Argument::any())->willReturn([]);
         $resourceProphecy->getLabel()->willReturn($label);
 
         $linkPropertyProphecy = $this->prophesize(\core_kernel_classes_Property::class);
@@ -184,4 +184,3 @@ class MediaSourceTest extends \PHPUnit_Framework_TestCase
         fclose($resource);
     }
 }
- 

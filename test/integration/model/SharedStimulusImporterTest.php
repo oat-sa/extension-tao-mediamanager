@@ -20,24 +20,26 @@
  */
 namespace oat\taoMediaManager\test\integration\model;
 
+use oat\generis\test\TestCase;
+use oat\oatbox\filesystem\FileSystemService;
+use oat\oatbox\log\LoggerService;
 use oat\oatbox\service\ServiceManager;
 use oat\tao\model\upload\UploadService;
-use oat\tao\test\TaoPhpUnitTestRunner;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\SharedStimulusImporter;
 use Prophecy\Argument;
+use Psr\Log\NullLogger;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-include_once dirname(__FILE__) . '/../../../../tao/includes/raw_start.php';
-
-class SharedStimulusImporterTest extends TaoPhpUnitTestRunner
+class SharedStimulusImporterTest extends TestCase
 {
     /**
      * @var MediaService|\PHPUnit_Framework_MockObject_MockObject
      */
     private $service;
+    private $tempDirectoryPath;
 
     public function setUp()
     {
@@ -66,7 +68,7 @@ class SharedStimulusImporterTest extends TaoPhpUnitTestRunner
         $this->removeTempFileSystem();
     }
 
-    public function ttestGetLabel()
+    public function testGetLabel()
     {
         $sharedImporter = new SharedStimulusImporter();
         $this->assertEquals('Shared Stimulus', $sharedImporter->getLabel(), __('The label is wrong'));
@@ -75,7 +77,7 @@ class SharedStimulusImporterTest extends TaoPhpUnitTestRunner
     /**
      * @dataProvider sharedStimulusFilenameProvider
      */
-    public function ttestIsValidSharedStimulus($filename, $response, $exception)
+    public function testIsValidSharedStimulus($filename, $response, $exception)
     {
         try {
             $xmlDocumentValid = SharedStimulusImporter::isValidSharedStimulus($filename);
@@ -100,13 +102,13 @@ class SharedStimulusImporterTest extends TaoPhpUnitTestRunner
         $file = $this->getTempDirectory()->getFile('fixture');
         $file->put(file_get_contents($filename));
 
-        $sharedImporter = $this->getSharedStimulusImporter($file);
+        $sharedImporter = $this->getSharedStimulusImporter();
 
         $info = finfo_open(FILEINFO_MIME_TYPE);
         $fileinfo = [];
         $fileinfo['type'] = finfo_file($info, $filename);
         finfo_close($info);
-        $fileinfo['uploaded_file'] = $filename;
+        $fileinfo['uploaded_file'] = $file;
         $fileinfo['name'] = basename($filename);
 
         $form = $sharedImporter->getForm();
@@ -132,19 +134,22 @@ class SharedStimulusImporterTest extends TaoPhpUnitTestRunner
         $file = $this->getTempDirectory()->getFile('fixture');
         $file->put(file_get_contents($filename));
 
-        $sharedImporter = $this->getSharedStimulusImporter($file, $instance->getUri());
-
         $myClass = new \core_kernel_classes_Class('http://fancyDomain.com/tao.rdf#fancyUri');
         $info = finfo_open(FILEINFO_MIME_TYPE);
         $fileinfo['type'] = finfo_file($info, $filename);
         finfo_close($info);
-        $fileinfo['uploaded_file'] = $filename;
+        $fileinfo['uploaded_file'] = $file;
         $fileinfo['name'] = $filename;
+        $filenameXhtml = dirname($filename) . DIRECTORY_SEPARATOR . basename($filename, 'xml') .'xhtml';
+
+        $sharedImporter = $this->getSharedStimulusImporter($instance->getUri());
 
         $form = $sharedImporter->getForm();
-        $form->setValues(array('source' => $fileinfo, 'lang' => 'EN_en'));
+        $form->setValues(array(
+            'source' => $fileinfo,
+            'lang' => 'EN_en'
+        ));
 
-        $filenameXhtml = dirname($filename) . DIRECTORY_SEPARATOR . basename($filename, 'xml') .'xhtml';
         $this->service->expects($this->once())
             ->method('editMediaInstance')
             ->with($filenameXhtml, $instance->getUri(), 'EN_en')
@@ -168,19 +173,9 @@ class SharedStimulusImporterTest extends TaoPhpUnitTestRunner
             ->disableOriginalConstructor()
             ->getMock();
 
-        $sharedImporter = new SharedStimulusImporter();
+        $sharedImporter = $this->getSharedStimulusImporter();
 
-        $serviceMangerMock = $this->getMock(ServiceLocatorInterface::class);
-        $uploadServiceMock = $this->getMock(UploadService::class);
-
-        $serviceMangerMock->expects($this->atLeastOnce())
-            ->method('get')
-            ->with(UploadService::SERVICE_ID)
-            ->willReturn($uploadServiceMock);
-
-        $sharedImporter->setServiceLocator($serviceMangerMock);
-
-        $filename = dirname(__DIR__) . '/sample/sharedStimulus/stimulusPackage.zip';
+        $filename = dirname(__DIR__) . '/../sample/sharedStimulus/stimulusPackage.zip';
         $myClass = new \core_kernel_classes_Class('http://fancyDomain.com/tao.rdf#fancyUri');
         $file['type'] = 'application/zip';
         $file['uploaded_file'] = $filename;
@@ -209,8 +204,8 @@ class SharedStimulusImporterTest extends TaoPhpUnitTestRunner
         $instance = new \core_kernel_classes_Resource('http://fancyDomain.com/tao.rdf#fancyInstanceUri');
         $sharedImporter = new SharedStimulusImporter($instance->getUri());
 
-        $serviceMangerMock = $this->getMock(ServiceLocatorInterface::class);
-        $uploadServiceMock = $this->getMock(UploadService::class);
+        $serviceMangerMock = $this->createMock(ServiceLocatorInterface::class);
+        $uploadServiceMock = $this->createMock(UploadService::class);
 
         $serviceMangerMock->expects($this->atLeastOnce())
             ->method('get')
@@ -253,32 +248,78 @@ class SharedStimulusImporterTest extends TaoPhpUnitTestRunner
         );
     }
 
-    private function getSharedStimulusImporter($file, $uri = null)
+    /**
+     * @param $file
+     * @param null $uri
+     * @return SharedStimulusImporter
+     */
+    private function getSharedStimulusImporter($uri = null)
     {
         $uploadServiceMock = $this->getMockBuilder(UploadService::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $uploadServiceMock->expects($this->once())
-            ->method('getUploadedFlyFile')
-            ->willReturn($file);
         $uploadServiceMock->expects($this->any())
             ->method('remove')
             ->willReturn(true);
 
         $sm = $this->prophesize(ServiceManager::class);
         $sm->get(Argument::is(UploadService::SERVICE_ID))->willReturn($uploadServiceMock);
+        $sm->get(Argument::is(LoggerService::SERVICE_ID))->willReturn(new NullLogger());
 
-        $importer = $this->getMockBuilder(SharedStimulusImporter::class)->setMethods(['getServiceLocator']);
         if (!is_null($uri)) {
-            $importer->setConstructorArgs([$uri]);
+            $importer = new SharedStimulusImporter($uri);
+        } else {
+            $importer = new SharedStimulusImporter();
         }
-        $importer = $importer->getMock();
-        $importer->expects($this->once())
-            ->method('getServiceLocator')
-            ->willReturn($sm->reveal());
+        $importer->setServiceLocator($sm->reveal());
 
         return $importer;
     }
+
+    protected function getTempDirectory()
+    {
+        $this->tempDirectoryPath = '/tmp/testing-' . uniqid('test');
+        $directoryName = 'test-dir-' . uniqid();
+
+        $fileSystemService = new FileSystemService([
+            FileSystemService::OPTION_FILE_PATH => '/tmp/testing',
+            FileSystemService::OPTION_ADAPTERS => [
+                $directoryName => [
+                    'class' => FileSystemService::FLYSYSTEM_LOCAL_ADAPTER,
+                    'options' => array('root' => $this->tempDirectoryPath)
+                ]
+            ],
+        ]);
+
+        $fileSystemService->setServiceLocator($this->getServiceLocatorMock(array(
+            FileSystemService::SERVICE_ID => $fileSystemService
+        )));
+
+        return $fileSystemService->getDirectory($directoryName);
+    }
+
+    protected function removeTempFileSystem()
+    {
+        if ($this->tempDirectoryPath) {
+            $this->rrmdir($this->tempDirectoryPath);
+        }
+    }
+
+    /**
+     * Remove a local directory recursively
+     *
+     * @param $dir
+     */
+    protected function rrmdir($dir)
+    {
+        foreach(glob($dir . '/*') as $file) {
+            if(is_dir($file)) {
+                $this->rrmdir($file);
+            } else {
+                unlink($file);
+            }
+        }
+        rmdir($dir);
+    }
 }
- 

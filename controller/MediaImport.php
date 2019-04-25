@@ -14,16 +14,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
- *
+ * Copyright (c) 2014-2019 (original work) Open Assessment Technologies SA;
  *
  */
 
-namespace oat\taoMediaManager\actions;
+namespace oat\taoMediaManager\controller;
 
-use oat\tao\model\routing\AnnotationReader\security;
 use oat\taoMediaManager\model\FileImporter;
-use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\SharedStimulusImporter;
 
 /**
@@ -34,16 +31,6 @@ class MediaImport extends \tao_actions_Import
     private $importHandlers;
 
     /**
-     * MediaImport constructor.
-     * @security("hide")
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->service = MediaService::singleton();
-    }
-
-    /**
      * Overwrites the parent index to add the import handlers
      *
      * @see tao_actions_Import::index()
@@ -52,6 +39,16 @@ class MediaImport extends \tao_actions_Import
     {
         $this->setAvailableImportHandlers();
         parent::index();
+    }
+
+    protected function setAvailableImportHandlers($id = null)
+    {
+        $this->importHandlers = [
+            new FileImporter($id),
+            new SharedStimulusImporter($id)
+        ];
+
+        return $this;
     }
 
     public function editMedia()
@@ -70,15 +67,5 @@ class MediaImport extends \tao_actions_Import
     protected function getAvailableImportHandlers()
     {
         return $this->importHandlers;
-    }
-
-    protected function setAvailableImportHandlers($id = null)
-    {
-        $this->importHandlers = [
-            new FileImporter($id),
-            new SharedStimulusImporter($id)
-        ];
-
-        return $this;
     }
 }

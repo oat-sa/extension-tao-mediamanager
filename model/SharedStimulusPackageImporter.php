@@ -63,22 +63,26 @@ class SharedStimulusPackageImporter extends ZipImporter
             $subReport = $this->storeSharedStimulus($class, $this->getDecodedUri($form), $embeddedFile, $userId);
 
             $report->add($subReport);
-        } catch (common_exception_UserReadableException $e) {
-            $report = Report::createFailure($e->getUserMessage());
         } catch (\Exception $e) {
-            $report = Report::createFailure($e->getMessage());
+            $message = $e instanceof common_exception_UserReadableException
+                ? $e->getUserMessage()
+                : __('An error has occurred. Please contact your administrator.');
+            $report = Report::createFailure($message);
+            $this->logError($e->getMessage());
         }
 
         return $report;
     }
 
     /**
+     * Edit a shared stimulus package
+     *
      * @param \core_kernel_classes_Resource $instance
      * @param Form|array $form
+     * @param null|string $userId
      * @return Report
-     * @throws \common_exception_NotAcceptable
      */
-    public function edit(Resource $instance, $form)
+    public function edit(Resource $instance, $form, $userId = null)
     {
         try {
             $uploadedFile = $this->fetchUploadedFile($form);
@@ -92,9 +96,13 @@ class SharedStimulusPackageImporter extends ZipImporter
 
             $embeddedFile = static::embedAssets($xmlFile);
 
-            $report = $this->replaceSharedStimulus($instance, $this->getDecodedUri($form), $embeddedFile);
+            $report = $this->replaceSharedStimulus($instance, $this->getDecodedUri($form), $embeddedFile, $userId);
         } catch (\Exception $e) {
-            $report = Report::createFailure($e->getMessage());
+            $message = $e instanceof common_exception_UserReadableException
+                ? $e->getUserMessage()
+                : __('An error has occurred. Please contact your administrator.');
+            $report = Report::createFailure($message);
+            $this->logError($e->getMessage());
             $report->setData(['uriResource' => '']);
         }
 
@@ -114,7 +122,7 @@ class SharedStimulusPackageImporter extends ZipImporter
      */
     public static function embedAssets($originalXml)
     {
-        $basedir = dirname($originalXml).DIRECTORY_SEPARATOR;
+        $basedir = dirname($originalXml) . DIRECTORY_SEPARATOR;
 
         $xmlDocument = new XmlDocument();
         $xmlDocument->load($originalXml, true);
@@ -138,7 +146,7 @@ class SharedStimulusPackageImporter extends ZipImporter
         }
 
         // save the document to a tempfile
-        $newXml = tempnam(sys_get_temp_dir(), 'sharedStimulus_').'.xml';
+        $newXml = tempnam(sys_get_temp_dir(), 'sharedStimulus_') . '.xml';
         $xmlDocument->save($newXml);
         return $newXml;
     }
@@ -224,11 +232,13 @@ class SharedStimulusPackageImporter extends ZipImporter
      * @param \core_kernel_classes_Resource $instance the instance to edit
      * @param string $lang language of the shared stimulus
      * @param string $xmlFile File to store
+     * @param null|string $userId
      * @return \common_report_Report
      *
+     * @throws \common_exception_Error
      * @throws \qtism\data\storage\xml\XmlStorageException
      */
-    protected function replaceSharedStimulus($instance, $lang, $xmlFile)
+    protected function replaceSharedStimulus($instance, $lang, $xmlFile, $userId = null)
     {
         //if the class does not belong to media classes create a new one with its name (for items)
         $mediaClass = new core_kernel_classes_Class(MediaService::ROOT_CLASS_URI);
@@ -247,7 +257,7 @@ class SharedStimulusPackageImporter extends ZipImporter
         \tao_helpers_File::copy($xmlFile, $filepath);
 
         $service = MediaService::singleton();
-        if (!$service->editMediaInstance($filepath, $instance->getUri(), $lang)) {
+        if (!$service->editMediaInstance($filepath, $instance->getUri(), $lang, $userId)) {
             $report = Report::createFailure(__('Fail to edit Shared Stimulus'));
         } else {
             $report = Report::createSuccess(__('Shared Stimulus edited successfully'));
@@ -280,7 +290,7 @@ class SharedStimulusPackageImporter extends ZipImporter
                     throw new \tao_models_classes_FileNotFoundException($source);
                 }
             } else {
-                throw new \common_exception_Error('Invalid source path "'.$source.'"');
+                throw new \common_exception_Error('Invalid source path "' . $source . '"');
             }
         } else {
             // url, just return it as is

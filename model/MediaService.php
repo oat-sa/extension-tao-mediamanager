@@ -25,7 +25,7 @@ use oat\generis\model\OntologyAwareTrait;
 use oat\generis\model\OntologyRdfs;
 use oat\oatbox\filesystem\File;
 use common_ext_ExtensionsManager;
-use oat\taoRevision\model\RevisionService;
+use oat\taoRevision\model\Repository;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 
 /**
@@ -99,7 +99,7 @@ class MediaService extends \tao_models_classes_ClassService
 
             if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
                 \common_Logger::i('Auto generating initial revision');
-                RevisionService::commit($instance, __('Initial import'), null, $userId);
+                $this->getServiceLocator()->get(Repository::SERVICE_ID)->commit($instance->getUri(), __('Initial import'), null, $userId);
             }
             return $instance->getUri();
         }
@@ -112,9 +112,10 @@ class MediaService extends \tao_models_classes_ClassService
      * @param string|File $fileSource
      * @param string $instanceUri
      * @param string $language
+     * @param null $userId
      * @return bool $instanceUri or false on error
      */
-    public function editMediaInstance($fileSource, $instanceUri, $language)
+    public function editMediaInstance($fileSource, $instanceUri, $language, $userId = null)
     {
         $instance = $this->getResource($instanceUri);
         $link = $this->getLink($instance);
@@ -131,16 +132,16 @@ class MediaService extends \tao_models_classes_ClassService
                 $instance->editPropertyValues($this->getProperty(self::PROPERTY_LANGUAGE), $language);
                 $instance->editPropertyValues($this->getProperty(self::PROPERTY_MD5), $md5);
             }
-            
+
             if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
                 \common_Logger::i('Auto generating revision');
-                RevisionService::commit($instance, __('Imported new file'));
+                $this->getServiceLocator()->get(Repository::SERVICE_ID)->commit($instance->getUri(), __('Imported new file'), null, $userId);
             }
         }
         return ($link !== false) ? true : false;
 
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see \tao_models_classes_ClassService::deleteResource()
@@ -150,10 +151,10 @@ class MediaService extends \tao_models_classes_ClassService
         $link = $this->getLink($resource);
         return parent::deleteResource($resource) && $this->getFileManager()->deleteFile($link);
     }
-    
+
     /**
      * Returns the link of a media resource
-     * 
+     *
      * @param \core_kernel_classes_Resource $resource
      * @return string
      */

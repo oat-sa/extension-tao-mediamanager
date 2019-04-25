@@ -27,7 +27,7 @@ return array(
     'label' => 'extension-tao-mediamanager',
     'description' => 'TAO media manager extension',
     'license' => 'GPL-2.0',
-    'version' => '6.1.0',
+    'version' => '7.0.0',
     'author' => 'Open Assessment Technologies SA',
     'requires' => array(
         'tao' => '>=31.0.0',
@@ -40,7 +40,7 @@ return array(
     'managementRole' => 'http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole',
     'acl' => array(
         array('grant', 'http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole', array('ext' => 'taoMediaManager')),
-        array('grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemAuthor', array('ext'=>'taoMediaManager')),
+        array('grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemAuthor', array('ext' => 'taoMediaManager')),
     ),
     'install' => array(
         'rdf' => array(
@@ -57,7 +57,6 @@ return array(
         )
     ),
     'classLoaderPackages' => array(
-        dirname(__FILE__) . '/actions/',
         dirname(__FILE__) . '/helpers/'
     ),
     // 'autoload' => array (
@@ -66,11 +65,11 @@ return array(
     //       )
     //   ),
     'routes' => array(
-        '/taoMediaManager' => 'oat\\taoMediaManager\\actions'
+        '/taoMediaManager' => 'oat\\taoMediaManager\\controller'
     ),
     'constants' => array(
         # actions directory
-        "DIR_ACTIONS" => $extpath . "actions" . DIRECTORY_SEPARATOR,
+        "DIR_ACTIONS" => $extpath . "controller" . DIRECTORY_SEPARATOR,
 
         # models directory
         "DIR_MODELS" => $extpath . "models" . DIRECTORY_SEPARATOR,
@@ -96,5 +95,8 @@ return array(
         #TAO extension Paths
         'TAOVIEW_PATH' => $taopath . 'views' . DIRECTORY_SEPARATOR,
         'TAO_TPL_PATH' => $taopath . 'views' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR,
-    )
+    ),
+    'extra' => [
+        'structures' => __DIR__ . DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'structures.xml',
+    ]
 );

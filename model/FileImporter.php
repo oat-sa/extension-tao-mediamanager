@@ -22,6 +22,8 @@
 namespace oat\taoMediaManager\model;
 
 use common_report_Report as Report;
+use oat\oatbox\log\LoggerAwareTrait;
+use oat\oatbox\log\TaoLoggerAwareInterface;
 use tao_helpers_form_Form as Form;
 use oat\tao\model\import\ImportHandlerHelperTrait;
 use oat\tao\model\import\TaskParameterProviderInterface;
@@ -34,9 +36,16 @@ use Zend\ServiceManager\ServiceLocatorAwareInterface;
  * @author  Antoine Robin, <antoine.robin@vesperiagroup.com>
  * @package taoMediaManager
  */
-class FileImporter implements \tao_models_classes_import_ImportHandler, ServiceLocatorAwareInterface, TaskParameterProviderInterface
+class FileImporter implements
+    \tao_models_classes_import_ImportHandler,
+    ServiceLocatorAwareInterface,
+    TaskParameterProviderInterface,
+    TaoLoggerAwareInterface
 {
-    use ImportHandlerHelperTrait { getTaskParameters as getDefaultTaskParameters; }
+    use ImportHandlerHelperTrait {
+        getTaskParameters as getDefaultTaskParameters;
+    }
+    use LoggerAwareTrait;
 
     private $instanceUri;
 
@@ -118,9 +127,7 @@ class FileImporter implements \tao_models_classes_import_ImportHandler, ServiceL
                         ));
                     }
                 } else {
-                    $zipImporter = new ZipImporter();
-                    $zipImporter->setServiceLocator($this->getServiceLocator());
-                    $report = $zipImporter->import($class, $form, $userId);
+                    $report = $this->getZipImporter()->import($class, $form, $userId);
                 }
             } else {
                 // editing existing media
@@ -128,7 +135,8 @@ class FileImporter implements \tao_models_classes_import_ImportHandler, ServiceL
                     $service->editMediaInstance(
                         $uploadedFile,
                         $instanceUri,
-                        \tao_helpers_Uri::decode($form instanceof Form ? $form->getValue('lang') : $form['lang'])
+                        \tao_helpers_Uri::decode($form instanceof Form ? $form->getValue('lang') : $form['lang']),
+                        $userId
                     );
                     $report = Report::createSuccess(__('Media imported successfully'));
                     $report->add(Report::createSuccess(
@@ -141,7 +149,11 @@ class FileImporter implements \tao_models_classes_import_ImportHandler, ServiceL
                 }
             }
         } catch (\Exception $e) {
-            $report = Report::createFailure($e->getMessage());
+            $message = $e instanceof \common_exception_UserReadableException
+                ? $e->getUserMessage()
+                : __('An error has occurred. Please contact your administrator.');
+            $report = Report::createFailure($message);
+            $this->logError($e->getMessage());
             $report->setData(['uriResource' => '']);
         }
 
@@ -163,4 +175,17 @@ class FileImporter implements \tao_models_classes_import_ImportHandler, ServiceL
             $this->getDefaultTaskParameters($form)
         );
     }
+
+    /**
+     * Get the zip importer for shared stimulus
+     *
+     * @return SharedStimulusPackageImporter
+     */
+    protected function getZipImporter()
+    {
+        $zipImporter = new SharedStimulusPackageImporter();
+        $zipImporter->setServiceLocator($this->getServiceLocator());
+        return $zipImporter;
+    }
+
 }

@@ -22,6 +22,8 @@ namespace oat\taoMediaManager\model;
 
 use common_report_Report as Report;
 use oat\oatbox\filesystem\File;
+use oat\oatbox\log\LoggerAwareTrait;
+use oat\oatbox\log\TaoLoggerAwareInterface;
 use tao_helpers_form_Form as Form;
 use core_kernel_classes_Class;
 use oat\tao\model\import\ImportHandlerHelperTrait;
@@ -34,9 +36,10 @@ use Zend\ServiceManager\ServiceLocatorAwareInterface;
  * @author  Antoine Robin, <antoine.robin@vesperiagroup.com>
  * @package taoMediaManager
  */
-class ZipImporter implements ServiceLocatorAwareInterface
+class ZipImporter implements ServiceLocatorAwareInterface, TaoLoggerAwareInterface
 {
     use ImportHandlerHelperTrait;
+    use LoggerAwareTrait;
 
     protected $directoryMap = [];
 
@@ -83,7 +86,7 @@ class ZipImporter implements ServiceLocatorAwareInterface
             /** @var $file \SplFileInfo */
             foreach ($iterator as $file) {
                 if ($file->isFile()) {
-                    \common_Logger::i('File ' . $file->getPathname());
+                    $this->logInfo('File ' . $file->getPathname());
                     if (isset($this->directoryMap[$file->getPath()])) {
                         $classUri = $this->directoryMap[$file->getPath()];
                     } else {
@@ -98,7 +101,11 @@ class ZipImporter implements ServiceLocatorAwareInterface
                 }
             }
         } catch (\Exception $e) {
-            $report = Report::createFailure($e->getMessage());
+            $message = $e instanceof \common_exception_UserReadableException
+                ? $e->getUserMessage()
+                : __('An error has occurred. Please contact your administrator.');
+            $report = Report::createFailure($message);
+            $this->logError($e->getMessage());
             $report->setData(['uriResource' => '']);
         }
 

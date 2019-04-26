@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.3.0-sprint99\n"
-"PO-Revision-Date: 2019-03-29T10:20:21\n"
+"Project-Id-Version: TAO 3.3.0-sprint100\n"
+"PO-Revision-Date: 2019-04-26T11:34:59\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: fi-FI\n"
@@ -14,6 +14,9 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "Add a media file"
+msgstr ""
+
+msgid "An error has occurred. Please contact your administrator."
 msgstr ""
 
 #, tao-public
@@ -33,10 +36,10 @@ msgstr ""
 msgid "Export Media as Zip file"
 msgstr ""
 
-msgid "Fail to edit shared stimulus"
+msgid "Fail to edit Shared Stimulus"
 msgstr ""
 
-msgid "Fail to edit Shared Stimulus"
+msgid "Fail to edit shared stimulus"
 msgstr ""
 
 msgid "Fail to import media"

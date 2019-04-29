@@ -1,0 +1,140 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO 3.3.0-sprint96\n"
+"PO-Revision-Date: 2019-04-25T01:14:00\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: lt-LT\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: lt-LT\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid "Add a media file"
+msgstr "Pridėti medijos failą"
+
+#, tao-public
+msgid "Delete"
+msgstr "Ištrinti"
+
+msgid "Edit Instance"
+msgstr "Redaguoti Instanciją"
+
+msgid "Edited %s"
+msgstr ""
+
+#, tao-public
+msgid "Export"
+msgstr "Eksportuoti"
+
+msgid "Export Media as Zip file"
+msgstr "Eksportuoti Mediją kaip ZIP failą"
+
+msgid "Fail to edit shared stimulus"
+msgstr "Nepavyko redaguoti bendrinamo stimulo"
+
+msgid "Fail to edit Shared Stimulus"
+msgstr "Nepavyko redaguoti Bendrinamo Stimulo"
+
+msgid "Fail to import media"
+msgstr "Nepavyko importuoti medijos"
+
+msgid "Fail to import Shared Stimulus"
+msgstr "Nepavyko importuoti Bendrinamo Stimulo"
+
+msgid "File"
+msgstr "Failas"
+
+msgid "File name"
+msgstr "Failo pavadinimas"
+
+#, tao-public
+msgid "Import"
+msgstr "Importuoti"
+
+msgid "Imported %s"
+msgstr "Importuota %s"
+
+msgid "Imported new file"
+msgstr "Importuotas naujas failas"
+
+msgid "Initial import"
+msgstr "Pradinis importavimas"
+
+msgid "Instance saved"
+msgstr "Instanciją išsaugota"
+
+#, tao-public
+msgid "Manage Media"
+msgstr "Tvarkyti Mediją"
+
+#, tao-public
+msgid "Manage Schema"
+msgstr ""
+
+#, tao-public
+msgid "Media"
+msgstr "Medija"
+
+msgid "Media imported successfully"
+msgstr "Medija importuota sėkmingai"
+
+#, tao-public
+msgid "Media Manager"
+msgstr "Medijos Tvarkytojas"
+
+#, tao-public
+msgid "Media Manager extension"
+msgstr "Medijos Tvarkytojo plėtinys"
+
+msgid "Media Options"
+msgstr "Medijos Parametrai"
+
+msgid "Media successfully exported."
+msgstr ""
+
+#, tao-public
+msgid "Move"
+msgstr "perkelti"
+
+#, tao-public
+msgid "New class"
+msgstr "Nauja klasė"
+
+msgid "No file found for this media"
+msgstr "Nerasta failas šiai medijai"
+
+msgid "Preview"
+msgstr "Peržiūra"
+
+#, tao-public
+msgid "Properties"
+msgstr "Savybės"
+
+msgid "Shared Stimulus"
+msgstr "Bendrinamas Stimulas"
+
+msgid "Shared Stimulus edited successfully"
+msgstr "Bendrinamas Stimulas redaguotas sėkmingai"
+
+msgid "Shared Stimulus imported successfully"
+msgstr "Bendrinamas Stimulas importuotas sėkmingai"
+
+msgid "Unable to extract the archive"
+msgstr "Nepavyko išarchyvuoti archyvo"
+
+msgid "Upload Media"
+msgstr "Įkelti Mediją"
+
+msgid "Upload new media"
+msgstr "Įkelti naują mediją"
+
+msgid "You can\'t upload a zip file as a media"
+msgstr ""
+
+msgid "Zip"
+msgstr "ZIP"
+

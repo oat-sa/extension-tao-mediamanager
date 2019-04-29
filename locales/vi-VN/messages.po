@@ -1,0 +1,140 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO 3.3.0-sprint96\n"
+"PO-Revision-Date: 2019-04-25T01:07:37\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: vi-VN\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: vi-VN\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid "Add a media file"
+msgstr "Thêm một tệp truyền thông"
+
+#, tao-public
+msgid "Delete"
+msgstr "Xóa"
+
+msgid "Edit Instance"
+msgstr ""
+
+msgid "Edited %s"
+msgstr ""
+
+#, tao-public
+msgid "Export"
+msgstr "Xuất ra"
+
+msgid "Export Media as Zip file"
+msgstr ""
+
+msgid "Fail to edit shared stimulus"
+msgstr ""
+
+msgid "Fail to edit Shared Stimulus"
+msgstr ""
+
+msgid "Fail to import media"
+msgstr ""
+
+msgid "Fail to import Shared Stimulus"
+msgstr ""
+
+msgid "File"
+msgstr "Tệp"
+
+msgid "File name"
+msgstr "Tên tệp"
+
+#, tao-public
+msgid "Import"
+msgstr "Nhập vào"
+
+msgid "Imported %s"
+msgstr ""
+
+msgid "Imported new file"
+msgstr ""
+
+msgid "Initial import"
+msgstr ""
+
+msgid "Instance saved"
+msgstr ""
+
+#, tao-public
+msgid "Manage Media"
+msgstr ""
+
+#, tao-public
+msgid "Manage Schema"
+msgstr ""
+
+#, tao-public
+msgid "Media"
+msgstr ""
+
+msgid "Media imported successfully"
+msgstr "nhập vào Media thành công"
+
+#, tao-public
+msgid "Media Manager"
+msgstr "Quản lý Media"
+
+#, tao-public
+msgid "Media Manager extension"
+msgstr ""
+
+msgid "Media Options"
+msgstr ""
+
+msgid "Media successfully exported."
+msgstr ""
+
+#, tao-public
+msgid "Move"
+msgstr ""
+
+#, tao-public
+msgid "New class"
+msgstr "Lớp mới"
+
+msgid "No file found for this media"
+msgstr ""
+
+msgid "Preview"
+msgstr ""
+
+#, tao-public
+msgid "Properties"
+msgstr "Thuộc tính"
+
+msgid "Shared Stimulus"
+msgstr ""
+
+msgid "Shared Stimulus edited successfully"
+msgstr ""
+
+msgid "Shared Stimulus imported successfully"
+msgstr ""
+
+msgid "Unable to extract the archive"
+msgstr ""
+
+msgid "Upload Media"
+msgstr "Tải lên Media"
+
+msgid "Upload new media"
+msgstr "Tải lên Media mới"
+
+msgid "You can\'t upload a zip file as a media"
+msgstr ""
+
+msgid "Zip"
+msgstr "Zip"
+

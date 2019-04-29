@@ -1,0 +1,140 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO 3.3.0-sprint96\n"
+"PO-Revision-Date: 2019-04-25T01:12:42\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: ru-RU\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: ru-RU\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid "Add a media file"
+msgstr "Добавление файла мультимедиа"
+
+#, tao-public
+msgid "Delete"
+msgstr "Удалить"
+
+msgid "Edit Instance"
+msgstr "Редактирование примера"
+
+msgid "Edited %s"
+msgstr ""
+
+#, tao-public
+msgid "Export"
+msgstr "Экспорт"
+
+msgid "Export Media as Zip file"
+msgstr "Экспортировать медиафайлы как ZIP-файл"
+
+msgid "Fail to edit shared stimulus"
+msgstr ""
+
+msgid "Fail to edit Shared Stimulus"
+msgstr ""
+
+msgid "Fail to import media"
+msgstr "Не удается импортировать медиа-файл"
+
+msgid "Fail to import Shared Stimulus"
+msgstr "Не удается импортировать общий стимул"
+
+msgid "File"
+msgstr "Файл"
+
+msgid "File name"
+msgstr "Название файла"
+
+#, tao-public
+msgid "Import"
+msgstr "Импортировать"
+
+msgid "Imported %s"
+msgstr ""
+
+msgid "Imported new file"
+msgstr "Импортированный новый файл"
+
+msgid "Initial import"
+msgstr "Начальный импорт"
+
+msgid "Instance saved"
+msgstr "Пример сохранен"
+
+#, tao-public
+msgid "Manage Media"
+msgstr "Управлять медиа"
+
+#, tao-public
+msgid "Manage Schema"
+msgstr ""
+
+#, tao-public
+msgid "Media"
+msgstr "Медиа"
+
+msgid "Media imported successfully"
+msgstr "Медиа-файл импортирован успешно"
+
+#, tao-public
+msgid "Media Manager"
+msgstr "Менеджер медиа"
+
+#, tao-public
+msgid "Media Manager extension"
+msgstr "Расширение менеджера медиа"
+
+msgid "Media Options"
+msgstr "Опции медиа"
+
+msgid "Media successfully exported."
+msgstr ""
+
+#, tao-public
+msgid "Move"
+msgstr ""
+
+#, tao-public
+msgid "New class"
+msgstr "Новый класс"
+
+msgid "No file found for this media"
+msgstr "Файл не найден для этого медиа"
+
+msgid "Preview"
+msgstr "Предварительный просмотр"
+
+#, tao-public
+msgid "Properties"
+msgstr "Свойства"
+
+msgid "Shared Stimulus"
+msgstr ""
+
+msgid "Shared Stimulus edited successfully"
+msgstr ""
+
+msgid "Shared Stimulus imported successfully"
+msgstr "Общий стимул импортирован успешно"
+
+msgid "Unable to extract the archive"
+msgstr "Не удается извлечь архив"
+
+msgid "Upload Media"
+msgstr "Загрузить медиафайлы"
+
+msgid "Upload new media"
+msgstr "Загрузить новые медиафайлы"
+
+msgid "You can\'t upload a zip file as a media"
+msgstr ""
+
+msgid "Zip"
+msgstr "ZIP"
+

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.3.0-sprint92.1\n"
-"PO-Revision-Date: 2019-01-04T14:45:28\n"
+"Project-Id-Version: TAO 3.3.0-sprint96\n"
+"PO-Revision-Date: 2019-04-25T01:04:22\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: it-IT\n"
@@ -13,40 +13,40 @@ msgstr ""
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#Media
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Media"
-msgstr ""
+msgstr "Media"
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#Media
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Media"
-msgstr ""
+msgstr "Media"
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#AltText
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Alternative Text"
-msgstr ""
+msgstr "Testo Alternativo"
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#AltText
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Alternative Text"
-msgstr ""
+msgstr "Testo Alternativo"
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#Language
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Language"
-msgstr ""
+msgstr "Linguaggio"
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#Language
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Language"
-msgstr ""
+msgstr "Linguaggio"
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Media Manager"
-msgstr ""
+msgstr "Gestione Media"
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "The Media Manager Role"
-msgstr ""
+msgstr "Il ruolo di Gestione Media"
 

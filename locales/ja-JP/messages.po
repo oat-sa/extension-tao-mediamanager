@@ -1,0 +1,140 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO 3.3.0-sprint96\n"
+"PO-Revision-Date: 2019-04-25T01:06:29\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: ja-JP\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: ja-JP\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid "Add a media file"
+msgstr "メディアファイル追加"
+
+#, tao-public
+msgid "Delete"
+msgstr "削除"
+
+msgid "Edit Instance"
+msgstr "インスタンス編集"
+
+msgid "Edited %s"
+msgstr ""
+
+#, tao-public
+msgid "Export"
+msgstr "エクスポート"
+
+msgid "Export Media as Zip file"
+msgstr "メディアをZIPファイルにエクスポート"
+
+msgid "Fail to edit shared stimulus"
+msgstr "シェアードスティミュラスの編集に失敗しました。"
+
+msgid "Fail to edit Shared Stimulus"
+msgstr "シェアードスティミュラスの編集に失敗しました。"
+
+msgid "Fail to import media"
+msgstr "メディアのインポートに失敗"
+
+msgid "Fail to import Shared Stimulus"
+msgstr "シェアードスティミュラスのインポートに失敗しました。"
+
+msgid "File"
+msgstr "ファイル"
+
+msgid "File name"
+msgstr "ファイル名"
+
+#, tao-public
+msgid "Import"
+msgstr "インポート"
+
+msgid "Imported %s"
+msgstr "%s をインポート"
+
+msgid "Imported new file"
+msgstr "新しいファイルをインポート"
+
+msgid "Initial import"
+msgstr "初期インポート"
+
+msgid "Instance saved"
+msgstr "インスタンスが保存されました"
+
+#, tao-public
+msgid "Manage Media"
+msgstr "メディア管理"
+
+#, tao-public
+msgid "Manage Schema"
+msgstr ""
+
+#, tao-public
+msgid "Media"
+msgstr "メディア"
+
+msgid "Media imported successfully"
+msgstr "メディアのインポートに成功"
+
+#, tao-public
+msgid "Media Manager"
+msgstr "メディア管理"
+
+#, tao-public
+msgid "Media Manager extension"
+msgstr "メディア管理拡張機能"
+
+msgid "Media Options"
+msgstr "メディアオプション"
+
+msgid "Media successfully exported."
+msgstr ""
+
+#, tao-public
+msgid "Move"
+msgstr ""
+
+#, tao-public
+msgid "New class"
+msgstr "新規フォルダー"
+
+msgid "No file found for this media"
+msgstr "メディアファイルが見つかりません"
+
+msgid "Preview"
+msgstr "プレビュー"
+
+#, tao-public
+msgid "Properties"
+msgstr "プロパティ"
+
+msgid "Shared Stimulus"
+msgstr "シェアードスティミュラス"
+
+msgid "Shared Stimulus edited successfully"
+msgstr "シェアードスティミュラスの編集に成功しました。"
+
+msgid "Shared Stimulus imported successfully"
+msgstr "シェアードスティミュラスのインポートに成功しました。"
+
+msgid "Unable to extract the archive"
+msgstr "アーカイブから抽出できません"
+
+msgid "Upload Media"
+msgstr "メディアのアップロード"
+
+msgid "Upload new media"
+msgstr "このファイルを変更する"
+
+msgid "You can\'t upload a zip file as a media"
+msgstr ""
+
+msgid "Zip"
+msgstr "ZIP"
+

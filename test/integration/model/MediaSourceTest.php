@@ -26,6 +26,7 @@ use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use Prophecy\Argument;
 use Psr\Http\Message\StreamInterface;
+use oat\generis\test\TestCase;
 
 include __DIR__ . '/../../../includes/raw_start.php';
 
@@ -34,7 +35,7 @@ include __DIR__ . '/../../../includes/raw_start.php';
  * @package oat\taoMediaManager\test\model
  * @author Aleh Hutnikau, <goodnickoff@gmail.com>
  */
-class MediaSourceTest extends \PHPUnit_Framework_TestCase
+class MediaSourceTest extends TestCase
 {
     public function testAdd()
     {

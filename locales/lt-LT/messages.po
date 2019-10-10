@@ -135,8 +135,8 @@ msgstr "Įkelti Mediją"
 msgid "Upload new media"
 msgstr "Įkelti naują mediją"
 
-msgid "You can\'t upload a zip file as a media"
-msgstr ""
+msgid "You can't upload a zip file as a media"
+msgstr "Jūs negalite įkelti zip failo, kaip medijos"
 
 msgid "Zip"
 msgstr "ZIP"

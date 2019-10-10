@@ -23,8 +23,9 @@ namespace oat\taoMediaManager\test\integration\model;
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\MediaService;
+use oat\generis\test\TestCase;
 
-class MediaManagerBrowserTest extends \PHPUnit_Framework_TestCase
+class MediaManagerBrowserTest extends TestCase
 {
     private $rootClass = '';
 
@@ -135,4 +136,3 @@ class MediaManagerBrowserTest extends \PHPUnit_Framework_TestCase
     }
 
 }
- 

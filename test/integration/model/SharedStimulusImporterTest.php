@@ -32,13 +32,14 @@ use Psr\Log\NullLogger;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use oat\generis\test\MockObject;
 
 include __DIR__ . '/../../../includes/raw_start.php';
 
 class SharedStimulusImporterTest extends TestCase
 {
     /**
-     * @var MediaService|\PHPUnit_Framework_MockObject_MockObject
+     * @var MediaService|MockObject
      */
     private $service;
     private $tempDirectoryPath;

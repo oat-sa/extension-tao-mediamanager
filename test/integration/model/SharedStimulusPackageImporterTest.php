@@ -32,11 +32,12 @@ use oat\taoMediaManager\model\SharedStimulusPackageImporter;
 use Prophecy\Argument;
 use Psr\Log\NullLogger;
 use qtism\data\storage\xml\XmlDocument;
+use oat\generis\test\MockObject;
 
 class SharedStimulusPackageImporterTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     private $service = null;
     private $tempDirectoryPath;

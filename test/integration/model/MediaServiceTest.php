@@ -21,10 +21,11 @@ namespace oat\taoMediaManager\test\integration\model;
 
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\taoMediaManager\model\MediaService;
+use oat\generis\test\TestCase;
 
 include_once dirname(__FILE__) . '/../../../includes/raw_start.php';
 
-class MediaServiceTest extends \PHPUnit_Framework_TestCase
+class MediaServiceTest extends TestCase
 {
     /**
      * @var \core_kernel_classes_Class
@@ -142,4 +143,3 @@ class MediaServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($inst->delete());
     }
 }
- 

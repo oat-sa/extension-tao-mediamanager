@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -44,7 +45,9 @@ class SharedStimulusImporter implements
     TaskParameterProviderInterface,
     TaoLoggerAwareInterface
 {
-    use ImportHandlerHelperTrait { getTaskParameters as getDefaultTaskParameters; }
+    use ImportHandlerHelperTrait {
+        getTaskParameters as getDefaultTaskParameters;
+    }
     use LoggerAwareTrait;
 
     /**
@@ -140,7 +143,7 @@ class SharedStimulusImporter implements
             } else {
                 if (!\helpers_File::isZipMimeType($fileInfo['type'])) {
                     self::isValidSharedStimulus($uploadedFile);
-                    if (in_array($fileInfo['type'], array('application/xml', 'text/xml'))) {
+                    if (in_array($fileInfo['type'], ['application/xml', 'text/xml'])) {
                         $name = basename($fileInfo['name'], 'xml');
                         $name .= 'xhtml';
                         $filepath = \tao_helpers_File::concat([dirname($fileInfo['name']), $name]);
@@ -151,12 +154,14 @@ class SharedStimulusImporter implements
                         fclose($uploadedFileResource);
                     }
 
-                    if (!$service->editMediaInstance(
-                        isset($filepath) ? $filepath : $uploadedFile,
-                        $instanceUri,
-                        \tao_helpers_Uri::decode($form instanceof Form ? $form->getValue('lang') : $form['lang']),
-                        $userId
-                    )) {
+                    if (
+                        !$service->editMediaInstance(
+                            isset($filepath) ? $filepath : $uploadedFile,
+                            $instanceUri,
+                            \tao_helpers_Uri::decode($form instanceof Form ? $form->getValue('lang') : $form['lang']),
+                            $userId
+                        )
+                    ) {
                         $report = Report::createFailure(__('Fail to edit shared stimulus'));
                     } else {
                         $report = Report::createSuccess(__('Shared Stimulus edited successfully'));
@@ -167,7 +172,6 @@ class SharedStimulusImporter implements
                     $report = $this->getZipImporter()->edit(new \core_kernel_classes_Resource($instanceUri), $form, $userId);
                 }
             }
-
         } catch (\Exception $e) {
             $message = $e instanceof \common_exception_UserReadableException
                 ? $e->getUserMessage()

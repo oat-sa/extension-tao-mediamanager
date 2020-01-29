@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -33,5 +34,4 @@ class UninstallMediaManager extends UninstallAction
 
         return \common_report_Report::createInfo('Media manager extension successfully uninstalled.');
     }
-
 }

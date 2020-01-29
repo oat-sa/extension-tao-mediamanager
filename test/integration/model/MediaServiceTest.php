@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,6 +18,7 @@
  * Copyright (c) 2014-2018 (original work) Open Assessment Technologies SA;
  *
  */
+
 namespace oat\taoMediaManager\test\integration\model;
 
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
@@ -54,7 +56,7 @@ class MediaServiceTest extends TestCase
     private function initializeMockForCreateInstance($fileTmp)
     {
         $fileManagerMock = $this->getMockBuilder(FlySystemManagement::class)
-            ->setMethods(array('storeFile', 'deleteFile'))
+            ->setMethods(['storeFile', 'deleteFile'])
             ->getMock();
 
         $fileManagerMock->expects($this->once())
@@ -74,7 +76,7 @@ class MediaServiceTest extends TestCase
     private function initializeMockForEditInstance($fileTmp)
     {
         $fileManagerMock = $this->getMockBuilder(FlySystemManagement::class)
-            ->setMethods(array('storeFile', 'deleteFile'))
+            ->setMethods(['storeFile', 'deleteFile'])
             ->getMock();
 
         $fileManagerMock->expects($this->once())

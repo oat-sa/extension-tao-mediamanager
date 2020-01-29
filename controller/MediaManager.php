@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -56,28 +57,26 @@ class MediaManager extends \tao_actions_SaSModule
         $uri = ($this->hasRequestParameter('id')) ? $this->getRequestParameter('id') : $this->getRequestParameter('uri');
 
         try {
-            $mediaSource = new MediaSource(array());
+            $mediaSource = new MediaSource([]);
             $fileInfo = $mediaSource->getFileInfo($uri);
 
             $mimeType = $fileInfo['mime'];
-            $xml = in_array($mimeType, array('application/xml', 'text/xml'));
+            $xml = in_array($mimeType, ['application/xml', 'text/xml']);
             $url = \tao_helpers_Uri::url(
                 'getFile',
                 'MediaManager',
                 'taoMediaManager',
-                array(
+                [
                     'uri' => $uri,
-                )
+                ]
             );
             $this->setData('xml', $xml);
             $this->setData('fileurl', $url);
             $this->setData('mimeType', $mimeType);
-
         } catch (\tao_models_classes_FileNotFoundException $e) {
             $this->setData('error', __('No file found for this media'));
         }
         $this->setView('form.tpl');
-
     }
 
     /**
@@ -93,7 +92,7 @@ class MediaManager extends \tao_actions_SaSModule
         }
         $uri = urldecode($this->getGetParameter('uri'));
 
-        $mediaSource = new MediaSource(array());
+        $mediaSource = new MediaSource([]);
         $fileInfo = $mediaSource->getFileInfo($uri);
 
         $fileManagement = $this->getServiceLocator()->get(FileManagement::SERVICE_ID);

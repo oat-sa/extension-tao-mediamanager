@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -52,14 +53,14 @@ class SharedStimulusImporterTest extends TestCase
 
         $ref = new \ReflectionProperty('tao_models_classes_Service', 'instances');
         $ref->setAccessible(true);
-        $ref->setValue(null, array('oat\taoMediaManager\model\MediaService' => $this->service));
+        $ref->setValue(null, ['oat\taoMediaManager\model\MediaService' => $this->service]);
     }
 
     public function tearDown()
     {
         $ref = new \ReflectionProperty('tao_models_classes_Service', 'instances');
         $ref->setAccessible(true);
-        $ref->setValue(null, array());
+        $ref->setValue(null, []);
 
         $this->removeTempFileSystem();
     }
@@ -108,7 +109,7 @@ class SharedStimulusImporterTest extends TestCase
         $fileinfo['name'] = basename($filename);
 
         $form = $sharedImporter->getForm();
-        $form->setValues(array('source' => $fileinfo, 'lang' => 'EN_en'));
+        $form->setValues(['source' => $fileinfo, 'lang' => 'EN_en']);
 
         $myClass = new \core_kernel_classes_Class('http://fancyDomain.com/tao.rdf#fancyUri');
         $this->service->expects($this->once())
@@ -136,15 +137,15 @@ class SharedStimulusImporterTest extends TestCase
         finfo_close($info);
         $fileinfo['uploaded_file'] = $file;
         $fileinfo['name'] = $filename;
-        $filenameXhtml = dirname($filename) . DIRECTORY_SEPARATOR . basename($filename, 'xml') .'xhtml';
+        $filenameXhtml = dirname($filename) . DIRECTORY_SEPARATOR . basename($filename, 'xml') . 'xhtml';
 
         $sharedImporter = $this->getSharedStimulusImporter($instance->getUri());
 
         $form = $sharedImporter->getForm();
-        $form->setValues(array(
+        $form->setValues([
             'source' => $fileinfo,
             'lang' => 'EN_en'
-        ));
+        ]);
 
         $this->service->expects($this->once())
             ->method('editMediaInstance')
@@ -177,7 +178,7 @@ class SharedStimulusImporterTest extends TestCase
         $file['uploaded_file'] = $filename;
 
         $form = $sharedImporter->getForm();
-        $form->setValues(array('source' => $file, 'lang' => 'EN_en'));
+        $form->setValues(['source' => $file, 'lang' => 'EN_en']);
 
         $returnReport = \common_report_Report::createSuccess('Success');
         $packageImporter->expects($this->once())
@@ -216,7 +217,7 @@ class SharedStimulusImporterTest extends TestCase
         $file['uploaded_file'] = $filename;
 
         $form = $sharedImporter->getForm();
-        $form->setValues(array('source' => $file, 'lang' => 'EN_en'));
+        $form->setValues(['source' => $file, 'lang' => 'EN_en']);
 
         $returnReport = \common_report_Report::createSuccess('Success');
         $packageImporter->expects($this->once())
@@ -233,15 +234,15 @@ class SharedStimulusImporterTest extends TestCase
     public function sharedStimulusFilenameProvider()
     {
         $sampleDir = dirname(__DIR__) . '/sample/sharedStimulus/';
-        return array(
-            array($sampleDir . 'sharedStimulus.xml', true, null),
+        return [
+            [$sampleDir . 'sharedStimulus.xml', true, null],
             /** TODO :  this sample should come back once the qtsim validate apip file
              * and the SharedStimulusImporter l54 $xmlDocument->load($filename, false); should validate files*/
-//            array($sampleDir . 'wrongParsing.xml', false, new XmlStorageException('')),
-            array($sampleDir . 'feedback.xml', false, new XmlStorageException("The shared stimulus contains feedback QTI components.")),
-            array($sampleDir . 'template.xml', false, new XmlStorageException("The shared stimulus contains template QTI components.")),
-            array($sampleDir . 'interactions.xml', false, new XmlStorageException("The shared stimulus contains interactions QTI components."))
-        );
+        //            array($sampleDir . 'wrongParsing.xml', false, new XmlStorageException('')),
+            [$sampleDir . 'feedback.xml', false, new XmlStorageException("The shared stimulus contains feedback QTI components.")],
+            [$sampleDir . 'template.xml', false, new XmlStorageException("The shared stimulus contains template QTI components.")],
+            [$sampleDir . 'interactions.xml', false, new XmlStorageException("The shared stimulus contains interactions QTI components.")]
+        ];
     }
 
     /**
@@ -283,14 +284,14 @@ class SharedStimulusImporterTest extends TestCase
             FileSystemService::OPTION_ADAPTERS => [
                 $directoryName => [
                     'class' => FileSystemService::FLYSYSTEM_LOCAL_ADAPTER,
-                    'options' => array('root' => $this->tempDirectoryPath)
+                    'options' => ['root' => $this->tempDirectoryPath]
                 ]
             ],
         ]);
 
-        $fileSystemService->setServiceLocator($this->getServiceLocatorMock(array(
+        $fileSystemService->setServiceLocator($this->getServiceLocatorMock([
             FileSystemService::SERVICE_ID => $fileSystemService
-        )));
+        ]));
 
         return $fileSystemService->getDirectory($directoryName);
     }
@@ -309,8 +310,8 @@ class SharedStimulusImporterTest extends TestCase
      */
     protected function rrmdir($dir)
     {
-        foreach(glob($dir . '/*') as $file) {
-            if(is_dir($file)) {
+        foreach (glob($dir . '/*') as $file) {
+            if (is_dir($file)) {
                 $this->rrmdir($file);
             } else {
                 unlink($file);

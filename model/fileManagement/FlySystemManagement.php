@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,6 +19,7 @@
  *
  *
  */
+
 namespace oat\taoMediaManager\model\fileManagement;
 
 use oat\oatbox\filesystem\File;
@@ -53,14 +55,14 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
     }
 
     /**
-     * 
+     *
      * @param string $link
      * @return StreamInterface
      */
     public function getFileStream($link)
     {
-        $resource = $this->getFilesystem()->readStream($link); 
-        return new Stream($resource); 
+        $resource = $this->getFilesystem()->readStream($link);
+        return new Stream($resource);
     }
     
     
@@ -94,7 +96,7 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
     
     /**
      * Create a new unique filename based on an existing filename
-     * 
+     *
      * @param string $fileName
      * @return string
      */
@@ -103,7 +105,7 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
         $returnValue = uniqid(hash('crc32', $fileName));
     
         $ext = @pathinfo($fileName, PATHINFO_EXTENSION);
-        if (!empty($ext)){
+        if (!empty($ext)) {
             $returnValue .= '.' . $ext;
         }
     

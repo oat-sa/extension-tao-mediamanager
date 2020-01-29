@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,9 +19,11 @@
  *
  *
  */
+
 namespace oat\taoMediaManager\model\fileManagement;
 
 use Psr\Http\Message\StreamInterface;
+
 /**
  * Interface to manage the storage of the taoMediaManager files
  */
@@ -36,7 +39,7 @@ interface FileManagement
     
     /**
      * Returns the Size of the file
-     * 
+     *
      * @param string $link
      * @return string size of file in bytes
      */
@@ -55,5 +58,4 @@ interface FileManagement
      * @return boolean if the deletion was successful or not
      */
     public function deleteFile($link);
-
-} 
+}

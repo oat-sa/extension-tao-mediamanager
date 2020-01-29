@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -49,14 +50,18 @@ class MediaSourceTest extends TestCase
 
         $filePath = dirname(__DIR__) . '/sample/Italy.png';
 
-        $mediaSource = new MediaSource(array(
+        $mediaSource = new MediaSource([
             'rootClass' => $parent,
             'lang' => 'lang-fixture',
-        ));
+        ]);
 
         $mediaServiceProphecy = $this->prophesize(MediaService::class);
         $mediaServiceProphecy->createMediaInstance(
-            $filePath, 'uri-fixture', 'lang-fixture', 'Italy1.png', null
+            $filePath,
+            'uri-fixture',
+            'lang-fixture',
+            'Italy1.png',
+            null
         )->willReturn($createdResourceUri);
 
         $ref = new \ReflectionProperty(MediaSource::class, 'mediaService');

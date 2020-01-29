@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,6 +21,7 @@
  */
 
 namespace oat\taoMediaManager\model;
+
 use oat\generis\Helper\SystemHelper;
 use oat\tao\model\TaoOntology;
 
@@ -38,7 +40,6 @@ class FileImportForm extends \tao_helpers_form_FormContainer
     {
         $this->instanceUri = $instanceUri;
         parent::__construct();
-
     }
 
     protected function initForm()
@@ -47,9 +48,8 @@ class FileImportForm extends \tao_helpers_form_FormContainer
         $submitElt = \tao_helpers_form_FormFactory::getElement('import', 'Free');
         $submitElt->setValue('<a href="#" class="form-submitter btn-success small"><span class="icon-import"></span> ' . __('Import') . '</a>');
 
-        $this->form->setActions(array($submitElt), 'bottom');
-        $this->form->setActions(array(), 'top');
-
+        $this->form->setActions([$submitElt], 'bottom');
+        $this->form->setActions([], 'top');
     }
 
     /**
@@ -66,27 +66,27 @@ class FileImportForm extends \tao_helpers_form_FormContainer
         if (isset($_POST['import_sent_file'])) {
             $fileElt->addValidator(\tao_helpers_form_FormFactory::getValidator('NotEmpty'));
         } else {
-            $fileElt->addValidator(\tao_helpers_form_FormFactory::getValidator('NotEmpty', array('message' => '')));
+            $fileElt->addValidator(\tao_helpers_form_FormFactory::getValidator('NotEmpty', ['message' => '']));
         }
-        $fileElt->addValidators(array(
-            \tao_helpers_form_FormFactory::getValidator('FileSize', array('max' => SystemHelper::getFileUploadLimit()))
-        ));
+        $fileElt->addValidators([
+            \tao_helpers_form_FormFactory::getValidator('FileSize', ['max' => SystemHelper::getFileUploadLimit()])
+        ]);
 
         $this->form->addElement($fileElt);
 
         $langService = \tao_models_classes_LanguageService::singleton();
         $dataUsage = new \core_kernel_classes_Resource(TaoOntology::PROPERTY_STANCE_LANGUAGE_USAGE_DATA);
         $dataLang = \common_session_SessionManager::getSession()->getDataLanguage();
-        $dataLang = 'http://www.tao.lu/Ontologies/TAO.rdf#Lang'.$dataLang;
-        if(!is_null($this->instanceUri)){
+        $dataLang = 'http://www.tao.lu/Ontologies/TAO.rdf#Lang' . $dataLang;
+        if (!is_null($this->instanceUri)) {
             $instance = new \core_kernel_classes_Resource($this->instanceUri);
             $lang = $instance->getOnePropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LANGUAGE));
-            if($lang instanceof \core_kernel_classes_Resource){
+            if ($lang instanceof \core_kernel_classes_Resource) {
                 $dataLang = $lang->getUri();
             }
         }
         
-        $langOptions = array();
+        $langOptions = [];
         foreach ($langService->getAvailableLanguagesByUsage($dataUsage) as $lang) {
             $langOptions[\tao_helpers_Uri::encode($lang->getUri())] = $lang->getLabel();
         }
@@ -96,9 +96,9 @@ class FileImportForm extends \tao_helpers_form_FormContainer
         $this->form->addElement($langElt);
 
 
-        $this->form->createGroup('options', __('Media Options'), array(
+        $this->form->createGroup('options', __('Media Options'), [
             $langElt
-        ));
+        ]);
 
         $fileSentElt = \tao_helpers_form_FormFactory::getElement('import_sent_file', 'Hidden');
         $fileSentElt->setValue(1);
@@ -109,6 +109,5 @@ class FileImportForm extends \tao_helpers_form_FormContainer
             $instanceElt->setValue($this->instanceUri);
             $this->form->addElement($instanceElt);
         }
-
     }
 }

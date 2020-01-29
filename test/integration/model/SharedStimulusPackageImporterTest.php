@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -57,7 +58,7 @@ class SharedStimulusPackageImporterTest extends TestCase
     {
         $ref = new \ReflectionProperty(\tao_models_classes_Service::class, 'instances');
         $ref->setAccessible(true);
-        $ref->setValue(null, array());
+        $ref->setValue(null, []);
 
         $this->removeTempFileSystem();
     }
@@ -86,7 +87,7 @@ class SharedStimulusPackageImporterTest extends TestCase
 
         $form = new FileImportForm($myClass->getUri());
         $form = $form->getForm();
-        $form->setValues(array('source' => $fileinfo, 'lang' => 'EN_en'));
+        $form->setValues(['source' => $fileinfo, 'lang' => 'EN_en']);
 
         if ($expectedSuccess) {
             $this->service->expects($this->once())
@@ -125,7 +126,7 @@ class SharedStimulusPackageImporterTest extends TestCase
 
         $form = new FileImportForm($instance->getUri());
         $form = $form->getForm();
-        $form->setValues(array('source' => $fileinfo, 'lang' => 'EN_en'));
+        $form->setValues(['source' => $fileinfo, 'lang' => 'EN_en']);
 
         if ($expectedSuccess) {
             $this->service->expects($this->once())
@@ -168,9 +169,9 @@ class SharedStimulusPackageImporterTest extends TestCase
     public function sharedStimulusConvertProvider()
     {
         $sampleDir = dirname(__DIR__) . '/sample/sharedStimulus/';
-        return array(
-            array($sampleDir . 'stimulusPackage', $sampleDir . 'converted.xml'),
-        );
+        return [
+            [$sampleDir . 'stimulusPackage', $sampleDir . 'converted.xml'],
+        ];
     }
 
     /**
@@ -184,7 +185,7 @@ class SharedStimulusPackageImporterTest extends TestCase
      * @throws \qtism\data\storage\xml\XmlStorageException
      * @throws \tao_models_classes_FileNotFoundException
      */
-    public function  testEmbedAssetsExceptions($directory)
+    public function testEmbedAssetsExceptions($directory)
     {
         SharedStimulusPackageImporter::embedAssets($directory . '/stimulus.xml');
     }
@@ -196,34 +197,34 @@ class SharedStimulusPackageImporterTest extends TestCase
     public function sharedStimulusOutOfThePackageProvider()
     {
         $sampleDir = dirname(__DIR__) . '/sample/sharedStimulus/';
-        return array(
+        return [
             [$sampleDir . 'missingAssetArchive'],
             [$sampleDir . 'fileOutOfThePackage'],
-        );
+        ];
     }
 
     public function sharedStimulusPackage()
     {
         $sampleDir = dirname(__DIR__) . '/sample/sharedStimulus/';
-        return array(
-            array($sampleDir . 'UnknowFile.zip', new \common_Exception('Unable to open archive '.$sampleDir . 'UnknowFile.zip')),
-            array($sampleDir . 'missingXmlArchive.zip', new \common_Exception('XML not found in the package')),
-            array($sampleDir . 'stimulusPackage.zip', null),
-            array($sampleDir . 'encodedImage.zip', null),
-        );
+        return [
+            [$sampleDir . 'UnknowFile.zip', new \common_Exception('Unable to open archive ' . $sampleDir . 'UnknowFile.zip')],
+            [$sampleDir . 'missingXmlArchive.zip', new \common_Exception('XML not found in the package')],
+            [$sampleDir . 'stimulusPackage.zip', null],
+            [$sampleDir . 'encodedImage.zip', null],
+        ];
     }
 
     public function sharedStimulusImportProvider()
     {
         $sampleDir = dirname(__DIR__) . '/sample/sharedStimulus/';
-        return array(
-            array($sampleDir . 'encodedImage.zip', true),
-            array($sampleDir . 'UnknowFile.zip', false),
-            array($sampleDir . 'missingXmlArchive.zip', false),
-            array($sampleDir . 'stimulusPackage.zip', true),
-            array($sampleDir . 'objectOutOfThePackage.zip', false),
-            array($sampleDir . 'fileOutOfThePackage.zip', false),
-        );
+        return [
+            [$sampleDir . 'encodedImage.zip', true],
+            [$sampleDir . 'UnknowFile.zip', false],
+            [$sampleDir . 'missingXmlArchive.zip', false],
+            [$sampleDir . 'stimulusPackage.zip', true],
+            [$sampleDir . 'objectOutOfThePackage.zip', false],
+            [$sampleDir . 'fileOutOfThePackage.zip', false],
+        ];
     }
 
     private function getPackageImporter()
@@ -255,14 +256,14 @@ class SharedStimulusPackageImporterTest extends TestCase
             FileSystemService::OPTION_ADAPTERS => [
                 $directoryName => [
                     'class' => FileSystemService::FLYSYSTEM_LOCAL_ADAPTER,
-                    'options' => array('root' => $this->tempDirectoryPath)
+                    'options' => ['root' => $this->tempDirectoryPath]
                 ]
             ],
         ]);
 
-        $fileSystemService->setServiceLocator($this->getServiceLocatorMock(array(
+        $fileSystemService->setServiceLocator($this->getServiceLocatorMock([
             FileSystemService::SERVICE_ID => $fileSystemService
-        )));
+        ]));
 
         return $fileSystemService->getDirectory($directoryName);
     }
@@ -281,8 +282,8 @@ class SharedStimulusPackageImporterTest extends TestCase
      */
     protected function rrmdir($dir)
     {
-        foreach(glob($dir . '/*') as $file) {
-            if(is_dir($file)) {
+        foreach (glob($dir . '/*') as $file) {
+            if (is_dir($file)) {
                 $this->rrmdir($file);
             } else {
                 unlink($file);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -184,7 +185,8 @@ class SharedStimulusPackageImporter extends ZipImporter
 
         $iterator = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($extractPath),
-            \RecursiveIteratorIterator::LEAVES_ONLY);
+            \RecursiveIteratorIterator::LEAVES_ONLY
+        );
 
         /** @var $file \SplFileInfo */
         foreach ($iterator as $file) {

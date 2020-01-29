@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -34,6 +35,6 @@ class Updater extends \common_ext_ExtensionUpdater
             throw new \common_exception_NotImplemented('Updates from versions prior to Tao 3.1 are not longer supported, please update to Tao 3.1 first');
         }
 
-        $this->skip('0.3.0', '9.0.0');
+        $this->skip('0.3.0', '9.0.1');
     }
 }

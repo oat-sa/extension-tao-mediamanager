@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,6 +19,7 @@
  *
  *
  */
+
 namespace oat\taoMediaManager\scripts;
 
 use oat\generis\model\GenerisRdf;
@@ -51,30 +53,29 @@ class UpdateMedia implements Action
 
         $dryrun = (isset($params[0]) && strpos($params[0], 'wetrun') !== false) ? false : true;
 
-        foreach ($mediaInstances as $mediaInstance){
+        foreach ($mediaInstances as $mediaInstance) {
             $link = $mediaInstance->getUniquePropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LINK));
 
-            if($link instanceof \core_kernel_classes_Resource){
+            if ($link instanceof \core_kernel_classes_Resource) {
                 $count++;
                 $filename = $link->getUniquePropertyValue(new \core_kernel_classes_Property(GenerisRdf::PROPERTY_FILE_FILENAME));
                 $filename = $filename instanceof \core_kernel_classes_Resource ? $filename->getUri() : (string)$filename;
 
-                if(!$dryrun){
-                  if($mediaInstance->editPropertyValues(new \core_kernel_classes_Property(MediaService::PROPERTY_LINK), $filename)){
-                      $success++;
-                  } else {
-                      $report->add(Report::createFailure(__('Issue while modifying %s', $mediaInstance->getUri())));
-                  }
+                if (!$dryrun) {
+                    if ($mediaInstance->editPropertyValues(new \core_kernel_classes_Property(MediaService::PROPERTY_LINK), $filename)) {
+                        $success++;
+                    } else {
+                        $report->add(Report::createFailure(__('Issue while modifying %s', $mediaInstance->getUri())));
+                    }
                 }
             }
         }
 
         $report->add(Report::createSuccess(__('%s media to modify', $count)));
-        if(!$dryrun){
+        if (!$dryrun) {
             $report->add(Report::createSuccess(__('%s media successfully modified', $success)));
         }
 
         return $report;
     }
-
 }

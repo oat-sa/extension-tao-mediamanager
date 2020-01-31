@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -37,19 +38,18 @@ class ZipExportForm extends \tao_helpers_form_FormContainer
 
         $this->form = new \tao_helpers_form_xhtml_Form('export');
 
-        $this->form->setDecorators(array(
-                'element'			=> new \tao_helpers_form_xhtml_TagWrapper(array('tag' => 'div')),
-                'group'				=> new \tao_helpers_form_xhtml_TagWrapper(array('tag' => 'div', 'cssClass' => 'form-group')),
-                'error'				=> new \tao_helpers_form_xhtml_TagWrapper(array('tag' => 'div', 'cssClass' => 'form-error ui-state-error ui-corner-all')),
-                'actions-bottom'	=> new \tao_helpers_form_xhtml_TagWrapper(array('tag' => 'div', 'cssClass' => 'form-toolbar')),
-                //'actions-top'		=> new tao_helpers_form_xhtml_TagWrapper(array('tag' => 'div', 'cssClass' => 'form-toolbar'))
-            ));
+        $this->form->setDecorators([
+                'element'           => new \tao_helpers_form_xhtml_TagWrapper(['tag' => 'div']),
+                'group'             => new \tao_helpers_form_xhtml_TagWrapper(['tag' => 'div', 'cssClass' => 'form-group']),
+                'error'             => new \tao_helpers_form_xhtml_TagWrapper(['tag' => 'div', 'cssClass' => 'form-error ui-state-error ui-corner-all']),
+                'actions-bottom'    => new \tao_helpers_form_xhtml_TagWrapper(['tag' => 'div', 'cssClass' => 'form-toolbar']),
+                //'actions-top'     => new tao_helpers_form_xhtml_TagWrapper(array('tag' => 'div', 'cssClass' => 'form-toolbar'))
+            ]);
 
         $exportElt = \tao_helpers_form_FormFactory::getElement('export', 'Free');
         $exportElt->setValue('<a href="#" class="form-submitter btn-success small"><span class="icon-export"></span> ' . __('Export') . '</a>');
 
-        $this->form->setActions(array($exportElt), 'bottom');
-
+        $this->form->setActions([$exportElt], 'bottom');
     }
 
 
@@ -75,6 +75,6 @@ class ZipExportForm extends \tao_helpers_form_FormContainer
         $nameElt->setUnit(".zip");
         $this->form->addElement($nameElt);
 
-        $this->form->createGroup('options', __('Export Media as Zip file'), array('filename'));
+        $this->form->createGroup('options', __('Export Media as Zip file'), ['filename']);
     }
 }

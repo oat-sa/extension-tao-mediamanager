@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -27,11 +28,11 @@ use oat\tao\model\media\MediaService;
 use oat\taoMediaManager\model\MediaSource;
 
 $serviceManager = ServiceManager::getServiceManager();
-$fsService = $serviceManager->get(FileSystemService::SERVICE_ID); 
+$fsService = $serviceManager->get(FileSystemService::SERVICE_ID);
 $fsService->createFileSystem('mediaManager');
 $serviceManager->register(FileSystemService::SERVICE_ID, $fsService);
 
-$flySystemManagement = new FlySystemManagement(array(FlySystemManagement::OPTION_FS => 'mediaManager'));
+$flySystemManagement = new FlySystemManagement([FlySystemManagement::OPTION_FS => 'mediaManager']);
 $serviceManager->register(FileManagement::SERVICE_ID, $flySystemManagement);
 
 $mediaManager = new MediaSource();

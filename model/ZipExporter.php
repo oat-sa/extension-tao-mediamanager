@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -159,7 +160,6 @@ class ZipExporter implements \tao_models_classes_export_ExportHandler
                     $fileManagement = $this->getServiceManager()->get(FileManagement::SERVICE_ID);
                     $zip->addFromString($archivePath . $file->getLabel(), $fileManagement->getFileStream($link)->getContents());
                 }
-
             }
         }
 

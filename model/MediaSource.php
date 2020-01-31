@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,6 +19,7 @@
  *
  *
  */
+
 namespace oat\taoMediaManager\model;
 
 use oat\oatbox\Configurable;
@@ -90,36 +92,35 @@ class MediaSource extends Configurable implements MediaManagement
      *
      * @see \oat\tao\model\media\MediaBrowser::getDirectory
      */
-    public function getDirectory($parentLink = '', $acceptableMime = array(), $depth = 1)
+    public function getDirectory($parentLink = '', $acceptableMime = [], $depth = 1)
     {
         if ($parentLink == '') {
             $class = new \core_kernel_classes_Class($this->getRootClassUri());
-
         } else {
             $class = new \core_kernel_classes_Class(\tao_helpers_Uri::decode($parentLink));
         }
 
-        $data = array(
+        $data = [
             'path' => self::SCHEME_NAME . \tao_helpers_Uri::encode($class->getUri()),
             'label' => $class->getLabel()
-        );
+        ];
 
         if ($depth > 0) {
-            $children = array();
+            $children = [];
             foreach ($class->getSubClasses() as $subclass) {
                 $children[] = $this->getDirectory($subclass->getUri(), $acceptableMime, $depth - 1);
             }
 
             // add a filter for example on language (not for now)
-            $filter = array();
+            $filter = [];
 
             foreach ($class->searchInstances($filter) as $instance) {
-                try{
+                try {
                     $file = $this->getFileInfo($instance->getUri());
                     if (count($acceptableMime) == 0 || in_array($file['mime'], $acceptableMime)) {
                         $children[] = $file;
                     }
-                }catch(\tao_models_classes_FileNotFoundException $e){
+                } catch (\tao_models_classes_FileNotFoundException $e) {
                     \common_Logger::e($e->getMessage());
                 }
             }
@@ -155,14 +156,14 @@ class MediaSource extends Configurable implements MediaManagement
             $alt = $altArray[0];
         }
 
-        $file = array(
+        $file = [
             'name' => $resource->getLabel(),
             'uri' => self::SCHEME_NAME . \tao_helpers_Uri::encode($link),
             'mime' => $mime,
             'size' => $this->getFileManagement()->getFileSize($fileLink),
             'alt' => $alt,
             'link' => $fileLink
-        );
+        ];
 
         return $file;
     }
@@ -182,7 +183,6 @@ class MediaSource extends Configurable implements MediaManagement
         }
         $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
         return $this->getFileManagement()->getFileStream($fileLink);
-        
     }
 
     /**
@@ -226,7 +226,7 @@ class MediaSource extends Configurable implements MediaManagement
 
     /**
      * Force the mime-type of a resource
-     * 
+     *
      * @param string $link
      * @param string $mimeType
      * @return boolean
@@ -238,7 +238,7 @@ class MediaSource extends Configurable implements MediaManagement
     }
     
     /**
-     * 
+     *
      * @param string $path
      * @return \core_kernel_classes_Class
      */
@@ -251,8 +251,8 @@ class MediaSource extends Configurable implements MediaManagement
             if (!$clazz->isSubClassOf($this->getRootClass()) && !$clazz->equals($this->getRootClass()) && !$clazz->exists()) {
                 // consider $path to be a label
                 $found = false;
-                foreach($this->getRootClass()->getSubClasses() as $subclass){
-                    if($subclass->getLabel() === $path){
+                foreach ($this->getRootClass()->getSubClasses() as $subclass) {
+                    if ($subclass->getLabel() === $path) {
                         $found = true;
                         $clazz = $subclass;
                         break;

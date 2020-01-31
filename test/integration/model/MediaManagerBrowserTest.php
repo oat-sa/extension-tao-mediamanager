@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -43,7 +44,7 @@ class MediaManagerBrowserTest extends TestCase
     {
         $this->rootClass->setLabel('myRootClass');
 
-        $acceptableMime = array();
+        $acceptableMime = [];
         $depth = 1;
 
         $mediaSource = $this->initializeMediaSource();
@@ -66,7 +67,7 @@ class MediaManagerBrowserTest extends TestCase
         $this->assertInternalType('array', $newDirectory['children'], 'Children should be an array');
         $this->assertNotEmpty($newDirectory['children'], 'Children should not be empty');
 
-        $labels = array();
+        $labels = [];
 
         foreach ($newDirectory['children'] as $i => $child) {
             $this->assertInternalType('array', $child, 'The result should be an array');
@@ -119,14 +120,14 @@ class MediaManagerBrowserTest extends TestCase
     private function initializeMediaSource()
     {
         $fileManagerMock = $this->getMockBuilder(FlySystemManagement::class)
-            ->setMethods(array('getFileSize', 'deleteFile'))
+            ->setMethods(['getFileSize', 'deleteFile'])
             ->getMock();
 
         $fileManagerMock->expects($this->any())
             ->method('getFileSize')
             ->willReturn(100);
 
-        $mediaSource = new MediaSource(array('lang' => 'EN_en', 'rootClass' => $this->rootClass));
+        $mediaSource = new MediaSource(['lang' => 'EN_en', 'rootClass' => $this->rootClass]);
 
         $ref = new \ReflectionProperty(MediaSource::class, 'fileManagementService');
         $ref->setAccessible(true);
@@ -134,5 +135,4 @@ class MediaManagerBrowserTest extends TestCase
 
         return $mediaSource;
     }
-
 }

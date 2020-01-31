@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -38,7 +39,7 @@ class editInstanceForm extends \tao_actions_form_Instance
 
         $edit = \tao_helpers_form_FormFactory::getElement('edit', 'Free');
         $value = '';
-        if($edit){
+        if ($edit) {
             $value .=  '<button type="button" id="edit-media" data-classuri="' . $this->getClazz()->getUri() . '" data-uri="' . $this->getInstance()->getUri() . '" class="edit-instance btn-success small"><span class="icon-upload"></span> ' . __('Upload new media') . '</button>';
         }
 
@@ -48,6 +49,5 @@ class editInstanceForm extends \tao_actions_form_Instance
 
         $this->form->setActions($bottom, 'bottom');
         $this->form->setActions($top, 'top');
-
     }
 }

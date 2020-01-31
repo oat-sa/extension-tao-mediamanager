@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,52 +23,52 @@
 $extpath = dirname(__FILE__) . DIRECTORY_SEPARATOR;
 $taopath = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'tao' . DIRECTORY_SEPARATOR;
 
-return array(
+return [
     'name' => 'taoMediaManager',
     'label' => 'extension-tao-mediamanager',
     'description' => 'TAO media manager extension',
     'license' => 'GPL-2.0',
-    'version' => '9.0.0',
+    'version' => '9.0.1',
     'author' => 'Open Assessment Technologies SA',
-    'requires' => array(
+    'requires' => [
         'tao' => '>=34.0.0',
         'generis' => '>=12.5.0',
         'taoItems' => '>=6.0.0'
-    ),
-    'models' => array(
+    ],
+    'models' => [
         'http://www.tao.lu/Ontologies/TAOMedia.rdf'
-    ),
+    ],
     'managementRole' => 'http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole',
-    'acl' => array(
-        array('grant', 'http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole', array('ext' => 'taoMediaManager')),
-        array('grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemAuthor', array('ext' => 'taoMediaManager')),
-    ),
-    'install' => array(
-        'rdf' => array(
+    'acl' => [
+        ['grant', 'http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole', ['ext' => 'taoMediaManager']],
+        ['grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemAuthor', ['ext' => 'taoMediaManager']],
+    ],
+    'install' => [
+        'rdf' => [
             dirname(__FILE__) . '/model/ontology/taomedia.rdf',
-        ),
-        'php' => array(
+        ],
+        'php' => [
             dirname(__FILE__) . '/scripts/install/setMediaManager.php',
-        )
-    ),
+        ]
+    ],
     'update' => 'oat\\taoMediaManager\\scripts\\update\\Updater',
-    'uninstall' => array(
-        'php' => array(
+    'uninstall' => [
+        'php' => [
             dirname(__FILE__) . '/scripts/uninstall/unsetMediaManager.php',
-        )
-    ),
-    'classLoaderPackages' => array(
+        ]
+    ],
+    'classLoaderPackages' => [
         dirname(__FILE__) . '/helpers/'
-    ),
+    ],
     // 'autoload' => array (
     //       'psr-4' => array(
     //           'oat\\taoMediaManager\\' => dirname(__FILE__).DIRECTORY_SEPARATOR
     //       )
     //   ),
-    'routes' => array(
+    'routes' => [
         '/taoMediaManager' => 'oat\\taoMediaManager\\controller'
-    ),
-    'constants' => array(
+    ],
+    'constants' => [
         # actions directory
         "DIR_ACTIONS" => $extpath . "controller" . DIRECTORY_SEPARATOR,
 
@@ -95,8 +96,8 @@ return array(
         #TAO extension Paths
         'TAOVIEW_PATH' => $taopath . 'views' . DIRECTORY_SEPARATOR,
         'TAO_TPL_PATH' => $taopath . 'views' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR,
-    ),
+    ],
     'extra' => [
         'structures' => __DIR__ . DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'structures.xml',
     ]
-);
+];

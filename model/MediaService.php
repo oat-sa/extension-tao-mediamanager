@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -88,14 +89,14 @@ class MediaService extends \tao_models_classes_ClassService
             if (is_null($mimeType)) {
                 $mimeType = $fileSource instanceof File ? $fileSource->getMimeType() : \tao_helpers_File::getMimeType($fileSource);
             }
-            $instance = $clazz->createInstanceWithProperties(array(
+            $instance = $clazz->createInstanceWithProperties([
                 OntologyRdfs::RDFS_LABEL => $label,
                 self::PROPERTY_LINK => $link,
                 self::PROPERTY_LANGUAGE => $language,
                 self::PROPERTY_MD5 => $md5,
                 self::PROPERTY_MIME_TYPE => $mimeType,
                 self::PROPERTY_ALT_TEXT => $label
-            ));
+            ]);
 
             if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
                 \common_Logger::i('Auto generating initial revision');
@@ -139,7 +140,6 @@ class MediaService extends \tao_models_classes_ClassService
             }
         }
         return ($link !== false) ? true : false;
-
     }
 
     /**

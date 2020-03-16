@@ -34,12 +34,12 @@ class MediaServiceTest extends TestCase
      */
     private $testClass = null;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->testClass = (MediaService::singleton())->getRootClass()->createSubClass('test class');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         (MediaService::singleton())->deleteClass($this->testClass);
     }

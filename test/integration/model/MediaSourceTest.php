@@ -28,6 +28,7 @@ use oat\taoMediaManager\model\fileManagement\FileManagement;
 use Prophecy\Argument;
 use Psr\Http\Message\StreamInterface;
 use oat\generis\test\TestCase;
+use tao_models_classes_FileNotFoundException;
 
 include __DIR__ . '/../../../includes/raw_start.php';
 
@@ -100,7 +101,7 @@ class MediaSourceTest extends TestCase
         $success = $mediaSource->add($filePath, 'Italy1.png', '');
 
         // has no error
-        $this->assertInternalType('array', $success, 'Should be a file info array');
+        $this->assertIsArray( $success, 'Should be a file info array');
         $this->assertArrayNotHasKey('error', $success, 'upload doesn\'t succeed');
 
         $this->assertEquals($label, $success['name']);
@@ -113,12 +114,10 @@ class MediaSourceTest extends TestCase
         $this->assertEquals($createdResourceUri, $resourceUri);
     }
 
-    /**
-     * @expectedException \tao_models_classes_FileNotFoundException
-     * @expectedExceptionMessageRegExp /File [^\s]+ not found/
-     */
     public function testUploadFail()
     {
+        $this->expectException(tao_models_classes_FileNotFoundException::class);
+        $this->expectExceptionMessageMatches('/File [^\s]+ not found/');
         $filePath = dirname(__DIR__) . '/sample/Unknown.png';
         $mediaSource = new MediaSource();
         $mediaSource->add($filePath, 'Unknown.png', "");

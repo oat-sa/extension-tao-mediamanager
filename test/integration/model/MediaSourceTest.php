@@ -101,7 +101,7 @@ class MediaSourceTest extends TestCase
         $success = $mediaSource->add($filePath, 'Italy1.png', '');
 
         // has no error
-        $this->assertisarray($success, 'Should be a file info array');
+        $this->assertIsArray($success, 'Should be a file info array');
         $this->assertArrayNotHasKey('error', $success, 'upload doesn\'t succeed');
 
         $this->assertEquals($label, $success['name']);

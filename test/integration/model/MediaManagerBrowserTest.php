@@ -52,12 +52,12 @@ class MediaManagerBrowserTest extends TestCase
 
         $directory = $mediaSource->getDirectory(\tao_helpers_Uri::encode($this->rootClass->getUri()), $acceptableMime, $depth);
 
-        $this->assertisarray($directory, 'The result should be an array');
+        $this->assertIsArray($directory, 'The result should be an array');
         $this->assertArrayHasKey('label', $directory, 'The result should contain "label"');
         $this->assertArrayHasKey('path', $directory, 'The result should contain "path"');
         $this->assertArrayHasKey('children', $directory, 'The result should contain "children"');
 
-        $this->assertisarray($directory['children'], 'Children should be an array');
+        $this->assertIsArray($directory['children'], 'Children should be an array');
         $this->assertEquals('myRootClass', $directory['label'], 'The label is not correct');
         $this->assertEquals('taomedia://mediamanager/' . \tao_helpers_Uri::encode($this->rootClass->getUri()), $directory['path'], 'The path is not correct');
 
@@ -65,13 +65,13 @@ class MediaManagerBrowserTest extends TestCase
         $this->rootClass->createSubClass('mySubClass0');
 
         $newDirectory = $mediaSource->getDirectory(\tao_helpers_Uri::encode($this->rootClass->getUri()), $acceptableMime, $depth);
-        $this->assertisarray($newDirectory['children'], 'Children should be an array');
+        $this->assertIsArray($newDirectory['children'], 'Children should be an array');
         $this->assertNotEmpty($newDirectory['children'], 'Children should not be empty');
 
         $labels = [];
 
         foreach ($newDirectory['children'] as $i => $child) {
-            $this->assertisarray($child, 'The result should be an array');
+            $this->assertIsArray($child, 'The result should be an array');
             if (isset($child['parent'])) {
                 $this->assertArrayHasKey('label', $child, 'The result should contain "label"');
                 $this->assertArrayHasKey('path', $child, 'The result should contain "path"');
@@ -97,7 +97,7 @@ class MediaManagerBrowserTest extends TestCase
 
         $fileInfo = $this->initializeMediaSource()->getFileInfo(\tao_helpers_Uri::decode($uri));
 
-        $this->assertisarray($fileInfo, 'The result should be an array');
+        $this->assertIsArray($fileInfo, 'The result should be an array');
         $this->assertArrayHasKey('name', $fileInfo, 'The result should contain "name"');
         $this->assertArrayHasKey('mime', $fileInfo, 'The result should contain "mime"');
         $this->assertArrayHasKey('size', $fileInfo, 'The result should contain "size"');

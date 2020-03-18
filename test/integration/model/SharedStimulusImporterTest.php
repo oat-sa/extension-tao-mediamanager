@@ -45,7 +45,7 @@ class SharedStimulusImporterTest extends TestCase
     private $service;
     private $tempDirectoryPath;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->service = $this->getMockBuilder('oat\taoMediaManager\model\MediaService')
             ->disableOriginalConstructor()
@@ -56,7 +56,7 @@ class SharedStimulusImporterTest extends TestCase
         $ref->setValue(null, ['oat\taoMediaManager\model\MediaService' => $this->service]);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $ref = new \ReflectionProperty('tao_models_classes_Service', 'instances');
         $ref->setAccessible(true);

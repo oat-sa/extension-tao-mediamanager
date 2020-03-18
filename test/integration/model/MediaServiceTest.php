@@ -34,12 +34,12 @@ class MediaServiceTest extends TestCase
      */
     private $testClass = null;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->testClass = (MediaService::singleton())->getRootClass()->createSubClass('test class');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         (MediaService::singleton())->deleteClass($this->testClass);
     }
@@ -111,7 +111,7 @@ class MediaServiceTest extends TestCase
             'It should create an instance under the class in parameter'
         );
         $this->assertEquals('Brazil.png', $instance->getLabel(), 'The instance label is wrong');
-        $this->assertInternalType('string', $uri, 'The method return should be a string');
+        $this->assertIsString($uri, 'The method return should be a string');
         $this->assertEquals($linkResult, 'MyGreatLink', 'The returned link is wrong');
         $this->assertEquals(
             $lang,

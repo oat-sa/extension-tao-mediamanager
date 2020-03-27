@@ -43,7 +43,7 @@ class SharedStimulusPackageImporterTest extends TestCase
     private $service = null;
     private $tempDirectoryPath;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->service = $this->getMockBuilder('oat\taoMediaManager\model\MediaService')
             ->disableOriginalConstructor()
@@ -54,7 +54,7 @@ class SharedStimulusPackageImporterTest extends TestCase
         $ref->setValue(null, ['oat\taoMediaManager\model\MediaService' => $this->service]);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $ref = new \ReflectionProperty(\tao_models_classes_Service::class, 'instances');
         $ref->setAccessible(true);
@@ -175,7 +175,6 @@ class SharedStimulusPackageImporterTest extends TestCase
     }
 
     /**
-     * @expectedException \oat\tao\model\import\InvalidSourcePathException
      * @dataProvider sharedStimulusOutOfThePackageProvider
      *
      * @param string $directory
@@ -187,6 +186,7 @@ class SharedStimulusPackageImporterTest extends TestCase
      */
     public function testEmbedAssetsExceptions($directory)
     {
+        $this->expectException(InvalidSourcePathException::class);
         SharedStimulusPackageImporter::embedAssets($directory . '/stimulus.xml');
     }
 

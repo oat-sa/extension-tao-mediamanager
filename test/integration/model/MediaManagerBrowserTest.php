@@ -25,17 +25,18 @@ use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\MediaService;
 use oat\generis\test\TestCase;
+use tao_models_classes_FileNotFoundException;
 
 class MediaManagerBrowserTest extends TestCase
 {
     private $rootClass = '';
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->rootClass = new \core_kernel_classes_Class('http://myFancyDomaine.com/myGreatCLassUriForBrowserTest');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         (MediaService::singleton())->deleteClass($this->rootClass);
     }
@@ -51,12 +52,12 @@ class MediaManagerBrowserTest extends TestCase
 
         $directory = $mediaSource->getDirectory(\tao_helpers_Uri::encode($this->rootClass->getUri()), $acceptableMime, $depth);
 
-        $this->assertInternalType('array', $directory, 'The result should be an array');
+        $this->assertIsArray($directory, 'The result should be an array');
         $this->assertArrayHasKey('label', $directory, 'The result should contain "label"');
         $this->assertArrayHasKey('path', $directory, 'The result should contain "path"');
         $this->assertArrayHasKey('children', $directory, 'The result should contain "children"');
 
-        $this->assertInternalType('array', $directory['children'], 'Children should be an array');
+        $this->assertIsArray($directory['children'], 'Children should be an array');
         $this->assertEquals('myRootClass', $directory['label'], 'The label is not correct');
         $this->assertEquals('taomedia://mediamanager/' . \tao_helpers_Uri::encode($this->rootClass->getUri()), $directory['path'], 'The path is not correct');
 
@@ -64,13 +65,13 @@ class MediaManagerBrowserTest extends TestCase
         $this->rootClass->createSubClass('mySubClass0');
 
         $newDirectory = $mediaSource->getDirectory(\tao_helpers_Uri::encode($this->rootClass->getUri()), $acceptableMime, $depth);
-        $this->assertInternalType('array', $newDirectory['children'], 'Children should be an array');
+        $this->assertIsArray($newDirectory['children'], 'Children should be an array');
         $this->assertNotEmpty($newDirectory['children'], 'Children should not be empty');
 
         $labels = [];
 
         foreach ($newDirectory['children'] as $i => $child) {
-            $this->assertInternalType('array', $child, 'The result should be an array');
+            $this->assertIsArray($child, 'The result should be an array');
             if (isset($child['parent'])) {
                 $this->assertArrayHasKey('label', $child, 'The result should contain "label"');
                 $this->assertArrayHasKey('path', $child, 'The result should contain "path"');
@@ -96,7 +97,7 @@ class MediaManagerBrowserTest extends TestCase
 
         $fileInfo = $this->initializeMediaSource()->getFileInfo(\tao_helpers_Uri::decode($uri));
 
-        $this->assertInternalType('array', $fileInfo, 'The result should be an array');
+        $this->assertIsArray($fileInfo, 'The result should be an array');
         $this->assertArrayHasKey('name', $fileInfo, 'The result should contain "name"');
         $this->assertArrayHasKey('mime', $fileInfo, 'The result should contain "mime"');
         $this->assertArrayHasKey('size', $fileInfo, 'The result should contain "size"');
@@ -107,12 +108,10 @@ class MediaManagerBrowserTest extends TestCase
         $this->assertEquals('taomedia://mediamanager/' . \tao_helpers_Uri::encode($uri), $fileInfo['uri'], 'The uri is not correct');
     }
 
-    /**
-     * @expectedException        \tao_models_classes_FileNotFoundException
-     * @expectedExceptionMessage File A Fake link not found
-     */
     public function testGetFileInfoFail()
     {
+        $this->expectException(tao_models_classes_FileNotFoundException::class);
+        $this->expectExceptionMessage('File A Fake link not found');
         $link = 'A Fake link';
         $this->initializeMediaSource()->getFileInfo($link);
     }

@@ -244,26 +244,44 @@ class MediaSource extends Configurable implements MediaManagement
      */
     private function getOrCreatePath($path)
     {
+        $rootClass = $this->getRootClass();
+
         if ($path === '') {
-            $clazz = $this->getRootClass();
-        } else {
-            $clazz = $this->getClass(\tao_helpers_Uri::decode($path));
-            if (!$clazz->isSubClassOf($this->getRootClass()) && !$clazz->equals($this->getRootClass()) && !$clazz->exists()) {
-                // consider $path to be a label
-                $found = false;
-                foreach ($this->getRootClass()->getSubClasses() as $subclass) {
-                    if ($subclass->getLabel() === $path) {
-                        $found = true;
-                        $clazz = $subclass;
-                        break;
-                    }
-                }
-                if (!$found) {
-                    $clazz = $this->getRootClass()->createSubClass($path);
-                }
-            }
+            return $rootClass;
         }
-        return $clazz;
+
+        // If the path is a class URI, returns the existing class.
+        $class = $this->getClass(\tao_helpers_Uri::decode($path));
+        if ($class->isSubClassOf($rootClass) || $class->equals($rootClass) || $class->exists()) {
+            return $class;
+        }
+
+        // If the given path is a json-encoded array, creates the full path from root class.
+        $labels = $this->getArrayFromJson($path);
+        if ($labels) {
+            return $rootClass->createSubClassPathByLabel($labels);
+        }
+
+        // Retrieve or create a direct subclass of the root class.
+        return $rootClass->retrieveOrCreateSubClassByLabel($path);
+    }
+
+    /**
+     * Tries to find a json-encoded array in the given string.
+     *
+     * If string is actually a json string and a json-encoded array, returns the array.
+     * Else, returns false.
+     *
+     * @param string $string
+     * @return array|bool
+     */
+    private function getArrayFromJson($string)
+    {
+        $decoded = json_decode($string);
+
+        return $decoded !== null && is_array($decoded)
+            ? $decoded
+            : false;
     }
 
     /**

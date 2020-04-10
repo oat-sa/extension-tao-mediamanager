@@ -28,11 +28,11 @@ return [
     'label' => 'extension-tao-mediamanager',
     'description' => 'TAO media manager extension',
     'license' => 'GPL-2.0',
-    'version' => '9.2.1',
+    'version' => '9.3.0',
     'author' => 'Open Assessment Technologies SA',
     'requires' => [
         'tao' => '>=34.0.0',
-        'generis' => '>=12.15.0',
+        'generis' => '>=12.17.0',
         'taoItems' => '>=6.0.0'
     ],
     'models' => [

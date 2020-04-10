@@ -26,8 +26,8 @@ use oat\generis\model\OntologyAwareTrait;
 use oat\generis\model\OntologyRdfs;
 use oat\oatbox\filesystem\File;
 use common_ext_ExtensionsManager;
-use oat\taoRevision\model\Repository;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
+use oat\taoRevision\model\RepositoryInterface;
 
 /**
  * Service methods to manage the Media
@@ -100,7 +100,7 @@ class MediaService extends \tao_models_classes_ClassService
 
             if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
                 \common_Logger::i('Auto generating initial revision');
-                $this->getServiceLocator()->get(Repository::SERVICE_ID)->commit($instance->getUri(), __('Initial import'), null, $userId);
+                $this->getServiceLocator()->get(RepositoryInterface::SERVICE_ID)->commit($instance, __('Initial import'), null, $userId);
             }
             return $instance->getUri();
         }
@@ -136,7 +136,7 @@ class MediaService extends \tao_models_classes_ClassService
 
             if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
                 \common_Logger::i('Auto generating revision');
-                $this->getServiceLocator()->get(Repository::SERVICE_ID)->commit($instance->getUri(), __('Imported new file'), null, $userId);
+                $this->getServiceLocator()->get(RepositoryInterface::SERVICE_ID)->commit($instance, __('Imported new file'), null, $userId);
             }
         }
         return ($link !== false) ? true : false;

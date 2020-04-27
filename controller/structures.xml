@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE structures SYSTEM "../../tao/doc/structures.dtd">
 <structures>
-    <structure id='taoMediaManager' name="Media" level="7" group="main">
+    <structure id='taoMediaManager' name="Assets" level="7" group="main">
         <description>Media Manager extension</description>
         <icon id="icon-media" src=""/>
         <sections>
@@ -46,6 +46,10 @@
                     <action id="media-export" name="Export" url="/taoMediaManager/MediaExport/index" group="tree"
                             context="resource">
                         <icon id="icon-export"/>
+                    </action>
+                    <action id="create-shared-stimulus" name="Create Shared Stimulus" url="/taoMediaManager/SharedStimulus/create" group="tree"
+                            context="resource">
+                        <icon id="icon-media"/>
                     </action>
                 </actions>
             </section>

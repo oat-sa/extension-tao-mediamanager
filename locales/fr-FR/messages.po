@@ -80,7 +80,7 @@ msgstr "Gérer le schéma"
 
 #, tao-public
 msgid "Media"
-msgstr "Média"
+msgstr "Assets"
 
 msgid "Media imported successfully"
 msgstr "Média importé avec succès"

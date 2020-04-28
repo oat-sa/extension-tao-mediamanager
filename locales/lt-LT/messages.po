@@ -80,7 +80,7 @@ msgstr "Tvarkyti Schemą"
 
 #, tao-public
 msgid "Media"
-msgstr "Medija"
+msgstr "Assets"
 
 msgid "Media imported successfully"
 msgstr "Medija importuota sėkmingai"

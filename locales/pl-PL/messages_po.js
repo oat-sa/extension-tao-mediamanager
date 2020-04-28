@@ -1,1 +1,1 @@
-[]
+{"Media":"Assets"}

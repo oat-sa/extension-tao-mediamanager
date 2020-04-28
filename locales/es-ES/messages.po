@@ -80,7 +80,7 @@ msgstr ""
 
 #, tao-public
 msgid "Media"
-msgstr ""
+msgstr "Assets"
 
 msgid "Media imported successfully"
 msgstr ""

@@ -132,8 +132,8 @@ msgstr ""
 msgid "Upload Media"
 msgstr ""
 
-msgid "Upload new media"
-msgstr ""
+msgid "Media"
+msgstr "Replace Asset"
 
 msgid "You can\'t upload a zip file as a media"
 msgstr ""

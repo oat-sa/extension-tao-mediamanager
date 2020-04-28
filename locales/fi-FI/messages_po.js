@@ -1,1 +1,1 @@
-{"Media":"Assets"}
+{"Media":"Replace Asset"}

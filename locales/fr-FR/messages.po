@@ -133,7 +133,7 @@ msgid "Upload Media"
 msgstr "Envoyer un média"
 
 msgid "Upload new media"
-msgstr "Envoyer un nouveau média"
+msgstr "Replacer un actif"
 
 msgid "You can\'t upload a zip file as a media"
 msgstr ""

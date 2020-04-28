@@ -27,6 +27,7 @@ use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\sharedStimulus\CreateSharedStimulusService;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus as SharedStimulusVo;
 use oat\taoMediaManager\model\SharedStimulusImporter;
+use Throwable;
 
 class SharedStimulus extends \tao_actions_SaSModule
 {
@@ -60,8 +61,8 @@ class SharedStimulus extends \tao_actions_SaSModule
 
             $this->setData('redirectUrl', $this->getRedirectUrl($sharedStimulus));
             $this->setData('message', __('Instance saved'));
-        } catch (\Throwable $e) {
-            $this->logError(sprintf('Error creating shared stimulus: %s', $e->getMessage()));
+        } catch (Throwable $e) {
+            $this->logError(sprintf('Error creating Shared Stimulus: %s', $e->getMessage()));
             $this->setData('error', __('Error creating Shared Stimulus'));
         }
 

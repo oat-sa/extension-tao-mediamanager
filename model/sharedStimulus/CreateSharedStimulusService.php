@@ -20,7 +20,11 @@
 
 namespace oat\taoMediaManager\model\sharedStimulus;
 
+use common_Exception;
+use common_exception_Error;
 use core_kernel_classes_Class;
+use ErrorException;
+use FileNotFoundException;
 use oat\tao\model\upload\UploadService;
 use oat\taoMediaManager\model\SharedStimulusImporter;
 
@@ -56,17 +60,41 @@ class CreateSharedStimulusService
         $this->kernelClass = $kernelClass;
     }
 
+    /**
+     * @param string $language
+     * @param string $name
+     *
+     * @return SharedStimulus
+     *
+     * @throws common_Exception
+     * @throws common_exception_Error
+     * @throws FileNotFoundException
+     * @throws ErrorException
+     */
     public function createEmpty(string $language, string $name): SharedStimulus
     {
         $fileName = 'shared_stimulus_' . uniqid() . '.xml';
         $filePath = $this->tempUploadPath . DIRECTORY_SEPARATOR . $fileName;
 
-        file_put_contents(
-            $filePath,
-            file_get_contents(
-                $this->sharedStimulusTemplatePath
-            )
-        );
+        $sharedStimulusTemplateContent = file_get_contents($this->sharedStimulusTemplatePath);
+
+        if ($sharedStimulusTemplateContent === false) {
+            throw new FileNotFoundException(
+                sprintf(
+                    'Shared Stimulus template %s not found',
+                    $this->sharedStimulusTemplatePath
+                )
+            );
+        }
+
+        if (file_put_contents($filePath, $sharedStimulusTemplateContent) === false) {
+            throw new ErrorException(
+                sprintf(
+                    'Could not save Shared Stimulus to temporary path %s',
+                    $filePath
+                )
+            );
+        }
 
         $uploadResponse = $this->uploadService
             ->uploadFile(

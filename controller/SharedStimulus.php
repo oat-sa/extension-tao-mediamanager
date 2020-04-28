@@ -66,7 +66,7 @@ class SharedStimulus extends \tao_actions_SaSModule
             $this->setData('error', __('Error creating Shared Stimulus'));
         }
 
-        $this->setView('sharedStimulus/created.tpl');
+        $this->setView('sharedStimulus/create.tpl');
     }
 
     private function getRedirectUrl(SharedStimulusVo $sharedStimulus): string

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TAO 3.4.0-sprint127\n"
-"PO-Revision-Date: 2020-04-29T09:31:19\n"
+"PO-Revision-Date: 2020-04-29T12:35:49\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: lt-LT\n"
@@ -23,6 +23,14 @@ msgid "Add Style Sheet"
 msgstr ""
 
 msgid "An error has occurred. Please contact your administrator."
+msgstr ""
+
+#, tao-public
+msgid "Assets"
+msgstr "Medija"
+
+#, tao-public
+msgid "Authoring"
 msgstr ""
 
 msgid "Back to Manage Assets"
@@ -69,6 +77,9 @@ msgid "Element Properties"
 msgstr ""
 
 msgid "Enlarge font size"
+msgstr ""
+
+msgid "Error creating Shared Stimulus"
 msgstr ""
 
 #, tao-public
@@ -138,10 +149,6 @@ msgstr "Tvarkyti Mediją"
 msgid "Manage Schema"
 msgstr "Tvarkyti Schemą"
 
-#, tao-public
-msgid "Media"
-msgstr "Assets"
-
 msgid "Media imported successfully"
 msgstr "Medija importuota sėkmingai"
 
@@ -169,6 +176,10 @@ msgstr "perkelti"
 #, tao-public
 msgid "New class"
 msgstr "Nauja klasė"
+
+#, tao-public
+msgid "New Passage"
+msgstr ""
 
 msgid "No file found for this media"
 msgstr "Nerasta failas šiai medijai"
@@ -202,6 +213,9 @@ msgid "Remove custom item width"
 msgstr ""
 
 msgid "Remove custom text color"
+msgstr ""
+
+msgid "Replace Asset"
 msgstr ""
 
 msgid "Response Properties"
@@ -245,9 +259,6 @@ msgstr "Nepavyko išarchyvuoti archyvo"
 
 msgid "Upload Media"
 msgstr "Įkelti Mediją"
-
-msgid "Upload new media"
-msgstr "Įkelti naują mediją"
 
 msgid "You can\'t upload a zip file as a media"
 msgstr ""

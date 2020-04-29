@@ -49,6 +49,7 @@ return [
         ],
         'php' => [
             dirname(__FILE__) . '/scripts/install/setMediaManager.php',
+            dirname(__FILE__) . '/scripts/install/setQtiCreatorConfig.php',
         ]
     ],
     'update' => 'oat\\taoMediaManager\\scripts\\update\\Updater',

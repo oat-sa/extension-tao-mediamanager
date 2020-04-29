@@ -34,7 +34,7 @@ msgid "Authoring"
 msgstr ""
 
 msgid "Back to Manage Assets"
-msgstr ""
+msgstr "Retour à Gestion des actifs"
 
 msgid "Background color"
 msgstr ""
@@ -139,7 +139,7 @@ msgid "Item width"
 msgstr ""
 
 msgid "Manage Assets"
-msgstr ""
+msgstr "Gérer les actifs"
 
 #, tao-public
 msgid "Manage Media"

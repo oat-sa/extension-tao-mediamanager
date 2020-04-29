@@ -42,7 +42,7 @@ class Updater extends \common_ext_ExtensionUpdater
         if ($this->isVersion('9.3.0')) {
             QtiCreatorClientConfigRegistry::getRegistry()->registerPlugin('back', 'taoMediaManager/qtiCreator/plugins/navigation/back', 'navigation');
 
-            $this->setVersion('9.3.0');
+            $this->setVersion('9.4.0');
         }
     }
 }

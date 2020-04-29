@@ -24,9 +24,12 @@ namespace oat\taoMediaManager\controller;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\tao\model\upload\UploadService;
 use oat\taoMediaManager\model\MediaService;
-use oat\taoMediaManager\model\sharedStimulus\service\CreateSharedStimulusService;
+use oat\taoMediaManager\model\sharedStimulus\CreateCommand;
+use oat\taoMediaManager\model\sharedStimulus\service\CreateByRequestService;
+use oat\taoMediaManager\model\sharedStimulus\service\CreateService;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus as SharedStimulusVo;
 use oat\taoMediaManager\model\SharedStimulusImporter;
+use tao_helpers_Uri;
 use Throwable;
 
 class SharedStimulus extends \tao_actions_SaSModule
@@ -35,29 +38,33 @@ class SharedStimulus extends \tao_actions_SaSModule
 
     public function create(): void
     {
+        $this->isJsonRequest()
+            ? $this->createFromApiRequest()
+            : $this->createFromFormRequest();
+    }
+
+    private function createFromApiRequest(): void
+    {
+        $response = $this->getCreateByRequestService()
+            ->create($this->getPsrRequest(), $this->getPsrResponse());
+
+        $responseContent = json_decode((string)$response->getBody(), true);
+
+        if ($response->getStatusCode() !== 204) {
+            $this->logError(sprintf('Error creating Shared Stimulus: %s', var_export($responseContent, true)));
+        }
+
+        $this->returnJson($responseContent, $response->getStatusCode());
+    }
+
+    /*
+     * @TODO This whole method and template must be removed if FE uses API call instead.
+     */
+    private function createFromFormRequest(): void
+    {
         try {
-            $templatePath = __DIR__
-                . DIRECTORY_SEPARATOR
-                . '..'
-                . DIRECTORY_SEPARATOR
-                . 'assets'
-                . DIRECTORY_SEPARATOR
-                . 'sharedStimulus'
-                . DIRECTORY_SEPARATOR
-                . 'empty_template.xml';
-
-            $createService = new CreateSharedStimulusService(
-                $this->getUploadService(),
-                $this->getSharedStimulusImporter(),
-                $this->getCurrentClass(),
-                $templatePath,
-                sys_get_temp_dir()
-            );
-
-            $sharedStimulus = $createService->createEmpty(
-                'http_2_www_0_tao_0_lu_1_Ontologies_1_TAO_0_rdf_3_Langen-US',
-                'Passage_NEW'
-            );
+            $sharedStimulus = $this->getCreateService()
+                ->create(new CreateCommand(tao_helpers_Uri::decode($this->getRequestParameter('classUri'))));
 
             $this->setData('redirectUrl', $this->getRedirectUrl($sharedStimulus));
             $this->setData('message', __('Instance saved'));
@@ -69,10 +76,29 @@ class SharedStimulus extends \tao_actions_SaSModule
         $this->setView('sharedStimulus/create.tpl');
     }
 
+    private function isJsonRequest(): bool
+    {
+        return current($this->getPsrRequest()->getHeader('content-type')) === 'application/json';
+    }
+
     private function getRedirectUrl(SharedStimulusVo $sharedStimulus): string
     {
         return 'index?structure=taoMediaManager&ext=taoMediaManager&section=media_manager&uri='
             . urlencode($sharedStimulus->getUri());
+    }
+
+    private function getCreateByRequestService(): CreateByRequestService
+    {
+        return new CreateByRequestService($this->getCreateService());
+    }
+
+    private function getCreateService(): CreateService
+    {
+        return new CreateService(
+            $this->getUploadService(),
+            $this->getSharedStimulusImporter(),
+            $this->getModel()
+        );
     }
 
     private function getUploadService(): UploadService

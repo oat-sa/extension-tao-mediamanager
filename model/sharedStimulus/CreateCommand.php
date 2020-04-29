@@ -20,12 +20,13 @@
 
 namespace oat\taoMediaManager\model\sharedStimulus;
 
-use JsonSerializable;
-
-class SharedStimulus implements JsonSerializable
+class CreateCommand
 {
+    private const DEFAULT_LANGUAGE = 'http://www.tao.lu/Ontologies/TAO.rdf#Langen-US';
+    private const DEFAULT_NAME = 'New Passage';
+
     /** @var string */
-    private $uri;
+    private $classUri;
 
     /** @var string */
     private $languageUri;
@@ -33,27 +34,25 @@ class SharedStimulus implements JsonSerializable
     /** @var string */
     private $name;
 
-    public function __construct(string $uri, string $name, string $languageUri)
+    public function __construct(string $classUri, string $name = null, string $languageUri = null)
     {
-        $this->uri = $uri;
-        $this->name = $name;
-        $this->languageUri = $languageUri;
+        $this->classUri = $classUri;
+        $this->name = $name ?? self::DEFAULT_NAME;
+        $this->languageUri = $languageUri ?? self::DEFAULT_LANGUAGE;
     }
 
-    public function getUri(): string
+    public function getClassUri(): string
     {
-        return $this->uri;
+        return $this->classUri;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function jsonSerialize(): array
+    public function getLanguageUri(): string
     {
-        return [
-            'uri' => $this->uri,
-            'languageUri' => $this->languageUri,
-            'name' => $this->name,
-        ];
+        return $this->languageUri;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
     }
 }

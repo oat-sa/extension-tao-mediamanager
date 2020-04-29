@@ -57,6 +57,7 @@ class CreateService
     {
         $this->uploadService = $uploadService;
         $this->sharedStimulusImporter = $sharedStimulusImporter;
+        $this->ontology = $ontology;
         $this->sharedStimulusTemplatePath = $sharedStimulusTemplatePath;
         $this->tempUploadPath = $tempUploadPath;
 
@@ -79,7 +80,6 @@ class CreateService
         if ($this->tempUploadPath === null) {
             $this->tempUploadPath = sys_get_temp_dir();
         }
-        $this->ontology = $ontology;
     }
 
     /**

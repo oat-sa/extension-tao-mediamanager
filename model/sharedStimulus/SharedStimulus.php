@@ -20,18 +20,40 @@
 
 namespace oat\taoMediaManager\model\sharedStimulus;
 
-class SharedStimulus
+use JsonSerializable;
+
+class SharedStimulus implements JsonSerializable
 {
     /** @var string */
     private $uri;
 
-    public function __construct(string $uri)
+    /** @var string */
+    private $language;
+
+    /** @var string */
+    private $name;
+
+    public function __construct(string $uri, string $name, string $language)
     {
         $this->uri = $uri;
+        $this->name = $name;
+        $this->language = $language;
     }
 
     public function getUri(): string
     {
         return $this->uri;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            'uri' => $this->uri,
+            'name' => $this->name,
+            'language' => $this->language,
+        ];
     }
 }

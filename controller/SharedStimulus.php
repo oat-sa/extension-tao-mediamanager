@@ -24,7 +24,7 @@ namespace oat\taoMediaManager\controller;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\tao\model\upload\UploadService;
 use oat\taoMediaManager\model\MediaService;
-use oat\taoMediaManager\model\sharedStimulus\CreateSharedStimulusService;
+use oat\taoMediaManager\model\sharedStimulus\service\CreateSharedStimulusService;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus as SharedStimulusVo;
 use oat\taoMediaManager\model\SharedStimulusImporter;
 use Throwable;

@@ -18,7 +18,7 @@
  * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
  */
 
-namespace oat\taoMediaManager\model\sharedStimulus;
+namespace oat\taoMediaManager\model\sharedStimulus\service;
 
 use common_Exception;
 use common_exception_Error;
@@ -26,6 +26,7 @@ use core_kernel_classes_Class;
 use ErrorException;
 use FileNotFoundException;
 use oat\tao\model\upload\UploadService;
+use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 use oat\taoMediaManager\model\SharedStimulusImporter;
 
 class CreateSharedStimulusService
@@ -120,6 +121,10 @@ class CreateSharedStimulusService
                 ]
             );
 
-        return new SharedStimulus(current($importResponse->getChildren())->getData()['uriResource']);
+        return new SharedStimulus(
+            current($importResponse->getChildren())->getData()['uriResource'],
+            $name,
+            $language
+        );
     }
 }

@@ -1,0 +1,69 @@
+openapi: 3.0.1
+info:
+  title: Media Manager API
+  description: 'TAO Media Manager API'
+  version: v1
+
+paths:
+  /taoMediaManager/SharedStimulus/create:
+    post:
+      summary: Create a default shared stimulus
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SharedStimulus'
+      responses:
+        204:
+          $ref: '#/components/responses/SharedStimulusCreatedResponse'
+        400:
+          $ref: '#/components/responses/BadRequestResponse'
+        500:
+          $ref: '#/components/responses/InternalServerErrorResponse'
+components:
+  schemas:
+    SharedStimulus:
+      type: object
+      properties:
+        language:
+          type: string
+          example: 'http_2_www_0_tao_0_lu_1_Ontologies_1_TAO_0_rdf_3_Langen-US'
+        name:
+          type: string
+          example: 'New Passage'
+    SharedStimulusCreated:
+      allOf:
+        - $ref: '#/components/schemas/SharedStimulus'
+        - type: object
+          properties:
+            uri:
+              type: string
+              example: "http://tao.docker.localhost/tao.rdf#i5e89a2063326711164b1a816b433b1ec"
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+  responses:
+    SharedStimulusCreatedResponse:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SharedStimulusCreated'
+    BadRequestResponse:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalServerErrorResponse:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'

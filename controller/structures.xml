@@ -8,7 +8,7 @@
             <section id="media_manager" name="Manage Media" url="/taoMediaManager/MediaManager/index">
                 <trees>
                     <tree name="Media Manager"
-                          className="Media"
+                          className="Assets"
                           dataUrl="/taoMediaManager/MediaManager/getOntologyData"
                           rootNode="http://www.tao.lu/Ontologies/TAOMedia.rdf#Media"
                           selectClass="media-class-properties"

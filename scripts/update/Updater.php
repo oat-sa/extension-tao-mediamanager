@@ -22,6 +22,8 @@
 
 namespace oat\taoMediaManager\scripts\update;
 
+use oat\taoMediaManager\model\QtiCreatorClientConfigRegistry;
+
 class Updater extends \common_ext_ExtensionUpdater
 {
     /**
@@ -35,6 +37,12 @@ class Updater extends \common_ext_ExtensionUpdater
             throw new \common_exception_NotImplemented('Updates from versions prior to Tao 3.1 are not longer supported, please update to Tao 3.1 first');
         }
 
-        $this->skip('0.3.0', '9.4.0');
+        $this->skip('0.3.0', '9.3.0');
+
+        if ($this->isVersion('9.3.0')) {
+            QtiCreatorClientConfigRegistry::getRegistry()->registerPlugin('back', 'taoMediaManager/qtiCreator/plugins/navigation/back', 'navigation');
+
+            $this->setVersion('9.3.0');
+        }
     }
 }

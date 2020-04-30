@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TAO 3.4.0-sprint127\n"
-"PO-Revision-Date: 2020-04-29T12:35:49\n"
+"PO-Revision-Date: 2020-04-30T09:25:05\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: fi-FI\n"
@@ -23,14 +23,6 @@ msgid "Add Style Sheet"
 msgstr ""
 
 msgid "An error has occurred. Please contact your administrator."
-msgstr ""
-
-#, tao-public
-msgid "Assets"
-msgstr ""
-
-#, tao-public
-msgid "Authoring"
 msgstr ""
 
 msgid "Back to Manage Assets"
@@ -77,9 +69,6 @@ msgid "Element Properties"
 msgstr ""
 
 msgid "Enlarge font size"
-msgstr ""
-
-msgid "Error creating Shared Stimulus"
 msgstr ""
 
 #, tao-public
@@ -149,6 +138,10 @@ msgstr ""
 msgid "Manage Schema"
 msgstr ""
 
+#, tao-public
+msgid "Media"
+msgstr ""
+
 msgid "Media imported successfully"
 msgstr ""
 
@@ -175,10 +168,6 @@ msgstr ""
 
 #, tao-public
 msgid "New class"
-msgstr ""
-
-#, tao-public
-msgid "New Passage"
 msgstr ""
 
 msgid "No file found for this media"
@@ -213,9 +202,6 @@ msgid "Remove custom item width"
 msgstr ""
 
 msgid "Remove custom text color"
-msgstr ""
-
-msgid "Replace Asset"
 msgstr ""
 
 msgid "Response Properties"
@@ -258,6 +244,9 @@ msgid "Unable to extract the archive"
 msgstr ""
 
 msgid "Upload Media"
+msgstr ""
+
+msgid "Upload new media"
 msgstr ""
 
 msgid "You can\'t upload a zip file as a media"

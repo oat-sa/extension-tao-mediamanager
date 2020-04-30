@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TAO 3.4.0-sprint127\n"
-"PO-Revision-Date: 2020-04-29T12:35:49\n"
+"PO-Revision-Date: 2020-04-30T09:25:05\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: da-DK\n"
@@ -12,12 +12,12 @@ msgstr ""
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#Media
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
-msgid "Assets"
+msgid "Media"
 msgstr ""
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#Media
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
-msgid "Assets"
+msgid "Media"
 msgstr ""
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#AltText
@@ -52,11 +52,11 @@ msgstr ""
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#Media
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
-msgid "Media"
+msgid "Assets"
 msgstr ""
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#Media
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
-msgid "Media"
+msgid "Assets"
 msgstr ""
 

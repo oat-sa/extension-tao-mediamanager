@@ -208,7 +208,7 @@ msgid "Response Properties"
 msgstr ""
 
 msgid "Save"
-msgstr ""
+msgstr "Enregistrer"
 
 msgid "Shared Stimulus"
 msgstr "Stimulus partagé"

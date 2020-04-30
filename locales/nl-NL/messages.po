@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TAO 3.4.0-sprint127\n"
-"PO-Revision-Date: 2020-04-30T11:53:21\n"
+"PO-Revision-Date: 2020-04-30T14:29:09\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: nl-NL\n"
@@ -13,14 +13,8 @@ msgstr ""
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
 
-msgid "Adapt to screen size"
-msgstr ""
-
 msgid "Add a media file"
 msgstr "Voeg een media bestand toe"
-
-msgid "Add Style Sheet"
-msgstr ""
 
 msgid "An error has occurred. Please contact your administrator."
 msgstr ""
@@ -28,48 +22,15 @@ msgstr ""
 msgid "Back to Manage Assets"
 msgstr ""
 
-msgid "Background color"
-msgstr ""
-
-msgid "Border color"
-msgstr ""
-
-msgid "Cancel"
-msgstr ""
-
-msgid "Choice Properties"
-msgstr ""
-
-msgid "Default"
-msgstr ""
-
-msgid "Defined width"
-msgstr ""
-
 #, tao-public
 msgid "Delete"
 msgstr "Verwijderen"
-
-msgid "Disable this stylesheet temporarily"
-msgstr ""
-
-msgid "e.g. 13"
-msgstr ""
-
-msgid "e.g. 960"
-msgstr ""
 
 msgid "Edit Instance"
 msgstr "Pas instantie aan"
 
 msgid "Edited %s"
 msgstr "Geredigeerd %s"
-
-msgid "Element Properties"
-msgstr ""
-
-msgid "Enlarge font size"
-msgstr ""
 
 #, tao-public
 msgid "Export"
@@ -96,12 +57,6 @@ msgstr "Bestand"
 msgid "File name"
 msgstr "Bestandsnaam"
 
-msgid "Font family"
-msgstr ""
-
-msgid "Font size"
-msgstr ""
-
 #, tao-public
 msgid "Import"
 msgstr "Importeren"
@@ -117,15 +72,6 @@ msgstr "Initiële import"
 
 msgid "Instance saved"
 msgstr "Instantie opgeslagen"
-
-msgid "Interaction Properties"
-msgstr ""
-
-msgid "Item properties"
-msgstr ""
-
-msgid "Item width"
-msgstr ""
 
 msgid "Manage Assets"
 msgstr ""
@@ -159,9 +105,6 @@ msgstr "Media opties"
 msgid "Media successfully exported."
 msgstr "Media met succes geëxporteerd."
 
-msgid "Modal Feedback Prop."
-msgstr ""
-
 #, tao-public
 msgid "Move"
 msgstr "Verplaatsen"
@@ -173,42 +116,12 @@ msgstr "Nieuwe klasse"
 msgid "No file found for this media"
 msgstr "Geen bestand gevonden voor deze media"
 
-msgid "Passage Properties"
-msgstr ""
-
 msgid "Preview"
 msgstr "Voorbeeld"
 
 #, tao-public
 msgid "Properties"
 msgstr "Eigenschappen"
-
-msgid "Reduce font size"
-msgstr ""
-
-msgid "Remove custom background color"
-msgstr ""
-
-msgid "Remove custom border color"
-msgstr ""
-
-msgid "Remove custom font family"
-msgstr ""
-
-msgid "Remove custom font size"
-msgstr ""
-
-msgid "Remove custom item width"
-msgstr ""
-
-msgid "Remove custom text color"
-msgstr ""
-
-msgid "Response Properties"
-msgstr ""
-
-msgid "Save"
-msgstr ""
 
 msgid "Shared Stimulus"
 msgstr "Gedeelde stimulus"
@@ -218,27 +131,6 @@ msgstr "Gedeelde stimulus succesvol aangepast"
 
 msgid "Shared Stimulus imported successfully"
 msgstr "Gedeelde stimulus succesvol geïmporteerd"
-
-msgid "Style Editor"
-msgstr ""
-
-msgid "Style Sheet Manager"
-msgstr ""
-
-msgid "Table headings"
-msgstr ""
-
-msgid "TAO default styles"
-msgstr ""
-
-msgid "Text Block Properties"
-msgstr ""
-
-msgid "Text color"
-msgstr ""
-
-msgid "The item needs to be saved before it can be previewed"
-msgstr ""
 
 msgid "Unable to extract the archive"
 msgstr "Kon archief niet uitpakken"
@@ -250,9 +142,6 @@ msgid "Upload new media"
 msgstr ""
 
 msgid "You can\'t upload a zip file as a media"
-msgstr ""
-
-msgid "Your item has been saved"
 msgstr ""
 
 msgid "Zip"

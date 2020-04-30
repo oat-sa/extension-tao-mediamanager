@@ -22,7 +22,6 @@
 
 namespace oat\taoMediaManager\scripts\update;
 
-use oat\generis\model\OntologyAwareTrait;
 use oat\tao\scripts\update\OntologyUpdater;
 
 class Updater extends \common_ext_ExtensionUpdater
@@ -42,8 +41,8 @@ class Updater extends \common_ext_ExtensionUpdater
 
         if ($this->isVersion('9.3.0')) {
             OntologyUpdater::syncModels();
-        }
 
-        $this->setVersion('9.4.0');
+            $this->setVersion('9.4.0');
+        }
     }
 }

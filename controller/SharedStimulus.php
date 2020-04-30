@@ -22,13 +22,10 @@
 namespace oat\taoMediaManager\controller;
 
 use oat\oatbox\log\LoggerAwareTrait;
-use oat\tao\model\upload\UploadService;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\sharedStimulus\CreateCommand;
 use oat\taoMediaManager\model\sharedStimulus\service\CreateByRequestService;
 use oat\taoMediaManager\model\sharedStimulus\service\CreateService;
-use oat\taoMediaManager\model\sharedStimulus\SharedStimulus as SharedStimulusVo;
-use oat\taoMediaManager\model\SharedStimulusImporter;
 use tao_helpers_Uri;
 use Throwable;
 
@@ -63,10 +60,9 @@ class SharedStimulus extends \tao_actions_SaSModule
     private function createFromFormRequest(): void
     {
         try {
-            $sharedStimulus = $this->getCreateService()
+            $this->getCreateService()
                 ->create(new CreateCommand(tao_helpers_Uri::decode($this->getRequestParameter('classUri'))));
 
-            $this->setData('redirectUrl', $this->getRedirectUrl($sharedStimulus));
             $this->setData('message', __('Instance saved'));
         } catch (Throwable $e) {
             $this->logError(sprintf('Error creating Shared Stimulus: %s', $e->getMessage()));
@@ -81,38 +77,14 @@ class SharedStimulus extends \tao_actions_SaSModule
         return current($this->getPsrRequest()->getHeader('content-type')) === 'application/json';
     }
 
-    private function getRedirectUrl(SharedStimulusVo $sharedStimulus): string
-    {
-        return 'index?structure=taoMediaManager&ext=taoMediaManager&section=media_manager&uri='
-            . urlencode($sharedStimulus->getUri());
-    }
-
     private function getCreateByRequestService(): CreateByRequestService
     {
-        return new CreateByRequestService($this->getCreateService());
+        return $this->getServiceLocator()->get(CreateByRequestService::class);
     }
 
     private function getCreateService(): CreateService
     {
-        return new CreateService(
-            $this->getUploadService(),
-            $this->getSharedStimulusImporter(),
-            $this->getModel()
-        );
-    }
-
-    private function getUploadService(): UploadService
-    {
-        return $this->getServiceLocator()
-            ->get(UploadService::SERVICE_ID);
-    }
-
-    private function getSharedStimulusImporter(): SharedStimulusImporter
-    {
-        $importer = new SharedStimulusImporter();
-        $importer->setServiceLocator($this->getServiceLocator());
-
-        return $importer;
+        return $this->getServiceLocator()->get(CreateService::class);
     }
 
     protected function getClassService()

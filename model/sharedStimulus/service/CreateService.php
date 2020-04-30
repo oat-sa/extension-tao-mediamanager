@@ -22,65 +22,21 @@ namespace oat\taoMediaManager\model\sharedStimulus\service;
 
 use common_Exception;
 use common_exception_Error;
+use core_kernel_classes_Class;
 use ErrorException;
 use FileNotFoundException;
 use oat\generis\model\data\Ontology;
+use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\upload\UploadService;
 use oat\taoMediaManager\model\sharedStimulus\CreateCommand;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 use oat\taoMediaManager\model\SharedStimulusImporter;
 
-class CreateService
+class CreateService extends ConfigurableService
 {
-    /** @var UploadService */
-    private $uploadService;
-
-    /** @var SharedStimulusImporter */
-    private $sharedStimulusImporter;
-
-    /** @var Ontology */
-    private $ontology;
-
-    /** @var string */
-    private $sharedStimulusTemplatePath;
-
-    /** @var string */
-    private $tempUploadPath;
-
-    public function __construct(
-        UploadService $uploadService,
-        SharedStimulusImporter $sharedStimulusImporter,
-        Ontology $ontology,
-        string $sharedStimulusTemplatePath = null,
-        string $tempUploadPath = null
-    )
-    {
-        $this->uploadService = $uploadService;
-        $this->sharedStimulusImporter = $sharedStimulusImporter;
-        $this->ontology = $ontology;
-        $this->sharedStimulusTemplatePath = $sharedStimulusTemplatePath;
-        $this->tempUploadPath = $tempUploadPath;
-
-        if ($this->sharedStimulusTemplatePath === null) {
-            $this->sharedStimulusTemplatePath = __DIR__
-                . DIRECTORY_SEPARATOR
-                . '..'
-                . DIRECTORY_SEPARATOR
-                . '..'
-                . DIRECTORY_SEPARATOR
-                . '..'
-                . DIRECTORY_SEPARATOR
-                . 'assets'
-                . DIRECTORY_SEPARATOR
-                . 'sharedStimulus'
-                . DIRECTORY_SEPARATOR
-                . 'empty_template.xml';
-        }
-
-        if ($this->tempUploadPath === null) {
-            $this->tempUploadPath = sys_get_temp_dir();
-        }
-    }
+    public const DEFAULT_NAME = 'passage NEW';
+    public const OPTION_TEMP_UPLOAD_PATH = '';
+    public const OPTION_TEMPLATE_PATH = '';
 
     /**
      * @param CreateCommand $command
@@ -99,7 +55,9 @@ class CreateService
 
         $this->saveTemporaryFile($filePath, $this->getDefaultTemplateContent());
 
-        $uploadResponse = $this->uploadService
+        $uploadService = $this->getUploadService();
+
+        $uploadResponse = $uploadService
             ->uploadFile(
                 [
                     'name' => $fileName,
@@ -108,16 +66,20 @@ class CreateService
                 DIRECTORY_SEPARATOR
             );
 
-        $importResponse = $this->sharedStimulusImporter
+        $kernelClass = $this->getOntology()->getClass($command->getClassUri());
+
+        $sharedStimulusName = $this->getSharedStimulusName($command, $kernelClass);
+
+        $importResponse = $this->getSharedStimulusImporter()
             ->import(
-                $this->ontology->getClass($command->getClassUri()),
+                $kernelClass,
                 [
                     'lang' => $command->getLanguageUri(),
                     'source' => [
-                        'name' => $command->getName(),
+                        'name' => $sharedStimulusName,
                     ],
                     'uploaded_file' => DIRECTORY_SEPARATOR
-                        . $this->uploadService->getUserDirectoryHash()
+                        . $uploadService->getUserDirectoryHash()
                         . DIRECTORY_SEPARATOR
                         . $uploadResponse['uploaded_file']
                 ]
@@ -125,9 +87,20 @@ class CreateService
 
         return new SharedStimulus(
             current($importResponse->getChildren())->getData()['uriResource'],
-            $command->getName(),
+            $sharedStimulusName,
             $command->getLanguageUri()
         );
+    }
+
+    private function getSharedStimulusName(CreateCommand $command, core_kernel_classes_Class $kernelClass): string
+    {
+        if ($command->getName()) {
+            return $command->getName();
+        }
+
+        $totalInstances = count($kernelClass->getInstances());
+
+        return $totalInstances === 0 ? self::DEFAULT_NAME : (self::DEFAULT_NAME . ' ' . $totalInstances);
     }
 
     private function getTempFileName(): string
@@ -135,9 +108,46 @@ class CreateService
         return 'shared_stimulus_' . uniqid() . '.xml';
     }
 
+    private function getOntology(): Ontology
+    {
+        return $this->getServiceLocator()->get(Ontology::SERVICE_ID);
+    }
+
+    private function getUploadService(): UploadService
+    {
+        return $this->getServiceLocator()->get(UploadService::SERVICE_ID);
+    }
+
+    private function getSharedStimulusImporter(): SharedStimulusImporter
+    {
+        return $this->getServiceLocator()->get(SharedStimulusImporter::class);
+    }
+
     private function getTempFilePath(string $fileName): string
     {
-        return $this->tempUploadPath . DIRECTORY_SEPARATOR . $fileName;
+        return $this->getTempUploadPath() . DIRECTORY_SEPARATOR . $fileName;
+    }
+
+    private function getTempUploadPath(): string
+    {
+        return $this->getOption(self::OPTION_TEMP_UPLOAD_PATH) ?? sys_get_temp_dir();
+    }
+
+    private function getTemplateFilePath(): string
+    {
+        return $this->getOption(self::OPTION_TEMPLATE_PATH) ?? __DIR__
+            . DIRECTORY_SEPARATOR
+            . '..'
+            . DIRECTORY_SEPARATOR
+            . '..'
+            . DIRECTORY_SEPARATOR
+            . '..'
+            . DIRECTORY_SEPARATOR
+            . 'assets'
+            . DIRECTORY_SEPARATOR
+            . 'sharedStimulus'
+            . DIRECTORY_SEPARATOR
+            . 'empty_template.xml';
     }
 
     /**
@@ -145,26 +155,22 @@ class CreateService
      */
     private function getDefaultTemplateContent(): string
     {
-        $sharedStimulusTemplateContent = file_get_contents($this->sharedStimulusTemplatePath);
+        $templatePath = $this->getTemplateFilePath();
+        $templateContent = file_get_contents($templatePath);
 
-        if ($sharedStimulusTemplateContent === false) {
-            throw new FileNotFoundException(
-                sprintf(
-                    'Shared Stimulus template %s not found',
-                    $this->sharedStimulusTemplatePath
-                )
-            );
+        if ($templateContent === false) {
+            throw new FileNotFoundException(sprintf('Shared Stimulus template %s not found', $templatePath));
         }
 
-        return $sharedStimulusTemplateContent;
+        return $templateContent;
     }
 
     /**
      * @throws ErrorException
      */
-    private function saveTemporaryFile(string $filePath, string $sharedStimulusTemplateContent): void
+    private function saveTemporaryFile(string $filePath, string $templateContent): void
     {
-        if (file_put_contents($filePath, $sharedStimulusTemplateContent) === false) {
+        if (file_put_contents($filePath, $templateContent) === false) {
             throw new ErrorException(
                 sprintf(
                     'Could not save Shared Stimulus to temporary path %s',

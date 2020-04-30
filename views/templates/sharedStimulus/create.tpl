@@ -10,12 +10,5 @@ Template::inc('form_context.tpl', 'tao');
                 <?=get_data('error')?>
             </div>
         <?php endif;?>
-
-        <?php if(has_data('redirectUrl')):?>
-            <script type="text/javascript">
-                window.location = "<?=get_data('redirectUrl')?>";
-            </script>
-        <?php endif;?>
-
     </div>
 <?php Template::inc('footer.tpl', 'tao'); ?>

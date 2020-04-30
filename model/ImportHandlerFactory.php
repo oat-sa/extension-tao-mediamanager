@@ -21,19 +21,12 @@
 namespace oat\taoMediaManager\model;
 
 use oat\generis\model\data\Ontology;
+use oat\oatbox\service\ConfigurableService;
 use tao_models_classes_import_ImportHandler;
 use Throwable;
 
-class ImportHandlerFactory
+class ImportHandlerFactory extends ConfigurableService
 {
-    /** @var Ontology */
-    private $ontology;
-
-    public function __construct(Ontology $ontology)
-    {
-        $this->ontology = $ontology;
-    }
-
     /**
      * @return tao_models_classes_import_ImportHandler[]
      */
@@ -41,19 +34,21 @@ class ImportHandlerFactory
     {
         return [
             new FileImporter(),
-            new SharedStimulusImporter()
+            $this->getSharedStimulusImporter()
         ];
     }
 
     public function createByMediaId(string $id): tao_models_classes_import_ImportHandler
     {
-        return $this->isQtiMedia($id) ? new SharedStimulusImporter($id) : new FileImporter($id);
+        return $this->isQtiMedia($id)
+            ? $this->getSharedStimulusImporter()->setInstanceUri($id)
+            : new FileImporter($id);
     }
 
     private function isQtiMedia(string $id): bool
     {
         try {
-            $class = $this->ontology->getClass($id);
+            $class = $this->getOntology()->getClass($id);
 
             $mimeType = $class->getProperty('http://www.tao.lu/Ontologies/TAOMedia.rdf#mimeType');
 
@@ -61,5 +56,15 @@ class ImportHandlerFactory
         } catch (Throwable $exception) {
             return false;
         }
+    }
+
+    private function getOntology(): Ontology
+    {
+        return $this->getServiceLocator()->get(Ontology::SERVICE_ID);
+    }
+
+    private function getSharedStimulusImporter(): SharedStimulusImporter
+    {
+        return $this->getServiceLocator()->get(SharedStimulusImporter::class);
     }
 }

@@ -23,7 +23,6 @@ namespace oat\taoMediaManager\model\sharedStimulus;
 class CreateCommand
 {
     private const DEFAULT_LANGUAGE = 'http://www.tao.lu/Ontologies/TAO.rdf#Langen-US';
-    private const DEFAULT_NAME = 'New Passage';
 
     /** @var string */
     private $classUri;
@@ -37,7 +36,7 @@ class CreateCommand
     public function __construct(string $classUri, string $name = null, string $languageUri = null)
     {
         $this->classUri = $classUri;
-        $this->name = $name ?? self::DEFAULT_NAME;
+        $this->name = $name;
         $this->languageUri = $languageUri ?? self::DEFAULT_LANGUAGE;
     }
 
@@ -51,7 +50,7 @@ class CreateCommand
         return $this->languageUri;
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }

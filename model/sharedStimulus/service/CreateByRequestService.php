@@ -20,26 +20,19 @@
 
 namespace oat\taoMediaManager\model\sharedStimulus\service;
 
+use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\sharedStimulus\CreateCommand;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 use function GuzzleHttp\Psr7\stream_for;
 
-class CreateByRequestService
+class CreateByRequestService extends ConfigurableService
 {
-    /** @var CreateService */
-    private $createSharedStimulusService;
-
-    public function __construct(CreateService $createSharedStimulusService)
-    {
-        $this->createSharedStimulusService = $createSharedStimulusService;
-    }
-
     public function create(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         try {
-            $sharedStimulus = $this->createSharedStimulusService
+            $sharedStimulus = $this->getCreateService()
                 ->create($this->createCommand($this->getParsedBody($request)));
 
             return $this->populateResponse(
@@ -78,5 +71,10 @@ class CreateByRequestService
     {
         return $response->withStatus($statusCode)
             ->withBody(stream_for(json_encode($payload)));
+    }
+
+    private function getCreateService(): CreateService
+    {
+        return $this->getServiceLocator()->get(CreateService::class);
     }
 }

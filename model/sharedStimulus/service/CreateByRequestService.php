@@ -37,17 +37,20 @@ class CreateByRequestService extends ConfigurableService
 
             return $this->populateResponse(
                 $response,
-                204,
-                $sharedStimulus->jsonSerialize()
+                200,
+                [
+                    'success' => true,
+                    'data' => $sharedStimulus->jsonSerialize()
+                ]
             );
         } catch (Throwable $exception) {
             return $this->populateResponse(
                 $response,
                 400,
                 [
-                    'error' => [
-                        'message' => $exception->getMessage()
-                    ]
+                    'success' => false,
+                    'code' => $exception->getCode(),
+                    'message' => $exception->getMessage()
                 ]
             );
         }

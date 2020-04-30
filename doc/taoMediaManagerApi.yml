@@ -45,30 +45,39 @@ components:
             uri:
               type: string
               example: "http://tao.docker.localhost/tao.rdf#i5e89a2063326711164b1a816b433b1ec"
-    Error:
-      type: object
+    SharedStimulusCreatedResponse:
       properties:
-        error:
-          type: object
-          properties:
-            message:
-              type: string
+        success:
+          type: boolean
+          example: true
+        data:
+          $ref: '#/components/schemas/SharedStimulusCreated'
+    ErrorResponse:
+      properties:
+        success:
+          type: boolean
+          example: false
+        code:
+          type: integer
+          example: 400
+        message:
+          type: string
   responses:
     SharedStimulusCreatedResponse:
       description: Bad request
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/SharedStimulusCreated'
+            $ref: '#/components/schemas/SharedStimulusCreatedResponse'
     BadRequestResponse:
       description: Bad request
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: '#/components/schemas/ErrorResponse'
     InternalServerErrorResponse:
       description: Internal server error
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: '#/components/schemas/ErrorResponse'

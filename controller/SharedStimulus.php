@@ -47,7 +47,7 @@ class SharedStimulus extends \tao_actions_SaSModule
 
         $responseContent = json_decode((string)$response->getBody(), true);
 
-        if ($response->getStatusCode() !== 204) {
+        if ($response->getStatusCode() !== 200) {
             $this->logError(sprintf('Error creating Shared Stimulus: %s', var_export($responseContent, true)));
         }
 

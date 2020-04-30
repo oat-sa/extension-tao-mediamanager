@@ -60,6 +60,6 @@ class MediaImport extends tao_actions_Import
 
     private function getImportHandlerFactory(): ImportHandlerFactory
     {
-        return new ImportHandlerFactory($this->getModel());
+        return $this->getServiceLocator()->get(ImportHandlerFactory::class);
     }
 }

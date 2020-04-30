@@ -35,8 +35,8 @@ use oat\taoMediaManager\model\SharedStimulusImporter;
 class CreateService extends ConfigurableService
 {
     public const DEFAULT_NAME = 'passage NEW';
-    public const OPTION_TEMP_UPLOAD_PATH = '';
-    public const OPTION_TEMPLATE_PATH = '';
+    public const OPTION_TEMP_UPLOAD_PATH = 'temp_upload_path';
+    public const OPTION_TEMPLATE_PATH = 'template_path';
 
     /**
      * @param CreateCommand $command

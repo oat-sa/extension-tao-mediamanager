@@ -46,7 +46,7 @@ class SharedStimulus extends tao_actions_SaSModule
     private function createFromApiRequest(): void
     {
         $response = $this->getCreateByRequestService()
-            ->create($this->getPsrRequest(), $this->getPsrResponse());
+            ->create($this->getPsrRequest());
 
         $builder = $this->getRequestBuilder();
 
@@ -56,11 +56,7 @@ class SharedStimulus extends tao_actions_SaSModule
             $this->logError(sprintf('Error creating Shared Stimulus: %s', $response->getMessage()));
         }
 
-        $response = $builder
-            ->withBody($response)
-            ->build();
-
-        $this->setResponse($response);
+        $this->setResponse($builder->withBody($response)->build());
     }
 
     /*

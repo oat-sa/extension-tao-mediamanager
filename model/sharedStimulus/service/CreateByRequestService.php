@@ -25,13 +25,12 @@ use oat\tao\model\http\response\ErrorJsonResponse;
 use oat\tao\model\http\response\JsonResponseInterface;
 use oat\tao\model\http\response\SuccessJsonResponse;
 use oat\taoMediaManager\model\sharedStimulus\CreateCommand;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 
 class CreateByRequestService extends ConfigurableService
 {
-    public function create(ServerRequestInterface $request, ResponseInterface $response): JsonResponseInterface
+    public function create(ServerRequestInterface $request): JsonResponseInterface
     {
         try {
             $sharedStimulus = $this->getCreateService()

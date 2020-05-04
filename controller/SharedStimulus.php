@@ -53,12 +53,7 @@ class SharedStimulus extends tao_actions_SaSModule
         if ($response instanceof ErrorJsonResponse) {
             $builder->withStatusCode(400);
 
-            $this->logError(
-                sprintf(
-                    'Error creating Shared Stimulus: %s',
-                    $response->jsonSerialize()['message'] ?? 'Internal error'
-                )
-            );
+            $this->logError(sprintf('Error creating Shared Stimulus: %s', $response->getMessage()));
         }
 
         $response = $builder

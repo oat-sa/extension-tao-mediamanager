@@ -86,7 +86,7 @@ msgstr "Gérer le schéma"
 
 #, tao-public
 msgid "Media"
-msgstr ""
+msgstr "Média"
 
 msgid "Media imported successfully"
 msgstr "Média importé avec succès"
@@ -139,7 +139,7 @@ msgid "Upload Media"
 msgstr "Envoyer un média"
 
 msgid "Upload new media"
-msgstr ""
+msgstr "Envoyer un nouveau média"
 
 msgid "You can\'t upload a zip file as a media"
 msgstr ""

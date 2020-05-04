@@ -20,26 +20,29 @@
 
 namespace oat\taoMediaManager\model\sharedStimulus\service;
 
+use common_Exception;
+use common_exception_Error;
+use ErrorException;
+use FileNotFoundException;
 use oat\oatbox\service\ConfigurableService;
-use oat\tao\model\http\response\ErrorJsonResponse;
-use oat\tao\model\http\response\JsonResponseInterface;
-use oat\tao\model\http\response\SuccessJsonResponse;
 use oat\taoMediaManager\model\sharedStimulus\CreateCommand;
+use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 use Psr\Http\Message\ServerRequestInterface;
-use Throwable;
 
 class CreateByRequestService extends ConfigurableService
 {
-    public function create(ServerRequestInterface $request): JsonResponseInterface
+    /**
+     * @param ServerRequestInterface $request
+     * @return SharedStimulus
+     * @throws ErrorException
+     * @throws FileNotFoundException
+     * @throws common_Exception
+     * @throws common_exception_Error
+     */
+    public function create(ServerRequestInterface $request): SharedStimulus
     {
-        try {
-            $sharedStimulus = $this->getCreateService()
-                ->create($this->createCommand($this->getParsedBody($request)));
-
-            return new SuccessJsonResponse($sharedStimulus->jsonSerialize());
-        } catch (Throwable $exception) {
-            return new ErrorJsonResponse($exception->getCode(), $exception->getMessage());
-        }
+        return $this->getCreateService()
+            ->create($this->createCommand($this->getParsedBody($request)));
     }
 
     private function createCommand(array $parsedBody): CreateCommand

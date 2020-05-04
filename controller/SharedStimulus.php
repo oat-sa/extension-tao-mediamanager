@@ -24,6 +24,7 @@ namespace oat\taoMediaManager\controller;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\tao\model\http\builder\ResponseBuilder;
 use oat\tao\model\http\response\ErrorJsonResponse;
+use oat\tao\model\http\response\SuccessJsonResponse;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\sharedStimulus\CreateCommand;
 use oat\taoMediaManager\model\sharedStimulus\service\CreateByRequestService;
@@ -45,15 +46,19 @@ class SharedStimulus extends tao_actions_SaSModule
 
     private function createFromApiRequest(): void
     {
-        $response = $this->getCreateByRequestService()
-            ->create($this->getPsrRequest());
-
         $builder = $this->getRequestBuilder();
 
-        if ($response instanceof ErrorJsonResponse) {
-            $builder->withStatusCode(400);
+        try {
+            $sharedStimulus = $this->getCreateByRequestService()
+                ->create($this->getPsrRequest());
 
-            $this->logError(sprintf('Error creating Shared Stimulus: %s', $response->getMessage()));
+            $response = new SuccessJsonResponse($sharedStimulus->jsonSerialize());
+        } catch (Throwable $exception) {
+            $response = new ErrorJsonResponse($exception->getCode(), $exception->getMessage());
+
+            $this->logError(sprintf('Error creating Shared Stimulus: %s', $exception->getMessage()));
+
+            $builder->withStatusCode(400);
         }
 
         $this->setResponse($builder->withBody($response)->build());

@@ -20,17 +20,12 @@
 
 namespace oat\taoMediaManager\controller;
 
-use oat\taoMediaManager\model\MediaService;
+use tao_actions_SaSModule;
 
-class Authoring extends \tao_actions_SaSModule
+class Authoring extends tao_actions_SaSModule
 {
     public function index(): void
     {
         $this->setView('sharedStimulus/author.tpl');
-    }
-
-    protected function getClassService()
-    {
-        return MediaService::singleton();
     }
 }

@@ -26,10 +26,11 @@ use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\sharedStimulus\CreateCommand;
 use oat\taoMediaManager\model\sharedStimulus\service\CreateByRequestService;
 use oat\taoMediaManager\model\sharedStimulus\service\CreateService;
+use tao_actions_SaSModule;
 use tao_helpers_Uri;
 use Throwable;
 
-class SharedStimulus extends \tao_actions_SaSModule
+class SharedStimulus extends tao_actions_SaSModule
 {
     use LoggerAwareTrait;
 

@@ -22,6 +22,8 @@
 namespace oat\taoMediaManager\controller;
 
 use oat\oatbox\log\LoggerAwareTrait;
+use oat\tao\model\http\builder\ResponseBuilder;
+use oat\tao\model\http\response\ErrorJsonResponse;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\sharedStimulus\CreateCommand;
 use oat\taoMediaManager\model\sharedStimulus\service\CreateByRequestService;
@@ -46,18 +48,24 @@ class SharedStimulus extends tao_actions_SaSModule
         $response = $this->getCreateByRequestService()
             ->create($this->getPsrRequest(), $this->getPsrResponse());
 
-        $responseContent = json_decode((string)$response->getBody(), true);
+        $builder = $this->getRequestBuilder();
 
-        if ($response->getStatusCode() !== 200) {
+        if ($response instanceof ErrorJsonResponse) {
+            $builder->withStatusCode(400);
+
             $this->logError(
                 sprintf(
                     'Error creating Shared Stimulus: %s',
-                    $responseContent['message'] ?? 'Internal error'
+                    $response->jsonSerialize()['message'] ?? 'Internal error'
                 )
             );
         }
 
-        $this->returnJson($responseContent, $response->getStatusCode());
+        $response = $builder
+            ->withBody($response)
+            ->build();
+
+        $this->setResponse($response);
     }
 
     /*
@@ -81,6 +89,11 @@ class SharedStimulus extends tao_actions_SaSModule
     private function isJsonRequest(): bool
     {
         return current($this->getPsrRequest()->getHeader('content-type')) === 'application/json';
+    }
+
+    private function getRequestBuilder(): ResponseBuilder
+    {
+        return $this->getServiceLocator()->get(ResponseBuilder::class);
     }
 
     private function getCreateByRequestService(): CreateByRequestService

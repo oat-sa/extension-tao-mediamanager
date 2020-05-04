@@ -21,38 +21,25 @@
 namespace oat\taoMediaManager\model\sharedStimulus\service;
 
 use oat\oatbox\service\ConfigurableService;
+use oat\tao\model\http\response\ErrorJsonResponse;
+use oat\tao\model\http\response\JsonResponseInterface;
+use oat\tao\model\http\response\SuccessJsonResponse;
 use oat\taoMediaManager\model\sharedStimulus\CreateCommand;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
-use function GuzzleHttp\Psr7\stream_for;
 
 class CreateByRequestService extends ConfigurableService
 {
-    public function create(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    public function create(ServerRequestInterface $request, ResponseInterface $response): JsonResponseInterface
     {
         try {
             $sharedStimulus = $this->getCreateService()
                 ->create($this->createCommand($this->getParsedBody($request)));
 
-            return $this->populateResponse(
-                $response,
-                200,
-                [
-                    'success' => true,
-                    'data' => $sharedStimulus->jsonSerialize()
-                ]
-            );
+            return new SuccessJsonResponse($sharedStimulus->jsonSerialize());
         } catch (Throwable $exception) {
-            return $this->populateResponse(
-                $response,
-                400,
-                [
-                    'success' => false,
-                    'code' => $exception->getCode(),
-                    'message' => $exception->getMessage()
-                ]
-            );
+            return new ErrorJsonResponse($exception->getCode(), $exception->getMessage());
         }
     }
 
@@ -68,12 +55,6 @@ class CreateByRequestService extends ConfigurableService
     private function getParsedBody(ServerRequestInterface $request): array
     {
         return json_decode((string)$request->getBody(), true);
-    }
-
-    private function populateResponse(ResponseInterface $response, int $statusCode, array $payload): ResponseInterface
-    {
-        return $response->withStatus($statusCode)
-            ->withBody(stream_for(json_encode($payload)));
     }
 
     private function getCreateService(): CreateService

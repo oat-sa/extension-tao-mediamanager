@@ -143,7 +143,9 @@ class CreateService extends ConfigurableService
             . DIRECTORY_SEPARATOR
             . '..'
             . DIRECTORY_SEPARATOR
-            . 'assets'
+            . 'views'
+            . DIRECTORY_SEPARATOR
+            . 'templates'
             . DIRECTORY_SEPARATOR
             . 'sharedStimulus'
             . DIRECTORY_SEPARATOR

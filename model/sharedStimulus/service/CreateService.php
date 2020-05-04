@@ -77,6 +77,7 @@ class CreateService extends ConfigurableService
                     'lang' => $command->getLanguageUri(),
                     'source' => [
                         'name' => $sharedStimulusName,
+                        'type' => 'application/qti+xml',
                     ],
                     'uploaded_file' => DIRECTORY_SEPARATOR
                         . $uploadService->getUserDirectoryHash()

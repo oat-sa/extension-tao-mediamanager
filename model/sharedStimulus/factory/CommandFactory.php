@@ -18,49 +18,27 @@
  * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
  */
 
-namespace oat\taoMediaManager\model\sharedStimulus\service;
+namespace oat\taoMediaManager\model\sharedStimulus\factory;
 
-use common_Exception;
-use common_exception_Error;
-use ErrorException;
-use FileNotFoundException;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\sharedStimulus\CreateCommand;
-use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 use Psr\Http\Message\ServerRequestInterface;
 
-class CreateByRequestService extends ConfigurableService
+class CommandFactory extends ConfigurableService
 {
     /**
      * @param ServerRequestInterface $request
-     * @return SharedStimulus
-     * @throws ErrorException
-     * @throws FileNotFoundException
-     * @throws common_Exception
-     * @throws common_exception_Error
+     *
+     * @return CreateCommand
      */
-    public function create(ServerRequestInterface $request): SharedStimulus
+    public function createByRequest(ServerRequestInterface $request): CreateCommand
     {
-        return $this->getCreateService()
-            ->create($this->createCommand($this->getParsedBody($request)));
-    }
+        $parsedBody = json_decode((string)$request->getBody(), true);
 
-    private function createCommand(array $parsedBody): CreateCommand
-    {
         return new CreateCommand(
             $parsedBody['classUri'] ?? '',
             $parsedBody['name'] ?? null,
             $parsedBody['languageUri'] ?? null
         );
-    }
-
-    private function getParsedBody(ServerRequestInterface $request): array
-    {
-        return json_decode((string)$request->getBody(), true);
-    }
-
-    private function getCreateService(): CreateService
-    {
-        return $this->getServiceLocator()->get(CreateService::class);
     }
 }

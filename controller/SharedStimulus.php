@@ -22,74 +22,50 @@
 namespace oat\taoMediaManager\controller;
 
 use oat\oatbox\log\LoggerAwareTrait;
-use oat\tao\model\http\builder\ResponseBuilder;
+use oat\tao\model\http\formatter\ResponseFormatter;
 use oat\tao\model\http\response\ErrorJsonResponse;
 use oat\tao\model\http\response\SuccessJsonResponse;
 use oat\taoMediaManager\model\MediaService;
-use oat\taoMediaManager\model\sharedStimulus\CreateCommand;
-use oat\taoMediaManager\model\sharedStimulus\service\CreateByRequestService;
+use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
 use oat\taoMediaManager\model\sharedStimulus\service\CreateService;
-use tao_actions_SaSModule;
-use tao_helpers_Uri;
+use tao_actions_CommonModule;
 use Throwable;
 
-class SharedStimulus extends tao_actions_SaSModule
+class SharedStimulus extends tao_actions_CommonModule
 {
     use LoggerAwareTrait;
 
     public function create(): void
     {
-        $this->isJsonRequest()
-            ? $this->createFromApiRequest()
-            : $this->createFromFormRequest();
-    }
-
-    private function createFromApiRequest(): void
-    {
-        $builder = $this->getRequestBuilder();
+        $formatter = $this->getResponseFormatter()
+            ->withJsonHeader();
 
         try {
-            $sharedStimulus = $this->getCreateByRequestService()
-                ->create($this->getPsrRequest());
+            $command = $this->getCommandFactory()
+                ->createByRequest($this->getPsrRequest());
 
-            $response = new SuccessJsonResponse($sharedStimulus->jsonSerialize());
+            $sharedStimulus = $this->getCreateService()
+                ->create($command);
+
+            $formatter->withBody(new SuccessJsonResponse($sharedStimulus->jsonSerialize()));
         } catch (Throwable $exception) {
-            $response = new ErrorJsonResponse($exception->getCode(), $exception->getMessage());
-
             $this->logError(sprintf('Error creating Shared Stimulus: %s', $exception->getMessage()));
 
-            $builder->withStatusCode(400);
+            $formatter->withStatusCode(400)
+                ->withBody(new ErrorJsonResponse($exception->getCode(), $exception->getMessage()));
         }
 
-        $this->setResponse($builder->withBody($response)->build());
+        $this->setResponse($formatter->format($this->getPsrResponse()));
     }
 
-    /*
-     * @TODO This whole method and template must be removed if FE uses API call instead.
-     */
-    private function createFromFormRequest(): void
+    private function getResponseFormatter(): ResponseFormatter
     {
-        try {
-            $this->getCreateService()
-                ->create(new CreateCommand(tao_helpers_Uri::decode($this->getRequestParameter('classUri'))));
-
-            $this->setData('message', __('Instance saved'));
-        } catch (Throwable $e) {
-            $this->logError(sprintf('Error creating Shared Stimulus: %s', $e->getMessage()));
-            $this->setData('error', __('Error creating Shared Stimulus'));
-        }
-
-        $this->setView('sharedStimulus/create.tpl');
+        return $this->getServiceLocator()->get(ResponseFormatter::class);
     }
 
-    private function getRequestBuilder(): ResponseBuilder
+    private function getCommandFactory(): CommandFactory
     {
-        return $this->getServiceLocator()->get(ResponseBuilder::class);
-    }
-
-    private function getCreateByRequestService(): CreateByRequestService
-    {
-        return $this->getServiceLocator()->get(CreateByRequestService::class);
+        return $this->getServiceLocator()->get(CommandFactory::class);
     }
 
     private function getCreateService(): CreateService

@@ -82,11 +82,6 @@ class SharedStimulus extends tao_actions_SaSModule
         $this->setView('sharedStimulus/create.tpl');
     }
 
-    private function isJsonRequest(): bool
-    {
-        return current($this->getPsrRequest()->getHeader('content-type')) === 'application/json';
-    }
-
     private function getRequestBuilder(): ResponseBuilder
     {
         return $this->getServiceLocator()->get(ResponseBuilder::class);

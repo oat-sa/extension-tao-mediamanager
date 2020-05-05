@@ -51,9 +51,7 @@ class CreateService extends ConfigurableService
     public function create(CreateCommand $command): SharedStimulus
     {
         $fileName = $this->getTempFileName();
-        $filePath = $this->getTempFilePath($fileName);
-
-        $this->saveTemporaryFile($filePath, $this->getDefaultTemplateContent());
+        $filePath = $this->saveTemporaryFile($fileName, $this->getDefaultTemplateContent());
 
         $uploadService = $this->getUploadService();
 
@@ -124,16 +122,6 @@ class CreateService extends ConfigurableService
         return $this->getServiceLocator()->get(SharedStimulusImporter::class);
     }
 
-    private function getTempFilePath(string $fileName): string
-    {
-        return $this->getTempUploadPath() . DIRECTORY_SEPARATOR . $fileName;
-    }
-
-    private function getTempUploadPath(): string
-    {
-        return $this->getOption(self::OPTION_TEMP_UPLOAD_PATH) ?? sys_get_temp_dir();
-    }
-
     private function getTemplateFilePath(): string
     {
         return $this->getOption(self::OPTION_TEMPLATE_PATH) ?? __DIR__
@@ -159,21 +147,24 @@ class CreateService extends ConfigurableService
     private function getDefaultTemplateContent(): string
     {
         $templatePath = $this->getTemplateFilePath();
-        $templateContent = file_get_contents($templatePath);
 
-        if ($templateContent === false) {
-            throw new FileNotFoundException(sprintf('Shared Stimulus template %s not found', $templatePath));
+        if (!is_readable($templatePath)) {
+            throw new FileNotFoundException(sprintf('Shared Stimulus template not found: %s', $templatePath));
         }
 
-        return $templateContent;
+        return file_get_contents($templatePath);
     }
 
     /**
      * @throws ErrorException
      */
-    private function saveTemporaryFile(string $filePath, string $templateContent): void
+    private function saveTemporaryFile(string $fileName, string $templateContent): string
     {
-        if (file_put_contents($filePath, $templateContent) === false) {
+        $fileDirectory = $this->getOption(self::OPTION_TEMP_UPLOAD_PATH) ?? sys_get_temp_dir();
+
+        $filePath = $fileDirectory . DIRECTORY_SEPARATOR . $fileName;
+
+        if (!is_writable($fileDirectory) || file_put_contents($filePath, $templateContent) === false) {
             throw new ErrorException(
                 sprintf(
                     'Could not save Shared Stimulus to temporary path %s',
@@ -181,5 +172,7 @@ class CreateService extends ConfigurableService
                 )
             );
         }
+
+        return $filePath;
     }
 }

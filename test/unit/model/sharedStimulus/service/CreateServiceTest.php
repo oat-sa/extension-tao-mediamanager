@@ -22,6 +22,8 @@ namespace oat\taoMediaManager\test\unit\model\sharedStimulus\service;
 
 use common_report_Report;
 use core_kernel_classes_Class;
+use ErrorException;
+use FileNotFoundException;
 use oat\generis\model\data\Ontology;
 use oat\generis\test\TestCase;
 use oat\tao\model\upload\UploadService;
@@ -134,6 +136,38 @@ class CreateServiceTest extends TestCase
                 self::LANGUAGE_URI
             ),
             $createdSharedStimulus
+        );
+    }
+
+    public function testCannotCreateSharedStimulusWithInvalidTemporaryPath(): void
+    {
+        $this->service->setOption(CreateService::OPTION_TEMP_UPLOAD_PATH, 'invalid_path');
+
+        $this->expectException(ErrorException::class);
+        $this->expectExceptionMessage('Could not save Shared Stimulus to temporary path');
+
+        $this->service->create(
+            new CreateCommand(
+                self::CLASS_URI,
+                self::NAME,
+                self::LANGUAGE_URI
+            )
+        );
+    }
+
+    public function testCannotCreateSharedStimulusWithInvalidTemplatePath(): void
+    {
+        $this->service->setOption(CreateService::OPTION_TEMPLATE_PATH, 'invalid_path');
+
+        $this->expectException(FileNotFoundException::class);
+        $this->expectExceptionMessage('Shared Stimulus template not found');
+
+        $this->service->create(
+            new CreateCommand(
+                self::CLASS_URI,
+                self::NAME,
+                self::LANGUAGE_URI
+            )
         );
     }
 }

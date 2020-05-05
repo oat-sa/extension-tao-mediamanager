@@ -26,6 +26,8 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class CommandFactory extends ConfigurableService
 {
+    private const MEDIA_CLASS_URI = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Media';
+
     /**
      * @param ServerRequestInterface $request
      *
@@ -36,7 +38,7 @@ class CommandFactory extends ConfigurableService
         $parsedBody = json_decode((string)$request->getBody(), true);
 
         return new CreateCommand(
-            $parsedBody['classUri'] ?? '',
+            $parsedBody['classUri'] ?? self::MEDIA_CLASS_URI,
             $parsedBody['name'] ?? null,
             $parsedBody['languageUri'] ?? null
         );

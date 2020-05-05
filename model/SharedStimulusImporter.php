@@ -32,7 +32,6 @@ use oat\tao\model\import\TaskParameterProviderInterface;
 use qtism\data\QtiComponent;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
 /**
  * Service methods to manage the Media
@@ -42,7 +41,6 @@ use Zend\ServiceManager\ServiceLocatorAwareInterface;
  */
 class SharedStimulusImporter extends ConfigurableService implements
     \tao_models_classes_import_ImportHandler,
-    ServiceLocatorAwareInterface,
     TaskParameterProviderInterface,
     TaoLoggerAwareInterface
 {

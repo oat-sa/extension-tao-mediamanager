@@ -37,6 +37,8 @@ class CreateServiceTest extends TestCase
     private const CLASS_URI = 'uri';
     private const LANGUAGE_URI = 'uri';
     private const NAME = 'name';
+    private const USER_DIRECTORY_HASH = 'user_directory_hash';
+    private const UPLOADED_FILE = 'uploaded.xml';
 
     /** @var CreateService */
     private $service;
@@ -65,10 +67,23 @@ class CreateServiceTest extends TestCase
                 ]
             )
         );
+    }
+
+    public function testCreateSharedStimulus(): void
+    {
+        $this->uploadService
+            ->method('uploadFile')
+            ->willReturn(
+                [
+                    'uploaded_file' => self::UPLOADED_FILE
+                ]
+            );
+
+        $this->uploadService
+            ->method('getUserDirectoryHash')
+            ->willReturn(self::USER_DIRECTORY_HASH);
 
         $kernelClass = $this->createMock(core_kernel_classes_Class::class);
-        $kernelClass->method('getInstances')
-            ->willReturn(1);
 
         $this->ontology
             ->method('getClass')
@@ -88,18 +103,29 @@ class CreateServiceTest extends TestCase
 
         $this->sharedStimulusImporter
             ->method('import')
+            ->with(
+                $kernelClass,
+                [
+                    'lang' => self::LANGUAGE_URI,
+                    'source' => [
+                        'name' => self::NAME,
+                        'type' => 'application/qti+xml',
+                    ],
+                    'uploaded_file' => DIRECTORY_SEPARATOR
+                        . self::USER_DIRECTORY_HASH
+                        . DIRECTORY_SEPARATOR
+                        . self::UPLOADED_FILE
+                ]
+            )
             ->willReturn($importReport);
-    }
 
-    public function testCreateSharedStimulus(): void
-    {
-        $command = new CreateCommand(
-            self::CLASS_URI,
-            self::NAME,
-            self::LANGUAGE_URI
+        $createdSharedStimulus = $this->service->create(
+            new CreateCommand(
+                self::CLASS_URI,
+                self::NAME,
+                self::LANGUAGE_URI
+            )
         );
-
-        $createdSharedStimulus = $this->service->create($command);
 
         $this->assertEquals(
             new SharedStimulus(

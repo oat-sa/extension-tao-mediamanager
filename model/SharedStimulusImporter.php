@@ -32,15 +32,14 @@ use oat\tao\model\import\TaskParameterProviderInterface;
 use qtism\data\QtiComponent;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
+use tao_models_classes_import_ImportHandler;
 
 /**
- * Service methods to manage the Media
- *
  * @access  public
  * @package taoMediaManager
  */
 class SharedStimulusImporter extends ConfigurableService implements
-    \tao_models_classes_import_ImportHandler,
+    tao_models_classes_import_ImportHandler,
     TaskParameterProviderInterface,
     TaoLoggerAwareInterface
 {

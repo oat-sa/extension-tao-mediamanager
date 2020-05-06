@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE structures SYSTEM "../../tao/doc/structures.dtd">
 <structures>
-    <structure id='taoMediaManager' name="Media" level="7" group="main">
+    <structure id='taoMediaManager' name="Assets" level="7" group="main">
         <description>Media Manager extension</description>
         <icon id="icon-media" src=""/>
         <sections>
@@ -27,6 +27,9 @@
                     <action id="media-properties" name="Properties"  url="/taoMediaManager/MediaManager/editInstance" group="content" context="instance">
                         <icon id="icon-edit"/>
                     </action>
+                    <action id="media-authoring" name="Authoring" url="/taoMediaManager/MediaManager/editInstance" group="content" context="instance">
+                        <icon id="icon-edit"/>
+                    </action>
                     <action id="media-class-new" name="New class" url="/taoMediaManager/MediaManager/addSubClass" context="resource" group="tree" binding="subClass">
                         <icon id="icon-folder-open"/>
                     </action>
@@ -46,6 +49,9 @@
                     <action id="media-export" name="Export" url="/taoMediaManager/MediaExport/index" group="tree"
                             context="resource">
                         <icon id="icon-export"/>
+                    </action>
+                    <action id="create-shared-stimulus" name="New passage" url="/taoMediaManager/SharedStimulus/create" group="tree" context="resource">
+                        <icon id="icon-select-all"/>
                     </action>
                 </actions>
             </section>

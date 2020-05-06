@@ -22,6 +22,8 @@
 
 namespace oat\taoMediaManager\scripts\update;
 
+use oat\tao\scripts\update\OntologyUpdater;
+
 class Updater extends \common_ext_ExtensionUpdater
 {
     /**
@@ -36,5 +38,11 @@ class Updater extends \common_ext_ExtensionUpdater
         }
 
         $this->skip('0.3.0', '9.3.0');
+
+        if ($this->isVersion('9.3.0')) {
+            OntologyUpdater::syncModels();
+
+            $this->setVersion('10.0.0');
+        }
     }
 }

@@ -199,7 +199,7 @@ class SharedStimulusImporterTest extends TestCase
             ->getMock();
 
         $instance = new \core_kernel_classes_Resource('http://fancyDomain.com/tao.rdf#fancyInstanceUri');
-        $sharedImporter = new SharedStimulusImporter($instance->getUri());
+        $sharedImporter = (new SharedStimulusImporter())->setInstanceUri($instance->getUri());
 
         $serviceMangerMock = $this->createMock(ServiceLocatorInterface::class);
         $uploadServiceMock = $this->createMock(UploadService::class);
@@ -265,7 +265,7 @@ class SharedStimulusImporterTest extends TestCase
         $sm->get(Argument::is(LoggerService::SERVICE_ID))->willReturn(new NullLogger());
 
         if (!is_null($uri)) {
-            $importer = new SharedStimulusImporter($uri);
+            $importer = (new SharedStimulusImporter())->setInstanceUri($uri);
         } else {
             $importer = new SharedStimulusImporter();
         }

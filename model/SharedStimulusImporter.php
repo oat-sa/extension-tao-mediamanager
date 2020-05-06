@@ -25,23 +25,21 @@ use oat\oatbox\filesystem\File;
 use common_report_Report as Report;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\log\TaoLoggerAwareInterface;
+use oat\oatbox\service\ConfigurableService;
 use tao_helpers_form_Form as Form;
 use oat\tao\model\import\ImportHandlerHelperTrait;
 use oat\tao\model\import\TaskParameterProviderInterface;
 use qtism\data\QtiComponent;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use tao_models_classes_import_ImportHandler;
 
 /**
- * Service methods to manage the Media
- *
  * @access  public
  * @package taoMediaManager
  */
-class SharedStimulusImporter implements
-    \tao_models_classes_import_ImportHandler,
-    ServiceLocatorAwareInterface,
+class SharedStimulusImporter extends ConfigurableService implements
+    tao_models_classes_import_ImportHandler,
     TaskParameterProviderInterface,
     TaoLoggerAwareInterface
 {
@@ -50,15 +48,17 @@ class SharedStimulusImporter implements
     }
     use LoggerAwareTrait;
 
-    /**
-     * @var SharedStimulusPackageImporter
-     */
+    /** @var SharedStimulusPackageImporter */
     private $zipImporter = null;
+
+    /** @var string */
     private $instanceUri;
 
-    public function __construct($instanceUri = null)
+    public function setInstanceUri(string $instanceUri): self
     {
         $this->instanceUri = $instanceUri;
+
+        return $this;
     }
 
     /**

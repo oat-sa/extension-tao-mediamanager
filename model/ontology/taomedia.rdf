@@ -9,8 +9,8 @@
 	xmlns:tao="http://www.tao.lu/Ontologies/TAO.rdf#"
 >
   <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOMedia.rdf#Media">
-    <rdfs:label xml:lang="en-US"><![CDATA[Media]]></rdfs:label>
-    <rdfs:comment xml:lang="en-US"><![CDATA[Media]]></rdfs:comment>
+    <rdfs:label xml:lang="en-US"><![CDATA[Assets]]></rdfs:label>
+    <rdfs:comment xml:lang="en-US"><![CDATA[Assets]]></rdfs:comment>
     <rdfs:subClassOf rdf:resource="http://www.tao.lu/Ontologies/TAO.rdf#TAOObject"/>
   </rdf:Description>
 

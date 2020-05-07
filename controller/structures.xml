@@ -51,7 +51,7 @@
                             context="resource">
                         <icon id="icon-export"/>
                     </action>
-                    <action id="create-shared-stimulus" name="New passage" url="/taoMediaManager/SharedStimulus/create" group="tree" context="resource" binding="instanciate">
+                    <action id="create-shared-stimulus" name="New passage" url="/taoMediaManager/SharedStimulus/create" group="tree" context="resource" binding="newPassage">
                         <icon id="icon-select-all"/>
                     </action>
                 </actions>

@@ -28,7 +28,7 @@ return [
     'label' => 'extension-tao-mediamanager',
     'description' => 'TAO media manager extension',
     'license' => 'GPL-2.0',
-    'version' => '10.1.0',
+    'version' => '9.5.0',
     'author' => 'Open Assessment Technologies SA',
     'requires' => [
         'tao' => 'dev-feature/NEX-961-common-response-builder',

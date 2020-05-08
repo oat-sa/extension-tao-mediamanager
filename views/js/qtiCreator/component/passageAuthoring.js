@@ -23,7 +23,7 @@ define([
     'ui/component',
     'core/pluginLoader',
     'taoQtiItem/qtiCreator/editor/areaBroker',
-    'tpl!taoMediaManager/qtiCreator/component/tpl/assetAuthoring',
+    'tpl!taoMediaManager/qtiCreator/component/tpl/passageAuthoring',
     'css!taoQtiItemCss/qti-runner.css',
     'css!taoQtiItemCss/themes/default.css',
     'css!taoQtiItemCss/item-creator.css'
@@ -66,7 +66,7 @@ define([
      * @returns {component}
      * @fires ready - When the component is ready to work
      */
-    function assetAuthoringFactory(container, config) {
+    function passageAuthoringFactory(container, config) {
         let areaBroker;
         let itemCreator;
 

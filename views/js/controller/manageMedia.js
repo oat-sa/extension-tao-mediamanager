@@ -10,7 +10,7 @@ define([
     'uri',
     'ui/previewer',
     'layout/section',
-    'taoMediaManager/qtiCreator/component/assetAuthoring'
+    'taoMediaManager/qtiCreator/component/passageAuthoring'
 ], function($, __, module, helpers, binder, uri, previewer, section, assetAuthoringFactory) {
     'use strict';
 
@@ -97,7 +97,7 @@ define([
                 //     });
             });
 
-            binder.register('assetsAuthoring', function assetsAuthoring(actionContext){
+            binder.register('passageAuthoring', function passageAuthoring(actionContext){
 
                 var data = _.pick(actionContext, ['id']);
                 var wideDifferenciator = '[data-content-target="wide"]';
@@ -122,7 +122,7 @@ define([
                     bundle: 'taoQtiItem/loader/taoQtiItem.min',
                     category: 'panel'
                 }];
-                assetAuthoringFactory($('.assets-authoring'), { plugins, properties: {
+                passageAuthoringFactory($('.assets-authoring'), { plugins, properties: {
                         uri: actionContext.uri,
                         label: 'Asset',
                         baseUrl: "/",

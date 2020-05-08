@@ -53,48 +53,37 @@ define([
                 if (actionContext.type !== 'class') {
                     signature = actionContext.classSignature;
                 }
-                // Remove when implement
-                console.log('Pending to be implemented, URI: ', actionContext.uri);
-                if(actionContext.tree){
-                    $(actionContext.tree).trigger('addnode.taotree', [{
-                        uri       : uri.decode(actionContext.uri),
-                        label     : actionContext.label,
-                        parent    : uri.decode(actionContext.classUri),
-                        cssClass  : 'node-instance'
-                    }]);
-                }
-                // Remove top when implement
 
-                // return request({
-                //     url: self.url,
-                //     method: "POST",
-                //     data: {id: classUri, type: 'instance', signature: signature},
-                //     dataType: 'json'
-                // })
-                //     .then(function(response) {
-                //         if (response.success && response.uri) {
-                //             //backward compat format for jstree
-                //             if(actionContext.tree){
-                //                 $(actionContext.tree).trigger('addnode.taotree', [{
-                //                     uri       : uri.decode(response.uri),
-                //                     label     : response.label,
-                //                     parent    : uri.decode(actionContext.classUri),
-                //                     cssClass  : 'node-instance'
-                //                 }]);
-                //             }
-                //
-                //             //return format (resourceSelector)
-                //             return {
-                //                 uri       : uri.decode(response.uri),
-                //                 label     : response.label,
-                //                 classUri  : uri.decode(actionContext.classUri),
-                //                 type      : 'instance'
-                //             };
-                //
-                //         } else {
-                //             throw new Error(__('Adding the new resource has failed'));
-                //         }
-                //     });
+                return request({
+                    url: self.url,
+                    method: "POST",
+                    data: { id: classUri, type: 'instance', signature: signature },
+                    dataType: 'json'
+                })
+                .then(function(response) {
+                    if (response.success && response.data) {
+                        //backward compat format for jstree
+                        if(actionContext.tree){
+                            $(actionContext.tree).trigger('addnode.taotree', [{
+                                uri       : uri.decode(response.data.uri),
+                                label     : response.data.label,
+                                parent    : uri.decode(actionContext.classUri),
+                                cssClass  : 'node-instance'
+                            }]);
+                        }
+
+                        //return format (resourceSelector)
+                        return {
+                            uri       : uri.decode(response.data.uri),
+                            label     : response.data.label,
+                            classUri  : uri.decode(actionContext.classUri),
+                            type      : 'instance'
+                        };
+
+                    } else {
+                        throw new Error(__('Adding the new resource has failed'));
+                    }
+                });
             });
 
             binder.register('passageAuthoring', function passageAuthoring(actionContext){

@@ -8,8 +8,10 @@ define([
     'helpers',
     'layout/actions/binder',
     'uri',
-    'ui/previewer'
-], function($, __, module, helpers, binder, uri) {
+    'ui/previewer',
+    'layout/section',
+    'taoMediaManager/qtiCreator/component/assetAuthoring'
+], function($, __, module, helpers, binder, uri, previewer, section, assetAuthoringFactory) {
     'use strict';
 
     var manageMediaController =  {
@@ -93,6 +95,40 @@ define([
                 //             throw new Error(__('Adding the new resource has failed'));
                 //         }
                 //     });
+            });
+
+            binder.register('assetsAuthoring', function assetsAuthoring(actionContext){
+
+                var data = _.pick(actionContext, ['id']);
+                var wideDifferenciator = '[data-content-target="wide"]';
+                section.create({
+                    id : 'authoring',
+                    name : __('Authoring'),
+                    url : this.url,
+                    content : '<div class="assets-authoring"></div>',
+                    visible : false
+                })
+                    .show();
+                const plugins = [{
+                    module: 'taoQtiItem/qtiCreator/plugins/content/title',
+                    bundle: 'taoQtiItem/loader/taoQtiItem.min',
+                    category: 'content'
+                }, {
+                    module: 'taoQtiItem/qtiCreator/plugins/content/changeTracker',
+                    bundle: 'taoQtiItem/loader/taoQtiItem.min',
+                    category: 'content'
+                }, {
+                    module: 'taoQtiItem/qtiCreator/plugins/panel/outcomeEditor',
+                    bundle: 'taoQtiItem/loader/taoQtiItem.min',
+                    category: 'panel'
+                }];
+                assetAuthoringFactory($('.assets-authoring'), { plugins, properties: {
+                        uri: actionContext.uri,
+                        label: 'Asset',
+                        baseUrl: "/",
+                        itemDataUrl: 'http://bosa/taoMediaManager/MediaManager/getFile?uri=' +  encodeURIComponent(uri.decode(actionContext.uri))
+                    }});
+
             });
         }
     };

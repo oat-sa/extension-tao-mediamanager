@@ -31,7 +31,7 @@ return [
     'version' => '9.5.0',
     'author' => 'Open Assessment Technologies SA',
     'requires' => [
-        'tao' => 'dev-feature/NEX-961-common-response-builder',
+        'tao' => '>=42.5.0',
         'generis' => '>=12.17.0',
         'taoItems' => '>=6.0.0'
     ],

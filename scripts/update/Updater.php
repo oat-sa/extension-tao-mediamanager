@@ -42,7 +42,7 @@ class Updater extends \common_ext_ExtensionUpdater
         if ($this->isVersion('9.3.0')) {
             OntologyUpdater::syncModels();
 
-            $this->setVersion('10.0.0');
+            $this->setVersion('9.4.0');
         }
     }
 }

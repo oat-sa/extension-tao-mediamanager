@@ -50,7 +50,7 @@ define([
      *          // ...
      *      }
      *  };
-     *  const component = assetAuthoringFactory(container, config)
+     *  const component = passageAuthoringFactory(container, config)
      *      .on('ready', function onComponentReady() {
      *          // ...
      *      });
@@ -90,7 +90,7 @@ define([
             }
         };
 
-        const assetAuthoring = componentFactory(api)
+        const passageAuthoring = componentFactory(api)
             // set the component's layout
             .setTemplate(componentTpl)
 
@@ -144,10 +144,10 @@ define([
 
         // initialize the component with the provided config
         // defer the call to allow to listen to the init event
-        _.defer(() => assetAuthoring.init(config));
+        _.defer(() => passageAuthoring.init(config));
 
-        return assetAuthoring;
+        return passageAuthoring;
     }
 
-    return assetAuthoringFactory;
+    return passageAuthoringFactory;
 });

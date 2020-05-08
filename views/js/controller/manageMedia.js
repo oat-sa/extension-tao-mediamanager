@@ -11,7 +11,7 @@ define([
     'ui/previewer',
     'layout/section',
     'taoMediaManager/qtiCreator/component/passageAuthoring'
-], function($, __, module, helpers, binder, uri, previewer, section, assetAuthoringFactory) {
+], function($, __, module, helpers, binder, uri, previewer, section, passageAuthoringFactory) {
     'use strict';
 
     var manageMediaController =  {

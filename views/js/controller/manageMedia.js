@@ -10,8 +10,9 @@ define([
     'uri',
     'ui/previewer',
     'layout/section',
-    'taoMediaManager/qtiCreator/component/passageAuthoring'
-], function($, __, module, helpers, binder, uri, previewer, section, passageAuthoringFactory) {
+    'taoMediaManager/qtiCreator/component/passageAuthoring',
+    'core/request'
+], function($, __, module, helpers, binder, uri, previewer, section, passageAuthoringFactory, request) {
     'use strict';
 
     var manageMediaController =  {

@@ -1,0 +1,83 @@
+openapi: 3.0.1
+info:
+  title: Media Manager API
+  description: 'TAO Media Manager API'
+  version: v1
+
+paths:
+  /taoMediaManager/SharedStimulus/create:
+    post:
+      summary: Create a default shared stimulus
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SharedStimulus'
+      responses:
+        204:
+          $ref: '#/components/responses/SharedStimulusCreatedResponse'
+        400:
+          $ref: '#/components/responses/BadRequestResponse'
+        500:
+          $ref: '#/components/responses/InternalServerErrorResponse'
+components:
+  schemas:
+    SharedStimulus:
+      type: object
+      properties:
+        classUri:
+          type: string
+          example: 'http://tao.docker.localhost/tao.rdf#i5e89a2063326711164b1a816b433b1ec'
+        languageUri:
+          type: string
+          example: 'http://www.tao.lu/Ontologies/TAO.rdf#Langen-US'
+        name:
+          type: string
+          example: 'New Passage'
+      required:
+        - classUri
+    SharedStimulusCreated:
+      allOf:
+        - $ref: '#/components/schemas/SharedStimulus'
+        - type: object
+          properties:
+            uri:
+              type: string
+              example: "http://tao.docker.localhost/tao.rdf#i5e89a2063326711164b1a816b433b1ec"
+    SharedStimulusCreatedResponse:
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          $ref: '#/components/schemas/SharedStimulusCreated'
+    ErrorResponse:
+      properties:
+        success:
+          type: boolean
+          example: false
+        code:
+          type: integer
+          example: 400
+        message:
+          type: string
+  responses:
+    SharedStimulusCreatedResponse:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SharedStimulusCreatedResponse'
+    BadRequestResponse:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalServerErrorResponse:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'

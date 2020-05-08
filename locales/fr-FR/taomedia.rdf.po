@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TAO 3.4.0-sprint127\n"
-"PO-Revision-Date: 2020-04-30T14:29:08\n"
+"PO-Revision-Date: 2020-05-07T11:22:19\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: fr-FR\n"
@@ -12,13 +12,13 @@ msgstr ""
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#Media
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
-msgid "Media"
-msgstr "Média"
+msgid "Assets"
+msgstr ""
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#Media
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
-msgid "Media"
-msgstr "Média"
+msgid "Assets"
+msgstr ""
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#AltText
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
@@ -52,11 +52,11 @@ msgstr "Le rôle de gestionnaire de média"
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#Media
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
-msgid "Assets"
-msgstr ""
+msgid "Media"
+msgstr "Média"
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#Media
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
-msgid "Assets"
-msgstr ""
+msgid "Media"
+msgstr "Média"
 

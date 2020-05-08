@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TAO 3.4.0-sprint127\n"
-"PO-Revision-Date: 2020-04-30T14:29:09\n"
+"PO-Revision-Date: 2020-05-07T11:22:19\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: it-IT\n"
@@ -19,7 +19,12 @@ msgstr ""
 msgid "An error has occurred. Please contact your administrator."
 msgstr ""
 
-msgid "Back to Manage Assets"
+#, tao-public
+msgid "Assets"
+msgstr ""
+
+#, tao-public
+msgid "Authoring"
 msgstr ""
 
 #, tao-public
@@ -73,19 +78,12 @@ msgstr ""
 msgid "Instance saved"
 msgstr ""
 
+#, tao-public
 msgid "Manage Assets"
 msgstr ""
 
 #, tao-public
-msgid "Manage Media"
-msgstr ""
-
-#, tao-public
 msgid "Manage Schema"
-msgstr ""
-
-#, tao-public
-msgid "Media"
 msgstr ""
 
 msgid "Media imported successfully"
@@ -113,6 +111,10 @@ msgstr ""
 msgid "New class"
 msgstr ""
 
+#, tao-public
+msgid "New passage"
+msgstr ""
+
 msgid "No file found for this media"
 msgstr ""
 
@@ -121,6 +123,9 @@ msgstr ""
 
 #, tao-public
 msgid "Properties"
+msgstr ""
+
+msgid "Replace Asset"
 msgstr ""
 
 msgid "Shared Stimulus"
@@ -136,9 +141,6 @@ msgid "Unable to extract the archive"
 msgstr ""
 
 msgid "Upload Media"
-msgstr ""
-
-msgid "Upload new media"
 msgstr ""
 
 msgid "You can\'t upload a zip file as a media"

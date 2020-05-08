@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TAO 3.4.0-sprint127\n"
-"PO-Revision-Date: 2020-04-30T14:29:09\n"
+"PO-Revision-Date: 2020-05-07T11:22:19\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: lt-LT\n"
@@ -19,7 +19,12 @@ msgstr "Pridėti medijos failą"
 msgid "An error has occurred. Please contact your administrator."
 msgstr ""
 
-msgid "Back to Manage Assets"
+#, tao-public
+msgid "Assets"
+msgstr ""
+
+#, tao-public
+msgid "Authoring"
 msgstr ""
 
 #, tao-public
@@ -73,20 +78,13 @@ msgstr "Pradinis importavimas"
 msgid "Instance saved"
 msgstr "Instanciją išsaugota"
 
+#, tao-public
 msgid "Manage Assets"
 msgstr ""
 
 #, tao-public
-msgid "Manage Media"
-msgstr "Tvarkyti Mediją"
-
-#, tao-public
 msgid "Manage Schema"
 msgstr "Tvarkyti Schemą"
-
-#, tao-public
-msgid "Media"
-msgstr ""
 
 msgid "Media imported successfully"
 msgstr "Medija importuota sėkmingai"
@@ -113,6 +111,10 @@ msgstr "perkelti"
 msgid "New class"
 msgstr "Nauja klasė"
 
+#, tao-public
+msgid "New passage"
+msgstr ""
+
 msgid "No file found for this media"
 msgstr "Nerasta failas šiai medijai"
 
@@ -122,6 +124,9 @@ msgstr "Peržiūra"
 #, tao-public
 msgid "Properties"
 msgstr "Savybės"
+
+msgid "Replace Asset"
+msgstr ""
 
 msgid "Shared Stimulus"
 msgstr "Bendrinamas Stimulas"
@@ -137,9 +142,6 @@ msgstr "Nepavyko išarchyvuoti archyvo"
 
 msgid "Upload Media"
 msgstr "Įkelti Mediją"
-
-msgid "Upload new media"
-msgstr ""
 
 msgid "You can\'t upload a zip file as a media"
 msgstr ""

@@ -178,7 +178,7 @@ img.dragging.ui-draggable-dragging {
 #item-editor-widget-bar {
   display: none;
 }
-#panel-authoring {
+#assets-authoring {
   height: calc(100vh - 135px);
 }
 #passage-authoring-scope {
@@ -206,7 +206,7 @@ img.dragging.ui-draggable-dragging {
   }
 }
 
-#panel-authoring {
+#assets-authoring {
   height: calc(100vh - 135px);
   #passage-authoring-scope {
     height: 100%;
@@ -1410,5 +1410,12 @@ img.dragging.ui-draggable-dragging {
   }
   #passage-authoring-scope > nav.action-bar .menu-left {
     @include simple-flex-box(344px);
+  }
+}
+
+#panel-authoring {
+  height: calc(100vh - 135px);
+  #passage-authoring-scope {
+    height: 100%;
   }
 }

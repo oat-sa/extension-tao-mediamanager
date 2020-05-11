@@ -95,7 +95,7 @@ define([
                     id : 'authoring',
                     name : __('Authoring'),
                     url : this.url,
-                    content : '<div class="assets-authoring"></div>',
+                    content : '',
                     visible : false
                 })
                     .show();
@@ -112,7 +112,7 @@ define([
                     bundle: 'taoQtiItem/loader/taoQtiItem.min',
                     category: 'panel'
                 }];
-                passageAuthoringFactory($('.assets-authoring'), { plugins, properties: {
+                passageAuthoringFactory($('#panel-authoring'), { plugins, properties: {
                         uri: actionContext.uri,
                         label: 'Asset',
                         baseUrl: "/",

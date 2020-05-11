@@ -22,10 +22,10 @@
 
 namespace oat\taoMediaManager\scripts\install;
 
-use common_ext_action_InstallAction;
+use oat\oatbox\extension\InstallAction;
 use oat\taoMediaManager\model\QtiCreatorClientConfigRegistry;
 
-class SetQtiCreatorConfig extends common_ext_action_InstallAction
+class SetQtiCreatorConfig extends oat\oatbox\extension\InstallAction
 {
     public function __invoke($params)
     {

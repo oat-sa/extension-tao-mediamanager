@@ -99,26 +99,19 @@ define([
                     visible : false
                 })
                     .show();
-                const plugins = [{
-                    module: 'taoQtiItem/qtiCreator/plugins/content/title',
-                    bundle: 'taoQtiItem/loader/taoQtiItem.min',
-                    category: 'content'
-                }, {
-                    module: 'taoQtiItem/qtiCreator/plugins/content/changeTracker',
-                    bundle: 'taoQtiItem/loader/taoQtiItem.min',
-                    category: 'content'
-                }, {
-                    module: 'taoQtiItem/qtiCreator/plugins/panel/outcomeEditor',
-                    bundle: 'taoQtiItem/loader/taoQtiItem.min',
-                    category: 'panel'
-                }];
+                const plugins = [
+                    {
+                        module: 'taoMediaManager/qtiCreator/plugins/content/title',
+                        bundle: 'taoMediaManager/loader/taoMediaManager.min',
+                        category: 'content'
+                    }
+                ];
                 passageAuthoringFactory($('#panel-authoring'), { plugins, properties: {
-                        uri: actionContext.uri,
-                        label: 'Asset',
-                        baseUrl: "/",
-                        itemDataUrl: 'http://bosa/taoMediaManager/MediaManager/getFile?uri=' +  encodeURIComponent(uri.decode(actionContext.uri))
-                    }});
-
+                    uri: actionContext.uri,
+                    label: 'Asset',
+                    baseUrl: '/',
+                    itemDataUrl: 'http://bosa/taoMediaManager/MediaManager/getFile?uri=' +  encodeURIComponent(uri.decode(actionContext.uri))
+                }});
             });
         }
     };

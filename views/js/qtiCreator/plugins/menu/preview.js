@@ -22,7 +22,7 @@
  * It also provides a mechanism that ask to save
  * the item before the preview (if the item has changed - should).
  *
- * @author Juan Luis Gutierrez Dos Santos <bertrand@taotesting.com>
+ * @author Juan Luis Gutierrez Dos Santos <juanluis.gutierrezdossantos@taotesting.com>
  */
 define([
     'jquery',

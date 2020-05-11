@@ -19,14 +19,14 @@
 /**
  * The plugin loader with the "required" plugins
  *
- * @author Juan Luis Gutierrez Dos Santos <bertrand@taotesting.com>
+ * @author Juan Luis Gutierrez Dos Santos <juanluis.gutierrezdossantos@taotesting.com>
  */
 define([
     'core/pluginLoader',
     'taoMediaManager/qtiCreator/plugins/menu/save',
     'taoMediaManager/qtiCreator/plugins/menu/preview',
     'taoMediaManager/qtiCreator/plugins/menu/print',
-    'taoMediaManager/qtiCreator/plugins/content/title',
+    'taoMediaManager/qtiCreator/plugins/content/title'
     // 'taoQtiItem/qtiCreator/plugins/content/changeTracker',
     // 'taoQtiItem/qtiCreator/plugins/panel/outcomeEditor'
     // changeTracker, outcomeEditor

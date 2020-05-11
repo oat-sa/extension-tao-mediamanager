@@ -20,7 +20,7 @@
 /**
  * This plugin prints the item.
  *
- * @author Juan Luis Gutierrez Dos Santos <bertrand@taotesting.com>
+ * @author Juan Luis Gutierrez Dos Santos <juanluis.gutierrezdossantos@taotesting.com>
  */
 define([
     'jquery',

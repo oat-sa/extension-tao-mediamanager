@@ -21,7 +21,7 @@
  * This plugin adds a save button to the menu.
  * Could be useful, or not (Save is so 90's, we want auto-saving with undo/redo capabilities)
  *
- * @author Juan Luis Gutierrez Dos Santos <bertrand@taotesting.com>
+ * @author Juan Luis Gutierrez Dos Santos <juanluis.gutierrezdossantos@taotesting.com>
  */
 define([
     'jquery',

@@ -28,10 +28,17 @@ module.exports = function(grunt) {
             taomediamanager : {
                 options : {
                     extension : 'taoMediaManager',
+                    dependencies : ['taoItems'],
                     outputDir : 'loader',
                     bundles : [{
                         name : 'taoMediaManager',
-                        default : true
+                        default : true,
+                        babel: true,
+                        include : [
+                            'taoMediaManager/qtiCreator/**/*',
+                            'taoItems/previewer/**/*'
+                        ],
+                        dependencies : ['taoItems/loader/taoItemsRunner.min']
                     }]
                 }
             }

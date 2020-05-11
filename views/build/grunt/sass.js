@@ -1,4 +1,4 @@
-module.exports = function(grunt) { 
+module.exports = function(grunt) {
 
     var sass    = grunt.config('sass') || {};
     var watch   = grunt.config('watch') || {};
@@ -8,6 +8,7 @@ module.exports = function(grunt) {
     sass.taomediamanager = { };
     sass.taomediamanager.files = { };
     sass.taomediamanager.files[root + 'css/media.css'] = root + 'scss/media.scss';
+    sass.taomediamanager.files[root + 'css/passage-creator.css'] = root + 'scss/passage-creator.scss';
 
     watch.taomediamanagersass = {
         files : [root + 'views/scss/**/*.scss'],
@@ -19,7 +20,7 @@ module.exports = function(grunt) {
 
     notify.taomediamanagersass = {
         options: {
-            title: 'Grunt SASS', 
+            title: 'Grunt SASS',
             message: 'SASS files compiled to CSS'
         }
     };

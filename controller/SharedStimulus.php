@@ -28,6 +28,7 @@ use oat\tao\model\http\response\SuccessJsonResponse;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
 use oat\taoMediaManager\model\sharedStimulus\service\CreateService;
+use oat\taoMediaManager\model\sharedStimulus\service\RetrieveService;
 use tao_actions_CommonModule;
 use Throwable;
 
@@ -60,9 +61,12 @@ class SharedStimulus extends tao_actions_CommonModule
 
     public function get(): void
     {
+        $request = $this->getPsrRequest();
+
         // @TODO Check proper response to be added:
         $formatter = $this->getResponseFormatter()
-            ->withJsonHeader();
+            ->withJsonHeader()
+            ->withBody($this->getRetrieveService()->retrieve($request->getQueryParams()['id'] ?? ''));
 
         $this->setResponse($formatter->format($this->getPsrResponse()));
     }
@@ -80,6 +84,11 @@ class SharedStimulus extends tao_actions_CommonModule
     private function getCreateService(): CreateService
     {
         return $this->getServiceLocator()->get(CreateService::class);
+    }
+
+    private function getRetrieveService(): RetrieveService
+    {
+        return $this->getServiceLocator()->get(RetrieveService::class);
     }
 
     protected function getClassService()

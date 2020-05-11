@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TAO 3.4.0-sprint127\n"
-"PO-Revision-Date: 2020-05-07T11:22:19\n"
+"PO-Revision-Date: 2020-05-11T12:22:27\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ar-arb\n"
@@ -13,7 +13,16 @@ msgstr ""
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
 
+msgid "Adapt to screen size"
+msgstr ""
+
 msgid "Add a media file"
+msgstr ""
+
+msgid "Add Style Sheet"
+msgstr ""
+
+msgid "Adding the new resource has failed"
 msgstr ""
 
 msgid "An error has occurred. Please contact your administrator."
@@ -23,18 +32,60 @@ msgstr ""
 msgid "Assets"
 msgstr ""
 
+msgid "Author"
+msgstr ""
+
+msgid "Author item"
+msgstr ""
+
 #, tao-public
 msgid "Authoring"
+msgstr ""
+
+msgid "Back to Manage Assets"
+msgstr ""
+
+msgid "Background color"
+msgstr ""
+
+msgid "Border color"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Choice Properties"
+msgstr ""
+
+msgid "Default"
+msgstr ""
+
+msgid "Defined width"
 msgstr ""
 
 #, tao-public
 msgid "Delete"
 msgstr ""
 
+msgid "Disable this stylesheet temporarily"
+msgstr ""
+
+msgid "e.g. 13"
+msgstr ""
+
+msgid "e.g. 960"
+msgstr ""
+
 msgid "Edit Instance"
 msgstr ""
 
 msgid "Edited %s"
+msgstr ""
+
+msgid "Element Properties"
+msgstr ""
+
+msgid "Enlarge font size"
 msgstr ""
 
 #, tao-public
@@ -62,6 +113,12 @@ msgstr ""
 msgid "File name"
 msgstr ""
 
+msgid "Font family"
+msgstr ""
+
+msgid "Font size"
+msgstr ""
+
 #, tao-public
 msgid "Import"
 msgstr ""
@@ -76,6 +133,18 @@ msgid "Initial import"
 msgstr ""
 
 msgid "Instance saved"
+msgstr ""
+
+msgid "Interaction Properties"
+msgstr ""
+
+msgid "Item properties"
+msgstr ""
+
+msgid "Item Properties"
+msgstr ""
+
+msgid "Item width"
 msgstr ""
 
 #, tao-public
@@ -103,6 +172,9 @@ msgstr ""
 msgid "Media successfully exported."
 msgstr ""
 
+msgid "Modal Feedback Prop."
+msgstr ""
+
 #, tao-public
 msgid "Move"
 msgstr ""
@@ -125,7 +197,37 @@ msgstr ""
 msgid "Properties"
 msgstr ""
 
+msgid "Reduce font size"
+msgstr ""
+
+msgid "Remove custom background color"
+msgstr ""
+
+msgid "Remove custom border color"
+msgstr ""
+
+msgid "Remove custom font family"
+msgstr ""
+
+msgid "Remove custom font size"
+msgstr ""
+
+msgid "Remove custom item width"
+msgstr ""
+
+msgid "Remove custom text color"
+msgstr ""
+
 msgid "Replace Asset"
+msgstr ""
+
+msgid "Response Properties"
+msgstr ""
+
+msgid "Review comment"
+msgstr ""
+
+msgid "Save"
 msgstr ""
 
 msgid "Shared Stimulus"
@@ -135,6 +237,33 @@ msgid "Shared Stimulus edited successfully"
 msgstr ""
 
 msgid "Shared Stimulus imported successfully"
+msgstr ""
+
+msgid "Style Editor"
+msgstr ""
+
+msgid "Style Sheet Manager"
+msgstr ""
+
+msgid "Submit item for review"
+msgstr ""
+
+msgid "Submit Item for Review"
+msgstr ""
+
+msgid "Table headings"
+msgstr ""
+
+msgid "TAO default styles"
+msgstr ""
+
+msgid "Text Block Properties"
+msgstr ""
+
+msgid "Text color"
+msgstr ""
+
+msgid "The item needs to be saved before it can be previewed"
 msgstr ""
 
 msgid "Unable to extract the archive"

@@ -22,11 +22,9 @@ define([
     'lodash',
     'ui/component',
     'core/pluginLoader',
-    'taoQtiItem/qtiCreator/editor/areaBroker',
+    'taoMediaManager/qtiCreator/editor/areaBroker',
     'tpl!taoMediaManager/qtiCreator/component/tpl/passageAuthoring',
-    'css!taoQtiItemCss/qti-runner.css',
-    'css!taoQtiItemCss/themes/default.css',
-    'css!taoQtiItemCss/item-creator.css'
+    'css!taoMediaManagerCss/passage-creator.css'
 ], function (
     _,
     componentFactory,

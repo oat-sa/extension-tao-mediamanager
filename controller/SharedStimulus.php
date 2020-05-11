@@ -58,6 +58,15 @@ class SharedStimulus extends tao_actions_CommonModule
         $this->setResponse($formatter->format($this->getPsrResponse()));
     }
 
+    public function get(): void
+    {
+        // @TODO Check proper response to be added:
+        $formatter = $this->getResponseFormatter()
+            ->withJsonHeader();
+
+        $this->setResponse($formatter->format($this->getPsrResponse()));
+    }
+
     private function getResponseFormatter(): ResponseFormatter
     {
         return $this->getServiceLocator()->get(ResponseFormatter::class);

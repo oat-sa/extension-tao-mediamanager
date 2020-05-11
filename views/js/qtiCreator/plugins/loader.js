@@ -13,24 +13,24 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2016 (original work) Open Assessment Technologies SA ;
+ * Copyright (c) 2020 (original work) Open Assessment Technologies SA ;
  */
-
 
 /**
  * The plugin loader with the "required" plugins
  *
- * @author Bertrand Chevrier <bertrand@taotesting.com>
+ * @author Juan Luis Gutierrez Dos Santos <bertrand@taotesting.com>
  */
 define([
     'core/pluginLoader',
-    'taoQtiItem/qtiCreator/plugins/menu/save',
-    'taoQtiItem/qtiCreator/plugins/menu/preview',
-    'taoQtiItem/qtiCreator/plugins/menu/print',
-    'taoQtiItem/qtiCreator/plugins/content/title',
-    'taoQtiItem/qtiCreator/plugins/content/changeTracker',
-    'taoQtiItem/qtiCreator/plugins/panel/outcomeEditor'
-], function(pluginLoader, save, preview, print, title, changeTracker, outcomeEditor){
+    'taoMediaManager/qtiCreator/plugins/menu/save',
+    'taoMediaManager/qtiCreator/plugins/menu/preview',
+    'taoMediaManager/qtiCreator/plugins/menu/print',
+    'taoMediaManager/qtiCreator/plugins/content/title',
+    // 'taoQtiItem/qtiCreator/plugins/content/changeTracker',
+    // 'taoQtiItem/qtiCreator/plugins/panel/outcomeEditor'
+    // changeTracker, outcomeEditor
+], function(pluginLoader, save, preview, print, title){
     'use strict';
 
     /**
@@ -38,7 +38,7 @@ define([
      */
     return pluginLoader({
         menu       : [save, preview, print],
-        content    : [title, changeTracker],
-        panel : [outcomeEditor]
+        content    : [title], // changeTracker
+        panel : [] // outcomeEditor
     });
 });

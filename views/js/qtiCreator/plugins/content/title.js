@@ -20,7 +20,7 @@
 /**
  * This plugin displays the item label (from
  *
- * @author Bertrand Chevrier <bertrand@taotesting.com>
+ * @author Juan Luis Gutierrez Dos Santos <bertrand@taotesting.com>
  */
 define([
     'jquery',

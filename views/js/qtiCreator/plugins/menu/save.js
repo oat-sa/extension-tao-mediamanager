@@ -14,21 +14,21 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2016 (original work) Open Assessment Technologies SA ;
+ * Copyright (c) 2020 (original work) Open Assessment Technologies SA ;
  */
 
 /**
  * This plugin adds a save button to the menu.
  * Could be useful, or not (Save is so 90's, we want auto-saving with undo/redo capabilities)
  *
- * @author Bertrand Chevrier <bertrand@taotesting.com>
+ * @author Juan Luis Gutierrez Dos Santos <bertrand@taotesting.com>
  */
 define([
     'jquery',
     'i18n',
     'core/plugin',
     'ui/hider',
-    'tpl!taoQtiItem/qtiCreator/plugins/button'
+    'tpl!taoMediaManager/qtiCreator/plugins/button'
 ], function($, __, pluginFactory, hider, buttonTpl){
     'use strict';
 
@@ -49,7 +49,7 @@ define([
 
             this.$element = $(buttonTpl({
                 icon: 'save',
-                title: __('Save the item'),
+                title: __('Save the asset'),
                 text : __('Save'),
                 cssClass: 'save-trigger'
             })).on('click', function saveHandler(e){

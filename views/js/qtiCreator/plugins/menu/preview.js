@@ -14,7 +14,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2016-2019 (original work) Open Assessment Technologies SA ;
+ * Copyright (c) 2020 (original work) Open Assessment Technologies SA ;
  */
 
 /**
@@ -22,7 +22,7 @@
  * It also provides a mechanism that ask to save
  * the item before the preview (if the item has changed - should).
  *
- * @author Bertrand Chevrier <bertrand@taotesting.com>
+ * @author Juan Luis Gutierrez Dos Santos <bertrand@taotesting.com>
  */
 define([
     'jquery',
@@ -30,7 +30,7 @@ define([
     'core/plugin',
     'ui/hider',
     'taoItems/previewer/factory',
-    'tpl!taoQtiItem/qtiCreator/plugins/button',
+    'tpl!taoMediaManager/qtiCreator/plugins/button',
 ], function($, __, pluginFactory, hider, previewerFactory, buttonTpl){
     'use strict';
 
@@ -67,7 +67,7 @@ define([
             //creates the preview button
             this.$element = $(buttonTpl({
                 icon: 'preview',
-                title: __('Preview the item'),
+                title: __('Preview the asset'),
                 text : __('Preview'),
                 cssClass: 'preview-trigger'
             })).on('click', function previewHandler(e){

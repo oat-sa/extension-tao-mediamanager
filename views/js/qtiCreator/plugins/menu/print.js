@@ -14,20 +14,20 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2016 (original work) Open Assessment Technologies SA ;
+ * Copyright (c) 2020 (original work) Open Assessment Technologies SA ;
  */
 
 /**
  * This plugin prints the item.
  *
- * @author Bertrand Chevrier <bertrand@taotesting.com>
+ * @author Juan Luis Gutierrez Dos Santos <bertrand@taotesting.com>
  */
 define([
     'jquery',
     'i18n',
     'core/plugin',
     'ui/hider',
-    'tpl!taoQtiItem/qtiCreator/plugins/button'
+    'tpl!taoMediaManager/qtiCreator/plugins/button'
 ], function($, __, pluginFactory, hider, buttonTpl){
     'use strict';
 
@@ -64,7 +64,7 @@ define([
 
             this.$element = $(buttonTpl({
                 icon: 'print',
-                title: __('Print the item'),
+                title: __('Print the asset'),
                 text : __('Print'),
                 cssClass: 'print-trigger'
             })).on('click', function printHandler(e){

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TAO 3.4.0-sprint127\n"
-"PO-Revision-Date: 2020-05-11T12:22:27\n"
+"PO-Revision-Date: 2020-05-11T13:36:59\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: es-ES\n"
@@ -95,10 +95,10 @@ msgstr ""
 msgid "Export Media as Zip file"
 msgstr ""
 
-msgid "Fail to edit Shared Stimulus"
+msgid "Fail to edit shared stimulus"
 msgstr ""
 
-msgid "Fail to edit shared stimulus"
+msgid "Fail to edit Shared Stimulus"
 msgstr ""
 
 msgid "Fail to import media"
@@ -193,6 +193,15 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
+msgid "Preview the asset"
+msgstr ""
+
+msgid "Print"
+msgstr ""
+
+msgid "Print the asset"
+msgstr ""
+
 #, tao-public
 msgid "Properties"
 msgstr ""
@@ -230,6 +239,9 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
+msgid "Save the asset"
+msgstr ""
+
 msgid "Shared Stimulus"
 msgstr ""
 
@@ -245,10 +257,10 @@ msgstr ""
 msgid "Style Sheet Manager"
 msgstr ""
 
-msgid "Submit item for review"
+msgid "Submit Item for Review"
 msgstr ""
 
-msgid "Submit Item for Review"
+msgid "Submit item for review"
 msgstr ""
 
 msgid "Table headings"

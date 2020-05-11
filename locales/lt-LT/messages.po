@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TAO 3.4.0-sprint127\n"
-"PO-Revision-Date: 2020-05-11T12:22:28\n"
+"PO-Revision-Date: 2020-05-11T13:37:00\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: lt-LT\n"
@@ -95,11 +95,11 @@ msgstr "Eksportuoti"
 msgid "Export Media as Zip file"
 msgstr "Eksportuoti Mediją kaip ZIP failą"
 
-msgid "Fail to edit Shared Stimulus"
-msgstr "Nepavyko redaguoti Bendrinamo Stimulo"
-
 msgid "Fail to edit shared stimulus"
 msgstr "Nepavyko redaguoti bendrinamo stimulo"
+
+msgid "Fail to edit Shared Stimulus"
+msgstr "Nepavyko redaguoti Bendrinamo Stimulo"
 
 msgid "Fail to import media"
 msgstr "Nepavyko importuoti medijos"
@@ -193,6 +193,15 @@ msgstr "Nerasta failas šiai medijai"
 msgid "Preview"
 msgstr "Peržiūra"
 
+msgid "Preview the asset"
+msgstr ""
+
+msgid "Print"
+msgstr ""
+
+msgid "Print the asset"
+msgstr ""
+
 #, tao-public
 msgid "Properties"
 msgstr "Savybės"
@@ -230,6 +239,9 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
+msgid "Save the asset"
+msgstr ""
+
 msgid "Shared Stimulus"
 msgstr "Bendrinamas Stimulas"
 
@@ -245,10 +257,10 @@ msgstr ""
 msgid "Style Sheet Manager"
 msgstr ""
 
-msgid "Submit item for review"
+msgid "Submit Item for Review"
 msgstr ""
 
-msgid "Submit Item for Review"
+msgid "Submit item for review"
 msgstr ""
 
 msgid "Table headings"

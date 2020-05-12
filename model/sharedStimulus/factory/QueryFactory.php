@@ -26,11 +26,6 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class QueryFactory extends ConfigurableService
 {
-    /**
-     * @param ServerRequestInterface $request
-     *
-     * @return FindQuery
-     */
     public function makeFindQueryByRequest(ServerRequestInterface $request): FindQuery
     {
         return new FindQuery($request->getQueryParams()['id'] ?? '');

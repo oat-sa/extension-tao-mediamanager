@@ -23,8 +23,6 @@ namespace oat\taoMediaManager\test\unit\model\sharedStimulus\factory;
 use oat\generis\test\TestCase;
 use oat\taoMediaManager\model\sharedStimulus\CreateCommand;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
-use oat\taoMediaManager\model\sharedStimulus\service\CreateService;
-use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Http\Message\ServerRequestInterface;
 
 class CommandFactoryTest extends TestCase

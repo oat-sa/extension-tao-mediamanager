@@ -34,10 +34,6 @@ use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 class SharedStimulusRepository extends ConfigurableService
 {
     /**
-     * @param FindQuery $query
-     *
-     * @return SharedStimulus
-     *
      * @throws common_Exception
      * @throws core_kernel_classes_EmptyProperty
      */
@@ -54,10 +50,6 @@ class SharedStimulusRepository extends ConfigurableService
     }
 
     /**
-     * @param core_kernel_classes_Resource $resource
-     *
-     * @return string
-     *
      * @throws common_Exception
      * @throws core_kernel_classes_EmptyProperty
      */
@@ -69,11 +61,6 @@ class SharedStimulusRepository extends ConfigurableService
     }
 
     /**
-     * @param core_kernel_classes_Resource $resource
-     * @param string $uri
-     *
-     * @return string
-     *
      * @throws common_Exception
      * @throws core_kernel_classes_EmptyProperty
      */

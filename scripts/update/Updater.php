@@ -44,6 +44,6 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->setVersion('9.4.0');
         }
 
-        $this->skip('9.4.0', '9.5.0');
+        $this->skip('9.4.0', '9.6.0');
     }
 }

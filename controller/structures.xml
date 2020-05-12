@@ -54,9 +54,7 @@
                     <action id="create-shared-stimulus" name="New passage" url="/taoMediaManager/SharedStimulus/create" group="tree" context="resource" binding="newPassage">
                         <icon id="icon-select-all"/>
                     </action>
-
-                    <!-- @TODO Check if is necessary map it here -->
-                    <action id="create-shared-stimulus" name="Get Shared Stimulus" url="/taoMediaManager/SharedStimulus/get" group="content" context="instance" binding="getSharedStimulus">
+                    <action id="get-shared-stimulus" name="Get Shared Stimulus" url="/taoMediaManager/SharedStimulus/get" group="none" context="none" binding="getSharedStimulus">
                     </action>
                 </actions>
             </section>

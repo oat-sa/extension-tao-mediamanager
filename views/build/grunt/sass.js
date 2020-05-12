@@ -9,6 +9,7 @@ module.exports = function(grunt) {
     sass.taomediamanager.files = { };
     sass.taomediamanager.files[root + 'css/media.css'] = root + 'scss/media.scss';
     sass.taomediamanager.files[root + 'css/passage-creator.css'] = root + 'scss/passage-creator.scss';
+    sass.taomediamanager.files[root + 'css/_editor-bar.css'] = root + 'scss/qtiCreator/_editor-bar.scss';
 
     watch.taomediamanagersass = {
         files : [root + 'views/scss/**/*.scss'],

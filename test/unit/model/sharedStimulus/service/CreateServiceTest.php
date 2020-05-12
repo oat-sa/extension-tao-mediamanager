@@ -23,7 +23,6 @@ namespace oat\taoMediaManager\test\unit\model\sharedStimulus\service;
 use common_report_Report;
 use core_kernel_classes_Class;
 use ErrorException;
-use FileNotFoundException;
 use oat\generis\model\data\Ontology;
 use oat\generis\test\TestCase;
 use oat\tao\model\upload\UploadService;
@@ -32,6 +31,7 @@ use oat\taoMediaManager\model\sharedStimulus\service\CreateService;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 use oat\taoMediaManager\model\SharedStimulusImporter;
 use PHPUnit\Framework\MockObject\MockObject;
+use tao_models_classes_FileNotFoundException;
 
 class CreateServiceTest extends TestCase
 {
@@ -159,7 +159,7 @@ class CreateServiceTest extends TestCase
     {
         $this->service->setOption(CreateService::OPTION_TEMPLATE_PATH, 'invalid_path');
 
-        $this->expectException(FileNotFoundException::class);
+        $this->expectException(tao_models_classes_FileNotFoundException::class);
         $this->expectExceptionMessage('Shared Stimulus template not found');
 
         $this->service->create(

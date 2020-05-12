@@ -36,16 +36,12 @@ class CommandFactoryTest extends TestCase
     /** @var CommandFactory */
     private $factory;
 
-    /** @var CreateService|MockObject */
-    private $createService;
-
     public function setUp(): void
     {
-        $this->createService = $this->createMock(CreateService::class);
         $this->factory = new CommandFactory();
     }
 
-    public function testCreateSharedStimulusByRequest(): void
+    public function testMakeCreateCommandByRequest(): void
     {
         $expectedCommand = new CreateCommand(
             self::CLASS_URI,
@@ -65,6 +61,6 @@ class CommandFactoryTest extends TestCase
                 )
             );
 
-        $this->assertEquals($expectedCommand, $this->factory->createByRequest($request));
+        $this->assertEquals($expectedCommand, $this->factory->makeCreateCommandByRequest($request));
     }
 }

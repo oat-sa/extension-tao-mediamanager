@@ -18,21 +18,20 @@
  * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
  */
 
-namespace oat\taoMediaManager\model\sharedStimulus\service;
+namespace oat\taoMediaManager\model\sharedStimulus;
 
-use oat\oatbox\service\ConfigurableService;
-use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
-
-class RetrieveService extends ConfigurableService
+class FindQuery
 {
-    /**
-     * @param $id
-     *
-     * @return SharedStimulus
-     */
-    public function retrieve(string $id): SharedStimulus
+    /** @var string */
+    private $uri;
+
+    public function __construct(string $uri)
     {
-        //@TODO Missing retrieve method:
-        return new SharedStimulus($id, 'test', 'test');
+        $this->uri = $uri;
+    }
+
+    public function getUri(): string
+    {
+        return $this->uri;
     }
 }

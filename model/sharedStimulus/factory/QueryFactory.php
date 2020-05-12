@@ -21,26 +21,18 @@
 namespace oat\taoMediaManager\model\sharedStimulus\factory;
 
 use oat\oatbox\service\ConfigurableService;
-use oat\taoMediaManager\model\sharedStimulus\CreateCommand;
+use oat\taoMediaManager\model\sharedStimulus\FindQuery;
 use Psr\Http\Message\ServerRequestInterface;
 
-class CommandFactory extends ConfigurableService
+class QueryFactory extends ConfigurableService
 {
-    private const MEDIA_CLASS_URI = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Media';
-
     /**
      * @param ServerRequestInterface $request
      *
-     * @return CreateCommand
+     * @return FindQuery
      */
-    public function makeCreateCommandByRequest(ServerRequestInterface $request): CreateCommand
+    public function makeFindQueryByRequest(ServerRequestInterface $request): FindQuery
     {
-        $parsedBody = json_decode((string)$request->getBody(), true);
-
-        return new CreateCommand(
-            $parsedBody['classUri'] ?? self::MEDIA_CLASS_URI,
-            $parsedBody['name'] ?? null,
-            $parsedBody['languageUri'] ?? null
-        );
+        return new FindQuery($request->getQueryParams()['id'] ?? '');
     }
 }

@@ -18,29 +18,35 @@
  * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
  */
 
-namespace oat\taoMediaManager\model\sharedStimulus\factory;
+namespace oat\taoMediaManager\test\unit\model\sharedStimulus\factory;
 
-use oat\oatbox\service\ConfigurableService;
-use oat\taoMediaManager\model\sharedStimulus\CreateCommand;
+use oat\generis\test\TestCase;
+use oat\taoMediaManager\model\sharedStimulus\factory\QueryFactory;
+use oat\taoMediaManager\model\sharedStimulus\FindQuery;
 use Psr\Http\Message\ServerRequestInterface;
 
-class CommandFactory extends ConfigurableService
+class QueryFactoryTest extends TestCase
 {
-    private const MEDIA_CLASS_URI = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Media';
+    private const URI = 'uri';
 
-    /**
-     * @param ServerRequestInterface $request
-     *
-     * @return CreateCommand
-     */
-    public function makeCreateCommandByRequest(ServerRequestInterface $request): CreateCommand
+    /** @var QueryFactory */
+    private $factory;
+
+    public function setUp(): void
     {
-        $parsedBody = json_decode((string)$request->getBody(), true);
+        $this->factory = new QueryFactory();
+    }
 
-        return new CreateCommand(
-            $parsedBody['classUri'] ?? self::MEDIA_CLASS_URI,
-            $parsedBody['name'] ?? null,
-            $parsedBody['languageUri'] ?? null
-        );
+    public function testMakeGetCommandByRequest(): void
+    {
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->method('getQueryParams')
+            ->willReturn(
+                [
+                    'id' => self::URI
+                ]
+            );
+
+        $this->assertEquals(new FindQuery(self::URI), $this->factory->makeFindQueryByRequest($request));
     }
 }

@@ -33,11 +33,20 @@ class SharedStimulus implements JsonSerializable
     /** @var string */
     private $name;
 
-    public function __construct(string $uri, string $name, string $languageUri)
+    /** @var string|null */
+    private $body;
+
+    public function __construct(string $uri, string $name, string $languageUri, string $body = null)
     {
         $this->uri = $uri;
         $this->name = $name;
         $this->languageUri = $languageUri;
+        $this->body = $body;
+    }
+
+    public function getBody(): ?string
+    {
+        return $this->body;
     }
 
     public function getUri(): string
@@ -54,6 +63,7 @@ class SharedStimulus implements JsonSerializable
             'uri' => $this->uri,
             'languageUri' => $this->languageUri,
             'name' => $this->name,
+            'body' => str_replace(PHP_EOL, '', $this->body),
         ];
     }
 }

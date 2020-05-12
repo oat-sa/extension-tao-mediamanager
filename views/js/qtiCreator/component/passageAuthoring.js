@@ -22,6 +22,10 @@ define([
     'lodash',
     'ui/component',
     'core/pluginLoader',
+    'taoMediaManager/qtiCreator/plugins/navigation/back',
+    'taoMediaManager/qtiCreator/plugins/menu/save',
+    'taoMediaManager/qtiCreator/plugins/content/title',
+    'taoMediaManager/qtiCreator/plugins/menu/preview',
     'taoMediaManager/qtiCreator/editor/areaBroker',
     'tpl!taoMediaManager/qtiCreator/component/tpl/passageAuthoring',
     'css!taoMediaManagerCss/passage-creator.css'
@@ -29,6 +33,10 @@ define([
     _,
     componentFactory,
     pluginLoaderFactory,
+    backPlugin,
+    savePlugin,
+    titlePlugin,
+    previewPlugin,
     areaBrokerFactory,
     componentTpl
 ) {
@@ -71,14 +79,6 @@ define([
         const pluginLoader = pluginLoaderFactory();
 
         const api = {
-            /**
-             * Gets access to the item creator
-             * @returns {itemCreator}
-             */
-            getItemCreator() {
-                return itemCreator;
-            },
-
             /**
              * Gets access to the area broker
              * @returns {areaBroker}
@@ -131,7 +131,16 @@ define([
                     'elementPropertyPanel': $container.find('#item-editor-body-element-property-bar .panel')
                 });
 
+                backPlugin.init(areaBroker);
+                savePlugin.init(areaBroker);
+                titlePlugin.init(areaBroker, 'Hola');
+                previewPlugin.init(areaBroker);
+                backPlugin.render();
+                savePlugin.render();
+                titlePlugin.render();
+                previewPlugin.render();
             })
+
             .on('destroy', function () {
                 if (itemCreator) {
                     itemCreator.destroy();

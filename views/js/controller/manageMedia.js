@@ -116,16 +116,9 @@ define([
                     url : this.url,
                     content : '',
                     visible : false
-                })
-                    .show();
-                const plugins = [
-                    {
-                        module: 'taoMediaManager/qtiCreator/plugins/content/title',
-                        bundle: 'taoMediaManager/loader/taoMediaManager.min',
-                        category: 'content'
-                    }
-                ];
-                passageAuthoringFactory($('#panel-authoring'), { plugins, properties: {
+                }).show();
+                const plugins = [];
+                passageAuthoringFactory($('#panel-authoring'), { properties: {
                     uri: actionContext.uri,
                     label: 'Asset',
                     baseUrl: '/',

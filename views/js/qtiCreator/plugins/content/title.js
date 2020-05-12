@@ -14,56 +14,52 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2016 (original work) Open Assessment Technologies SA ;
+ * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
  */
 
 /**
  * This plugin displays the item label (from
  *
- * @author Juan Luis Gutierrez Dos Santos <bertrand@taotesting.com>
+ * @author Juan Luis Gutierrez Dos Santos <juanluis.gutierrezdossantos@taotesting.com>
  */
+
 define([
     'jquery',
-    'lodash',
-    'i18n',
-    'core/plugin'
-], function($, _, __, pluginFactory){
+    'i18n'
+], function($, __) {
     'use strict';
+    var $container;
 
     /**
      * Returns the configured plugin
      * @returns {Function} the plugin
      */
-    return pluginFactory({
-
+    return {
         name : 'title',
 
         /**
-         * Hook to the host's init
+         * Get the title and area to render
          */
-        init : function init(){
-            var config = this.getHost().getConfig();
-            var item   = this.getHost().getItem();
+        init : function init(areaBroker, title) {
+            $container = areaBroker.getTitleArea();
+            this.title = title
 
-            if(item && !_.isEmpty(item.attr('title'))){
-                this.title = item.attr('title');
-            }
-            else if(config && config.properties && config.properties.label){
-                this.title = config.properties.label;
-            }
+            // if (item && !_.isEmpty(item.attr('title'))) {
+            //     this.title = item.attr('title');
+            // }
+            // else if (config && config.properties && config.properties.label) {
+            //     this.title = config.properties.label;
+            // }
         },
 
         /**
          * Hook to the host's render
          */
-        render : function render(){
-
-            if(this.title){
+        render : function render() {
+            if (this.title) {
                 //attach the element to the title area
-                this.getAreaBroker()
-                    .getTitleArea()
-                    .text(this.title);
+                $container.text(this.title);
             }
         }
-    });
+    };
 });

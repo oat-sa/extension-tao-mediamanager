@@ -23,29 +23,29 @@
  *
  * @author Juan Luis Gutierrez Dos Santos <juanluis.gutierrezdossantos@taotesting.com>
  */
+
 define([
     'jquery',
     'i18n',
-    'core/plugin',
     'ui/hider',
     'tpl!taoMediaManager/qtiCreator/plugins/button'
-], function($, __, pluginFactory, hider, buttonTpl){
+], function($, __, hider, buttonTpl){
     'use strict';
+    var $container;
 
     /**
      * Returns the configured plugin
      * @returns {Function} the plugin
      */
-    return pluginFactory({
-
+    return {
         name : 'save',
 
         /**
          * Initialize the plugin (called during itemCreator's init)
          */
-        init : function init(){
+        init : function init(areaBroker) {
             var self = this;
-            var itemCreator = this.getHost();
+            $container = areaBroker.getMenuArea();
 
             this.$element = $(buttonTpl({
                 icon: 'save',
@@ -55,24 +55,22 @@ define([
             })).on('click', function saveHandler(e){
                 e.preventDefault();
                 self.disable();
-                itemCreator.trigger('save');
+                // itemCreator.trigger('save');
             });
 
             this.hide();
             this.disable();
 
-            itemCreator.on('ready saved error', function(){
-                self.enable();
-            });
+            // $container.on('ready saved error', function(){
+            //     self.enable();
+            // });
         },
 
         /**
          * Called during the itemCreator's render phase
          */
-        render : function render(){
-
+        render : function render() {
             //attach the element to the menu area
-            var $container = this.getAreaBroker().getMenuArea();
             $container.append(this.$element);
             this.show();
         },
@@ -80,38 +78,40 @@ define([
         /**
          * Called during the itemCreator's destroy phase
          */
-        destroy : function destroy (){
+        destroy : function destroy() {
             this.$element.remove();
         },
 
         /**
          * Enable the button
          */
-        enable : function enable (){
-            this.$element.removeProp('disabled')
-                         .removeClass('disabled');
+        enable : function enable() {
+            this.$element
+                .removeProp('disabled')
+                .removeClass('disabled');
         },
 
         /**
          * Disable the button
          */
-        disable : function disable (){
-            this.$element.prop('disabled', true)
-                         .addClass('disabled');
+        disable : function disable() {
+            this.$element
+                .prop('disabled', true)
+                .addClass('disabled');
         },
 
         /**
          * Show the button
          */
-        show: function show(){
+        show: function show() {
             hider.show(this.$element);
         },
 
         /**
          * Hide the button
          */
-        hide: function hide(){
+        hide: function hide() {
             hider.hide(this.$element);
         }
-    });
+    };
 });

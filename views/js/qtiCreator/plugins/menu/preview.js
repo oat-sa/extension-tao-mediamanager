@@ -24,46 +24,37 @@
  *
  * @author Juan Luis Gutierrez Dos Santos <juanluis.gutierrezdossantos@taotesting.com>
  */
+
 define([
     'jquery',
     'i18n',
-    'core/plugin',
     'ui/hider',
     'taoItems/previewer/factory',
     'tpl!taoMediaManager/qtiCreator/plugins/button',
-], function($, __, pluginFactory, hider, previewerFactory, buttonTpl){
+], function($, __, hider, previewerFactory, buttonTpl){
     'use strict';
+    var $container;
 
     /**
      * Returns the configured plugin
      * @returns {Function} the plugin
      */
-    return pluginFactory({
-
+    return {
         name : 'preview',
 
         /**
          * Initialize the plugin (called during itemCreator's init)
          * @fires {itemCreator#preview}
          */
-        init : function init(){
+        init : function init(areaBroker) {
             var self = this;
-            var itemCreator = this.getHost();
+            $container = areaBroker.getMenuArea();
 
             /**
              * Preview an item
              * @event itemCreator#preview
              * @param {String} uri - the uri of this item to preview
              */
-            itemCreator.on('preview', function(uri){
-              	var type = 'qtiItem';
-
-                previewerFactory(type, uri, { }, {
-                    readOnly: false,
-                    fullPage: true
-                });
-            });
-
             //creates the preview button
             this.$element = $(buttonTpl({
                 icon: 'preview',
@@ -72,13 +63,15 @@ define([
                 cssClass: 'preview-trigger'
             })).on('click', function previewHandler(e){
                 $(document).trigger('open-preview.qti-item');
-
                 e.preventDefault();
-
                 self.disable();
-
-                itemCreator.trigger('preview', itemCreator.getItem().data('uri'));
-
+                // itemCreator.trigger('preview', itemCreator.getItem().data('uri'));
+                var type = 'qtiItem';
+                var uri = ''
+                previewerFactory(type, uri, { }, {
+                    readOnly: false,
+                    fullPage: true
+                });
                 self.enable();
             });
         },
@@ -86,48 +79,48 @@ define([
         /**
          * Initialize the plugin (called during itemCreator's render)
          */
-        render : function render(){
-
+        render : function render() {
             //attach the element to the menu area
-            var $container = this.getAreaBroker().getMenuArea();
             $container.append(this.$element);
         },
 
         /**
          * Called during the itemCreator's destroy phase
          */
-        destroy : function destroy (){
+        destroy : function destroy() {
             this.$element.remove();
         },
 
         /**
          * Enable the button
          */
-        enable : function enable (){
-            this.$element.removeProp('disabled')
-                         .removeClass('disabled');
+        enable : function enable() {
+            this.$element
+                .removeProp('disabled')
+                .removeClass('disabled');
         },
 
         /**
          * Disable the button
          */
-        disable : function disable (){
-            this.$element.prop('disabled', true)
-                         .addClass('disabled');
+        disable : function disable() {
+            this.$element
+                .prop('disabled', true)
+                .addClass('disabled');
         },
 
         /**
          * Show the button
          */
-        show: function show(){
+        show: function show() {
             hider.show(this.$element);
         },
 
         /**
          * Hide the button
          */
-        hide: function hide(){
+        hide: function hide() {
             hider.hide(this.$element);
         }
-    });
+    };
 });

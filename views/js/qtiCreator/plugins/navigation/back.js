@@ -14,7 +14,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2016 (original work) Open Assessment Technologies SA ;
+ * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
  */
 
 /**
@@ -23,33 +23,28 @@
  *
  * @author Juan Luis Gutierrez Dos Santos <juanluis.gutierrezdossantos@taotesting.com>
  */
+
 define([
     'jquery',
     'i18n',
-    'core/plugin',
     'ui/hider',
     'tpl!taoMediaManager/qtiCreator/plugins/button'
-], function($, __, pluginFactory, hider, buttonTpl){
+], function($, __, hider, buttonTpl){
     'use strict';
+    var $container;
 
     /**
      * Returns the configured plugin
      * @returns {Function} the plugin
      */
-    return pluginFactory({
-
+    return {
         name : 'back',
 
         /**
-         * Initialize the plugin (called during itemCreator's init)
-         * @fires {itemCreator#exit}
+         * Initialize the plugin
          */
-        init : function init(){
-            var itemCreator = this.getHost();
-
-            itemCreator.on('exit', function(){
-                window.history.back();
-            });
+        init : function init(areaBroker) {
+            $container = areaBroker.getMenuLeftArea();
 
             this.$element = $(buttonTpl({
                 icon: 'left',
@@ -58,7 +53,7 @@ define([
                 cssClass: 'back-action'
             })).on('click', function backHandler(e){
                 e.preventDefault();
-                itemCreator.trigger('exit');
+                window.history.back();
             });
             this.hide();
         },
@@ -66,10 +61,8 @@ define([
         /**
          * Called during the itemCreator's render phase
          */
-        render : function render(){
-
+        render : function render() {
             //attach the element to the menu area
-            var $container = this.getAreaBroker().getMenuLeftArea();
             $container.append(this.$element);
             this.show();
         },
@@ -77,38 +70,40 @@ define([
         /**
          * Called during the itemCreator's destroy phase
          */
-        destroy : function destroy (){
+        destroy : function destroy() {
             this.$element.remove();
         },
 
         /**
          * Enable the button
          */
-        enable : function enable (){
-            this.$element.removeProp('disabled')
-                         .removeClass('disabled');
+        enable : function enable() {
+            this.$element
+                .removeProp('disabled')
+                .removeClass('disabled');
         },
 
         /**
          * Disable the button
          */
-        disable : function disable (){
-            this.$element.prop('disabled', true)
-                         .addClass('disabled');
+        disable : function disable() {
+            this.$element
+                .prop('disabled', true)
+                .addClass('disabled');
         },
 
         /**
          * Show the button
          */
-        show: function show(){
+        show: function show() {
             hider.show(this.$element);
         },
 
         /**
          * Hide the button
          */
-        hide: function hide(){
+        hide: function hide( ){
             hider.hide(this.$element);
         }
-    });
+    };
 });

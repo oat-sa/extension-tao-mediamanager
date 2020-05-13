@@ -30,7 +30,7 @@ paths:
           required: true
           schema:
             type: string
-          description: The shared stimulus uri
+          description: The shared stimulus id
       responses:
         200:
           $ref: '#/components/responses/SharedStimulusCreatedResponse'
@@ -43,23 +43,23 @@ components:
     SharedStimulus:
       type: object
       properties:
-        classUri:
+        classId:
           type: string
           example: 'http://tao.docker.localhost/tao.rdf#i5e89a2063326711164b1a816b433b1ec'
-        languageUri:
+        languageId:
           type: string
           example: 'http://www.tao.lu/Ontologies/TAO.rdf#Langen-US'
         name:
           type: string
           example: 'New Passage'
       required:
-        - classUri
+        - classId
     SharedStimulusCreated:
       allOf:
         - $ref: '#/components/schemas/SharedStimulus'
         - type: object
           properties:
-            uri:
+            id:
               type: string
               example: "http://tao.docker.localhost/tao.rdf#i5e89a2063326711164b1a816b433b1ec"
             body:

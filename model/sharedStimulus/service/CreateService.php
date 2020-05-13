@@ -62,7 +62,7 @@ class CreateService extends ConfigurableService
                 DIRECTORY_SEPARATOR
             );
 
-        $kernelClass = $this->getOntology()->getClass($command->getClassUri());
+        $kernelClass = $this->getOntology()->getClass($command->getClassId());
 
         $sharedStimulusName = $this->getSharedStimulusName($command, $kernelClass);
 
@@ -70,7 +70,7 @@ class CreateService extends ConfigurableService
             ->import(
                 $kernelClass,
                 [
-                    'lang' => $command->getLanguageUri(),
+                    'lang' => $command->getLanguageId(),
                     'source' => [
                         'name' => $sharedStimulusName,
                         'type' => 'application/qti+xml',
@@ -85,7 +85,7 @@ class CreateService extends ConfigurableService
         return new SharedStimulus(
             current($importResponse->getChildren())->getData()['uriResource'],
             $sharedStimulusName,
-            $command->getLanguageUri()
+            $command->getLanguageId()
         );
     }
 

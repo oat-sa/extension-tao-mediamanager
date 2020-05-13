@@ -33,7 +33,7 @@ use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\sharedStimulus\FindQuery;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 
-class SharedStimulusRepository extends ConfigurableService implements SharedStimulusRepositoryInterface
+class SharedStimulusRepository extends ConfigurableService
 {
     /**
      * @throws common_Exception
@@ -41,10 +41,10 @@ class SharedStimulusRepository extends ConfigurableService implements SharedStim
      */
     public function find(FindQuery $query): SharedStimulus
     {
-        $resource = $this->getOntology()->getResource($query->getId());
+        $resource = $this->getOntology()->getResource($query->getUri());
 
         return new SharedStimulus(
-            $query->getId(),
+            $query->getUri(),
             $this->getPropertyValue($resource, MediaService::PROPERTY_ALT_TEXT),
             $this->getPropertyValue($resource, MediaService::PROPERTY_LANGUAGE),
             $this->getContent($resource)

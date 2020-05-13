@@ -27,29 +27,29 @@ class CreateCommand
     private const DEFAULT_LANGUAGE = 'http://www.tao.lu/Ontologies/TAO.rdf#Langen-US';
 
     /** @var string */
-    private $classId;
+    private $classUri;
 
     /** @var string */
-    private $languageId;
+    private $languageUri;
 
     /** @var string */
     private $name;
 
-    public function __construct(string $classId, string $name = null, string $languageId = null)
+    public function __construct(string $classUri, string $name = null, string $languageUri = null)
     {
-        $this->classId = $classId;
+        $this->classUri = $classUri;
         $this->name = $name;
-        $this->languageId = $languageId ?? self::DEFAULT_LANGUAGE;
+        $this->languageUri = $languageUri ?? self::DEFAULT_LANGUAGE;
     }
 
-    public function getClassId(): string
+    public function getClassUri(): string
     {
-        return $this->classId;
+        return $this->classUri;
     }
 
-    public function getLanguageId(): string
+    public function getLanguageUri(): string
     {
-        return $this->languageId;
+        return $this->languageUri;
     }
 
     public function getName(): ?string

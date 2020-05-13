@@ -27,10 +27,10 @@ use JsonSerializable;
 class SharedStimulus implements JsonSerializable
 {
     /** @var string */
-    private $id;
+    private $uri;
 
     /** @var string */
-    private $languageId;
+    private $languageUri;
 
     /** @var string */
     private $name;
@@ -38,11 +38,11 @@ class SharedStimulus implements JsonSerializable
     /** @var string|null */
     private $body;
 
-    public function __construct(string $id, string $name, string $languageId, string $body = null)
+    public function __construct(string $uri, string $name, string $languageUri, string $body = null)
     {
-        $this->id = $id;
+        $this->uri = $uri;
         $this->name = $name;
-        $this->languageId = $languageId;
+        $this->languageUri = $languageUri;
         $this->body = $body;
     }
 
@@ -51,9 +51,9 @@ class SharedStimulus implements JsonSerializable
         return $this->body;
     }
 
-    public function getId(): string
+    public function getUri(): string
     {
-        return $this->id;
+        return $this->uri;
     }
 
     /**
@@ -62,8 +62,8 @@ class SharedStimulus implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            'id' => $this->id,
-            'languageId' => $this->languageId,
+            'uri' => $this->uri,
+            'languageUri' => $this->languageUri,
             'name' => $this->name,
             'body' => str_replace(PHP_EOL, '', $this->body),
         ];

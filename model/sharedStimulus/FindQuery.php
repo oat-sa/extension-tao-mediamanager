@@ -25,15 +25,15 @@ namespace oat\taoMediaManager\model\sharedStimulus;
 class FindQuery
 {
     /** @var string */
-    private $id;
+    private $uri;
 
-    public function __construct(string $id)
+    public function __construct(string $uri)
     {
-        $this->id = $id;
+        $this->uri = $uri;
     }
 
-    public function getId(): string
+    public function getUri(): string
     {
-        return $this->id;
+        return $this->uri;
     }
 }

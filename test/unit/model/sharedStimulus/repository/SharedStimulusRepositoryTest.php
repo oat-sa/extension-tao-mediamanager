@@ -18,6 +18,8 @@
  * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
  */
 
+declare(strict_types=1);
+
 namespace oat\taoMediaManager\test\unit\model\sharedStimulus\repository;
 
 use core_kernel_classes_Literal;

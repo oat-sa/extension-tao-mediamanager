@@ -19,13 +19,14 @@
  *
  */
 
+declare(strict_types=1);
+
 namespace oat\taoMediaManager\controller;
 
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\tao\model\http\formatter\ResponseFormatter;
 use oat\tao\model\http\response\ErrorJsonResponse;
 use oat\tao\model\http\response\SuccessJsonResponse;
-use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
 use oat\taoMediaManager\model\sharedStimulus\factory\QueryFactory;
 use oat\taoMediaManager\model\sharedStimulus\repository\SharedStimulusRepository;
@@ -106,10 +107,5 @@ class SharedStimulus extends tao_actions_CommonModule
     private function getSharedStimulusRepository(): SharedStimulusRepository
     {
         return $this->getServiceLocator()->get(SharedStimulusRepository::class);
-    }
-
-    protected function getClassService()
-    {
-        return MediaService::singleton();
     }
 }

@@ -18,6 +18,8 @@
  * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
  */
 
+declare(strict_types=1);
+
 namespace oat\taoMediaManager\model\sharedStimulus\service;
 
 use common_Exception;
@@ -39,10 +41,6 @@ class CreateService extends ConfigurableService
     public const OPTION_TEMPLATE_PATH = 'template_path';
 
     /**
-     * @param CreateCommand $command
-     *
-     * @return SharedStimulus
-     *
      * @throws common_Exception
      * @throws common_exception_Error
      * @throws tao_models_classes_FileNotFoundException

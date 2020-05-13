@@ -34,9 +34,9 @@ class CommandFactory extends ConfigurableService
         $parsedBody = json_decode((string)$request->getBody(), true);
 
         return new CreateCommand(
-            $parsedBody['classUri'] ?? MediaService::ROOT_CLASS_URI,
+            $parsedBody['classId'] ?? $parsedBody['classUri'] ?? MediaService::ROOT_CLASS_URI,
             $parsedBody['name'] ?? null,
-            $parsedBody['languageUri'] ?? null
+            $parsedBody['languageId'] ?? $parsedBody['languageUri'] ?? null
         );
     }
 }

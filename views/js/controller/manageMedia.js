@@ -85,7 +85,7 @@ define([
                         //backward compat format for jstree
                         if(actionContext.tree){
                             $(actionContext.tree).trigger('addnode.taotree', [{
-                                uri       : uri.decode(response.data.classId),
+                                uri       : uri.decode(response.data.id),
                                 label     : response.data.name,
                                 parent    : uri.decode(actionContext.classUri),
                                 cssClass  : 'node-instance'
@@ -94,7 +94,7 @@ define([
 
                         //return format (resourceSelector)
                         return {
-                            uri       : uri.decode(response.data.classId),
+                            uri       : uri.decode(response.data.id),
                             label     : response.data.name,
                             classUri  : uri.decode(actionContext.classUri),
                             type      : 'instance'

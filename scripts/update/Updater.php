@@ -22,7 +22,11 @@
 
 namespace oat\taoMediaManager\scripts\update;
 
+use oat\oatbox\event\EventManager;
 use oat\tao\scripts\update\OntologyUpdater;
+use oat\taoItems\model\event\ItemRemovedEvent;
+use oat\taoItems\model\event\ItemUpdatedEvent;
+use oat\taoMediaManager\model\media\event\MediaRelationListener;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -45,5 +49,13 @@ class Updater extends \common_ext_ExtensionUpdater
         }
 
         $this->skip('9.4.0', '9.6.0');
+
+        if ($this->isVersion('9.6.0')) {
+            $eventManager = $this->getServiceManager()->get(EventManager::SERVICE_ID);
+            $eventManager->attach(ItemUpdatedEvent::class, [MediaRelationListener::class, 'whenItemIsUpdated']);
+            $eventManager->attach(ItemRemovedEvent::class, [MediaRelationListener::class, 'whenItemIsRemoved']);
+
+            $this->setVersion('9.7.0');
+        }
     }
 }

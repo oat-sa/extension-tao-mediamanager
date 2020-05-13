@@ -54,8 +54,8 @@
                     <action id="create-shared-stimulus" name="New passage" url="/taoMediaManager/SharedStimulus/create" group="tree" context="resource" binding="newPassage">
                         <icon id="icon-select-all"/>
                     </action>
-                    <action id="get-shared-stimulus" name="Get Shared Stimulus" url="/taoMediaManager/SharedStimulus/get" group="none" context="none" binding="getSharedStimulus">
-                    </action>
+                    <action id="get-shared-stimulus" name="Get Shared Stimulus" url="/taoMediaManager/SharedStimulus/get" group="none" context="none" binding="getSharedStimulus"></action>
+                    <action id="get-media-relations" name="Get Media Relations" url="/taoMediaManager/Media/relations" group="none" context="none" binding="getMediaRelations"></action>
                 </actions>
             </section>
         </sections>

@@ -52,7 +52,7 @@
                     <section class="tool-group clearfix" id="sidebar-right-item-properties">
                         <h2>{{__ 'Passage Properties'}}</h2>
 
-                        <div class="panel" style="display: block">
+                        <div class="panel">
                             <label for="xml:lang">
                                 {{__ 'Language'}}
                             </label>
@@ -100,7 +100,7 @@
                         </div>
                     </section>
                 </div>
-                <div class="item-editor-item-related sidebar-right-section-box" id="item-editor-text-property-bar">
+                <div class="item-editor-item-related sidebar-right-section-box" id="item-editor-text-property-bar" style="display: block">
                     <section class="tool-group clearfix" id="sidebar-right-text-block-properties">
                         <h2>{{__ 'Passage Properties'}}</h2>
 

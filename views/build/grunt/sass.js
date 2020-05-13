@@ -5,14 +5,18 @@ module.exports = function(grunt) {
     var notify  = grunt.config('notify') || {};
     var root    = grunt.option('root') + '/taoMediaManager/views/';
 
-    sass.taomediamanager = { };
-    sass.taomediamanager.files = { };
+    // Override include paths
+    sass.taomediamanager = {
+        options : {},
+        files : {}
+    };
+
+    //files goes heres
     sass.taomediamanager.files[root + 'css/media.css'] = root + 'scss/media.scss';
     sass.taomediamanager.files[root + 'css/passage-creator.css'] = root + 'scss/passage-creator.scss';
-    sass.taomediamanager.files[root + 'css/_editor-bar.css'] = root + 'scss/qtiCreator/_editor-bar.scss';
 
     watch.taomediamanagersass = {
-        files : [root + 'views/scss/**/*.scss'],
+        files : [root + 'scss/**/*.scss'],
         tasks : ['sass:taomediamanager', 'notify:taomediamanagersass'],
         options : {
             debounceDelay : 1000

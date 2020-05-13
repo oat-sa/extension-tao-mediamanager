@@ -37,7 +37,32 @@ class Media extends tao_actions_CommonModule
         $formatter = $this->getResponseFormatter()
             ->withJsonHeader();
 
-        $formatter->withBody(new SuccessJsonResponse([]));
+        $formatter->withBody(new SuccessJsonResponse(
+            json_decode('
+            {
+              "source": {
+                "id": "http://tao.docker.localhost/tao.rdf#i5e89a2063326711164b1a816b433b1ec",
+                "type": "item",
+                "data": [
+                  {
+                    "label": "My Item"
+                  }
+                ]
+              },
+              "relations": [
+                {
+                  "id": "http://tao.docker.localhost/tao.rdf#i5e89a2063326711164b1a816b433b1ec",
+                  "type": "item",
+                  "data": [
+                    {
+                      "label": "My Item"
+                    }
+                  ]
+                }
+              ]
+            }'
+            )
+        ));
 
         $this->setResponse($formatter->format($this->getPsrResponse()));
     }

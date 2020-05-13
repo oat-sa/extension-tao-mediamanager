@@ -27,6 +27,8 @@ use oat\tao\scripts\update\OntologyUpdater;
 use oat\taoItems\model\event\ItemRemovedEvent;
 use oat\taoItems\model\event\ItemUpdatedEvent;
 use oat\taoMediaManager\model\media\event\MediaRelationListener;
+use oat\taoMediaManager\model\media\event\MediaRemovedEvent;
+use oat\taoMediaManager\model\media\event\MediaSavedEvent;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -54,6 +56,8 @@ class Updater extends \common_ext_ExtensionUpdater
             $eventManager = $this->getServiceManager()->get(EventManager::SERVICE_ID);
             $eventManager->attach(ItemUpdatedEvent::class, [MediaRelationListener::class, 'whenItemIsUpdated']);
             $eventManager->attach(ItemRemovedEvent::class, [MediaRelationListener::class, 'whenItemIsRemoved']);
+            $eventManager->attach(MediaRemovedEvent::class, [MediaRelationListener::class, 'whenMediaIsRemoved']);
+            $eventManager->attach(MediaSavedEvent::class, [MediaRelationListener::class, 'whenMediaIsSaved']);
 
             $this->setVersion('9.7.0');
         }

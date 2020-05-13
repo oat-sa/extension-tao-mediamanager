@@ -33,11 +33,25 @@ class MediaRelationListener extends ConfigurableService
 
     public function whenItemIsUpdated(ItemUpdatedEvent $event): void
     {
-        $this->logInfo('Item was updated. Checking shared stimulus relation...');
+        // @TODO will be used add or remove the relation between item and shared stimulus
+        $this->logInfo('Item ' . $event->getItemUri() . ' was updated. Checking shared stimulus relation...');
     }
 
     public function whenItemIsRemoved(ItemRemovedEvent $event): void
     {
-        $this->logInfo('Item was removed. Checking shared stimulus relation...');
+        // @TODO will be used to remove relation between item and shared stimulus
+        $this->logInfo('Item ' . var_export($event->jsonSerialize(), true) . ' was removed. Checking shared stimulus relation...');
+    }
+
+    public function whenMediaIsRemoved(MediaRemovedEvent $event): void
+    {
+        // @TODO will be used remove the relation with shared stimulus with other media and items
+        $this->logInfo('Media ' . $event->getName() . ' was removed. Checking shared stimulus relation...');
+    }
+
+    public function whenMediaIsSaved(MediaSavedEvent $event): void
+    {
+        // @TODO will be used to related shared stimulus with other media
+        $this->logInfo('Media ' . $event->getName() . ' was saved. Checking shared stimulus relation...');
     }
 }

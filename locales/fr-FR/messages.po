@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TAO 3.4.0-sprint127\n"
-"PO-Revision-Date: 2020-05-11T13:37:00\n"
+"PO-Revision-Date: 2020-05-13T10:57:47\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: fr-FR\n"
@@ -13,14 +13,8 @@ msgstr ""
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
 
-msgid "Adapt to screen size"
-msgstr ""
-
 msgid "Add a media file"
 msgstr "Ajouter un fichier média"
-
-msgid "Add Style Sheet"
-msgstr ""
 
 msgid "Adding the new resource has failed"
 msgstr ""
@@ -32,12 +26,6 @@ msgstr ""
 msgid "Assets"
 msgstr "Actifs"
 
-msgid "Author"
-msgstr ""
-
-msgid "Author item"
-msgstr ""
-
 #, tao-public
 msgid "Authoring"
 msgstr "Édition"
@@ -45,48 +33,21 @@ msgstr "Édition"
 msgid "Back to Manage Assets"
 msgstr "Retour à Gérer les actifs"
 
-msgid "Background color"
-msgstr ""
-
-msgid "Border color"
-msgstr ""
-
 msgid "Cancel"
 msgstr ""
 
-msgid "Choice Properties"
-msgstr ""
-
-msgid "Default"
-msgstr ""
-
-msgid "Defined width"
-msgstr ""
+msgid "Define asset language"
+msgstr "Définir la langue de l'actif"
 
 #, tao-public
 msgid "Delete"
 msgstr "Supprimer"
-
-msgid "Disable this stylesheet temporarily"
-msgstr ""
-
-msgid "e.g. 13"
-msgstr ""
-
-msgid "e.g. 960"
-msgstr ""
 
 msgid "Edit Instance"
 msgstr "Éditer l'instance"
 
 msgid "Edited %s"
 msgstr "%s édité"
-
-msgid "Element Properties"
-msgstr ""
-
-msgid "Enlarge font size"
-msgstr ""
 
 #, tao-public
 msgid "Export"
@@ -95,10 +56,10 @@ msgstr "Exporter"
 msgid "Export Media as Zip file"
 msgstr "Exporter le média dans un fichier Zip"
 
-msgid "Fail to edit shared stimulus"
+msgid "Fail to edit Shared Stimulus"
 msgstr "Échec de l'édition du stimulus partagé"
 
-msgid "Fail to edit Shared Stimulus"
+msgid "Fail to edit shared stimulus"
 msgstr "Échec de l'édition du stimulus partagé"
 
 msgid "Fail to import media"
@@ -112,12 +73,6 @@ msgstr "Fichier"
 
 msgid "File name"
 msgstr "Nom de fichier"
-
-msgid "Font family"
-msgstr ""
-
-msgid "Font size"
-msgstr ""
 
 #, tao-public
 msgid "Import"
@@ -135,17 +90,8 @@ msgstr "Import initial"
 msgid "Instance saved"
 msgstr "Instance enregistrée"
 
-msgid "Interaction Properties"
-msgstr ""
-
-msgid "Item properties"
-msgstr ""
-
-msgid "Item Properties"
-msgstr ""
-
-msgid "Item width"
-msgstr ""
+msgid "Language"
+msgstr "Langue"
 
 #, tao-public
 msgid "Manage Assets"
@@ -172,9 +118,6 @@ msgstr "Options du média"
 msgid "Media successfully exported."
 msgstr "Média exporté avec succès."
 
-msgid "Modal Feedback Prop."
-msgstr ""
-
 #, tao-public
 msgid "Move"
 msgstr "Déplacer"
@@ -190,57 +133,30 @@ msgstr "Nouveau passage"
 msgid "No file found for this media"
 msgstr "Pas de fichier trouvé pour ce média"
 
+msgid "Passage Properties"
+msgstr "Propriétés de passage"
+
 msgid "Preview"
 msgstr "Aperçu"
 
 msgid "Preview the asset"
 msgstr "Prévisualisation de l'actif"
 
-msgid "Print"
-msgstr "Imprimer"
-
-msgid "Print the asset"
-msgstr "Imprimer l'actif"
-
 #, tao-public
 msgid "Properties"
 msgstr "Propriétés"
 
-msgid "Reduce font size"
-msgstr ""
-
-msgid "Remove custom background color"
-msgstr ""
-
-msgid "Remove custom border color"
-msgstr ""
-
-msgid "Remove custom font family"
-msgstr ""
-
-msgid "Remove custom font size"
-msgstr ""
-
-msgid "Remove custom item width"
-msgstr ""
-
-msgid "Remove custom text color"
-msgstr ""
-
 msgid "Replace Asset"
 msgstr "Remplacer l'actif"
-
-msgid "Response Properties"
-msgstr ""
-
-msgid "Review comment"
-msgstr ""
 
 msgid "Save"
 msgstr "Sauvegarder"
 
 msgid "Save the asset"
 msgstr "Sauver l'actif"
+
+msgid "Set a CSS class name in order to customize the display style"
+msgstr "Définir un nom de classe CSS pour personnaliser le style d'affichage"
 
 msgid "Shared Stimulus"
 msgstr "Stimulus partagé"
@@ -254,26 +170,8 @@ msgstr "Stimulus partagé importé avec succès"
 msgid "Style Editor"
 msgstr ""
 
-msgid "Style Sheet Manager"
-msgstr ""
-
-msgid "Submit Item for Review"
-msgstr ""
-
-msgid "Submit item for review"
-msgstr ""
-
-msgid "Table headings"
-msgstr ""
-
-msgid "TAO default styles"
-msgstr ""
-
-msgid "Text Block Properties"
-msgstr ""
-
-msgid "Text color"
-msgstr ""
+msgid "Text Block CSS Class"
+msgstr "Classe CSS du bloc de texte"
 
 msgid "The item needs to be saved before it can be previewed"
 msgstr ""

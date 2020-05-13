@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TAO 3.4.0-sprint127\n"
-"PO-Revision-Date: 2020-05-11T13:37:00\n"
+"PO-Revision-Date: 2020-05-13T10:57:47\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: lt-LT\n"
@@ -13,14 +13,8 @@ msgstr ""
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
 
-msgid "Adapt to screen size"
-msgstr ""
-
 msgid "Add a media file"
 msgstr "Pridėti medijos failą"
-
-msgid "Add Style Sheet"
-msgstr ""
 
 msgid "Adding the new resource has failed"
 msgstr ""
@@ -32,12 +26,6 @@ msgstr ""
 msgid "Assets"
 msgstr ""
 
-msgid "Author"
-msgstr ""
-
-msgid "Author item"
-msgstr ""
-
 #, tao-public
 msgid "Authoring"
 msgstr ""
@@ -45,48 +33,21 @@ msgstr ""
 msgid "Back to Manage Assets"
 msgstr ""
 
-msgid "Background color"
-msgstr ""
-
-msgid "Border color"
-msgstr ""
-
 msgid "Cancel"
 msgstr ""
 
-msgid "Choice Properties"
-msgstr ""
-
-msgid "Default"
-msgstr ""
-
-msgid "Defined width"
+msgid "Define asset language"
 msgstr ""
 
 #, tao-public
 msgid "Delete"
 msgstr "Ištrinti"
 
-msgid "Disable this stylesheet temporarily"
-msgstr ""
-
-msgid "e.g. 13"
-msgstr ""
-
-msgid "e.g. 960"
-msgstr ""
-
 msgid "Edit Instance"
 msgstr "Redaguoti Instanciją"
 
 msgid "Edited %s"
 msgstr "Redaguota %s"
-
-msgid "Element Properties"
-msgstr ""
-
-msgid "Enlarge font size"
-msgstr ""
 
 #, tao-public
 msgid "Export"
@@ -95,11 +56,11 @@ msgstr "Eksportuoti"
 msgid "Export Media as Zip file"
 msgstr "Eksportuoti Mediją kaip ZIP failą"
 
-msgid "Fail to edit shared stimulus"
-msgstr "Nepavyko redaguoti bendrinamo stimulo"
-
 msgid "Fail to edit Shared Stimulus"
 msgstr "Nepavyko redaguoti Bendrinamo Stimulo"
+
+msgid "Fail to edit shared stimulus"
+msgstr "Nepavyko redaguoti bendrinamo stimulo"
 
 msgid "Fail to import media"
 msgstr "Nepavyko importuoti medijos"
@@ -112,12 +73,6 @@ msgstr "Failas"
 
 msgid "File name"
 msgstr "Failo pavadinimas"
-
-msgid "Font family"
-msgstr ""
-
-msgid "Font size"
-msgstr ""
 
 #, tao-public
 msgid "Import"
@@ -135,16 +90,7 @@ msgstr "Pradinis importavimas"
 msgid "Instance saved"
 msgstr "Instanciją išsaugota"
 
-msgid "Interaction Properties"
-msgstr ""
-
-msgid "Item properties"
-msgstr ""
-
-msgid "Item Properties"
-msgstr ""
-
-msgid "Item width"
+msgid "Language"
 msgstr ""
 
 #, tao-public
@@ -172,9 +118,6 @@ msgstr "Medijos Parametrai"
 msgid "Media successfully exported."
 msgstr "Medija sėkmingai eksportuota."
 
-msgid "Modal Feedback Prop."
-msgstr ""
-
 #, tao-public
 msgid "Move"
 msgstr "perkelti"
@@ -190,56 +133,29 @@ msgstr ""
 msgid "No file found for this media"
 msgstr "Nerasta failas šiai medijai"
 
+msgid "Passage Properties"
+msgstr ""
+
 msgid "Preview"
 msgstr "Peržiūra"
 
 msgid "Preview the asset"
 msgstr ""
 
-msgid "Print"
-msgstr ""
-
-msgid "Print the asset"
-msgstr ""
-
 #, tao-public
 msgid "Properties"
 msgstr "Savybės"
 
-msgid "Reduce font size"
-msgstr ""
-
-msgid "Remove custom background color"
-msgstr ""
-
-msgid "Remove custom border color"
-msgstr ""
-
-msgid "Remove custom font family"
-msgstr ""
-
-msgid "Remove custom font size"
-msgstr ""
-
-msgid "Remove custom item width"
-msgstr ""
-
-msgid "Remove custom text color"
-msgstr ""
-
 msgid "Replace Asset"
-msgstr ""
-
-msgid "Response Properties"
-msgstr ""
-
-msgid "Review comment"
 msgstr ""
 
 msgid "Save"
 msgstr ""
 
 msgid "Save the asset"
+msgstr ""
+
+msgid "Set a CSS class name in order to customize the display style"
 msgstr ""
 
 msgid "Shared Stimulus"
@@ -254,25 +170,7 @@ msgstr "Bendrinamas Stimulas importuotas sėkmingai"
 msgid "Style Editor"
 msgstr ""
 
-msgid "Style Sheet Manager"
-msgstr ""
-
-msgid "Submit Item for Review"
-msgstr ""
-
-msgid "Submit item for review"
-msgstr ""
-
-msgid "Table headings"
-msgstr ""
-
-msgid "TAO default styles"
-msgstr ""
-
-msgid "Text Block Properties"
-msgstr ""
-
-msgid "Text color"
+msgid "Text Block CSS Class"
 msgstr ""
 
 msgid "The item needs to be saved before it can be previewed"

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -15,14 +17,15 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
- *
+ * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
  *
  */
 
 namespace oat\taoMediaManager\scripts\update;
 
 use oat\tao\scripts\update\OntologyUpdater;
+use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
+use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRepository;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -30,6 +33,7 @@ class Updater extends \common_ext_ExtensionUpdater
      * @param string $initialVersion
      * @return string|void
      * @throws \common_exception_NotImplemented
+     * @throws \common_Exception
      */
     public function update($initialVersion)
     {
@@ -45,5 +49,10 @@ class Updater extends \common_ext_ExtensionUpdater
         }
 
         $this->skip('9.4.0', '9.6.0');
+
+        if ($this->isVersion('9.6.0')) {
+            OntologyUpdater::syncModels();
+            $this->getServiceManager()->register(MediaRelationRepositoryInterface::SERVICE_ID, new RdfMediaRepository());
+        }
     }
 }

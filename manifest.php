@@ -15,20 +15,19 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
- *
+ * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
  *
  */
 
-$extpath = dirname(__FILE__) . DIRECTORY_SEPARATOR;
-$taopath = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'tao' . DIRECTORY_SEPARATOR;
+$extpath = __DIR__ . DIRECTORY_SEPARATOR;
+$taopath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'tao' . DIRECTORY_SEPARATOR;
 
 return [
     'name' => 'taoMediaManager',
     'label' => 'extension-tao-mediamanager',
     'description' => 'TAO media manager extension',
     'license' => 'GPL-2.0',
-    'version' => '9.6.0',
+    'version' => '9.7.0',
     'author' => 'Open Assessment Technologies SA',
     'requires' => [
         'tao' => '>=42.5.0',
@@ -45,26 +44,21 @@ return [
     ],
     'install' => [
         'rdf' => [
-            dirname(__FILE__) . '/model/ontology/taomedia.rdf',
+            __DIR__ . '/model/ontology/taomedia.rdf',
         ],
         'php' => [
-            dirname(__FILE__) . '/scripts/install/setMediaManager.php',
+            __DIR__ . '/scripts/install/setMediaManager.php',
         ]
     ],
     'update' => 'oat\\taoMediaManager\\scripts\\update\\Updater',
     'uninstall' => [
         'php' => [
-            dirname(__FILE__) . '/scripts/uninstall/unsetMediaManager.php',
+            __DIR__ . '/scripts/uninstall/unsetMediaManager.php',
         ]
     ],
     'classLoaderPackages' => [
-        dirname(__FILE__) . '/helpers/'
+        __DIR__ . '/helpers/'
     ],
-    // 'autoload' => array (
-    //       'psr-4' => array(
-    //           'oat\\taoMediaManager\\' => dirname(__FILE__).DIRECTORY_SEPARATOR
-    //       )
-    //   ),
     'routes' => [
         '/taoMediaManager' => 'oat\\taoMediaManager\\controller'
     ],

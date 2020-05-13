@@ -38,8 +38,58 @@ paths:
           $ref: '#/components/responses/BadRequestResponse'
         500:
           $ref: '#/components/responses/InternalServerErrorResponse'
+  /taoMediaManager/Media/relations:
+    get:
+      summary: Get the relations between media and other resources
+      parameters:
+        - in: query
+          name: sourceId
+          required: true
+          schema:
+            type: string
+          description: The sourceId of the relation
+      responses:
+        200:
+          $ref: '#/components/responses/MediaRelationsResponse'
+        400:
+          $ref: '#/components/responses/BadRequestResponse'
+        500:
+          $ref: '#/components/responses/InternalServerErrorResponse'
 components:
   schemas:
+    MediaRelationResource:
+      description: 'A resource related to a media'
+      type: object
+      properties:
+        id:
+          type: string
+          example: 'http://tao.docker.localhost/tao.rdf#i5e89a2063326711164b1a816b433b1ec'
+        type:
+          type: string
+          enum:
+            - item
+            - media
+            - sharedStimulus
+        data:
+          description: specific payload according to type
+          type: array
+          items:
+            type: object
+          example: [
+            label: 'My Item'
+          ]
+      required:
+        - classId
+    MediaRelations:
+      description: 'A relationship between two resources'
+      type: object
+      properties:
+        source:
+          $ref: '#/components/schemas/MediaRelationResource'
+        relations:
+          type: array
+          items:
+            $ref: '#/components/schemas/MediaRelationResource'
     SharedStimulus:
       type: object
       properties:
@@ -83,6 +133,12 @@ components:
         message:
           type: string
   responses:
+    MediaRelationsResponse:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MediaRelations'
     SharedStimulusCreatedResponse:
       description: Bad request
       content:

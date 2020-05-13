@@ -30,6 +30,7 @@ use oat\tao\model\http\response\SuccessJsonResponse;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
 use oat\taoMediaManager\model\sharedStimulus\factory\QueryFactory;
 use oat\taoMediaManager\model\sharedStimulus\repository\SharedStimulusRepository;
+use oat\taoMediaManager\model\sharedStimulus\repository\SharedStimulusRepositoryInterface;
 use oat\taoMediaManager\model\sharedStimulus\service\CreateService;
 use tao_actions_CommonModule;
 use Throwable;
@@ -104,7 +105,7 @@ class SharedStimulus extends tao_actions_CommonModule
         return $this->getServiceLocator()->get(CreateService::class);
     }
 
-    private function getSharedStimulusRepository(): SharedStimulusRepository
+    private function getSharedStimulusRepository(): SharedStimulusRepositoryInterface
     {
         return $this->getServiceLocator()->get(SharedStimulusRepository::class);
     }

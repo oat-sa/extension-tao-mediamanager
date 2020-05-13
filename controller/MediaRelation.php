@@ -53,12 +53,6 @@ class MediaRelation extends Controller implements ServiceLocatorAwareInterface
             'relatedAssets' => $this->getMediaRelationService()->getMediaRelation($id)
         ];
 
-//        var_dump($data);
-//        echo '<br/>';
-//        echo '<br/>';
-//        echo '<br/>';
-//        var_dump(json_encode($data));
-
         return $this->getPsrResponse()
             ->withStatus(200)
             ->withBody(stream_for(json_encode($data)));

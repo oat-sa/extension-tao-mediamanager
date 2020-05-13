@@ -19,14 +19,17 @@
  *
  */
 
+declare(strict_types=1);
+
 namespace oat\taoMediaManager\controller;
 
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\tao\model\http\formatter\ResponseFormatter;
 use oat\tao\model\http\response\ErrorJsonResponse;
 use oat\tao\model\http\response\SuccessJsonResponse;
-use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
+use oat\taoMediaManager\model\sharedStimulus\factory\QueryFactory;
+use oat\taoMediaManager\model\sharedStimulus\repository\SharedStimulusRepository;
 use oat\taoMediaManager\model\sharedStimulus\service\CreateService;
 use tao_actions_CommonModule;
 use Throwable;
@@ -42,7 +45,7 @@ class SharedStimulus extends tao_actions_CommonModule
 
         try {
             $command = $this->getCommandFactory()
-                ->createByRequest($this->getPsrRequest());
+                ->makeCreateCommandByRequest($this->getPsrRequest());
 
             $sharedStimulus = $this->getCreateService()
                 ->create($command);
@@ -50,6 +53,29 @@ class SharedStimulus extends tao_actions_CommonModule
             $formatter->withBody(new SuccessJsonResponse($sharedStimulus->jsonSerialize()));
         } catch (Throwable $exception) {
             $this->logError(sprintf('Error creating Shared Stimulus: %s', $exception->getMessage()));
+
+            $formatter->withStatusCode(400)
+                ->withBody(new ErrorJsonResponse($exception->getCode(), $exception->getMessage()));
+        }
+
+        $this->setResponse($formatter->format($this->getPsrResponse()));
+    }
+
+    public function get(): void
+    {
+        $formatter = $this->getResponseFormatter()
+            ->withJsonHeader();
+
+        try {
+            $command = $this->getQueryFactory()
+                ->makeFindQueryByRequest($this->getPsrRequest());
+
+            $sharedStimulus = $this->getSharedStimulusRepository()
+                ->find($command);
+
+            $formatter->withBody(new SuccessJsonResponse($sharedStimulus->jsonSerialize()));
+        } catch (Throwable $exception) {
+            $this->logError(sprintf('Error retrieving Shared Stimulus: %s', $exception->getMessage()));
 
             $formatter->withStatusCode(400)
                 ->withBody(new ErrorJsonResponse($exception->getCode(), $exception->getMessage()));
@@ -68,13 +94,18 @@ class SharedStimulus extends tao_actions_CommonModule
         return $this->getServiceLocator()->get(CommandFactory::class);
     }
 
+    private function getQueryFactory(): QueryFactory
+    {
+        return $this->getServiceLocator()->get(QueryFactory::class);
+    }
+
     private function getCreateService(): CreateService
     {
         return $this->getServiceLocator()->get(CreateService::class);
     }
 
-    protected function getClassService()
+    private function getSharedStimulusRepository(): SharedStimulusRepository
     {
-        return MediaService::singleton();
+        return $this->getServiceLocator()->get(SharedStimulusRepository::class);
     }
 }

@@ -23,44 +23,32 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\test\unit\model\sharedStimulus\factory;
 
 use oat\generis\test\TestCase;
-use oat\taoMediaManager\model\sharedStimulus\CreateCommand;
-use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
+use oat\taoMediaManager\model\sharedStimulus\factory\QueryFactory;
+use oat\taoMediaManager\model\sharedStimulus\FindQuery;
 use Psr\Http\Message\ServerRequestInterface;
 
-class CommandFactoryTest extends TestCase
+class QueryFactoryTest extends TestCase
 {
-    private const CLASS_URI = 'uri';
-    private const LANGUAGE_URI = 'uri';
-    private const NAME = 'name';
+    private const URI = 'uri';
 
-    /** @var CommandFactory */
+    /** @var QueryFactory */
     private $factory;
 
     public function setUp(): void
     {
-        $this->factory = new CommandFactory();
+        $this->factory = new QueryFactory();
     }
 
-    public function testMakeCreateCommandByRequest(): void
+    public function testMakeGetCommandByRequest(): void
     {
-        $expectedCommand = new CreateCommand(
-            self::CLASS_URI,
-            self::NAME,
-            self::LANGUAGE_URI
-        );
-
         $request = $this->createMock(ServerRequestInterface::class);
-        $request->method('getBody')
+        $request->method('getQueryParams')
             ->willReturn(
-                json_encode(
-                    [
-                        'classUri' => self::CLASS_URI,
-                        'languageUri' => self::LANGUAGE_URI,
-                        'name' => self::NAME,
-                    ]
-                )
+                [
+                    'id' => self::URI
+                ]
             );
 
-        $this->assertEquals($expectedCommand, $this->factory->makeCreateCommandByRequest($request));
+        $this->assertEquals(new FindQuery(self::URI), $this->factory->makeFindQueryByRequest($request));
     }
 }

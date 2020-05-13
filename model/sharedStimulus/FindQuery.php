@@ -22,50 +22,18 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus;
 
-use JsonSerializable;
-
-class SharedStimulus implements JsonSerializable
+class FindQuery
 {
     /** @var string */
     private $id;
 
-    /** @var string */
-    private $languageId;
-
-    /** @var string */
-    private $name;
-
-    /** @var string|null */
-    private $body;
-
-    public function __construct(string $id, string $name, string $languageId, string $body = null)
+    public function __construct(string $id)
     {
         $this->id = $id;
-        $this->name = $name;
-        $this->languageId = $languageId;
-        $this->body = $body;
-    }
-
-    public function getBody(): ?string
-    {
-        return $this->body;
     }
 
     public function getId(): string
     {
         return $this->id;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'id' => $this->id,
-            'languageId' => $this->languageId,
-            'name' => $this->name,
-            'body' => str_replace(PHP_EOL, '', $this->body),
-        ];
     }
 }

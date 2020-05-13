@@ -18,19 +18,21 @@
  * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
  */
 
+declare(strict_types=1);
+
 namespace oat\taoMediaManager\model\sharedStimulus\service;
 
 use common_Exception;
 use common_exception_Error;
 use core_kernel_classes_Class;
 use ErrorException;
-use FileNotFoundException;
 use oat\generis\model\data\Ontology;
 use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\upload\UploadService;
 use oat\taoMediaManager\model\sharedStimulus\CreateCommand;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 use oat\taoMediaManager\model\SharedStimulusImporter;
+use tao_models_classes_FileNotFoundException;
 
 class CreateService extends ConfigurableService
 {
@@ -39,13 +41,9 @@ class CreateService extends ConfigurableService
     public const OPTION_TEMPLATE_PATH = 'template_path';
 
     /**
-     * @param CreateCommand $command
-     *
-     * @return SharedStimulus
-     *
      * @throws common_Exception
      * @throws common_exception_Error
-     * @throws FileNotFoundException
+     * @throws tao_models_classes_FileNotFoundException
      * @throws ErrorException
      */
     public function create(CreateCommand $command): SharedStimulus
@@ -142,14 +140,16 @@ class CreateService extends ConfigurableService
     }
 
     /**
-     * @throws FileNotFoundException
+     * @throws tao_models_classes_FileNotFoundException
      */
     private function getDefaultTemplateContent(): string
     {
         $templatePath = $this->getTemplateFilePath();
 
         if (!is_readable($templatePath)) {
-            throw new FileNotFoundException(sprintf('Shared Stimulus template not found: %s', $templatePath));
+            throw new tao_models_classes_FileNotFoundException(
+                sprintf('Shared Stimulus template not found: %s', $templatePath)
+            );
         }
 
         return file_get_contents($templatePath);

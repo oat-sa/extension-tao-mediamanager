@@ -18,13 +18,13 @@
  * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
  */
 
+declare(strict_types=1);
+
 namespace oat\taoMediaManager\test\unit\model\sharedStimulus\factory;
 
 use oat\generis\test\TestCase;
 use oat\taoMediaManager\model\sharedStimulus\CreateCommand;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
-use oat\taoMediaManager\model\sharedStimulus\service\CreateService;
-use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Http\Message\ServerRequestInterface;
 
 class CommandFactoryTest extends TestCase
@@ -36,16 +36,12 @@ class CommandFactoryTest extends TestCase
     /** @var CommandFactory */
     private $factory;
 
-    /** @var CreateService|MockObject */
-    private $createService;
-
     public function setUp(): void
     {
-        $this->createService = $this->createMock(CreateService::class);
         $this->factory = new CommandFactory();
     }
 
-    public function testCreateSharedStimulusByRequest(): void
+    public function testMakeCreateCommandByRequest(): void
     {
         $expectedCommand = new CreateCommand(
             self::CLASS_URI,
@@ -65,6 +61,6 @@ class CommandFactoryTest extends TestCase
                 )
             );
 
-        $this->assertEquals($expectedCommand, $this->factory->createByRequest($request));
+        $this->assertEquals($expectedCommand, $this->factory->makeCreateCommandByRequest($request));
     }
 }

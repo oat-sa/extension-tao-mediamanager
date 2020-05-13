@@ -21,6 +21,23 @@ paths:
           $ref: '#/components/responses/BadRequestResponse'
         500:
           $ref: '#/components/responses/InternalServerErrorResponse'
+  /taoMediaManager/SharedStimulus/get:
+    get:
+      summary: Get a shared stimulus
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The shared stimulus uri
+      responses:
+        200:
+          $ref: '#/components/responses/SharedStimulusCreatedResponse'
+        400:
+          $ref: '#/components/responses/BadRequestResponse'
+        500:
+          $ref: '#/components/responses/InternalServerErrorResponse'
 components:
   schemas:
     SharedStimulus:
@@ -45,6 +62,9 @@ components:
             uri:
               type: string
               example: "http://tao.docker.localhost/tao.rdf#i5e89a2063326711164b1a816b433b1ec"
+            body:
+              type: string
+              example: '<?xml version="1.0" encoding="UTF-8"?><div xmlns="http://www.imsglobal.org/xsd/imsqti_v2p2"></div>'
     SharedStimulusCreatedResponse:
       properties:
         success:

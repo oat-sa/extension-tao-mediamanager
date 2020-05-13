@@ -22,38 +22,18 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus;
 
-class CreateCommand
+class FindQuery
 {
-    private const DEFAULT_LANGUAGE = 'http://www.tao.lu/Ontologies/TAO.rdf#Langen-US';
-
     /** @var string */
-    private $classUri;
+    private $uri;
 
-    /** @var string */
-    private $languageUri;
-
-    /** @var string */
-    private $name;
-
-    public function __construct(string $classUri, string $name = null, string $languageUri = null)
+    public function __construct(string $uri)
     {
-        $this->classUri = $classUri;
-        $this->name = $name;
-        $this->languageUri = $languageUri ?? self::DEFAULT_LANGUAGE;
+        $this->uri = $uri;
     }
 
-    public function getClassUri(): string
+    public function getUri(): string
     {
-        return $this->classUri;
-    }
-
-    public function getLanguageUri(): string
-    {
-        return $this->languageUri;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
+        return $this->uri;
     }
 }

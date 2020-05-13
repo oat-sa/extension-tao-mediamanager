@@ -20,40 +20,16 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\sharedStimulus;
+namespace oat\taoMediaManager\model\sharedStimulus\factory;
 
-class CreateCommand
+use oat\oatbox\service\ConfigurableService;
+use oat\taoMediaManager\model\sharedStimulus\FindQuery;
+use Psr\Http\Message\ServerRequestInterface;
+
+class QueryFactory extends ConfigurableService
 {
-    private const DEFAULT_LANGUAGE = 'http://www.tao.lu/Ontologies/TAO.rdf#Langen-US';
-
-    /** @var string */
-    private $classUri;
-
-    /** @var string */
-    private $languageUri;
-
-    /** @var string */
-    private $name;
-
-    public function __construct(string $classUri, string $name = null, string $languageUri = null)
+    public function makeFindQueryByRequest(ServerRequestInterface $request): FindQuery
     {
-        $this->classUri = $classUri;
-        $this->name = $name;
-        $this->languageUri = $languageUri ?? self::DEFAULT_LANGUAGE;
-    }
-
-    public function getClassUri(): string
-    {
-        return $this->classUri;
-    }
-
-    public function getLanguageUri(): string
-    {
-        return $this->languageUri;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
+        return new FindQuery($request->getQueryParams()['id'] ?? '');
     }
 }

@@ -20,40 +20,12 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\sharedStimulus;
+namespace oat\taoMediaManager\model\sharedStimulus\repository;
 
-class CreateCommand
+use oat\taoMediaManager\model\sharedStimulus\FindQuery;
+use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
+
+interface SharedStimulusRepositoryInterface
 {
-    private const DEFAULT_LANGUAGE = 'http://www.tao.lu/Ontologies/TAO.rdf#Langen-US';
-
-    /** @var string */
-    private $classId;
-
-    /** @var string */
-    private $languageId;
-
-    /** @var string */
-    private $name;
-
-    public function __construct(string $classId, string $name = null, string $languageId = null)
-    {
-        $this->classId = $classId;
-        $this->name = $name;
-        $this->languageId = $languageId ?? self::DEFAULT_LANGUAGE;
-    }
-
-    public function getClassId(): string
-    {
-        return $this->classId;
-    }
-
-    public function getLanguageId(): string
-    {
-        return $this->languageId;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
+    public function find(FindQuery $query): SharedStimulus;
 }

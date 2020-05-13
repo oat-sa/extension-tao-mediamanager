@@ -77,7 +77,7 @@ define([
                 return request({
                     url: self.url,
                     method: "POST",
-                    data: { id: classUri, type: 'instance', signature: signature },
+                    data: { classId: classUri, type: 'instance', signature: signature },
                     dataType: 'json'
                 })
                 .then(function(response) {

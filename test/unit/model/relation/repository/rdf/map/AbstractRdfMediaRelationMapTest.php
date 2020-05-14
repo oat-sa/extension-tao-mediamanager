@@ -26,14 +26,13 @@ use oat\generis\model\data\Ontology;
 use oat\generis\test\TestCase;
 use oat\taoMediaManager\model\relation\MediaRelation;
 use oat\taoMediaManager\model\relation\MediaRelationCollection;
+use oat\taoMediaManager\model\relation\repository\rdf\map\AbstractRdfMediaRelationMap;
 use Prophecy\Argument;
 use core_kernel_classes_Resource as RdfResource;
 use core_kernel_classes_Property as RdfProperty;
 
 class AbstractRdfMediaRelationMapTest extends TestCase
 {
-    use GetAbstractMapTrait;
-
     public function testGetMediaRelations()
     {
         $values =[
@@ -66,6 +65,22 @@ class AbstractRdfMediaRelationMapTest extends TestCase
         $result = iterator_to_array($mediaRelationCollection->getIterator());
 
         $this->assertEquals(json_encode($expected), json_encode($result));
+    }
+
+    private function getAbstractMap(): AbstractRdfMediaRelationMap
+    {
+        return new class extends AbstractRdfMediaRelationMap
+        {
+            protected function getMediaRelationPropertyUri(): string
+            {
+                return 'uri-fixture';
+            }
+
+            protected function createMediaRelation(string $uri, string $label): MediaRelation
+            {
+                return new MediaRelation('media', $uri, $label);
+            }
+        };
     }
 
 }

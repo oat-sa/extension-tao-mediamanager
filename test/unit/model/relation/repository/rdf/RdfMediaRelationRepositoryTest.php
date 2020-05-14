@@ -27,16 +27,13 @@ use oat\generis\test\TestCase;
 use oat\taoMediaManager\model\relation\MediaRelation;
 use oat\taoMediaManager\model\relation\MediaRelationCollection;
 use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
-use oat\taoMediaManager\model\relation\repository\rdf\map\AbstractRdfMediaRelationMap;
 use oat\taoMediaManager\model\relation\repository\rdf\map\RdfMediaRelationMapInterface;
 use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRelationRepository;
 use core_kernel_classes_Resource as RdfResource;
-use oat\taoMediaManager\test\unit\model\relation\repository\rdf\map\GetAbstractMapTrait;
 use Prophecy\Argument;
 
 class RdfMediaRelationRepositoryTest extends TestCase
 {
-    use GetAbstractMapTrait;
 
     public function testFindAll()
     {

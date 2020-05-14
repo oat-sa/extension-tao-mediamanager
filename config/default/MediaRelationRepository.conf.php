@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,23 +17,13 @@
  * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
  */
 
-declare(strict_types=1);
+use oat\taoMediaManager\model\relation\repository\rdf\map\RdfItemRelationMap;
+use oat\taoMediaManager\model\relation\repository\rdf\map\RdfMediaRelationMap;
+use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRelationRepository;
 
-namespace oat\taoMediaManager\model\relation\repository\rdf\map;
-
-use oat\taoMediaManager\model\relation\MediaRelation;
-
-class RdfItemRelationMap extends AbstractRdfMediaRelationMap
-{
-    private const ITEM_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem';
-
-    protected function getMediaRelationPropertyUri(): string
-    {
-        return self::ITEM_RELATION_PROPERTY;
-    }
-
-    protected function createMediaRelation(string $uri, string $label = null): MediaRelation
-    {
-        return new MediaRelation(MediaRelation::ITEM_TYPE, $uri, $label);
-    }
-}
+return new RdfMediaRelationRepository([
+    RdfMediaRelationRepository::MAP_OPTION => [
+        new RdfItemRelationMap(),
+        new RdfMediaRelationMap()
+    ]
+]);

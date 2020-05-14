@@ -22,46 +22,37 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\test\unit\model\relation;
 
-use InvalidArgumentException;
-use JsonSerializable;
 use oat\generis\test\TestCase;
 use oat\taoMediaManager\model\relation\MediaRelation;
+use oat\taoMediaManager\model\relation\MediaRelationCollection;
+use oat\taoMediaManager\model\relation\MediaRelationService;
+use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
+use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
+use Prophecy\Argument;
 
-class MediaRelationTest extends TestCase
+class MediaRelationServiceTest extends TestCase
 {
-    public function testConstruct()
+    public function testGetMediaRelation()
     {
-        $mediaRelation = new MediaRelation(MediaRelation::ITEM_TYPE, 'uri-string', 'label');
-        $this->assertSame(MediaRelation::ITEM_TYPE, $mediaRelation->getType());
-        $this->assertSame('uri-string', $mediaRelation->getId());
-        $this->assertSame('label', $mediaRelation->getLabel());
-    }
-
-    public function testConstructWithDefaultLabel()
-    {
-        $mediaRelation = new MediaRelation(MediaRelation::MEDIA_TYPE, 24);
-        $this->assertSame(MediaRelation::MEDIA_TYPE, $mediaRelation->getType());
-        $this->assertSame(24, $mediaRelation->getId());
-        $this->assertNull($mediaRelation->getLabel());
-    }
-
-    public function testJsonSerialized()
-    {
-        $mediaRelation = new MediaRelation(MediaRelation::MEDIA_TYPE, 1, 'label');
-        $this->assertInstanceOf(JsonSerializable::class, $mediaRelation);
-
-        $expected = json_encode([
-            'type' => MediaRelation::MEDIA_TYPE,
-            'id' => 1,
-            'label' => 'label',
+        $id = 'id-fixture';
+        $mediaRelationCollection = new MediaRelationCollection([
+            new MediaRelation('item', 'uri1'),
+            new MediaRelation('media', 'uri2'),
+            new MediaRelation('item', 'uri3'),
         ]);
 
-        $this->assertSame($expected, json_encode($mediaRelation));
-    }
+        $repositoryProphecy = $this->prophesize(MediaRelationRepositoryInterface::class);
+        $repositoryProphecy
+            ->findAll(Argument::that(function (FindAllQuery $query) use ($id) {
+                return $query->getMediaId() == $id;
+            }))
+            ->willReturn($mediaRelationCollection);
 
-    public function testConstructExpectionWithWrongType($type, $id)
-    {
-        $this->expectException(InvalidArgumentException::class);
-        new MediaRelation('bad-example', $id);
+        $service = new MediaRelationService();
+        $service->setServiceLocator($this->getServiceLocatorMock([
+            MediaRelationRepositoryInterface::SERVICE_ID => $repositoryProphecy->reveal()
+        ]));
+
+        $this->assertSame($mediaRelationCollection, $service->getMediaRelation($id));
     }
 }

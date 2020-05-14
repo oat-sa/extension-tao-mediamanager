@@ -29,7 +29,7 @@ use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterfa
 
 class MediaRelationService extends ConfigurableService
 {
-    public function getMediaRelation(string $id)
+    public function getMediaRelation(string $id): MediaRelationCollection
     {
         return $this->getMediaRelationRepository()->findAll(
             new FindAllQuery($id)

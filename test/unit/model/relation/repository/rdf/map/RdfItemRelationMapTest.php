@@ -22,28 +22,28 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\test\unit\model\relation\repository\rdf;
 
-use oat\generis\model\data\Ontology;
 use oat\generis\test\TestCase;
-use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
-use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRelationRepository;
-use core_kernel_classes_Resource as RdfResource;
-use Prophecy\Argument;
+use oat\taoMediaManager\model\relation\repository\rdf\map\RdfItemRelationMap;
+use ReflectionMethod;
 
-class RdfMediaRelationRepositoryTest extends TestCase
+class RdfItemRelationMapTest extends TestCase
 {
-    public function testFindAll()
+    public function testGetMediaRelationPropertyUri()
     {
-        $mediaId = 'fixture';
+        $map = new RdfItemRelationMap();
+        $method = new ReflectionMethod($map, 'getMediaRelationPropertyUri');
+        $method->setAccessible(true);
+        $this->assertSame('http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem', $method->invoke($map));
+    }
 
-        $modelProphecy = $this->prophesize(Ontology::class);
-
-        $mediaResourceProphecy = $this->prophesize(RdfResource::class);
-//        $mediaResourceProphecy
-        $modelProphecy->getResource(Argument::exact($mediaId))->willReturn($mediaResourceProphecy->reveal());
-
-        $repository = new RdfMediaRelationRepository();
-        $repository->findAll(
-            new FindAllQuery($mediaId)
-        );
+    public function testCreateMediaRelation()
+    {
+        $map = new RdfItemRelationMap();
+        $method = new ReflectionMethod($map, 'createMediaRelation');
+        $method->setAccessible(true);
+        $mediaRelation = $method->invoke($map, 'id', 'label');
+        $this->assertSame('item', $mediaRelation->getType());
+        $this->assertSame('id', $mediaRelation->getId());
+        $this->assertSame('label', $mediaRelation->getLabel());
     }
 }

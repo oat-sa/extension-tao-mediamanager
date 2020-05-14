@@ -22,31 +22,19 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\repository\rdf\map;
 
-use oat\generis\model\OntologyAwareTrait;
 use oat\taoMediaManager\model\relation\MediaRelation;
-use oat\taoMediaManager\model\relation\MediaRelationCollection;
-use core_kernel_classes_Resource as RdfResource;
 
-class RdfMediaRelationMap implements RdfMediaRelationMapInterface
+class RdfMediaRelationMap extends AbstractRdfMediaRelationMap
 {
     private const MEDIA_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedMedia';
 
-    use OntologyAwareTrait;
+    protected function getMediaRelationPropertyUri(): string
+    {
+        return self::MEDIA_RELATION_PROPERTY;
+    }
 
-    /**
-     * @inheritDoc
-     */
-    public function getMediaRelations(
-        RdfResource $mediaResource,
-        MediaRelationCollection $mediaRelationCollection
-    ): void {
-        $relatedAssets = $mediaResource->getPropertyValues($this->getProperty(self::MEDIA_RELATION_PROPERTY));
-
-        foreach ($relatedAssets as $relatedAsset) {
-            $assetResource = $this->getResource($relatedAsset);
-            $mediaRelationCollection->add(
-                new MediaRelation(MediaRelation::MEDIA_TYPE, $assetResource->getUri(), $assetResource->getLabel())
-            );
-        }
+    protected function createMediaRelation(string $uri, string $label = null): MediaRelation
+    {
+        return new MediaRelation(MediaRelation::MEDIA_TYPE, $uri, $label);
     }
 }

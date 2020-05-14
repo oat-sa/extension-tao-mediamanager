@@ -22,18 +22,20 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\repository\rdf;
 
+use LogicException;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\relation\MediaRelation;
 use oat\taoMediaManager\model\relation\MediaRelationCollection;
 use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
 use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
-use oat\taoMediaManager\model\relation\repository\rdf\map\RdfItemRelationMap;
-use oat\taoMediaManager\model\relation\repository\rdf\map\RdfMediaRelationMap;
+use oat\taoMediaManager\model\relation\repository\rdf\map\RdfMediaRelationMapInterface;
 
 class RdfMediaRelationRepository extends ConfigurableService implements MediaRelationRepositoryInterface
 {
     use OntologyAwareTrait;
+
+    public const MAP_OPTION = 'map';
 
     /**
      * Find all mediaRelation based on FindAllQuery.
@@ -65,11 +67,28 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
         // TODO: Implement remove() method.
     }
 
+    /**
+     * Retrieve map from config
+     *
+     * Check if map are inheriting `RdfMediaRelationMapInterface`
+     *
+     * @return array
+     */
     private function getRdfRelationMediaMaps(): array
     {
-        return [
-            new RdfItemRelationMap(),
-            new RdfMediaRelationMap(),
-        ];
+        $rdfMaps = [];
+        $maps = $this->getOption(self::MAP_OPTION);
+        if (!is_array($maps)) {
+            throw new LogicException('Rdf map for media relation has to be array');
+        }
+        foreach ($maps as $map) {
+            if (!is_a($map, RdfMediaRelationMapInterface::class)) {
+                throw new LogicException(
+                    sprintf('Rdf map for media relation required to implement "%s"', RdfMediaRelationMapInterface::class)
+                );
+            }
+            $rdfMaps[] = $map;
+        }
+        return $rdfMaps;
     }
 }

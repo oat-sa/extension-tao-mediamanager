@@ -51,7 +51,7 @@ class MediaRelation implements JsonSerializable
     public function __construct(string $type, string $id, ?string $label = null)
     {
         if (!in_array($type, [self::MEDIA_TYPE, self::ITEM_TYPE])) {
-            throw new InvalidArgumentException('Media relation type should be `item` or `asset`');
+            throw new InvalidArgumentException('Media relation type should be `item` or `media`');
         }
         $this->type = $type;
         $this->id = $id;

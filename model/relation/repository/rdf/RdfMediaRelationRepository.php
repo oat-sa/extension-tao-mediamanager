@@ -28,14 +28,12 @@ use oat\taoMediaManager\model\relation\MediaRelation;
 use oat\taoMediaManager\model\relation\MediaRelationCollection;
 use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
 use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
-use core_kernel_classes_Resource as RdfResource;
+use oat\taoMediaManager\model\relation\repository\rdf\map\RdfItemRelationMap;
+use oat\taoMediaManager\model\relation\repository\rdf\map\RdfMediaRelationMap;
 
 class RdfMediaRelationRepository extends ConfigurableService implements MediaRelationRepositoryInterface
 {
     use OntologyAwareTrait;
-
-    private const ITEM_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem';
-    private const ASSET_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedMedia';
 
     /**
      * Find all mediaRelation based on FindAllQuery.
@@ -50,8 +48,9 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
         $mediaResource = $this->getResource($findAllQuery->getMediaId());
         $mediaRelationCollections = new MediaRelationCollection();
 
-        $this->getItemRelations($mediaResource, $mediaRelationCollections);
-        $this->getAssetRelations($mediaResource, $mediaRelationCollections);
+        foreach ($this->getRdfRelationMediaMaps() as $relationMediaMap) {
+            $relationMediaMap->getMediaRelations($mediaResource, $mediaRelationCollections);
+        }
 
         return $mediaRelationCollections;
     }
@@ -66,45 +65,11 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
         // TODO: Implement remove() method.
     }
 
-    /**
-     * Search related item in RdfResource item-relation property
-     * Update MediaCollection with found relation
-     *
-     * @param RdfResource $mediaResource
-     * @param MediaRelationCollection $mediaRelationCollection
-     */
-    protected function getItemRelations(
-        RdfResource $mediaResource,
-        MediaRelationCollection $mediaRelationCollection
-    ): void {
-        $relatedItems = $mediaResource->getPropertyValues($this->getProperty(self::ITEM_RELATION_PROPERTY));
-
-        foreach ($relatedItems as $relatedItem) {
-            $itemResource = $this->getResource($relatedItem);
-            $mediaRelationCollection->add(
-                new MediaRelation(MediaRelation::ITEM_TYPE, $itemResource->getUri(), $itemResource->getLabel())
-            );
-        }
-    }
-
-    /**
-     * Search related asset in RdfResource asset-relation property
-     * Update MediaCollection with found relation
-     *
-     * @param RdfResource $mediaResource
-     * @param MediaRelationCollection $mediaRelationCollection
-     */
-    protected function getAssetRelations(
-        RdfResource $mediaResource,
-        MediaRelationCollection $mediaRelationCollection
-    ): void {
-        $relatedAssets = $mediaResource->getPropertyValues($this->getProperty(self::ASSET_RELATION_PROPERTY));
-
-        foreach ($relatedAssets as $relatedAsset) {
-            $assetResource = $this->getResource($relatedAsset);
-            $mediaRelationCollection->add(
-                new MediaRelation(MediaRelation::MEDIA_TYPE, $assetResource->getUri(), $assetResource->getLabel())
-            );
-        }
+    private function getRdfRelationMediaMaps(): array
+    {
+        return [
+            new RdfItemRelationMap(),
+            new RdfMediaRelationMap(),
+        ];
     }
 }

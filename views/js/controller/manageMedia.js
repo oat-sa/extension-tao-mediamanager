@@ -107,9 +107,6 @@ define([
             });
 
             binder.register('passageAuthoring', function passageAuthoring(actionContext){
-
-                var data = _.pick(actionContext, ['id']);
-                var wideDifferenciator = '[data-content-target="wide"]';
                 section.create({
                     id : 'authoring',
                     name : __('Authoring'),
@@ -117,12 +114,11 @@ define([
                     content : '',
                     visible : false
                 }).show();
-                const plugins = [];
                 passageAuthoringFactory($('#panel-authoring'), { properties: {
-                    uri: actionContext.uri,
+                    uri: actionContext.classUri,
                     label: 'Asset',
                     baseUrl: '/',
-                    itemDataUrl: 'http://bosa/taoMediaManager/MediaManager/getFile?uri=' +  encodeURIComponent(uri.decode(actionContext.uri))
+                    itemDataUrl: `http://bosa//taoMediaManager/SharedStimulus/get?id=${actionContext.id}`
                 }});
             });
         }

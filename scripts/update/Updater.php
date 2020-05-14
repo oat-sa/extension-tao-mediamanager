@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,24 +19,27 @@ declare(strict_types=1);
  *
  */
 
+declare(strict_types=1);
+
 namespace oat\taoMediaManager\scripts\update;
 
+use common_exception_NotImplemented;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
-use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRepository;
+use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRelationRepository;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
     /**
      * @param string $initialVersion
      * @return string|void
-     * @throws \common_exception_NotImplemented
+     * @throws common_exception_NotImplemented
      * @throws \common_Exception
      */
     public function update($initialVersion)
     {
         if ($this->isBetween('0.0.0', '0.2.5')) {
-            throw new \common_exception_NotImplemented('Updates from versions prior to Tao 3.1 are not longer supported, please update to Tao 3.1 first');
+            throw new common_exception_NotImplemented('Updates from versions prior to Tao 3.1 are not longer supported, please update to Tao 3.1 first');
         }
 
         $this->skip('0.3.0', '9.3.0');
@@ -52,7 +53,7 @@ class Updater extends \common_ext_ExtensionUpdater
 
         if ($this->isVersion('9.6.0')) {
             OntologyUpdater::syncModels();
-            $this->getServiceManager()->register(MediaRelationRepositoryInterface::SERVICE_ID, new RdfMediaRepository());
+            $this->getServiceManager()->register(MediaRelationRepositoryInterface::SERVICE_ID, new RdfMediaRelationRepository());
         }
     }
 }

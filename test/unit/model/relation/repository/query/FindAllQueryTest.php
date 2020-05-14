@@ -16,28 +16,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
- *
  */
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\relation\repository\query;
+namespace oat\taoMediaManager\test\unit\model\relation;
 
-/**
- * Representation of query to find all media relations.
- * Can be extended for more advanced criteria
- */
-class FindAllQuery
+use oat\generis\test\TestCase;
+use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
+
+class FindAllQueryTest extends TestCase
 {
-    private $mediaId;
-
-    public function __construct(string $mediaId)
+    public function testConstructAndGetter()
     {
-        $this->mediaId = $mediaId;
-    }
-
-    public function getMediaId(): string
-    {
-        return $this->mediaId;
+        $id = 'fixture';
+        $findAllQuery = new FindAllQuery($id);
+        $this->assertSame($id, $findAllQuery);
     }
 }

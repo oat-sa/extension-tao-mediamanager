@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,13 +16,13 @@ declare(strict_types=1);
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
- *
  */
+
+declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\repository\rdf;
 
 use oat\generis\model\OntologyAwareTrait;
-use oat\generis\model\OntologyRdf;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\relation\MediaRelation;
 use oat\taoMediaManager\model\relation\MediaRelationCollection;
@@ -32,13 +30,21 @@ use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterfa
 use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
 use core_kernel_classes_Resource as RdfResource;
 
-class RdfMediaRepository extends ConfigurableService implements MediaRelationRepositoryInterface
+class RdfMediaRelationRepository extends ConfigurableService implements MediaRelationRepositoryInterface
 {
     use OntologyAwareTrait;
 
-    protected const ITEM_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem';
-    protected const ASSET_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedAsset';
+    private const ITEM_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem';
+    private const ASSET_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedMedia';
 
+    /**
+     * Find all mediaRelation based on FindAllQuery.
+     *
+     * Find and aggregate item mediaRelations and media mediaRelations
+     *
+     * @param FindAllQuery $findAllQuery
+     * @return MediaRelationCollection
+     */
     public function findAll(FindAllQuery $findAllQuery): MediaRelationCollection
     {
         $mediaResource = $this->getResource($findAllQuery->getMediaId());
@@ -50,22 +56,28 @@ class RdfMediaRepository extends ConfigurableService implements MediaRelationRep
         return $mediaRelationCollections;
     }
 
-    public function save(MediaRelation $relation): bool
+    public function save(MediaRelation $relation): void
     {
         // TODO: Implement save() method.
     }
 
-    public function remove(MediaRelation $relation): bool
+    public function remove(MediaRelation $relation): void
     {
         // TODO: Implement remove() method.
     }
 
-    protected function getItemRelations(RdfResource $mediaResource, MediaRelationCollection $mediaRelationCollection) : void
-    {
+    /**
+     * Search related item in RdfResource item-relation property
+     * Update MediaCollection with found relation
+     *
+     * @param RdfResource $mediaResource
+     * @param MediaRelationCollection $mediaRelationCollection
+     */
+    protected function getItemRelations(
+        RdfResource $mediaResource,
+        MediaRelationCollection $mediaRelationCollection
+    ): void {
         $relatedItems = $mediaResource->getPropertyValues($this->getProperty(self::ITEM_RELATION_PROPERTY));
-
-//        var_dump($findAllQuery->getMediaId());
-//        var_dump($relatedItems);
 
         foreach ($relatedItems as $relatedItem) {
             $itemResource = $this->getResource($relatedItem);
@@ -75,14 +87,23 @@ class RdfMediaRepository extends ConfigurableService implements MediaRelationRep
         }
     }
 
-    protected function getAssetRelations(RdfResource $mediaResource, MediaRelationCollection $mediaRelationCollection) : void
-    {
+    /**
+     * Search related asset in RdfResource asset-relation property
+     * Update MediaCollection with found relation
+     *
+     * @param RdfResource $mediaResource
+     * @param MediaRelationCollection $mediaRelationCollection
+     */
+    protected function getAssetRelations(
+        RdfResource $mediaResource,
+        MediaRelationCollection $mediaRelationCollection
+    ): void {
         $relatedAssets = $mediaResource->getPropertyValues($this->getProperty(self::ASSET_RELATION_PROPERTY));
 
         foreach ($relatedAssets as $relatedAsset) {
             $assetResource = $this->getResource($relatedAsset);
             $mediaRelationCollection->add(
-                new MediaRelation(MediaRelation::ASSET_TYPE, $assetResource->getUri(), $assetResource->getLabel())
+                new MediaRelation(MediaRelation::MEDIA_TYPE, $assetResource->getUri(), $assetResource->getLabel())
             );
         }
     }

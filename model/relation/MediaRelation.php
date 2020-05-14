@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,18 +16,23 @@ declare(strict_types=1);
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
- *
  */
+
+declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation;
 
 use InvalidArgumentException;
 use JsonSerializable;
 
+/**
+ * This object is the representation of medias/items used in another media
+ */
 class MediaRelation implements JsonSerializable
 {
     public const ITEM_TYPE = 'item';
-    public const ASSET_TYPE = 'asset';
+    public const MEDIA_TYPE = 'media';
+
 
     protected $id;
 
@@ -37,9 +40,17 @@ class MediaRelation implements JsonSerializable
 
     protected $type;
 
-    public function __construct(string $type, $id, ?string $label)
+    /**
+     * MediaRelation constructor.
+     *
+     * @param string $type
+     * @param $id
+     * @param string|null $label
+     * @throws InvalidArgumentException if type is not `item` or `asset`
+     */
+    public function __construct(string $type, string $id, ?string $label = null)
     {
-        if (!in_array($type, [self::ASSET_TYPE, self::ITEM_TYPE])) {
+        if (!in_array($type, [self::MEDIA_TYPE, self::ITEM_TYPE])) {
             throw new InvalidArgumentException('Media relation type should be `item` or `asset`');
         }
         $this->type = $type;
@@ -47,22 +58,22 @@ class MediaRelation implements JsonSerializable
         $this->label = $label;
     }
 
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
 
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
 
-    public function getLabel()
+    public function getLabel(): string
     {
         return $this->label;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'type' => $this->type,

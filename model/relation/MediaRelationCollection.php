@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,6 +19,8 @@ declare(strict_types=1);
  *
  */
 
+declare(strict_types=1);
+
 namespace oat\taoMediaManager\model\relation;
 
 use ArrayIterator;
@@ -38,12 +38,12 @@ class MediaRelationCollection implements IteratorAggregate, JsonSerializable
         }
     }
 
-    public function getIterator() : ArrayIterator
+    public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->mediaRelations);
     }
 
-    public function add(MediaRelation $mediaRelation) : self
+    public function add(MediaRelation $mediaRelation): self
     {
         $this->mediaRelations[] = $mediaRelation;
         return $this;
@@ -53,5 +53,4 @@ class MediaRelationCollection implements IteratorAggregate, JsonSerializable
     {
         return $this->mediaRelations;
     }
-
 }

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,6 +19,8 @@ declare(strict_types=1);
  *
  */
 
+declare(strict_types=1);
+
 namespace oat\taoMediaManager\model\relation;
 
 use oat\oatbox\service\ConfigurableService;
@@ -36,7 +36,7 @@ class MediaRelationService extends ConfigurableService
         );
     }
 
-    protected function getMediaRelationRepository() : MediaRelationRepositoryInterface
+    private function getMediaRelationRepository(): MediaRelationRepositoryInterface
     {
         return $this->getServiceLocator()->get(MediaRelationRepositoryInterface::SERVICE_ID);
     }

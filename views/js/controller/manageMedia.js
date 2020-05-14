@@ -111,7 +111,7 @@ define([
                     id : 'authoring',
                     name : __('Authoring'),
                     url : this.url,
-                    content : '',
+                    content : ' ',
                     visible : false
                 }).show();
                 passageAuthoringFactory($('#panel-authoring'), { properties: {

@@ -59,7 +59,7 @@ define([
             });
 
             this.hide();
-            this.disable();
+            // this.disable();
 
             // $container.on('ready saved error', function(){
             //     self.enable();

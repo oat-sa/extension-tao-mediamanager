@@ -46,7 +46,7 @@ define([
          * Initialize the plugin (called during itemCreator's init)
          * @fires {itemCreator#preview}
          */
-        init : function init(areaBroker) {
+        init : function init(areaBroker, url) {
             var self = this;
             $container = areaBroker.getMenuArea();
 
@@ -67,8 +67,7 @@ define([
                 self.disable();
                 // itemCreator.trigger('preview', itemCreator.getItem().data('uri'));
                 var type = 'qtiItem';
-                var uri = ''
-                previewerFactory(type, uri, { }, {
+                previewerFactory(type, url, { }, {
                     readOnly: false,
                     fullPage: true
                 });

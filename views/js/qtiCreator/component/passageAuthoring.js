@@ -134,7 +134,7 @@ define([
                 backPlugin.init(areaBroker);
                 savePlugin.init(areaBroker);
                 titlePlugin.init(areaBroker, 'Hola');
-                previewPlugin.init(areaBroker);
+                previewPlugin.init(areaBroker, config.properties.itemDataUrl);
                 backPlugin.render();
                 savePlugin.render();
                 titlePlugin.render();

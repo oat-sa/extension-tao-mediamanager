@@ -31,6 +31,6 @@ class FindAllQueryTest extends TestCase
     {
         $id = 'fixture';
         $findAllQuery = new FindAllQuery($id);
-        $this->assertSame($id, $findAllQuery);
+        $this->assertSame($id, $findAllQuery->getMediaId());
     }
 }

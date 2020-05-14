@@ -29,6 +29,7 @@ namespace oat\taoMediaManager\model\relation\repository\query;
  */
 class FindAllQuery
 {
+    /** @var string  */
     private $mediaId;
 
     public function __construct(string $mediaId)

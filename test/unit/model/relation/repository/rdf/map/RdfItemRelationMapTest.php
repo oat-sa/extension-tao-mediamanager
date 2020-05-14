@@ -20,7 +20,7 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\test\unit\model\relation\repository\rdf;
+namespace oat\taoMediaManager\test\unit\model\relation\repository\rdf\map;
 
 use oat\generis\test\TestCase;
 use oat\taoMediaManager\model\relation\repository\rdf\map\RdfItemRelationMap;

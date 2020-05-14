@@ -45,13 +45,12 @@ abstract class AbstractRdfMediaRelationMap implements RdfMediaRelationMapInterfa
      * @param string $label
      * @return MediaRelation
      */
-    abstract protected function createMediaRelation(string $uri,string $label): MediaRelation;
+    abstract protected function createMediaRelation(string $uri, string $label): MediaRelation;
 
     /**
      * @inheritDoc
      */
-    public function getMediaRelations
-    (
+    public function getMediaRelations(
         RdfResource $mediaResource,
         MediaRelationCollection $mediaRelationCollection
     ): void {

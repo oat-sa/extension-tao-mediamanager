@@ -26,13 +26,20 @@ use oat\taoMediaManager\model\relation\MediaRelation;
 
 class RdfMediaRelationMap extends AbstractRdfMediaRelationMap
 {
+    /** @var string */
     private const MEDIA_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedMedia';
 
+    /**
+     * @inheritDoc
+     */
     protected function getMediaRelationPropertyUri(): string
     {
         return self::MEDIA_RELATION_PROPERTY;
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function createMediaRelation(string $uri, string $label = null): MediaRelation
     {
         return new MediaRelation(MediaRelation::MEDIA_TYPE, $uri, $label);

@@ -20,18 +20,11 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\test\unit\model\relation\repository\rdf;
+namespace oat\taoMediaManager\test\unit\model\relation\repository\rdf\map;
 
-use Exception;
-use oat\generis\model\data\Ontology;
 use oat\generis\test\TestCase;
-use oat\taoMediaManager\model\relation\MediaRelation;
-use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
 use oat\taoMediaManager\model\relation\repository\rdf\map\RdfMediaRelationMap;
-use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRelationRepository;
-use core_kernel_classes_Resource as RdfResource;
-use core_kernel_classes_Property as RdfProperty;
-use Prophecy\Argument;
+use ReflectionMethod;
 
 class RdfMediaRelationMapTest extends TestCase
 {

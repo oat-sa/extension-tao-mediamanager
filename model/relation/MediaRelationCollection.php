@@ -29,9 +29,10 @@ use JsonSerializable;
 
 class MediaRelationCollection implements IteratorAggregate, JsonSerializable
 {
+    /** @var MediaRelation[]  */
     private $mediaRelations = [];
 
-    public function __construct(?array $mediaRelations = [])
+    public function __construct(array $mediaRelations = [])
     {
         foreach ($mediaRelations as $mediaRelation) {
             $this->add($mediaRelation);
@@ -49,7 +50,7 @@ class MediaRelationCollection implements IteratorAggregate, JsonSerializable
         return $this;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->mediaRelations;
     }

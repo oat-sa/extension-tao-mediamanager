@@ -30,14 +30,19 @@ use JsonSerializable;
  */
 class MediaRelation implements JsonSerializable
 {
+    /** @var string  */
     public const ITEM_TYPE = 'item';
+
+    /** @var string  */
     public const MEDIA_TYPE = 'media';
 
-
+    /** @var string  */
     protected $id;
 
+    /** @var string  */
     protected $label;
 
+    /** @var string  */
     protected $type;
 
     /**
@@ -68,7 +73,7 @@ class MediaRelation implements JsonSerializable
         return $this->id;
     }
 
-    public function getLabel(): string
+    public function getLabel(): ?string
     {
         return $this->label;
     }

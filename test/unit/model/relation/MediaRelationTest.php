@@ -39,29 +39,29 @@ class MediaRelationTest extends TestCase
 
     public function testConstructWithDefaultLabel()
     {
-        $mediaRelation = new MediaRelation(MediaRelation::MEDIA_TYPE, 24);
+        $mediaRelation = new MediaRelation(MediaRelation::MEDIA_TYPE, '24');
         $this->assertSame(MediaRelation::MEDIA_TYPE, $mediaRelation->getType());
-        $this->assertSame(24, $mediaRelation->getId());
+        $this->assertSame('24', $mediaRelation->getId());
         $this->assertNull($mediaRelation->getLabel());
     }
 
     public function testJsonSerialized()
     {
-        $mediaRelation = new MediaRelation(MediaRelation::MEDIA_TYPE, 1, 'label');
+        $mediaRelation = new MediaRelation(MediaRelation::MEDIA_TYPE, '1', 'label');
         $this->assertInstanceOf(JsonSerializable::class, $mediaRelation);
 
         $expected = json_encode([
             'type' => MediaRelation::MEDIA_TYPE,
-            'id' => 1,
+            'id' => '1',
             'label' => 'label',
         ]);
 
         $this->assertSame($expected, json_encode($mediaRelation));
     }
 
-    public function testConstructExpectionWithWrongType($type, $id)
+    public function testConstructExpectionWithWrongType()
     {
         $this->expectException(InvalidArgumentException::class);
-        new MediaRelation('bad-example', $id);
+        new MediaRelation('bad-example', '123');
     }
 }

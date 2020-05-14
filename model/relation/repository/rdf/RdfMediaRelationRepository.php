@@ -35,6 +35,7 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
 {
     use OntologyAwareTrait;
 
+    /** @var string  */
     public const MAP_OPTION = 'map';
 
     /**
@@ -72,7 +73,7 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
      *
      * Check if map are inheriting `RdfMediaRelationMapInterface`
      *
-     * @return array
+     * @return RdfMediaRelationMapInterface[]
      */
     private function getRdfRelationMediaMaps(): array
     {

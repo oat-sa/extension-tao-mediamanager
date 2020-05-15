@@ -22,22 +22,21 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\event;
 
+use oat\oatbox\event\Event;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ConfigurableService;
-use oat\taoItems\model\event\ItemRemovedEvent;
-use oat\taoItems\model\event\ItemUpdatedEvent;
 
 class MediaRelationListener extends ConfigurableService
 {
     use LoggerAwareTrait;
 
-    public function whenItemIsUpdated(ItemUpdatedEvent $event): void
+    public function whenItemIsUpdated(Event $event): void
     {
         // @TODO will be used add or remove the relation between item and shared stimulus
-        $this->logInfo('Item ' . $event->getItemUri() . ' was updated. Checking shared stimulus relation...');
+        $this->logInfo('Item ' . $event->getItemUri() . ' with data ' . var_export($event->getData(), true) . ' was updated. Checking shared stimulus relation...');
     }
 
-    public function whenItemIsRemoved(ItemRemovedEvent $event): void
+    public function whenItemIsRemoved(Event $event): void
     {
         // @TODO will be used to remove relation between item and shared stimulus
         $this->logInfo('Item ' . var_export($event->jsonSerialize(), true) . ' was removed. Checking shared stimulus relation...');
@@ -46,12 +45,10 @@ class MediaRelationListener extends ConfigurableService
     public function whenMediaIsRemoved(MediaRemovedEvent $event): void
     {
         // @TODO will be used remove the relation with shared stimulus with other media and items
-        $this->logInfo('Media ' . $event->getName() . ' was removed. Checking shared stimulus relation...');
     }
 
     public function whenMediaIsSaved(MediaSavedEvent $event): void
     {
         // @TODO will be used to related shared stimulus with other media
-        $this->logInfo('Media ' . $event->getName() . ' was saved. Checking shared stimulus relation...');
     }
 }

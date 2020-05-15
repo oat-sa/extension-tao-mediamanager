@@ -35,7 +35,7 @@ class MediaRelationServiceTest extends TestCase
     public function testGetMediaRelation()
     {
         $id = 'id-fixture';
-        $mediaRelationCollection = new MediaRelationCollection([
+        $mediaRelationCollection = new MediaRelationCollection(...[
             new MediaRelation('item', 'uri1'),
             new MediaRelation('media', 'uri2'),
             new MediaRelation('item', 'uri3'),

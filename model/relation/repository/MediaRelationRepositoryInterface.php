@@ -51,7 +51,7 @@ interface MediaRelationRepositoryInterface
      * Persist MediaRelation
      *
      * @param MediaRelation $relation
-     * @return bool
+     * @return void
      */
     public function save(MediaRelation $relation): void;
 
@@ -59,7 +59,7 @@ interface MediaRelationRepositoryInterface
      * Remove MediaRelation
      *
      * @param MediaRelation $relation
-     * @return bool
+     * @return void
      */
     public function remove(MediaRelation $relation): void;
 }

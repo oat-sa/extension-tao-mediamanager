@@ -35,7 +35,7 @@ class MediaRelationCollectionTest extends TestCase
             new MediaRelation('media', 'uri2')
         ];
 
-        $collection = new MediaRelationCollection($fixtures);
+        $collection = new MediaRelationCollection(...$fixtures);
         $this->assertSame($fixtures, iterator_to_array($collection->getIterator()));
     }
 
@@ -46,7 +46,7 @@ class MediaRelationCollectionTest extends TestCase
             new MediaRelation('media', 'uri2')
         ];
 
-        $collection = new MediaRelationCollection($fixtures);
+        $collection = new MediaRelationCollection(...$fixtures);
         $this->assertSame(json_encode($fixtures), json_encode($collection));
     }
 
@@ -59,7 +59,7 @@ class MediaRelationCollectionTest extends TestCase
             $addFixture1, $addFixture2, $addFixture3
         ];
 
-        $collection = (new MediaRelationCollection([$addFixture1]));
+        $collection = (new MediaRelationCollection(...[$addFixture1]));
         $collection->add($addFixture2)->add($addFixture3);
 
         $this->assertSame(json_encode($expected), json_encode($collection));

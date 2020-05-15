@@ -37,13 +37,13 @@ class MediaRelation implements JsonSerializable
     public const MEDIA_TYPE = 'media';
 
     /** @var string  */
-    protected $id;
+    private $id;
 
     /** @var string  */
-    protected $label;
+    private $label;
 
     /** @var string  */
-    protected $type;
+    private $type;
 
     /**
      * MediaRelation constructor.

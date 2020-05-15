@@ -32,7 +32,7 @@ class MediaRelationCollection implements IteratorAggregate, JsonSerializable
     /** @var MediaRelation[]  */
     private $mediaRelations = [];
 
-    public function __construct(array $mediaRelations = [])
+    public function __construct(MediaRelation ...$mediaRelations)
     {
         foreach ($mediaRelations as $mediaRelation) {
             $this->add($mediaRelation);

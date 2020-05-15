@@ -25,9 +25,6 @@ namespace oat\taoMediaManager\model\relation;
 use InvalidArgumentException;
 use JsonSerializable;
 
-/**
- * This object is the representation of medias/items used in another media
- */
 class MediaRelation implements JsonSerializable
 {
     /** @var string  */
@@ -46,12 +43,7 @@ class MediaRelation implements JsonSerializable
     private $type;
 
     /**
-     * MediaRelation constructor.
-     *
-     * @param string $type
-     * @param $id
-     * @param string|null $label
-     * @throws InvalidArgumentException if type is not `item` or `asset`
+     * @throws InvalidArgumentException
      */
     public function __construct(string $type, string $id, ?string $label = null)
     {

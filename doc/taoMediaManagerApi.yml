@@ -47,7 +47,7 @@ paths:
           required: true
           schema:
             type: string
-          description: The sourceId of the relation
+          description: The sourceId of the relation. In case of RDF id, this parameter must be urlencoded.
       responses:
         200:
           $ref: '#/components/responses/MediaRelationsResponse'

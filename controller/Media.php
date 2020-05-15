@@ -26,8 +26,10 @@ use InvalidArgumentException;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\tao\model\http\formatter\ResponseFormatter;
 use oat\tao\model\http\response\ErrorJsonResponse;
+use oat\tao\model\http\response\JsonResponseInterface;
 use oat\tao\model\http\response\SuccessJsonResponse;
 use oat\taoMediaManager\model\relation\MediaRelationService;
+use Psr\Http\Message\ResponseInterface;
 use tao_actions_CommonModule;
 use Throwable;
 
@@ -37,30 +39,37 @@ class Media extends tao_actions_CommonModule
 
     public function relations(): void
     {
-        $formatter = $this->getResponseFormatter()
-            ->withJsonHeader();
-
         try {
-            $sourceId = $this->getPsrRequest()->getQueryParams()['sourceId'] ?? null;
-
-            if (empty($sourceId)) {
-                throw new InvalidArgumentException(sprintf('Parameter sourceId must be provided'));
-            }
-
             $collection = $this->getMediaRelationService()
-                ->getMediaRelation((string)$sourceId)
+                ->getMediaRelation($this->getSourceIdParameter())
                 ->jsonSerialize();
 
-            $formatter->withBody(new SuccessJsonResponse($collection));
+            $this->setResponse($this->formatResponse(new SuccessJsonResponse($collection), 200));
         } catch (Throwable $exception) {
             $this->logError(sprintf('Error getting media relation: %s, ', $exception->getMessage()));
 
-            $formatter
-                ->withStatusCode(400)
-                ->withBody(new ErrorJsonResponse(400, $exception->getMessage()));
+            $this->setResponse($this->formatResponse(new ErrorJsonResponse(400, $exception->getMessage()), 400));
+        }
+    }
+
+    private function getSourceIdParameter(): string
+    {
+        $sourceId = $this->getPsrRequest()->getQueryParams()['sourceId'] ?? null;
+
+        if (empty($sourceId)) {
+            throw new InvalidArgumentException(sprintf('Parameter sourceId must be provided'));
         }
 
-        $this->setResponse($formatter->format($this->getPsrResponse()));
+        return (string)$sourceId;
+    }
+
+    private function formatResponse(JsonResponseInterface $jsonResponse, int $statusCode): ResponseInterface
+    {
+        return $this->getResponseFormatter()
+            ->withJsonHeader()
+            ->withStatusCode($statusCode)
+            ->withBody($jsonResponse)
+            ->format($this->getPsrResponse());
     }
 
     private function getResponseFormatter(): ResponseFormatter

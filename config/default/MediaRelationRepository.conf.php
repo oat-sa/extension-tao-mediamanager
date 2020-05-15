@@ -17,13 +17,17 @@
  * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
  */
 
+declare(strict_types=1);
+
 use oat\taoMediaManager\model\relation\repository\rdf\map\RdfItemRelationMap;
 use oat\taoMediaManager\model\relation\repository\rdf\map\RdfMediaRelationMap;
 use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRelationRepository;
 
-return new RdfMediaRelationRepository([
-    RdfMediaRelationRepository::MAP_OPTION => [
-        new RdfItemRelationMap(),
-        new RdfMediaRelationMap()
+return new RdfMediaRelationRepository(
+    [
+        RdfMediaRelationRepository::MAP_OPTION => [
+            new RdfItemRelationMap(),
+            new RdfMediaRelationMap()
+        ]
     ]
-]);
+);

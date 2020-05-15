@@ -79,6 +79,7 @@ class Updater extends \common_ext_ExtensionUpdater
             $eventManager->attach(ItemRemovedEvent::class, [MediaRelationListener::class, 'whenItemIsRemoved']);
             $eventManager->attach(MediaRemovedEvent::class, [MediaRelationListener::class, 'whenMediaIsRemoved']);
             $eventManager->attach(MediaSavedEvent::class, [MediaRelationListener::class, 'whenMediaIsSaved']);
+            $this->getServiceManager()->register(EventManager::SERVICE_ID, $eventManager);
 
             $this->setVersion('9.8.0');
         }

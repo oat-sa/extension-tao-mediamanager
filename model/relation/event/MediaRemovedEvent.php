@@ -20,20 +20,17 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\media;
+namespace oat\taoMediaManager\model\relation\event;
 
-class FindMediaRelationQuery
+use oat\oatbox\event\Event;
+
+class MediaRemovedEvent implements Event
 {
-    /** @var string */
-    private $sourceId;
-
-    public function __construct(string $sourceId)
+    /**
+     * @inheritDoc
+     */
+    public function getName()
     {
-        $this->sourceId = $sourceId;
-    }
-
-    public function getSourceId(): string
-    {
-        return $this->sourceId;
+        return __CLASS__;
     }
 }

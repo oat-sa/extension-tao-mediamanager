@@ -20,17 +20,17 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\media\factory;
+namespace oat\taoMediaManager\model\relation\event;
 
-use oat\oatbox\service\ConfigurableService;
-use oat\taoMediaManager\model\media\FindMediaRelationQuery;
-use Psr\Http\Message\ServerRequestInterface;
+use oat\oatbox\event\Event;
 
-class QueryFactory extends ConfigurableService
+class MediaSavedEvent implements Event
 {
-    public function makeFindQueryByRequest(ServerRequestInterface $request): FindMediaRelationQuery
+    /**
+     * @inheritDoc
+     */
+    public function getName()
     {
-        //@TODO Class will be replaced after @camille's task is done.
-        return new FindMediaRelationQuery($request->getQueryParams()['sourceId'] ?? '');
+        return __CLASS__;
     }
 }

@@ -20,7 +20,7 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\media\event;
+namespace oat\taoMediaManager\model\relation\event;
 
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ConfigurableService;

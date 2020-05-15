@@ -22,10 +22,14 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\controller;
 
+use InvalidArgumentException;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\tao\model\http\formatter\ResponseFormatter;
+use oat\tao\model\http\response\ErrorJsonResponse;
 use oat\tao\model\http\response\SuccessJsonResponse;
+use oat\taoMediaManager\model\relation\MediaRelationService;
 use tao_actions_CommonModule;
+use Throwable;
 
 class Media extends tao_actions_CommonModule
 {
@@ -33,36 +37,28 @@ class Media extends tao_actions_CommonModule
 
     public function relations(): void
     {
-        //@TODO Method will be implemented when depending task is finished
         $formatter = $this->getResponseFormatter()
             ->withJsonHeader();
 
-        $formatter->withBody(new SuccessJsonResponse(
-            json_decode('
-            {
-              "source": {
-                "id": "http://tao.docker.localhost/tao.rdf#i5e89a2063326711164b1a816b433b1ec",
-                "type": "item",
-                "data": [
-                  {
-                    "label": "My Item"
-                  }
-                ]
-              },
-              "relations": [
-                {
-                  "id": "http://tao.docker.localhost/tao.rdf#i5e89a2063326711164b1a816b433b1ec",
-                  "type": "item",
-                  "data": [
-                    {
-                      "label": "My Item"
-                    }
-                  ]
-                }
-              ]
-            }'
-            )
-        ));
+        try {
+            $sourceId = $this->getPsrRequest()->getQueryParams()['sourceId'] ?? null;
+
+            if (empty($sourceId)) {
+                throw new InvalidArgumentException(sprintf('Parameter sourceId must be provided'));
+            }
+
+            $collection = $this->getMediaRelationService()
+                ->getMediaRelation((string)$sourceId)
+                ->jsonSerialize();
+
+            $formatter->withBody(new SuccessJsonResponse($collection));
+        } catch (Throwable $exception) {
+            $this->logError(sprintf('Error getting media relation: %s, ', $exception->getMessage()));
+
+            $formatter
+                ->withStatusCode(400)
+                ->withBody(new ErrorJsonResponse(400, $exception->getMessage()));
+        }
 
         $this->setResponse($formatter->format($this->getPsrResponse()));
     }
@@ -70,5 +66,10 @@ class Media extends tao_actions_CommonModule
     private function getResponseFormatter(): ResponseFormatter
     {
         return $this->getServiceLocator()->get(ResponseFormatter::class);
+    }
+
+    private function getMediaRelationService(): MediaRelationService
+    {
+        return $this->getServiceLocator()->get(MediaRelationService::class);
     }
 }

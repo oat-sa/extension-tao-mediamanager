@@ -16,7 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
- *
  */
 
 declare(strict_types=1);
@@ -29,9 +28,9 @@ use oat\oatbox\event\EventManager;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\taoItems\model\event\ItemRemovedEvent;
 use oat\taoItems\model\event\ItemUpdatedEvent;
-use oat\taoMediaManager\model\media\event\MediaRelationListener;
-use oat\taoMediaManager\model\media\event\MediaRemovedEvent;
-use oat\taoMediaManager\model\media\event\MediaSavedEvent;
+use oat\taoMediaManager\model\relation\event\MediaRelationListener;
+use oat\taoMediaManager\model\relation\event\MediaRemovedEvent;
+use oat\taoMediaManager\model\relation\event\MediaSavedEvent;
 use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
 use oat\taoMediaManager\model\relation\repository\rdf\map\RdfItemRelationMap;
 use oat\taoMediaManager\model\relation\repository\rdf\map\RdfMediaRelationMap;
@@ -81,7 +80,7 @@ class Updater extends \common_ext_ExtensionUpdater
             $eventManager->attach(MediaRemovedEvent::class, [MediaRelationListener::class, 'whenMediaIsRemoved']);
             $eventManager->attach(MediaSavedEvent::class, [MediaRelationListener::class, 'whenMediaIsSaved']);
 
-            $this->setVersion('9.7.0');
+            $this->setVersion('9.8.0');
         }
     }
 }

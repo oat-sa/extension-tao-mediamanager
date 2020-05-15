@@ -56,7 +56,7 @@ class MediaRelationListener extends ConfigurableService
     {
         $this->logInfo('Media ' . $event->getMediaId() . ' was removed. Checking shared stimulus relation...');
 
-        //FIXME $this->getItemRelationUpdateService()->updateByMedia($event->getMediaId());
+        $this->getItemRelationUpdateService()->updateByMedia($event->getMediaId());
 
         $this->logInfo('OK 3 !!!');
 

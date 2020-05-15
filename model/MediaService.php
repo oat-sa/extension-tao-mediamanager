@@ -26,7 +26,9 @@ use oat\generis\model\OntologyAwareTrait;
 use oat\generis\model\OntologyRdfs;
 use oat\oatbox\filesystem\File;
 use common_ext_ExtensionsManager;
+use oat\oatbox\log\LoggerAwareTrait;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
+use oat\taoMediaManager\model\relation\event\MediaRemovedEvent;
 use oat\taoRevision\model\RepositoryInterface;
 
 /**
@@ -38,6 +40,8 @@ use oat\taoRevision\model\RepositoryInterface;
  */
 class MediaService extends \tao_models_classes_ClassService
 {
+    use LoggerAwareTrait;
+
     const ROOT_CLASS_URI = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Media';
 
     const PROPERTY_LINK = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Link';
@@ -149,7 +153,15 @@ class MediaService extends \tao_models_classes_ClassService
     public function deleteResource(\core_kernel_classes_Resource $resource)
     {
         $link = $this->getLink($resource);
-        return parent::deleteResource($resource) && $this->getFileManager()->deleteFile($link);
+
+        if (parent::deleteResource($resource) && $this->getFileManager()->deleteFile($link)) {
+            $this->getEventManager()
+                ->trigger(new MediaRemovedEvent($resource->getUri()));
+
+            return true;
+        }
+
+        return false;
     }
 
     /**

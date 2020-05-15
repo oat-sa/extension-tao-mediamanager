@@ -28,7 +28,6 @@ define([
     'i18n'
 ], function($, __) {
     'use strict';
-    var $container;
 
     /**
      * Returns the configured plugin
@@ -40,25 +39,27 @@ define([
         /**
          * Get the title and area to render
          */
-        init : function init(areaBroker, title) {
-            $container = areaBroker.getTitleArea();
-            this.title = title
+        init : function init() {
+            var config = this.getHost().getConfig();
+            var passage   = this.getHost().getPassage();
 
-            // if (item && !_.isEmpty(item.attr('title'))) {
-            //     this.title = item.attr('title');
-            // }
-            // else if (config && config.properties && config.properties.label) {
-            //     this.title = config.properties.label;
-            // }
+            if(passage && !_.isEmpty(passage.attr('title'))){
+                this.title = passage.attr('title');
+            }
+            else if(config && config.properties && config.properties.label){
+                this.title = config.properties.label;
+            }
         },
 
         /**
          * Hook to the host's render
          */
         render : function render() {
-            if (this.title) {
+            if(this.title){
                 //attach the element to the title area
-                $container.text(this.title);
+                this.getAreaBroker()
+                    .getTitleArea()
+                    .text(this.title);
             }
         }
     };

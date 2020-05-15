@@ -30,26 +30,11 @@ use core_kernel_classes_Resource as RdfResource;
 abstract class AbstractRdfMediaRelationMap implements RdfMediaRelationMapInterface
 {
     use OntologyAwareTrait;
-
-    /**
-     * Get property uri to fetch MediaRelation
-     *
-     * @return string
-     */
+    
     abstract protected function getMediaRelationPropertyUri(): string;
 
-    /**
-     * Create MediaRelation based on the implementation
-     *
-     * @param string $uri
-     * @param string $label
-     * @return MediaRelation
-     */
     abstract protected function createMediaRelation(string $uri, string $label): MediaRelation;
 
-    /**
-     * @inheritDoc
-     */
     public function mapMediaRelations(
         RdfResource $mediaResource,
         MediaRelationCollection $mediaRelationCollection

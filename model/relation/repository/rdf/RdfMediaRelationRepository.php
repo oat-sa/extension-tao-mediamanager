@@ -38,14 +38,6 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
     /** @var string  */
     public const MAP_OPTION = 'map';
 
-    /**
-     * Find all mediaRelation based on FindAllQuery.
-     *
-     * Find and aggregate item mediaRelations and media mediaRelations
-     *
-     * @param FindAllQuery $findAllQuery
-     * @return MediaRelationCollection
-     */
     public function findAll(FindAllQuery $findAllQuery): MediaRelationCollection
     {
         $mediaResource = $this->getResource($findAllQuery->getMediaId());
@@ -69,10 +61,6 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
     }
 
     /**
-     * Retrieve map from config
-     *
-     * Check if map are inheriting `RdfMediaRelationMapInterface`
-     *
      * @return RdfMediaRelationMapInterface[]
      */
     private function getRdfRelationMediaMaps(): array

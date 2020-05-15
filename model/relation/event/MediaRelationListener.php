@@ -25,6 +25,7 @@ namespace oat\taoMediaManager\model\relation\event;
 use oat\oatbox\event\Event;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ConfigurableService;
+use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
 
 class MediaRelationListener extends ConfigurableService
 {
@@ -32,23 +33,42 @@ class MediaRelationListener extends ConfigurableService
 
     public function whenItemIsUpdated(Event $event): void
     {
-        // @TODO will be used add or remove the relation between item and shared stimulus
         $this->logInfo('Item ' . $event->getItemUri() . ' with data ' . var_export($event->getData(), true) . ' was updated. Checking shared stimulus relation...');
+
+        $itemId = $event->getItemUri();
+        $currentMediaIds = (array)($event->getData()['includedElementIds'] ?? []);
+
+        $this->getItemRelationUpdateService()->updateByItem($itemId, $currentMediaIds);
+
+        $this->logInfo('OK 1 !!!');
     }
 
     public function whenItemIsRemoved(Event $event): void
     {
-        // @TODO will be used to remove relation between item and shared stimulus
         $this->logInfo('Item ' . var_export($event->jsonSerialize(), true) . ' was removed. Checking shared stimulus relation...');
+
+        $this->getItemRelationUpdateService()->updateByItem($event->jsonSerialize()['itemUri']);
+
+        $this->logInfo('OK 2 !!!');
     }
 
     public function whenMediaIsRemoved(MediaRemovedEvent $event): void
     {
-        // @TODO will be used remove the relation with shared stimulus with other media and items
+        $this->logInfo('Media ' . $event->getMediaId() . ' was removed. Checking shared stimulus relation...');
+
+        //FIXME $this->getItemRelationUpdateService()->updateByMedia($event->getMediaId());
+
+        $this->logInfo('OK 3 !!!');
+
     }
 
     public function whenMediaIsSaved(MediaSavedEvent $event): void
     {
         // @TODO will be used to related shared stimulus with other media
+    }
+
+    private function getItemRelationUpdateService(): ItemRelationUpdateService
+    {
+        return $this->getServiceLocator()->get(ItemRelationUpdateService::class);
     }
 }

@@ -15,20 +15,24 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2019 (original work) Open Assessment Technologies SA;
- *
+ * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
  */
 
 namespace oat\taoMediaManager\controller;
 
+use oat\oatbox\event\EventManager;
+use oat\oatbox\event\EventManagerAwareTrait;
 use oat\taoMediaManager\model\editInstanceForm;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
+use oat\taoMediaManager\model\relation\event\MediaRemovedEvent;
 use tao_helpers_form_FormContainer as FormContainer;
 
 class MediaManager extends \tao_actions_SaSModule
 {
+    use EventManagerAwareTrait;
+
     /**
      * Show the form to edit an instance, show also a preview of the media
      */
@@ -105,6 +109,15 @@ class MediaManager extends \tao_actions_SaSModule
             $this->setContentHeader($fileInfo['mime']);
             $this->response = $this->getPsrResponse()->withBody($stream);
         }
+    }
+
+    public function delete(): void
+    {
+        $mediaId = $this->getRequestParameter('uri') ?? $this->getRequestParameter('classUri');
+
+        $this->getEventManager()->trigger(new MediaRemovedEvent($mediaId));
+
+        parent::delete();
     }
 
     protected function getClassService()

@@ -26,11 +26,24 @@ use oat\oatbox\event\Event;
 
 class MediaRemovedEvent implements Event
 {
+    /** @var string */
+    private $mediaId;
+
+    public function __construct(string $mediaId)
+    {
+        $this->mediaId = $mediaId;
+    }
+
+    public function getMediaId(): string
+    {
+        return $this->mediaId;
+    }
+
     /**
      * @inheritDoc
      */
     public function getName()
     {
-        return __CLASS__;
+        return get_class($this);
     }
 }

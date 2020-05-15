@@ -48,7 +48,7 @@ class RdfMediaRelationRepositoryTest extends TestCase
             RdfMediaRelationRepository::MAP_OPTION => [
                 new class implements RdfMediaRelationMapInterface
                 {
-                    public function getMediaRelations(RdfResource $mediaResource, MediaRelationCollection $mediaRelationCollection): void
+                    public function mapMediaRelations(RdfResource $mediaResource, MediaRelationCollection $mediaRelationCollection): void
                     {
                         $mediaRelationCollection->add(new MediaRelation('item', '1'));
                         $mediaRelationCollection->add(new MediaRelation('item', '2', 'item-2'));
@@ -56,7 +56,7 @@ class RdfMediaRelationRepositoryTest extends TestCase
                 },
                 new class implements RdfMediaRelationMapInterface
                 {
-                    public function getMediaRelations(RdfResource $mediaResource, MediaRelationCollection $mediaRelationCollection): void
+                    public function mapMediaRelations(RdfResource $mediaResource, MediaRelationCollection $mediaRelationCollection): void
                     {
                         $mediaRelationCollection->add(new MediaRelation('media', '1'));
                         $mediaRelationCollection->add(new MediaRelation('media', '2', 'media-2'));

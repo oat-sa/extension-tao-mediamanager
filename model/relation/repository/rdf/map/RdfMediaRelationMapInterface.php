@@ -34,5 +34,5 @@ interface RdfMediaRelationMapInterface
      * @param MediaRelationCollection $mediaRelationCollection
      * @return void
      */
-    public function getMediaRelations(RdfResource $mediaResource, MediaRelationCollection $mediaRelationCollection): void;
+    public function mapMediaRelations(RdfResource $mediaResource, MediaRelationCollection $mediaRelationCollection): void;
 }

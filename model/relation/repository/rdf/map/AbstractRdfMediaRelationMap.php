@@ -50,7 +50,7 @@ abstract class AbstractRdfMediaRelationMap implements RdfMediaRelationMapInterfa
     /**
      * @inheritDoc
      */
-    public function getMediaRelations(
+    public function mapMediaRelations(
         RdfResource $mediaResource,
         MediaRelationCollection $mediaRelationCollection
     ): void {

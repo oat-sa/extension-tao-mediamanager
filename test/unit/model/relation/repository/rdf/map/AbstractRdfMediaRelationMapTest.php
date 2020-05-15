@@ -59,7 +59,7 @@ class AbstractRdfMediaRelationMapTest extends TestCase
 
         $map = $this->getAbstractMap();
         $map->setModel($modelProphecy->reveal());
-        $map->getMediaRelations($mediaResourceProphecy->reveal(), $mediaRelationCollection);
+        $map->mapMediaRelations($mediaResourceProphecy->reveal(), $mediaRelationCollection);
 
         $expected = array_values($values);
         $result = iterator_to_array($mediaRelationCollection->getIterator());

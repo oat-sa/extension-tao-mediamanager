@@ -52,7 +52,7 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
         $mediaRelationCollections = new MediaRelationCollection();
 
         foreach ($this->getRdfRelationMediaMaps() as $relationMediaMap) {
-            $relationMediaMap->getMediaRelations($mediaResource, $mediaRelationCollections);
+            $relationMediaMap->mapMediaRelations($mediaResource, $mediaRelationCollections);
         }
 
         return $mediaRelationCollections;

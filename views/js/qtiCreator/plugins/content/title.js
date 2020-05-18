@@ -25,15 +25,16 @@
 
 define([
     'jquery',
-    'i18n'
-], function($, __) {
+    'i18n',
+    'core/plugin'
+], function($, __, pluginFactory) {
     'use strict';
 
     /**
      * Returns the configured plugin
      * @returns {Function} the plugin
      */
-    return {
+    return pluginFactory({
         name : 'title',
 
         /**
@@ -62,5 +63,5 @@ define([
                     .text(this.title);
             }
         }
-    };
+    });
 });

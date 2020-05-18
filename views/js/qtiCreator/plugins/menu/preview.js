@@ -28,17 +28,18 @@
 define([
     'jquery',
     'i18n',
+    'core/plugin',
     'ui/hider',
     'taoItems/previewer/factory',
     'tpl!taoMediaManager/qtiCreator/plugins/button',
-], function($, __, hider, previewerFactory, buttonTpl){
+], function($, __, pluginFactory, hider, previewerFactory, buttonTpl){
     'use strict';
 
     /**
      * Returns the configured plugin
      * @returns {Function} the plugin
      */
-    return {
+    return pluginFactory({
         name : 'preview',
 
         /**
@@ -130,5 +131,5 @@ define([
         hide: function hide() {
             hider.hide(this.$element);
         }
-    };
+    });
 });

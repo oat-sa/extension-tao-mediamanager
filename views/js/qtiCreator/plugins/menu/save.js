@@ -27,16 +27,17 @@
 define([
     'jquery',
     'i18n',
+    'core/plugin',
     'ui/hider',
     'tpl!taoMediaManager/qtiCreator/plugins/button'
-], function($, __, hider, buttonTpl){
+], function($, __, pluginFactory, hider, buttonTpl){
     'use strict';
 
     /**
      * Returns the configured plugin
      * @returns {Function} the plugin
      */
-    return {
+    return pluginFactory({
         name : 'save',
 
         /**
@@ -113,5 +114,5 @@ define([
         hide: function hide() {
             hider.hide(this.$element);
         }
-    };
+    });
 });

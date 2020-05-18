@@ -38,6 +38,22 @@ paths:
           $ref: '#/components/responses/BadRequestResponse'
         500:
           $ref: '#/components/responses/InternalServerErrorResponse'
+  /taoMediaManager/SharedStimulus/update:
+    post:
+      summary: Updates a shared stimulus
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SharedStimulusUpdated'
+      responses:
+        200:
+          $ref: '#/components/responses/SharedStimulusCreatedResponse'
+        400:
+          $ref: '#/components/responses/BadRequestResponse'
+        500:
+          $ref: '#/components/responses/InternalServerErrorResponse'
 components:
   schemas:
     SharedStimulus:
@@ -65,6 +81,39 @@ components:
             body:
               type: string
               example: '<?xml version="1.0" encoding="UTF-8"?><div xmlns="http://www.imsglobal.org/xsd/imsqti_v2p2"></div>'
+    SharedStimulusUpdated:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "http://tao.docker.localhost/tao.rdf#i5e89a2063326711164b1a816b433b1ec"
+        body:
+          type: string
+          example: '<?xml version="1.0" encoding="UTF-8"?>
+                    <div xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                         class="stimulus_content"
+                         xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/qti/qtiv2p1/imsqti_v2p1.xsd">
+                        <div class="stimulus-container">
+                            <div class="stimulus-container-inner">
+                                <div id="cde_p2837_231">
+                                    <div id="cde_p2837_232">
+                                        <p id="cde_p2837_250">
+                                            <img src="taomedia://mediamanager/https_2_proctorio_0_docker_0_localhost_1_ontologies_1_tao_0_rdf_3_i5ec28eac81084866a0cf53be182d2df"
+                                                 alt="Alt tag missing." id="cde_p2837_269"/>
+                                        </p>
+                                        <ol id="cde_p2837_259">
+                                            <li id="cde_p2837_260">el 1</li>
+                                            <li id="cde_p2837_261">el 2</li>
+                                            <li id="cde_p2837_262">el 3</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>'
+      required:
+        - id
+        - body
     SharedStimulusCreatedResponse:
       properties:
         success:

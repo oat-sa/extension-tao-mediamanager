@@ -15,38 +15,41 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
- *
+ * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
  *
  */
 
 namespace oat\taoMediaManager\model;
 
+use common_ext_ExtensionsManager;
+use core_kernel_classes_Resource;
 use oat\generis\model\OntologyAwareTrait;
 use oat\generis\model\OntologyRdfs;
 use oat\oatbox\filesystem\File;
-use common_ext_ExtensionsManager;
+use oat\oatbox\log\LoggerAwareTrait;
+use oat\tao\model\ClassServiceTrait;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoRevision\model\RepositoryInterface;
+use tao_models_classes_GenerisService;
 
 /**
  * Service methods to manage the Media
  *
- * @access public
  * @author Antoine Robin, <antoine.robin@vesperiagroup.com>
- * @package taoMediaManager
  */
-class MediaService extends \tao_models_classes_ClassService
+class MediaService extends tao_models_classes_GenerisService
 {
-    const ROOT_CLASS_URI = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Media';
-
-    const PROPERTY_LINK = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Link';
-    const PROPERTY_LANGUAGE = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Language';
-    const PROPERTY_ALT_TEXT = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AltText';
-    const PROPERTY_MD5 =  'http://www.tao.lu/Ontologies/TAOMedia.rdf#md5';
-    const PROPERTY_MIME_TYPE = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#mimeType';
-
+    use ClassServiceTrait;
     use OntologyAwareTrait;
+    use LoggerAwareTrait;
+
+    public const ROOT_CLASS_URI = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Media';
+
+    public const PROPERTY_LINK = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Link';
+    public const PROPERTY_LANGUAGE = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Language';
+    public const PROPERTY_ALT_TEXT = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AltText';
+    public const PROPERTY_MD5 = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#md5';
+    public const PROPERTY_MIME_TYPE = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#mimeType';
 
     /**
      * @var FileManagement
@@ -99,8 +102,8 @@ class MediaService extends \tao_models_classes_ClassService
             ]);
 
             if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
-                \common_Logger::i('Auto generating initial revision');
-                $this->getServiceLocator()->get(RepositoryInterface::SERVICE_ID)->commit($instance, __('Initial import'), null, $userId);
+                $this->logInfo('Auto generating initial revision');
+                $this->getRepositoryService()->commit($instance, __('Initial import'), null, $userId);
             }
             return $instance->getUri();
         }
@@ -111,13 +114,13 @@ class MediaService extends \tao_models_classes_ClassService
      * Edit a media instance with a new file and/or a new language
      *
      * @param string|File $fileSource
-     * @param string $instanceUri
-     * @param string $language
-     * @param null $userId
-     * @return bool $instanceUri or false on error
      */
-    public function editMediaInstance($fileSource, $instanceUri, $language, $userId = null)
-    {
+    public function editMediaInstance(
+        $fileSource,
+        string $instanceUri,
+        string $language = null,
+        string $userId = null
+    ): bool {
         $instance = $this->getResource($instanceUri);
         $link = $this->getLink($instance);
 
@@ -126,42 +129,43 @@ class MediaService extends \tao_models_classes_ClassService
         $link = $fileManager->storeFile($fileSource, $instance->getLabel());
 
         if ($link !== false) {
-            $md5 = $fileSource instanceof File ? md5($fileSource->read()) : md5_file($fileSource);
-            /** @var $instance  \core_kernel_classes_Resource */
-            if (!is_null($instance) && $instance instanceof \core_kernel_classes_Resource) {
+            if ($instance instanceof core_kernel_classes_Resource) {
+                $md5 = $fileSource instanceof File ? md5($fileSource->read()) : md5_file($fileSource);
                 $instance->editPropertyValues($this->getProperty(self::PROPERTY_LINK), $link);
-                $instance->editPropertyValues($this->getProperty(self::PROPERTY_LANGUAGE), $language);
+                if ($language) {
+                    $instance->editPropertyValues($this->getProperty(self::PROPERTY_LANGUAGE), $language);
+                }
                 $instance->editPropertyValues($this->getProperty(self::PROPERTY_MD5), $md5);
             }
 
             if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
-                \common_Logger::i('Auto generating revision');
-                $this->getServiceLocator()->get(RepositoryInterface::SERVICE_ID)->commit($instance, __('Imported new file'), null, $userId);
+                $this->logInfo('Auto generating revision');
+                $this->getRepositoryService()->commit($instance, __('Imported new file'), null, $userId);
             }
         }
-        return ($link !== false) ? true : false;
+        return $link !== false;
     }
 
     /**
      * (non-PHPdoc)
      * @see \tao_models_classes_ClassService::deleteResource()
      */
-    public function deleteResource(\core_kernel_classes_Resource $resource)
+    public function deleteResource(core_kernel_classes_Resource $resource)
     {
         $link = $this->getLink($resource);
-        return parent::deleteResource($resource) && $this->getFileManager()->deleteFile($link);
+        return ClassServiceTrait::deleteResource($resource) && $this->getFileManager()->deleteFile($link);
     }
 
     /**
      * Returns the link of a media resource
      *
-     * @param \core_kernel_classes_Resource $resource
+     * @param core_kernel_classes_Resource $resource
      * @return string
      */
-    protected function getLink(\core_kernel_classes_Resource $resource)
+    protected function getLink(core_kernel_classes_Resource $resource)
     {
         $instance = $resource->getUniquePropertyValue($this->getProperty(self::PROPERTY_LINK));
-        return $instance instanceof \core_kernel_classes_Resource ? $instance->getUri() : (string)$instance;
+        return $instance instanceof core_kernel_classes_Resource ? $instance->getUri() : (string)$instance;
     }
 
     /**
@@ -173,5 +177,10 @@ class MediaService extends \tao_models_classes_ClassService
             $this->fileManager = $this->getServiceLocator()->get(FileManagement::SERVICE_ID);
         }
         return $this->fileManager;
+    }
+
+    private function getRepositoryService(): RepositoryInterface
+    {
+        return $this->getServiceLocator()->get(RepositoryInterface::SERVICE_ID);
     }
 }

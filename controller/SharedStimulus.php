@@ -31,6 +31,7 @@ use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
 use oat\taoMediaManager\model\sharedStimulus\factory\QueryFactory;
 use oat\taoMediaManager\model\sharedStimulus\repository\SharedStimulusRepository;
 use oat\taoMediaManager\model\sharedStimulus\service\CreateService;
+use oat\taoMediaManager\model\sharedStimulus\service\UpdateService;
 use tao_actions_CommonModule;
 use Throwable;
 
@@ -84,6 +85,28 @@ class SharedStimulus extends tao_actions_CommonModule
         $this->setResponse($formatter->format($this->getPsrResponse()));
     }
 
+    public function update(): void
+    {
+        $formatter = $this->getResponseFormatter()
+            ->withJsonHeader();
+
+        try {
+            $command = $this->getQueryFactory()
+                ->patchStimulusByRequest($this->getPsrRequest());
+
+            $sharedStimulus = $this->getUpdateService()->update($command);
+
+            $formatter->withBody(new SuccessJsonResponse($sharedStimulus->jsonSerialize()));
+        } catch (Throwable $exception) {
+            $this->logError(sprintf('Error retrieving Shared Stimulus: %s', $exception->getMessage()));
+
+            $formatter->withStatusCode(400)
+                ->withBody(new ErrorJsonResponse($exception->getCode(), $exception->getMessage()));
+        }
+
+        $this->setResponse($formatter->format($this->getPsrResponse()));
+    }
+
     private function getResponseFormatter(): ResponseFormatter
     {
         return $this->getServiceLocator()->get(ResponseFormatter::class);
@@ -102,6 +125,11 @@ class SharedStimulus extends tao_actions_CommonModule
     private function getCreateService(): CreateService
     {
         return $this->getServiceLocator()->get(CreateService::class);
+    }
+
+    private function getUpdateService(): UpdateService
+    {
+        return $this->getServiceLocator()->get(UpdateService::class);
     }
 
     private function getSharedStimulusRepository(): SharedStimulusRepository

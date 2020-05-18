@@ -1,65 +1,67 @@
+/**
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; under version 2
+ * of the License (non-upgradable).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
+ */
+
 define([
     'jquery',
-    'taoQtiItem/qtiCreator/widgets/states/factory',
-    'taoQtiItem/qtiCreator/widgets/choices/states/Question',
-    'taoQtiItem/qtiCreator/widgets/choices/helpers/formElement',
-    'lodash'
-], function($, stateFactory, QuestionState, formElement, _){
+    'taoMediaManager/qtiCreator/widgets/states/factory',
+    'taoMediaManager/qtiCreator/widgets/interactions/states/Question',
+    'taoMediaManager/qtiCreator/editor/ckEditor/htmlEditor',
+    'taoMediaManager/qtiCreator/editor/gridEditor/content',
+    'i18n'
+], function($, stateFactory, Question, htmlEditor, contentHelper, __){
     'use strict';
 
-    var ChoiceStateQuestion = stateFactory.extend(QuestionState, function initStateQuestion(){
-        this.buildEditor();
-    }, function exitStateQuestion(){
-        this.destroyEditor();
+    var StimulusStateQuestion = stateFactory.extend(Question, function(){
+
+        this.buildPromptEditor();
+
+    }, function(){
+
+        this.destroyPromptEditor();
     });
 
-    ChoiceStateQuestion.prototype.createToolbar = function(){
+    StimulusStateQuestion.prototype.buildPromptEditor = function(){
 
         var _widget = this.widget,
-            $toolbar = _widget.$container.find('td:last');
+            $editableContainer = _widget.$container.find('.qti-prompt-container'),
+            $editable = $editableContainer.find('.qti-prompt'),
+            container = _widget.element.prompt.getBody();
 
-        //set toolbar button behaviour:
-        formElement.initShufflePinToggle(_widget);
-        formElement.initDelete(_widget);
+        //@todo set them in the tpl
+        $editableContainer.attr('data-html-editable-container', true);
+        $editable.attr('data-html-editable', true);
 
-        return $toolbar;
-    };
-
-    ChoiceStateQuestion.prototype.buildEditor = function(){
-
-        var _widget = this.widget;
-
-        _widget.$container.find('.editable-content')
-            .attr('contentEditable', true)
-            .on('keyup.qti-widget', _.throttle(function(){
-
-                //update model
-                _widget.element.val(_.escape($(this).text()));
-
-                //update placeholder
-                _widget.$original.width($(this).width());
-
-            }, 200)).on('focus.qti-widget', function(){
-
-                _widget.changeState('choice');
-
-            }).on('keypress.qti-widget', function(e){
-
-                if(e.which === 13){
-                    e.preventDefault();
-                    $(this).blur();
-                    _widget.changeState('question');
+        if(!htmlEditor.hasEditor($editableContainer)){
+            htmlEditor.buildEditor($editableContainer, {
+                placeholder : __('define prompt'),
+                change : contentHelper.getChangeCallback(container),
+                data : {
+                    container : container,
+                    widget : _widget
                 }
-
             });
+        }
     };
 
-    ChoiceStateQuestion.prototype.destroyEditor = function(){
-
-        this.widget.$container.find('.editable-content')
-            .removeAttr('contentEditable')
-            .off('keyup.qti-widget');
+    StimulusStateQuestion.prototype.destroyPromptEditor = function(){
+        var $editableContainer = this.widget.$container.find('.qti-prompt-container');
+        htmlEditor.destroyEditor($editableContainer);
     };
 
-    return ChoiceStateQuestion;
+    return StimulusStateQuestion;
 });

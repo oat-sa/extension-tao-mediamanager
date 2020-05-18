@@ -21,7 +21,7 @@ define([
     'jquery',
     'core/promise',
     'taoQtiItem/qtiItem/core/Element',
-    'taoQtiItem/qtiCreator/model/helper/invalidator',
+    'taoMediaManager/qtiCreator/model/helper/invalidator',
     'core/logger'
 ], function(_, $, Promise, Element, invalidator, loggerFactory){
     'use strict';
@@ -42,7 +42,7 @@ define([
     /**
      * Create a logger
      */
-    var logger = loggerFactory('taoQtiItem/qtiCreator/widget');
+    var logger = loggerFactory('taoMediaManager/qtiCreator/widget');
 
     var Widget = {
         /**

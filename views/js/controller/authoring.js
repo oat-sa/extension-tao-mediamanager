@@ -24,8 +24,9 @@ define([
     'jquery',
     'i18n',
     'uri',
-    'taoMediaManager/qtiCreator/component/passageAuthoring'
-], function($, __, uri, passageAuthoringFactory) {
+    'taoMediaManager/qtiCreator/component/passageAuthoring',
+    'ui/feedback'
+], function($, __, uri, passageAuthoringFactory, feedback) {
     'use strict';
 
     var manageMediaController =  {
@@ -37,10 +38,12 @@ define([
             const $panel = $('#panel-authoring');
             passageAuthoringFactory($panel, { properties: {
                 uri: $panel.attr('data-uri'),
-                assetDataUrl: `taoMediaManager/SharedStimulus/get?id=${$panel.attr('data-id')}`,
+                id: $panel.attr('data-id'),
+                assetDataUrl: 'taoMediaManager/SharedStimulus/get',
                 // TO DO will be filled later
                 baseUrl: '...'
-            }});
+            }})
+            .on('error', err => feedback().error(err.message));
         }
     };
 

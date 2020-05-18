@@ -65,7 +65,7 @@ class UpdateService extends ConfigurableService
         return new SharedStimulus(
             $id,
             $resource->getLabel(),
-            (string)$resource->getOnePropertyValue($this->getProperty(MediaService::PROPERTY_LANGUAGE)),
+            $resource->getOnePropertyValue($this->getProperty(MediaService::PROPERTY_LANGUAGE))->getUri(),
             $newBody
         );
     }

@@ -28,6 +28,7 @@ use ErrorException;
 use InvalidArgumentException;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\ConfigurableService;
+use oat\tao\model\media\MediaAsset;
 use oat\tao\model\media\TaoMediaResolver;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
@@ -130,11 +131,11 @@ class UpdateService extends ConfigurableService
 
         foreach ($images as $image) {
             $source = $image->getSrc();
-            $asset = $resolver->resolve($source);
-            //@todo-- base64 encoded images can't be resolved in this way?
-            $stream = $asset->getMediaSource()->getFileStream($asset->getMediaIdentifier());
-            if ($stream->getSize()){
-                //@todo should we do something for missing assets?
+            if (false === strpos($source, 'data:image')) {
+                $asset = $resolver->resolve($source);
+                if ($asset instanceof MediaAsset) {
+                    $info = $asset->getMediaSource()->getFileInfo($asset->getMediaIdentifier());
+                }
             }
         }
     }

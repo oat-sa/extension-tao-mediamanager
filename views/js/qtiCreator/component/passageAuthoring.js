@@ -133,7 +133,7 @@ define([
 
                 backPlugin.init(areaBroker);
                 savePlugin.init(areaBroker);
-                titlePlugin.init(areaBroker, 'Hola');
+                titlePlugin.init(areaBroker, config.properties.label);
                 previewPlugin.init(areaBroker, config.properties.itemDataUrl);
                 backPlugin.render();
                 savePlugin.render();

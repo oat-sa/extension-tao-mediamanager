@@ -22,10 +22,11 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\service;
 
-use EasyRdf_Resource;
-use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\ConfigurableService;
+use oat\taoMediaManager\model\relation\MediaRelation;
+use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
+use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
 
 class ItemRelationUpdateService extends ConfigurableService
 {
@@ -33,57 +34,35 @@ class ItemRelationUpdateService extends ConfigurableService
 
     public function updateByItem(string $itemId, array $currentMediaIds = []): void
     {
-        $this->updateDifference('http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem', $itemId, $currentMediaIds);
-    }
+        $repository = $this->getMediaRelationRepository();
 
-    public function updateByMedia(string $mediaId): void
-    {
-        $this->updateDifference('http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedMedia', $mediaId);
-    }
+        $collection = $repository->findAll(new FindAllQuery(null, $itemId));
 
-    /**
-     * @TODO Method will be migrated to repository after @camille's PR is approved / merged
-     */
-    private function updateDifference(string $sourceClass, string $sourceId, array $currentRelatedIds = []): void
-    {
-        $relatedMediaIds = $this->getRelatedMediaIds($sourceClass, $sourceId);
-
-        $mediaIdsToInsert = array_diff($currentRelatedIds, $relatedMediaIds);
-        $mediaIdsToRemove = array_diff($relatedMediaIds, $currentRelatedIds);
-
-        foreach ($mediaIdsToRemove as $mediaId) {
-            $mediaResource = $this->getModel()->getResource($mediaId);
-            $mediaResource->removePropertyValue($this->getProperty($sourceClass), $sourceId);
+        foreach ($collection->filterNewMediaIds($currentMediaIds) as $mediaId) {
+            $repository->save($this->createMediaRelation(MediaRelation::ITEM_TYPE, $mediaId, $itemId));
         }
 
-        foreach ($mediaIdsToInsert as $mediaId) {
-            $mediaResource = $this->getModel()->getResource($mediaId);
-            $mediaResource->setPropertyValue($this->getProperty($sourceClass), $sourceId);
+        foreach ($collection->filterRemovedMediaIds($currentMediaIds) as $mediaId) {
+            $repository->remove($this->createMediaRelation(MediaRelation::ITEM_TYPE, $mediaId, $itemId));
         }
     }
 
-    /**
-     * @TODO Method will be migrated to repository after @camille's PR is approved / merged
-     */
-    private function getRelatedMediaIds(string $sourceClass, string $sourceId): array
+    public function removeMedia(string $mediaId): void
     {
-        /** @var ComplexSearchService $search */
-        $search = $this->getServiceLocator()->get(ComplexSearchService::SERVICE_ID);
-        $queryBuilder = $search->query();
+        $repository = $this->getMediaRelationRepository();
 
-        $query = $search->searchType($queryBuilder, 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Media', true);
-        $query->add($sourceClass)->equals($sourceId);
-
-        $queryBuilder->setCriteria($query);
-        $result = $search->getGateway()->search($queryBuilder);
-
-        $ids = [];
-
-        /** @var EasyRdf_Resource $resource */
-        foreach ($result as $resource) {
-            $ids[] = $resource->getUri();
+        foreach ($repository->findAll(new FindAllQuery($mediaId)) as $mediaId) {
+            $repository->remove($this->createMediaRelation(MediaRelation::MEDIA_TYPE, $mediaId, $mediaId));
         }
+    }
 
-        return $ids;
+    private function createMediaRelation(string $type, string $targetId, string $sourceId): MediaRelation
+    {
+        return (new MediaRelation($type, $targetId))->withSourceId($sourceId);
+    }
+
+    private function getMediaRelationRepository(): MediaRelationRepositoryInterface
+    {
+        return $this->getServiceLocator()->get(MediaRelationRepositoryInterface::SERVICE_ID);
     }
 }

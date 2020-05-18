@@ -25,7 +25,11 @@ namespace oat\taoMediaManager\model\relation\event;
 use oat\oatbox\event\Event;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ConfigurableService;
-use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
+use oat\taoMediaManager\model\relation\event\processor\ItemRemovedProcessor;
+use oat\taoMediaManager\model\relation\event\processor\ItemUpdatedProcessor;
+use oat\taoMediaManager\model\relation\event\processor\MediaRemovedProcessor;
+use oat\taoMediaManager\model\relation\event\processor\ProcessorInterface;
+use Throwable;
 
 class MediaRelationListener extends ConfigurableService
 {
@@ -33,42 +37,36 @@ class MediaRelationListener extends ConfigurableService
 
     public function whenItemIsUpdated(Event $event): void
     {
-        $this->logInfo('Item ' . $event->getItemUri() . ' with data ' . var_export($event->getData(), true) . ' was updated. Checking shared stimulus relation...');
-
-        $itemId = $event->getItemUri();
-        $currentMediaIds = (array)($event->getData()['includedElementIds'] ?? []);
-
-        $this->getItemRelationUpdateService()->updateByItem($itemId, $currentMediaIds);
-
-        $this->logInfo('OK 1 !!!');
+        $this->process(ItemUpdatedProcessor::class, $event);
     }
 
     public function whenItemIsRemoved(Event $event): void
     {
-        $this->logInfo('Item ' . var_export($event->jsonSerialize(), true) . ' was removed. Checking shared stimulus relation...');
-
-        $this->getItemRelationUpdateService()->updateByItem($event->jsonSerialize()['itemUri']);
-
-        $this->logInfo('OK 2 !!!');
+        $this->process(ItemRemovedProcessor::class, $event);
     }
 
     public function whenMediaIsRemoved(MediaRemovedEvent $event): void
     {
-        $this->logInfo('Media ' . $event->getMediaId() . ' was removed. Checking shared stimulus relation...');
-
-        $this->getItemRelationUpdateService()->updateByMedia($event->getMediaId());
-
-        $this->logInfo('OK 3 !!!');
-
+        $this->process(MediaRemovedProcessor::class, $event);
     }
 
     public function whenMediaIsSaved(MediaSavedEvent $event): void
     {
-        // @TODO will be used to related shared stimulus with other media
+        //@TODO will be used to related shared stimulus with other media
     }
 
-    private function getItemRelationUpdateService(): ItemRelationUpdateService
+    private function process(string $processor, Event $event): void
     {
-        return $this->getServiceLocator()->get(ItemRelationUpdateService::class);
+        try {
+            $this->logDebug(sprintf('Processing event %s', get_class($event)));
+
+            /** @var ProcessorInterface $processor */
+            $processor = $this->getServiceLocator()->get($processor);
+            $processor->process($event);
+
+            $this->logDebug(sprintf('Event %s processed', get_class($event)));
+        } catch (Throwable $exception) {
+            $this->logError(sprintf('Error processing event %s: %s', get_class($event), $exception->getMessage()));
+        }
     }
 }

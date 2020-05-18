@@ -27,25 +27,28 @@ use JsonSerializable;
 
 class MediaRelation implements JsonSerializable
 {
-    /** @var string  */
+    /** @var string */
     public const ITEM_TYPE = 'item';
 
-    /** @var string  */
+    /** @var string */
     public const MEDIA_TYPE = 'media';
 
-    /** @var string  */
+    /** @var string */
     private $id;
 
-    /** @var string  */
+    /** @var string */
+    private $sourceId;
+
+    /** @var string */
     private $label;
 
-    /** @var string  */
+    /** @var string */
     private $type;
 
     /**
      * @throws InvalidArgumentException
      */
-    public function __construct(string $type, string $id, ?string $label = null)
+    public function __construct(string $type, string $id, string $label = null)
     {
         if (!in_array($type, [self::MEDIA_TYPE, self::ITEM_TYPE])) {
             throw new InvalidArgumentException('Media relation type should be `item` or `media`');
@@ -60,9 +63,26 @@ class MediaRelation implements JsonSerializable
         return $this->type;
     }
 
+    public function isMedia(): bool
+    {
+        return $this->type === self::MEDIA_TYPE;
+    }
+
     public function getId(): string
     {
         return $this->id;
+    }
+
+    public function withSourceId(string $sourceId): self
+    {
+        $this->sourceId = $sourceId;
+
+        return $this;
+    }
+
+    public function getSourceId(): string
+    {
+        return $this->sourceId;
     }
 
     public function getLabel(): ?string

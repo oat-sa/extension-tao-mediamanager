@@ -20,24 +20,11 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\relation\repository\rdf\map;
+namespace oat\taoMediaManager\model\relation\event\processor;
 
-use oat\taoMediaManager\model\relation\MediaRelation;
-use core_kernel_classes_Resource as RdfResource;
+use oat\oatbox\event\Event;
 
-class RdfItemRelationMap extends AbstractRdfMediaRelationMap
+interface ProcessorInterface
 {
-    /** @var string */
-    private const ITEM_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem';
-
-    protected function getMediaRelationPropertyUri(): string
-    {
-        return self::ITEM_RELATION_PROPERTY;
-    }
-
-    public function createMediaRelation(RdfResource $mediaResource, string $sourceId): MediaRelation
-    {
-        return (new MediaRelation(MediaRelation::ITEM_TYPE, $mediaResource->getUri(), $mediaResource->getLabel()))
-            ->withSourceId($sourceId);
-    }
+    public function process(Event $event): void;
 }

@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\repository\rdf\map;
 
+use oat\taoMediaManager\model\relation\MediaRelation;
 use oat\taoMediaManager\model\relation\MediaRelationCollection;
 use core_kernel_classes_Resource as RdfResource;
 
@@ -35,4 +36,6 @@ interface RdfMediaRelationMapInterface
      * @return void
      */
     public function mapMediaRelations(RdfResource $mediaResource, MediaRelationCollection $mediaRelationCollection): void;
+
+    public function createMediaRelation(RdfResource $mediaResource, string $sourceId): MediaRelation;
 }

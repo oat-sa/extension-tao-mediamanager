@@ -23,28 +23,27 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\relation\repository\rdf\map;
 
 use oat\generis\model\OntologyAwareTrait;
-use oat\taoMediaManager\model\relation\MediaRelation;
+use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\relation\MediaRelationCollection;
 use core_kernel_classes_Resource as RdfResource;
 
-abstract class AbstractRdfMediaRelationMap implements RdfMediaRelationMapInterface
+abstract class AbstractRdfMediaRelationMap extends ConfigurableService implements RdfMediaRelationMapInterface
 {
     use OntologyAwareTrait;
-    
-    abstract protected function getMediaRelationPropertyUri(): string;
 
-    abstract protected function createMediaRelation(string $uri, string $label): MediaRelation;
+    abstract protected function getMediaRelationPropertyUri(): string;
 
     public function mapMediaRelations(
         RdfResource $mediaResource,
         MediaRelationCollection $mediaRelationCollection
-    ): void {
+    ): void
+    {
         $mediaRelations = $mediaResource->getPropertyValues($this->getProperty($this->getMediaRelationPropertyUri()));
 
         foreach ($mediaRelations as $mediaRelation) {
             $mediaRelationResource = $this->getResource($mediaRelation);
             $mediaRelationCollection->add(
-                $this->createMediaRelation($mediaRelationResource->getUri(), $mediaRelationResource->getLabel())
+                $this->createMediaRelation($mediaRelationResource, $mediaResource->getUri())
             );
         }
     }

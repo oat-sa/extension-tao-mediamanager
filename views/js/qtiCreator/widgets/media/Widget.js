@@ -1,12 +1,12 @@
-define(['taoQtiItem/qtiCreator/widgets/Widget'], function(Widget){
+define(['taoMediaManager/qtiCreator/widgets/Widget'], function(Widget){
 
-    var ChoiceWidget = Widget.clone();
+    var StimulusWidget = Widget.clone();
 
-    ChoiceWidget.buildContainer = function(){
+    StimulusWidget.buildContainer = function(){
         this.$container = this.$original;
     };
 
-    ChoiceWidget.initCreator = function(){
+    StimulusWidget.initCreator = function(){
 
         Widget.initCreator.call(this);
 
@@ -18,17 +18,17 @@ define(['taoQtiItem/qtiCreator/widgets/Widget'], function(Widget){
         this.listenToInteractionStates();
     };
 
-    ChoiceWidget.listenToInteractionStates = function(){
+    StimulusWidget.listenToInteractionStates = function(){
 
         var _this = this;
 
         //follow interaction state change
         this.beforeStateInit(function(e, element, state){
-            
+
             if(element.is('interaction')
                 && element.getSerial() === _this.interaction.getSerial()
                 && state.name !== _this.getCurrentState().name){
-                
+
                 switch(state.name){
                     case 'answer':
                     case 'sleep':
@@ -42,17 +42,17 @@ define(['taoQtiItem/qtiCreator/widgets/Widget'], function(Widget){
 
             }
         });
-        
+
         this.beforeStateExit(function(e, element, state){
             if(element.is('interaction')
                 && element.getSerial() === _this.interaction.getSerial()
                 && state.name === 'choice'){
-                
+
                 _this.changeState('question');
             }
-            
+
         });
     };
 
-    return ChoiceWidget;
+    return StimulusWidget;
 });

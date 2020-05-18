@@ -22,10 +22,7 @@ define([
     'lodash',
     'ui/component',
     'core/pluginLoader',
-    'taoMediaManager/qtiCreator/plugins/navigation/back',
-    'taoMediaManager/qtiCreator/plugins/menu/save',
-    'taoMediaManager/qtiCreator/plugins/content/title',
-    'taoMediaManager/qtiCreator/plugins/menu/preview',
+    'taoMediaManager/qtiCreator/passageCreator',
     'taoMediaManager/qtiCreator/editor/areaBroker',
     'tpl!taoMediaManager/qtiCreator/component/tpl/passageAuthoring',
     'css!taoMediaManagerCss/passage-creator.css'
@@ -33,15 +30,29 @@ define([
     _,
     componentFactory,
     pluginLoaderFactory,
-    backPlugin,
-    savePlugin,
-    titlePlugin,
-    previewPlugin,
+    passageCreatorFactory,
     areaBrokerFactory,
     componentTpl
 ) {
     'use strict';
 
+    const defaultPlugins = [{
+        module: 'taoMediaManager/qtiCreator/plugins/content/title',
+        bundle: 'taoMediaManager/loader/taoMediaManager.min',
+        category: 'content'
+    }, {
+        module: 'taoMediaManager/qtiCreator/plugins/navigation/back',
+        bundle: 'taoMediaManager/loader/taoMediaManager.min',
+        category: 'panel'
+    }, {
+        module: 'taoMediaManager/qtiCreator/plugins/menu/save',
+        bundle: 'taoMediaManager/loader/taoMediaManager.min',
+        category: 'panel'
+    }, {
+        module: 'taoMediaManager/qtiCreator/plugins/menu/preview',
+        bundle: 'taoMediaManager/loader/taoMediaManager.min',
+        category: 'panel'
+    }];
     /**
      * Embeds the assets creator UI in a component
      *
@@ -51,7 +62,6 @@ define([
      *      plugins: [],
      *      properties: {
      *          uri: 'http://item#rdf-123',
-     *          label: 'Item',
      *          baseUrl: 'http://foo/bar/',
      *          // ...
      *      }
@@ -65,16 +75,18 @@ define([
      * @param {Object} config - The setup for the item creator
      * @param {Object} config.properties - The list of properties expected by the item creator
      * @param {Object} config.properties.uri - The URI of the item to author
-     * @param {Object} config.properties.label - The displayed label
      * @param {Object} config.properties.baseUrl - The base URL to retrieve the assets
-     * @param {String} config.properties.itemDataUrl - URL for getting item data (passed through to itemCreator)
+     * @param {String} config.properties.passageDataUrl - URL for getting item data (passed through to itemCreator)
      * @param {Object[]} [config.plugins] - Additional plugins to load
      * @returns {component}
      * @fires ready - When the component is ready to work
      */
-    function passageAuthoringFactory(container, config) {
+    function passageAuthoringFactory(container, config = {}) {
         let areaBroker;
-        let itemCreator;
+        let passageCreator;
+
+        const plugins = Array.isArray(config.plugins) ? config.plugins : [];
+        config.plugins = [...defaultPlugins, ...plugins];
 
         const pluginLoader = pluginLoaderFactory();
 
@@ -107,8 +119,14 @@ define([
 
                 // load the plugins, then render the item creator
                 pluginLoader.load()
-                    .then(() => this.render(container))
-                    .catch(err => this.trigger('error', err));
+                    .then(() => {
+                        debugger
+                        this.render(container);
+                    })
+                    .catch(err => {
+                        debugger
+                        this.trigger('error', err);}
+                        );
             })
 
             // renders the component
@@ -131,21 +149,19 @@ define([
                     'elementPropertyPanel': $container.find('#item-editor-body-element-property-bar .panel')
                 });
 
-                backPlugin.init(areaBroker);
-                savePlugin.init(areaBroker);
-                titlePlugin.init(areaBroker, 'Hola');
-                previewPlugin.init(areaBroker, config.properties.itemDataUrl);
-                backPlugin.render();
-                savePlugin.render();
-                titlePlugin.render();
-                previewPlugin.render();
+                passageCreator = passageCreatorFactory(this.getConfig(), areaBroker, pluginLoader.getPlugins())
+                    .spread(this, 'error success ready')
+                    .on('init', function () {
+                        this.render();
+                    })
+                    .init();
             })
 
             .on('destroy', function () {
-                if (itemCreator) {
-                    itemCreator.destroy();
+                if (passageCreator) {
+                    passageCreator.destroy();
                 }
-                itemCreator = null;
+                passageCreator = null;
                 areaBroker = null;
             });
 

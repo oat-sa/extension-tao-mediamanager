@@ -29,14 +29,16 @@ use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
 
 class ItemUpdatedProcessor extends ConfigurableService implements ProcessorInterface
 {
+    private const INCLUDE_ELEMENT_IDS_KEY = 'includeElementIds';
+
     public function process(Event $event): void
     {
         $itemId = $this->getItemId($event);
         $data = $this->getData($event);
 
-        if (array_key_exists('includedElementIds', $data)) {
+        if (array_key_exists(self::INCLUDE_ELEMENT_IDS_KEY, $data)) {
             $this->getItemRelationUpdateService()
-                ->updateByItem($itemId, $data['includedElementIds']);
+                ->updateByItem($itemId, $data[self::INCLUDE_ELEMENT_IDS_KEY]);
         }
     }
 

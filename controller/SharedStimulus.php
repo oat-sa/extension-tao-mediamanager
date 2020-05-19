@@ -32,7 +32,6 @@ use oat\taoMediaManager\model\sharedStimulus\factory\QueryFactory;
 use oat\taoMediaManager\model\sharedStimulus\renderer\JsonQtiAttributeRenderer;
 use oat\taoMediaManager\model\sharedStimulus\repository\SharedStimulusRepository;
 use oat\taoMediaManager\model\sharedStimulus\service\CreateService;
-use oat\taoQtiItem\model\qti\Parser;
 use tao_actions_CommonModule;
 use Throwable;
 

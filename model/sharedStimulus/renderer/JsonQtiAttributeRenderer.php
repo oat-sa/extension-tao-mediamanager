@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\sharedStimulus\renderer;
 
 use DOMDocument;
+use LogicException;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 use oat\taoQtiItem\model\qti\ParserFactory;
@@ -41,15 +42,20 @@ class JsonQtiAttributeRenderer extends ConfigurableService
 
     private function createDomDocument(SharedStimulus $sharedStimulus) : DOMDocument
     {
+        $content = $sharedStimulus->getBody();
+        if (empty($content)) {
+            throw new LogicException('SharedStimulus content is empty and cannot be parsed.');
+        }
+
         $document = new DOMDocument();
-        $document->loadXML($sharedStimulus->getBody());
+        $document->loadXML($content);
 
         return $document;
     }
 
     private function createXInclude(DOMDocument $document): XInclude
     {
-        return $this->hydrateXInclude(new XInclude(), $document->firstChild);
+        return $this->hydrateXInclude(new XInclude(), $document);
     }
 
     private function hydrateXInclude(XInclude $xinclude, DOMDocument $document)

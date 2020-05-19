@@ -63,7 +63,7 @@ components:
       properties:
         id:
           type: string
-          example: 'http://tao.docker.localhost/tao.rdf#i5e89a2063326711164b1a816b433b1ec'
+          example: 'http://www.tao.lu/tao.rdf#i5e89a2063326711164b1a816b433b1ec'
         type:
           type: string
           enum:

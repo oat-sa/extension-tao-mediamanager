@@ -43,9 +43,7 @@ define([
                     data : {
                         id : config.id
                     }
-                }).done(function(response){
-
-                    debugger
+                }).done(function(response) {
 
                     var loader, itemData, newItem;
 

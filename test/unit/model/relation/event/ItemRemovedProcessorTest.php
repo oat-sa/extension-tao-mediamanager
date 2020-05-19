@@ -23,7 +23,6 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\test\unit\model\relation\event;
 
 use oat\generis\test\TestCase;
-use oat\taoMediaManager\model\relation\event\MediaRelationListener;
 use oat\taoMediaManager\model\relation\event\processor\ItemRemovedProcessor;
 use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -39,7 +38,7 @@ class ItemRemovedProcessorTest extends TestCase
     public function setUp(): void
     {
         $this->updateService = $this->createMock(ItemRelationUpdateService::class);
-        $this->subject = new MediaRelationListener();
+        $this->subject = new ItemRemovedProcessor();
         $this->subject->setServiceLocator(
             $this->getServiceLocatorMock(
                 [

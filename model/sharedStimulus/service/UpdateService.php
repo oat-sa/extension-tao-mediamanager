@@ -35,6 +35,7 @@ use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 use oat\taoMediaManager\model\sharedStimulus\UpdateCommand;
 use oat\taoMediaManager\model\SharedStimulusImporter;
 use qtism\data\storage\xml\XmlDocument;
+use qtism\data\storage\xml\XmlStorageException;
 
 class UpdateService extends ConfigurableService
 {
@@ -121,7 +122,12 @@ class UpdateService extends ConfigurableService
 
     private function validateXml(string $fileName): void
     {
-        SharedStimulusImporter::isValidSharedStimulus($fileName);
+        try {
+            SharedStimulusImporter::isValidSharedStimulus($fileName);
+        } catch (XmlStorageException $e) {
+            $this->logAlert(sprintf('Incorrect shared stimulus xml, %s', $e->getMessage()));
+            throw new InvalidArgumentException('Invalid XML provided');
+        }
 
         $resolver = new TaoMediaResolver();
         $xmlDocument = new XmlDocument();

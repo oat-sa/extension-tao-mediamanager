@@ -39,20 +39,22 @@ class ItemRelationUpdateService extends ConfigurableService
         $collection = $repository->findAll(new FindAllQuery(null, $itemId));
 
         foreach ($collection->filterNewMediaIds($currentMediaIds) as $mediaId) {
-            $repository->save($this->createMediaRelation(MediaRelation::ITEM_TYPE, $mediaId, $itemId));
+            $repository->save($this->createMediaRelation(MediaRelation::ITEM_TYPE, $itemId, $mediaId));
         }
 
         foreach ($collection->filterRemovedMediaIds($currentMediaIds) as $mediaId) {
-            $repository->remove($this->createMediaRelation(MediaRelation::ITEM_TYPE, $mediaId, $itemId));
+            $repository->remove($this->createMediaRelation(MediaRelation::ITEM_TYPE, $itemId, $mediaId));
         }
     }
 
     public function removeMedia(string $mediaId): void
     {
         $repository = $this->getMediaRelationRepository();
+        $medias = $repository->findAll(new FindAllQuery($mediaId))->getIterator();
 
-        foreach ($repository->findAll(new FindAllQuery($mediaId)) as $mediaId) {
-            $repository->remove($this->createMediaRelation(MediaRelation::MEDIA_TYPE, $mediaId, $mediaId));
+        /** @var MediaRelation $media */
+        foreach ($medias as $media) {
+            $repository->remove($media->withSourceId($mediaId));
         }
     }
 

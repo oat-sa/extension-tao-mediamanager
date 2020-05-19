@@ -61,9 +61,9 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
 
     public function save(MediaRelation $relation): void
     {
-        $mediaResource = $this->getModel()->getResource($relation->getId());
+        $mediaResource = $this->getModel()->getResource($relation->getSourceId());
 
-        if (!$mediaResource->setPropertyValue($this->getPropertyByRelation($relation), $relation->getSourceId())) {
+        if (!$mediaResource->setPropertyValue($this->getPropertyByRelation($relation), $relation->getId())) {
             throw new LogicException(
                 sprintf(
                     'Error saving media relation %s [%s:%s]',
@@ -77,9 +77,9 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
 
     public function remove(MediaRelation $relation): void
     {
-        $mediaResource = $this->getModel()->getResource($relation->getId());
+        $mediaResource = $this->getModel()->getResource($relation->getSourceId());
 
-        if (!$mediaResource->removePropertyValue($this->getPropertyByRelation($relation), $relation->getSourceId())) {
+        if (!$mediaResource->removePropertyValue($this->getPropertyByRelation($relation), $relation->getId())) {
             throw new LogicException(
                 sprintf(
                     'Error removing media relation %s [%s:%s]',

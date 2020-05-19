@@ -23,6 +23,8 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\test\unit\model\relation\service;
 
 use oat\generis\test\TestCase;
+use oat\taoMediaManager\model\relation\MediaRelation;
+use oat\taoMediaManager\model\relation\MediaRelationCollection;
 use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
 use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -50,15 +52,86 @@ class ItemRelationUpdateServiceTest extends TestCase
 
     public function testUpdateByItem(): void
     {
-        $this->markTestIncomplete('Wip');
+        $itemId = 'itemId';
 
-        $this->subject->updateByItem();
+        $collection = new MediaRelationCollection(
+            ...[
+                (new MediaRelation(MediaRelation::ITEM_TYPE, 'remove_media_1' ))->withSourceId($itemId),
+                (new MediaRelation(MediaRelation::ITEM_TYPE, 'remove_media_2' ))->withSourceId($itemId),
+            ]
+        );
+
+        $this->repository
+            ->method('findAll')
+            ->willReturn($collection);
+
+        $this->repository
+            ->method('save')
+            ->withConsecutive(
+                ...[
+                    [
+                        (new MediaRelation(MediaRelation::ITEM_TYPE, $itemId))->withSourceId('new_media_1'),
+                    ],
+                    [
+                        (new MediaRelation(MediaRelation::ITEM_TYPE, $itemId))->withSourceId('new_media_2'),
+                    ]
+                ]
+            );
+
+        $this->repository
+            ->method('remove')
+            ->withConsecutive(
+                ...[
+                    [
+                        (new MediaRelation(MediaRelation::ITEM_TYPE, $itemId))->withSourceId('remove_media_1'),
+                    ],
+                    [
+                        (new MediaRelation(MediaRelation::ITEM_TYPE, $itemId))->withSourceId('remove_media_2'),
+                    ]
+                ]
+            );
+
+        $this->assertNull(
+            $this->subject->updateByItem(
+                $itemId,
+                [
+                    'new_media_1',
+                    'new_media_2',
+                ]
+            )
+        );
     }
 
     public function testRemoveMedia(): void
     {
-        $this->markTestIncomplete('Wip');
+        $sourceId = 'mediaId';
+        $media1 = new MediaRelation(MediaRelation::MEDIA_TYPE, 'media1');
+        $media2 = new MediaRelation(MediaRelation::MEDIA_TYPE, 'media2');
 
-        $this->subject->removeMedia();
+        $collection = new MediaRelationCollection(
+            ...[
+                $media1,
+                $media2,
+            ]
+        );
+
+        $this->repository
+            ->method('findAll')
+            ->willReturn($collection);
+
+        $this->repository
+            ->method('remove')
+            ->withConsecutive(
+                ...[
+                    [
+                        $media1->withSourceId($sourceId),
+                    ],
+                    [
+                        $media2->withSourceId($sourceId),
+                    ]
+                ]
+            );
+
+        $this->assertNull($this->subject->removeMedia($sourceId));
     }
 }

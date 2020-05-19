@@ -27,24 +27,28 @@
 define([
     'jquery',
     'i18n',
+    'core/plugin',
     'ui/hider',
     'tpl!taoMediaManager/qtiCreator/plugins/button'
-], function($, __, hider, buttonTpl){
+], function($, __, pluginFactory, hider, buttonTpl){
     'use strict';
-    var $container;
 
     /**
      * Returns the configured plugin
      * @returns {Function} the plugin
      */
-    return {
+    return pluginFactory({
         name : 'back',
 
         /**
          * Initialize the plugin
          */
-        init : function init(areaBroker) {
-            $container = areaBroker.getMenuLeftArea();
+        init : function init() {
+            var passageCreator = this.getHost();
+
+            passageCreator.on('exit', function(){
+                window.history.back();
+            });
 
             this.$element = $(buttonTpl({
                 icon: 'left',
@@ -53,22 +57,23 @@ define([
                 cssClass: 'back-action'
             })).on('click', function backHandler(e){
                 e.preventDefault();
-                window.history.back();
+                passageCreator.trigger('exit');
             });
             this.hide();
         },
 
         /**
-         * Called during the itemCreator's render phase
+         * Called during the passageCreator's render phase
          */
         render : function render() {
             //attach the element to the menu area
+            var $container = this.getAreaBroker().getMenuLeftArea();
             $container.append(this.$element);
             this.show();
         },
 
         /**
-         * Called during the itemCreator's destroy phase
+         * Called during the passageCreator's destroy phase
          */
         destroy : function destroy() {
             this.$element.remove();
@@ -105,5 +110,5 @@ define([
         hide: function hide( ){
             hider.hide(this.$element);
         }
-    };
+    });
 });

@@ -25,41 +25,43 @@
 
 define([
     'jquery',
-    'i18n'
-], function($, __) {
+    'i18n',
+    'core/plugin'
+], function($, __, pluginFactory) {
     'use strict';
-    var $container;
 
     /**
      * Returns the configured plugin
      * @returns {Function} the plugin
      */
-    return {
+    return pluginFactory({
         name : 'title',
 
         /**
          * Get the title and area to render
          */
-        init : function init(areaBroker, title) {
-            $container = areaBroker.getTitleArea();
-            this.title = title
+        init : function init() {
+            var config = this.getHost().getConfig();
+            var item   = this.getHost().getItem();
 
-            // if (item && !_.isEmpty(item.attr('title'))) {
-            //     this.title = item.attr('title');
-            // }
-            // else if (config && config.properties && config.properties.label) {
-            //     this.title = config.properties.label;
-            // }
+            if(item && !_.isEmpty(item.attr('title'))){
+                this.title = item.attr('title');
+            }
+            else if(config && config.properties && config.properties.label){
+                this.title = config.properties.label;
+            }
         },
 
         /**
          * Hook to the host's render
          */
         render : function render() {
-            if (this.title) {
+            if(this.title){
                 //attach the element to the title area
-                $container.text(this.title);
+                this.getAreaBroker()
+                    .getTitleArea()
+                    .text(this.title);
             }
         }
-    };
+    });
 });

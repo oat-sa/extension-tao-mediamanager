@@ -24,8 +24,10 @@ define(function(){
 
     return {
         'MediaManager': {
+            'deps': 'controller/manageMedia',
             'actions': {
-                'editInstance' : 'controller/manageMedia'
+                'editInstance' : 'controller/editInstance',
+                'authoring': 'controller/authoring'
             }
         }
     };

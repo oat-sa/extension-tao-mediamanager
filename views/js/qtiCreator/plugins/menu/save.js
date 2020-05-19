@@ -27,25 +27,25 @@
 define([
     'jquery',
     'i18n',
+    'core/plugin',
     'ui/hider',
     'tpl!taoMediaManager/qtiCreator/plugins/button'
-], function($, __, hider, buttonTpl){
+], function($, __, pluginFactory, hider, buttonTpl){
     'use strict';
-    var $container;
 
     /**
      * Returns the configured plugin
      * @returns {Function} the plugin
      */
-    return {
+    return pluginFactory({
         name : 'save',
 
         /**
          * Initialize the plugin (called during itemCreator's init)
          */
-        init : function init(areaBroker) {
+        init : function init() {
             var self = this;
-            $container = areaBroker.getMenuArea();
+            var passageCreator = this.getHost();
 
             this.$element = $(buttonTpl({
                 icon: 'save',
@@ -55,28 +55,29 @@ define([
             })).on('click', function saveHandler(e){
                 e.preventDefault();
                 self.disable();
-                // itemCreator.trigger('save');
+                passageCreator.trigger('save');
             });
 
             this.hide();
-            // this.disable();
+            this.disable();
 
-            // $container.on('ready saved error', function(){
-            //     self.enable();
-            // });
+            passageCreator.on('ready saved error', function(){
+                self.enable();
+            });
         },
 
         /**
-         * Called during the itemCreator's render phase
+         * Called during the passageCreator's render phase
          */
         render : function render() {
             //attach the element to the menu area
+            var $container = this.getAreaBroker().getMenuArea();
             $container.append(this.$element);
             this.show();
         },
 
         /**
-         * Called during the itemCreator's destroy phase
+         * Called during the passageCreator's destroy phase
          */
         destroy : function destroy() {
             this.$element.remove();
@@ -113,5 +114,5 @@ define([
         hide: function hide() {
             hider.hide(this.$element);
         }
-    };
+    });
 });

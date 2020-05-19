@@ -22,14 +22,34 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus\factory;
 
+use InvalidArgumentException;
 use oat\oatbox\service\ConfigurableService;
-use oat\taoMediaManager\model\sharedStimulus\FindQuery;
+use oat\taoMediaManager\model\sharedStimulus\UpdateCommand;
 use Psr\Http\Message\ServerRequestInterface;
+use tao_models_classes_UserService;
 
-class QueryFactory extends ConfigurableService
+class UpdateFactory extends ConfigurableService
 {
-    public function makeFindQueryByRequest(ServerRequestInterface $request): FindQuery
+
+    public function patchStimulusByRequest(ServerRequestInterface $request): UpdateCommand
     {
-        return new FindQuery($request->getQueryParams()['id'] ?? '');
+        $parsedBody = json_decode((string)$request->getBody(), true);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new InvalidArgumentException('Incorrect request format');
+        }
+
+        $user = $this->getUserService()->getCurrentUser();
+
+        return new UpdateCommand(
+            $parsedBody['id'],
+            $parsedBody['body'],
+            $user->getUri()
+        );
+    }
+
+    private function getUserService(): tao_models_classes_UserService
+    {
+        return $this->getServiceLocator()->get(tao_models_classes_UserService::SERVICE_ID);
     }
 }

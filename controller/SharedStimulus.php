@@ -29,6 +29,7 @@ use oat\tao\model\http\response\ErrorJsonResponse;
 use oat\tao\model\http\response\SuccessJsonResponse;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
 use oat\taoMediaManager\model\sharedStimulus\factory\QueryFactory;
+use oat\taoMediaManager\model\sharedStimulus\factory\UpdateFactory;
 use oat\taoMediaManager\model\sharedStimulus\repository\SharedStimulusRepository;
 use oat\taoMediaManager\model\sharedStimulus\service\CreateService;
 use oat\taoMediaManager\model\sharedStimulus\service\UpdateService;
@@ -91,7 +92,7 @@ class SharedStimulus extends tao_actions_CommonModule
             ->withJsonHeader();
 
         try {
-            $command = $this->getQueryFactory()
+            $command = $this->getUpdateFactory()
                 ->patchStimulusByRequest($this->getPsrRequest());
 
             $sharedStimulus = $this->getUpdateService()->update($command);
@@ -135,5 +136,10 @@ class SharedStimulus extends tao_actions_CommonModule
     private function getSharedStimulusRepository(): SharedStimulusRepository
     {
         return $this->getServiceLocator()->get(SharedStimulusRepository::class);
+    }
+
+    private function getUpdateFactory(): UpdateFactory
+    {
+        return $this->getServiceLocator()->get(UpdateFactory::class);
     }
 }

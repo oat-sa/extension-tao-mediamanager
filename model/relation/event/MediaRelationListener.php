@@ -45,12 +45,12 @@ class MediaRelationListener extends ConfigurableService
         $this->process(ItemRemovedProcessor::class, $event);
     }
 
-    public function whenMediaIsRemoved(MediaRemovedEvent $event): void
+    public function whenMediaIsRemoved(Event $event): void
     {
         $this->process(MediaRemovedProcessor::class, $event);
     }
 
-    public function whenMediaIsSaved(MediaSavedEvent $event): void
+    public function whenMediaIsSaved(Event $event): void
     {
         //@TODO will be used to related shared stimulus with other media
     }

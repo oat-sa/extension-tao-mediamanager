@@ -39,11 +39,14 @@ define([
             passageAuthoringFactory($panel, { properties: {
                 uri: $panel.attr('data-uri'),
                 id: $panel.attr('data-id'),
-                assetDataUrl: 'taoMediaManager/SharedStimulus/get',
+                assetDataUrl: '/taoMediaManager/SharedStimulus/get',
                 // TO DO will be filled later
                 baseUrl: '...'
             }})
-            .on('error', err => feedback().error(err.message));
+            .on('error', err => {
+                console.error(err);
+                feedback().error(err.message);
+            });
         }
     };
 

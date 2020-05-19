@@ -119,14 +119,8 @@ define([
 
                 // load the plugins, then render the item creator
                 pluginLoader.load()
-                    .then(() => {
-                        debugger
-                        this.render(container);
-                    })
-                    .catch(err => {
-                        debugger
-                        this.trigger('error', err);}
-                        );
+                    .then(() => this.render(container))
+                    .catch(err => this.trigger('error', err));
             })
 
             // renders the component

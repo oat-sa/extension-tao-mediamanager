@@ -29,8 +29,10 @@ use oat\tao\model\http\response\ErrorJsonResponse;
 use oat\tao\model\http\response\SuccessJsonResponse;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
 use oat\taoMediaManager\model\sharedStimulus\factory\QueryFactory;
+use oat\taoMediaManager\model\sharedStimulus\renderer\JsonQtiAttributeRenderer;
 use oat\taoMediaManager\model\sharedStimulus\repository\SharedStimulusRepository;
 use oat\taoMediaManager\model\sharedStimulus\service\CreateService;
+use oat\taoQtiItem\model\qti\Parser;
 use tao_actions_CommonModule;
 use Throwable;
 
@@ -73,7 +75,9 @@ class SharedStimulus extends tao_actions_CommonModule
             $sharedStimulus = $this->getSharedStimulusRepository()
                 ->find($command);
 
-            $formatter->withBody(new SuccessJsonResponse($sharedStimulus->jsonSerialize()));
+            $data = $this->getSharedStimulusAttributesRenderer()->render($sharedStimulus);
+
+            $formatter->withBody(new SuccessJsonResponse($data));
         } catch (Throwable $exception) {
             $this->logError(sprintf('Error retrieving Shared Stimulus: %s', $exception->getMessage()));
 
@@ -107,5 +111,10 @@ class SharedStimulus extends tao_actions_CommonModule
     private function getSharedStimulusRepository(): SharedStimulusRepository
     {
         return $this->getServiceLocator()->get(SharedStimulusRepository::class);
+    }
+
+    private function getSharedStimulusAttributesRenderer()
+    {
+        return $this->getServiceLocator()->get(JsonQtiAttributeRenderer::class);
     }
 }

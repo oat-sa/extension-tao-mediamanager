@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\controller;
 
+use common_session_SessionManager;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\tao\model\http\formatter\ResponseFormatter;
 use oat\tao\model\http\response\ErrorJsonResponse;
@@ -92,8 +93,10 @@ class SharedStimulus extends tao_actions_CommonModule
             ->withJsonHeader();
 
         try {
+            $user = common_session_SessionManager::getSession()->getUser();
+
             $command = $this->getUpdateFactory()
-                ->patchStimulusByRequest($this->getPsrRequest());
+                ->patchStimulusByRequest($this->getPsrRequest(), $user);
 
             $sharedStimulus = $this->getUpdateService()->update($command);
 

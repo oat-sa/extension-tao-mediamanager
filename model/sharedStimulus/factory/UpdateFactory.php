@@ -24,14 +24,14 @@ namespace oat\taoMediaManager\model\sharedStimulus\factory;
 
 use InvalidArgumentException;
 use oat\oatbox\service\ConfigurableService;
+use oat\oatbox\user\User;
 use oat\taoMediaManager\model\sharedStimulus\UpdateCommand;
 use Psr\Http\Message\ServerRequestInterface;
-use tao_models_classes_UserService;
 
 class UpdateFactory extends ConfigurableService
 {
 
-    public function patchStimulusByRequest(ServerRequestInterface $request): UpdateCommand
+    public function patchStimulusByRequest(ServerRequestInterface $request, User $user): UpdateCommand
     {
         $parsedBody = json_decode((string)$request->getBody(), true);
 
@@ -39,17 +39,10 @@ class UpdateFactory extends ConfigurableService
             throw new InvalidArgumentException('Incorrect request format');
         }
 
-        $user = $this->getUserService()->getCurrentUser();
-
         return new UpdateCommand(
             $parsedBody['id'],
             $parsedBody['body'],
-            $user->getUri()
+            $user->getIdentifier()
         );
-    }
-
-    private function getUserService(): tao_models_classes_UserService
-    {
-        return $this->getServiceLocator()->get(tao_models_classes_UserService::SERVICE_ID);
     }
 }

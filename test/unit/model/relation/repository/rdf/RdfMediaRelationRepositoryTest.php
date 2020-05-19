@@ -30,40 +30,62 @@ use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
 use oat\taoMediaManager\model\relation\repository\rdf\map\RdfMediaRelationMapInterface;
 use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRelationRepository;
 use core_kernel_classes_Resource as RdfResource;
-use Prophecy\Argument;
+use PHPUnit\Framework\MockObject\MockObject;
 
 class RdfMediaRelationRepositoryTest extends TestCase
 {
+    /** @var RdfMediaRelationRepository */
+    private $subject;
 
-    public function testFindAll()
+    /** @var Ontology|MockObject */
+    private $ontology;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->ontology = $this->createMock(Ontology::class);
+        $this->subject = new RdfMediaRelationRepository(
+            [
+                RdfMediaRelationRepository::MAP_OPTION => [
+                    new class implements RdfMediaRelationMapInterface {
+                        public function mapMediaRelations(RdfResource $mediaResource, MediaRelationCollection $mediaRelationCollection): void
+                        {
+                            $mediaRelationCollection->add(new MediaRelation('item', '1'));
+                            $mediaRelationCollection->add(new MediaRelation('item', '2', 'item-2'));
+                        }
+
+                        public function createMediaRelation(RdfResource $mediaResource, string $sourceId): MediaRelation
+                        {
+                            return new MediaRelation('item', $mediaResource->getUri());
+                        }
+                    },
+                    new class implements RdfMediaRelationMapInterface {
+                        public function mapMediaRelations(RdfResource $mediaResource, MediaRelationCollection $mediaRelationCollection): void
+                        {
+                            $mediaRelationCollection->add(new MediaRelation('media', '1'));
+                            $mediaRelationCollection->add(new MediaRelation('media', '2', 'media-2'));
+                        }
+
+                        public function createMediaRelation(RdfResource $mediaResource, string $sourceId): MediaRelation
+                        {
+                            return new MediaRelation('media', $mediaResource->getUri());
+                        }
+                    }
+                ]
+            ]
+        );
+        $this->subject->setModel($this->ontology);
+    }
+
+    public function testFindAll(): void
     {
         $mediaId = 'fixture';
 
-        $modelProphecy = $this->prophesize(Ontology::class);
-
-        $mediaResourceProphecy = $this->prophesize(RdfResource::class);
-        $modelProphecy->getResource(Argument::exact($mediaId))->willReturn($mediaResourceProphecy->reveal());
-
-        $repository = new RdfMediaRelationRepository([
-            RdfMediaRelationRepository::MAP_OPTION => [
-                new class implements RdfMediaRelationMapInterface
-                {
-                    public function mapMediaRelations(RdfResource $mediaResource, MediaRelationCollection $mediaRelationCollection): void
-                    {
-                        $mediaRelationCollection->add(new MediaRelation('item', '1'));
-                        $mediaRelationCollection->add(new MediaRelation('item', '2', 'item-2'));
-                    }
-                },
-                new class implements RdfMediaRelationMapInterface
-                {
-                    public function mapMediaRelations(RdfResource $mediaResource, MediaRelationCollection $mediaRelationCollection): void
-                    {
-                        $mediaRelationCollection->add(new MediaRelation('media', '1'));
-                        $mediaRelationCollection->add(new MediaRelation('media', '2', 'media-2'));
-                    }
-                }
-            ]
-        ]);
+        $this->ontology
+            ->method('getResource')
+            ->with($mediaId)
+            ->willReturn($this->createMock(RdfResource::class));
 
         $expected = [
             [
@@ -88,9 +110,7 @@ class RdfMediaRelationRepositoryTest extends TestCase
             ],
         ];
 
-        $result = $repository->findAll(
-            new FindAllQuery($mediaId)
-        );
+        $result = $this->subject->findAll(new FindAllQuery($mediaId));
 
         $this->assertSame(json_encode($expected), json_encode(iterator_to_array($result->getIterator())));
     }

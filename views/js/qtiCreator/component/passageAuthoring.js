@@ -72,11 +72,12 @@ define([
      *      });
      *
      * @param {HTMLElement|String} container
-     * @param {Object} config - The setup for the item creator
-     * @param {Object} config.properties - The list of properties expected by the item creator
-     * @param {Object} config.properties.uri - The URI of the item to author
+     * @param {Object} config - The setup for the passage creator
+     * @param {Object} config.properties - The list of properties expected by the passage creator
+     * @param {Object} config.properties.uri - The URI of the passage to author
+     * @param {Object} config.properties.id - The ID of the passage to author
      * @param {Object} config.properties.baseUrl - The base URL to retrieve the assets
-     * @param {String} config.properties.passageDataUrl - URL for getting item data (passed through to itemCreator)
+     * @param {String} config.properties.passageDataUrl - URL for getting passage data (passed through to passageCreator)
      * @param {Object[]} [config.plugins] - Additional plugins to load
      * @returns {component}
      * @fires ready - When the component is ready to work
@@ -117,7 +118,7 @@ define([
                     }
                 });
 
-                // load the plugins, then render the item creator
+                // load the plugins, then render the passage creator
                 pluginLoader.load()
                     .then(() => this.render(container))
                     .catch(err => this.trigger('error', err));

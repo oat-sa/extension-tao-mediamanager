@@ -78,7 +78,7 @@ define([
 
                 self.disable();
 
-                passageCreator.trigger('preview', passageCreator.getPassage().data('uri'));
+                passageCreator.trigger('preview', passageCreator.getItem().data('uri'));
 
                 self.enable();
             });

@@ -36,20 +36,20 @@ define([
     var creatorLoader = {
         loadPassage : function loadPassage(config, callback){
 
-            if(config.uri){
+            if(config.id){
                 $.ajax({
                     url : config.assetDataUrl,
                     dataType : 'json',
                     data : {
-                        uri : config.uri
+                        id : config.id
                     }
-                }).done(function(data){
+                }).done(function(response){
 
                     debugger
-                    
+
                     var loader, itemData, newItem;
 
-                    newItem = new Item().id(_generateIdentifier(config.uri)).attr('title', data.name);
+                    newItem = new Item().id(_generateIdentifier(config.uri)).attr('title', response.data.name);
 
                     newItem.createResponseProcessing();
 
@@ -68,7 +68,7 @@ define([
                     newItem.data('dummy', true);
 
                     //add languages list to the item
-                    if (data.languagesList) {
+                    if (response.data.languagesList) {
                         newItem.data('languagesList', data.languagesList);
                     }
 

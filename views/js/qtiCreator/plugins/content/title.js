@@ -42,10 +42,10 @@ define([
          */
         init : function init() {
             var config = this.getHost().getConfig();
-            var passage   = this.getHost().getPassage();
+            var item   = this.getHost().getItem();
 
-            if(passage && !_.isEmpty(passage.attr('title'))){
-                this.title = passage.attr('title');
+            if(item && !_.isEmpty(item.attr('title'))){
+                this.title = item.attr('title');
             }
             else if(config && config.properties && config.properties.label){
                 this.title = config.properties.label;

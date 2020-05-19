@@ -23,8 +23,10 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\test\unit\model\sharedStimulus\factory;
 
 use oat\generis\test\TestCase;
+use oat\oatbox\user\User;
 use oat\taoMediaManager\model\sharedStimulus\CreateCommand;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
+use oat\taoMediaManager\model\sharedStimulus\UpdateCommand;
 use Psr\Http\Message\ServerRequestInterface;
 
 class CommandFactoryTest extends TestCase
@@ -32,6 +34,9 @@ class CommandFactoryTest extends TestCase
     private const CLASS_URI = 'uri';
     private const LANGUAGE_URI = 'uri';
     private const NAME = 'name';
+    private const URI = 'uri';
+    private const BODY = 'body';
+    private const USER_ID = 'u_id';
 
     /** @var CommandFactory */
     private $factory;
@@ -62,5 +67,27 @@ class CommandFactoryTest extends TestCase
             );
 
         $this->assertEquals($expectedCommand, $this->factory->makeCreateCommandByRequest($request));
+    }
+
+    public function testMakeGetCommandByRequest(): void
+    {
+        $request = $this->createMock(ServerRequestInterface::class);
+        $request->method('getBody')
+            ->willReturn(
+                json_encode(
+                    [
+                        'id' => self::URI,
+                        'body' => self::BODY,
+                    ]
+                )
+            );
+
+        $user = $this->createMock(User::class);
+        $user->method('getIdentifier')->willReturn(self::USER_ID);
+
+        $this->assertEquals(
+            new UpdateCommand(self::URI, self::BODY, self::USER_ID),
+            $this->factory->patchStimulusByRequest($request, $user)
+        );
     }
 }

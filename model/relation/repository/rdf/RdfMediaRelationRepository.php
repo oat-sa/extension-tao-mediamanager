@@ -30,19 +30,17 @@ use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 use oat\search\base\exception\SearchGateWayExeption;
+use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\relation\MediaRelation;
 use oat\taoMediaManager\model\relation\MediaRelationCollection;
 use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
 use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
+use oat\taoMediaManager\model\relation\repository\rdf\map\RdfItemRelationMap;
 use oat\taoMediaManager\model\relation\repository\rdf\map\RdfMediaRelationMap;
 use oat\taoMediaManager\model\relation\repository\rdf\map\RdfMediaRelationMapInterface;
 
 class RdfMediaRelationRepository extends ConfigurableService implements MediaRelationRepositoryInterface
 {
-    private const RDF_MEDIA = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Media';
-    private const RDF_RELATED_MEDIA = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedMedia';
-    private const RDF_RELATED_ITEM = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem';
-
     use OntologyAwareTrait;
 
     /** @var string */
@@ -120,7 +118,11 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
 
     private function getPropertyByRelation(MediaRelation $mediaRelation): core_kernel_classes_Property
     {
-        return $this->getProperty($mediaRelation->isMedia() ? self::RDF_RELATED_MEDIA : self::RDF_RELATED_ITEM);
+        return $this->getProperty(
+            $mediaRelation->isMedia()
+                ? RdfMediaRelationMap::MEDIA_RELATION_PROPERTY
+                : RdfItemRelationMap::ITEM_RELATION_PROPERTY
+        );
     }
 
     /**
@@ -133,8 +135,8 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
 
         $queryBuilder = $search->query();
 
-        $query = $search->searchType($queryBuilder, self::RDF_MEDIA, true)
-            ->add(self::RDF_RELATED_ITEM)
+        $query = $search->searchType($queryBuilder, MediaService::ROOT_CLASS_URI, true)
+            ->add(RdfItemRelationMap::ITEM_RELATION_PROPERTY)
             ->equals($itemId);
 
         $queryBuilder->setCriteria($query);

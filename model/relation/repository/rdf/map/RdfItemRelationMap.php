@@ -28,7 +28,7 @@ use core_kernel_classes_Resource as RdfResource;
 class RdfItemRelationMap extends AbstractRdfMediaRelationMap
 {
     /** @var string */
-    private const ITEM_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem';
+    public const ITEM_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem';
 
     protected function getMediaRelationPropertyUri(): string
     {

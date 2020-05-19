@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus\factory;
 
-use _HumbugBox7f2450e54e51\Psr\Log\InvalidArgumentException;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\user\User;
 use oat\taoMediaManager\model\MediaService;
@@ -45,15 +44,12 @@ class CommandFactory extends ConfigurableService
 
     public function patchStimulusByRequest(ServerRequestInterface $request, User $user): UpdateCommand
     {
-        $parsedBody = json_decode((string)$request->getBody(), true);
-
-        if (JSON_ERROR_NONE !== json_last_error()) {
-            throw new InvalidArgumentException('Incorrect request format');
-        }
+        $id = $request->getQueryParams()['id'];
+        $body = $request->getBody();
 
         return new UpdateCommand(
-            $parsedBody['id'],
-            $parsedBody['body'],
+            $id,
+            (string)$body,
             $user->getIdentifier()
         );
     }

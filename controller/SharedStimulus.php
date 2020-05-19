@@ -95,14 +95,14 @@ class SharedStimulus extends tao_actions_CommonModule
         try {
             $user = common_session_SessionManager::getSession()->getUser();
 
-            $command = $this->getUpdateFactory()
+            $command = $this->getCommandFactory()
                 ->patchStimulusByRequest($this->getPsrRequest(), $user);
 
             $sharedStimulus = $this->getUpdateService()->update($command);
 
-            $formatter->withBody(new SuccessJsonResponse($sharedStimulus->jsonSerialize()));
+            $formatter->withBody(new SuccessJsonResponse([]));
         } catch (Throwable $exception) {
-            $this->logError(sprintf('Error retrieving Shared Stimulus: %s', $exception->getMessage()));
+            $this->logError(sprintf('Error Updating Shared Stimulus: %s', $exception->getMessage()));
 
             $formatter->withStatusCode(400)
                 ->withBody(new ErrorJsonResponse($exception->getCode(), $exception->getMessage()));
@@ -141,8 +141,4 @@ class SharedStimulus extends tao_actions_CommonModule
         return $this->getServiceLocator()->get(SharedStimulusRepository::class);
     }
 
-    private function getUpdateFactory(): UpdateFactory
-    {
-        return $this->getServiceLocator()->get(UpdateFactory::class);
-    }
 }

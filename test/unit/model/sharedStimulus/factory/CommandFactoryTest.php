@@ -73,14 +73,9 @@ class CommandFactoryTest extends TestCase
     {
         $request = $this->createMock(ServerRequestInterface::class);
         $request->method('getBody')
-            ->willReturn(
-                json_encode(
-                    [
-                        'id' => self::URI,
-                        'body' => self::BODY,
-                    ]
-                )
-            );
+            ->willReturn(self::BODY);
+        $request->method('getQueryParams')
+            ->willReturn(['id' => self::URI]);
 
         $user = $this->createMock(User::class);
         $user->method('getIdentifier')->willReturn(self::USER_ID);

@@ -37,26 +37,24 @@ define([
     'taoQtiItem/qtiCreator/helper/creatorRenderer',
     'taoQtiItem/qtiCreator/helper/commonRenderer', //for read-only element : preview + xinclude
     'taoQtiItem/qtiCreator/helper/xincludeRenderer',
-    'taoQtiItem/qtiCreator/editor/interactionsPanel',
     'taoQtiItem/qtiCreator/editor/propertiesPanel',
     'taoQtiItem/qtiCreator/model/helper/event',
-    'taoQtiItem/qtiCreator/editor/styleEditor/styleEditor'
 ], function($, _, __, eventifier, Promise, qtiCreatorContextFactory, passageLoader,
             creatorRenderer, commonRenderer, xincludeRenderer,
-            interactionPanel, propertiesPanel, eventHelper, styleEditor){
+            propertiesPanel, eventHelper){
     'use strict';
 
     /**
      * Load an item
+     * @param {String} id - the item ID
      * @param {String} uri - the item URI
-     * @param {String} label - the item label
      * @param {String} assetDataUrl - the data url
      *
      * @returns {Promise} that resolve with the loaded item model
      */
-    var loadPassage = function loadPassage(uri, assetDataUrl){
+    var loadPassage = function loadPassage(id, uri, assetDataUrl){
         return new Promise(function(resolve, reject){
-            passageLoader.loadPassage({uri : uri, assetDataUrl: assetDataUrl}, function(item){
+            passageLoader.loadPassage({id, uri, assetDataUrl}, function(item){
                 if(!item){
                     reject(new Error('Unable to load the passage'));
                 }
@@ -157,8 +155,7 @@ define([
 
                     //do the save
                     Promise.all([
-                        itemWidget.save(),
-                        styleEditor.save()
+                        itemWidget.save()
                     ]).then(function(){
                         if(!silent){
                             self.trigger('success', __('Your item has been saved'));
@@ -175,7 +172,7 @@ define([
                 });
 
                 var usedCustomInteractionIds = [];
-                loadPassage(config.properties.uri, config.properties.assetDataUrl).then(function(item){
+                loadPassage(config.properties.id, config.properties.uri, config.properties.assetDataUrl).then(function(item){
                     if(! _.isObject(item)){
                         self.trigger('error', new Error('Unable to load the item ' + config.properties.label));
                         return;
@@ -189,12 +186,6 @@ define([
 
                     self.item = item;
                     return true;
-                }).then(function(){
-                    //load custom elements
-                    return Promise.all([
-                        loadCustomInteractions(usedCustomInteractionIds),
-                        loadInfoControls()
-                    ]);
                 }).then(function(){
                     //initialize all the plugins
                     return pluginRun('init').then(function(){
@@ -241,8 +232,6 @@ define([
                     .get(true, config)
                     .setOption('baseUrl', config.properties.baseUrl);
 
-                interactionPanel(areaBroker.getInteractionPanelArea());
-
                 //the renderers' widgets do not handle async yet, so we rely on this event
                 //TODO ready should be triggered once every renderer's widget is done (ie. promisify everything)
                 $(document).on('ready.qti-widget', function(e, elt){
@@ -281,7 +270,7 @@ define([
                                  }
                              });
 
-                             propertiesPanel(areaBroker.getPropertyPanelArea(), widget, config.properties);
+                            //  propertiesPanel(areaBroker.getPropertyPanelArea(), widget, config.properties);
 
                              //init event listeners:
                              eventHelper.initElementToWidgetListeners();

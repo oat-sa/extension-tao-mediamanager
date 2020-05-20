@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\event\processor;
 
-use LogicException;
 use oat\oatbox\event\Event;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\relation\event\MediaRemovedEvent;
@@ -33,7 +32,7 @@ class MediaRemovedProcessor extends ConfigurableService implements ProcessorInte
     public function process(Event $event): void
     {
         if (!$event instanceof MediaRemovedEvent) {
-            throw new LogicException(sprintf('Event %s is not accepted', get_class($event)));
+            throw new InvalidEventException($event);
         }
 
         $this->getItemRelationUpdateService()

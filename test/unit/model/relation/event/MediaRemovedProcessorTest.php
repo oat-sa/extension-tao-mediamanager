@@ -26,6 +26,7 @@ use LogicException;
 use oat\generis\test\TestCase;
 use oat\taoMediaManager\model\relation\event\MediaRemovedEvent;
 use oat\taoMediaManager\model\relation\event\MediaSavedEvent;
+use oat\taoMediaManager\model\relation\event\processor\InvalidEventException;
 use oat\taoMediaManager\model\relation\event\processor\MediaRemovedProcessor;
 use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -63,8 +64,7 @@ class MediaRemovedProcessorTest extends TestCase
 
     public function testInvalidEventWillThrowException(): void
     {
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('Event ' . MediaSavedEvent::class . ' is not accepted');
+        $this->expectException(InvalidEventException::class);
 
         $this->subject->process(new MediaSavedEvent());
     }

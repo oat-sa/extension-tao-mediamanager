@@ -25,6 +25,7 @@ namespace oat\taoMediaManager\model\relation\event\processor;
 use LogicException;
 use oat\oatbox\event\Event;
 use oat\oatbox\service\ConfigurableService;
+use oat\taoItems\model\event\ItemUpdatedEvent;
 use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
 
 class ItemUpdatedProcessor extends ConfigurableService implements ProcessorInterface
@@ -33,31 +34,16 @@ class ItemUpdatedProcessor extends ConfigurableService implements ProcessorInter
 
     public function process(Event $event): void
     {
-        $itemId = $this->getItemId($event);
-        $data = $this->getData($event);
+        if (!$event instanceof ItemUpdatedEvent) {
+            throw new InvalidEventException($event);
+        }
+
+        $data = $event->getData();
 
         if (array_key_exists(self::INCLUDE_ELEMENT_IDS_KEY, $data)) {
             $this->getItemRelationUpdateService()
-                ->updateByItem($itemId, $data[self::INCLUDE_ELEMENT_IDS_KEY]);
+                ->updateByItem($event->getItemUri(), $data[self::INCLUDE_ELEMENT_IDS_KEY]);
         }
-    }
-
-    private function getItemId(Event $event): string
-    {
-        if (method_exists($event, 'getItemUri')) {
-            return $event->getItemUri();
-        }
-
-        throw new LogicException(sprintf('Event %s does not contain method getItemUri', get_class($event)));
-    }
-
-    private function getData(Event $event): array
-    {
-        if (method_exists($event, 'getData')) {
-            return (array)$event->getData();
-        }
-
-        throw new LogicException(sprintf('Event %s does not contain method getData', get_class($event)));
     }
 
     private function getItemRelationUpdateService(): ItemRelationUpdateService

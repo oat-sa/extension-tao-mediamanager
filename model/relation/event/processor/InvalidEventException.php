@@ -24,30 +24,11 @@ namespace oat\taoMediaManager\model\relation\event\processor;
 
 use LogicException;
 use oat\oatbox\event\Event;
-use oat\oatbox\service\ConfigurableService;
-use oat\taoItems\model\event\ItemRemovedEvent;
-use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
 
-class ItemRemovedProcessor extends ConfigurableService implements ProcessorInterface
+class InvalidEventException extends LogicException
 {
-    public function process(Event $event): void
+    public function __construct(Event $event, string $details = 'invalid')
     {
-        if (!$event instanceof ItemRemovedEvent) {
-            throw new InvalidEventException($event);
-        }
-
-        $id = $event->jsonSerialize()['itemUri'] ?? null;
-
-        if (empty($id)) {
-            throw new InvalidEventException($event, 'Missing itemUri');
-        }
-
-        $this->getItemRelationUpdateService()
-            ->updateByItem((string)$id);
-    }
-
-    private function getItemRelationUpdateService(): ItemRelationUpdateService
-    {
-        return $this->getServiceLocator()->get(ItemRelationUpdateService::class);
+        parent::__construct(sprintf('Event %s is not accepted: %s', get_class($event), $details));
     }
 }

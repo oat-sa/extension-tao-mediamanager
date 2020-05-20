@@ -24,6 +24,8 @@ namespace oat\taoMediaManager\test\unit\model\relation\event;
 
 use oat\generis\test\TestCase;
 use oat\oatbox\event\Event;
+use oat\taoItems\model\event\ItemUpdatedEvent;
+use oat\taoMediaManager\model\relation\event\processor\InvalidEventException;
 use oat\taoMediaManager\model\relation\event\processor\ItemUpdatedProcessor;
 use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -56,30 +58,22 @@ class ItemUpdatedProcessorTest extends TestCase
             ->method('updateByItem')
             ->with('itemId', ['mediaId']);
 
-        $this->subject->process($this->getCorrectEvent());
-    }
-
-    private function getCorrectEvent(): Event
-    {
-        return $event = new class implements Event {
-            public function getName(): string
-            {
-                return 'event';
-            }
-
-            public function getItemUri(): string
-            {
-                return 'itemId';
-            }
-
-            public function getData(): array
-            {
-                return [
+        $this->subject->process(
+            new ItemUpdatedEvent(
+                'itemId',
+                [
                     'includeElementIds' => [
                         'mediaId'
                     ]
-                ];
-            }
-        };
+                ]
+            )
+        );
+    }
+
+    public function testInvalidEventWillThrowException(): void
+    {
+        $this->expectException(InvalidEventException::class);
+
+        $this->subject->process($this->createMock(Event::class));
     }
 }

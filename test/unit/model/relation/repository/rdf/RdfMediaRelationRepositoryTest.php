@@ -24,10 +24,15 @@ namespace oat\taoMediaManager\test\unit\model\relation\repository\rdf;
 
 use LogicException;
 use oat\generis\model\data\Ontology;
+use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\generis\test\TestCase;
+use oat\search\Query;
+use oat\search\base\SearchGateWayInterface;
+use oat\search\QueryBuilder;
 use oat\taoMediaManager\model\relation\MediaRelation;
 use oat\taoMediaManager\model\relation\MediaRelationCollection;
 use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
+use oat\taoMediaManager\model\relation\repository\rdf\map\RdfMediaRelationMap;
 use oat\taoMediaManager\model\relation\repository\rdf\map\RdfMediaRelationMapInterface;
 use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRelationRepository;
 use core_kernel_classes_Resource as RdfResource;
@@ -47,10 +52,26 @@ class RdfMediaRelationRepositoryTest extends TestCase
     /** @var RdfMediaRelationMapInterface|MockObject */
     private $mediaMapper;
 
+    /** @var ComplexSearchService|MockObject */
+    private $complexSearch;
+
+    /** @var Query|MockObject */
+    private $query;
+
+    /** @var QueryBuilder|MockObject */
+    private $queryBuilder;
+
+    /** @var SearchGateWayInterface|MockObject */
+    private $searchGateway;
+
     protected function setUp(): void
     {
         parent::setUp();
 
+        $this->complexSearch = $this->createMock(ComplexSearchService::class);
+        $this->query = $this->createMock(Query::class);
+        $this->queryBuilder = $this->createMock(QueryBuilder::class);
+        $this->searchGateway = $this->createMock(SearchGateWayInterface::class);
         $this->ontology = $this->createMock(Ontology::class);
         $this->itemMapper = $this->createMock(RdfMediaRelationMapInterface::class);
         $this->mediaMapper = $this->createMock(RdfMediaRelationMapInterface::class);
@@ -62,10 +83,18 @@ class RdfMediaRelationRepositoryTest extends TestCase
                 ]
             ]
         );
-        $this->subject->setModel($this->ontology);
+        $this->subject->setServiceLocator(
+            $this->getServiceLocatorMock(
+                [
+                    Ontology::SERVICE_ID => $this->ontology,
+                    ComplexSearchService::SERVICE_ID => $this->complexSearch,
+                    RdfMediaRelationMap::class => $this->mediaMapper,
+                ]
+            )
+        );
     }
 
-    public function testFindAll(): void
+    public function testFindAllByMediaId(): void
     {
         $mediaId = 'fixture';
 
@@ -83,28 +112,12 @@ class RdfMediaRelationRepositoryTest extends TestCase
                 }
             );
 
-        $this->mediaMapper
-            ->method('createMediaRelation')
-            ->willReturnCallback(
-                function (RdfResource $mediaResource, string $sourceId) {
-                    new MediaRelation('media', $mediaResource->getUri());
-                }
-            );
-
         $this->itemMapper
             ->method('mapMediaRelations')
             ->willReturnCallback(
                 function (RdfResource $mediaResource, MediaRelationCollection $mediaRelationCollection) {
                     $mediaRelationCollection->add(new MediaRelation('item', '1'));
                     $mediaRelationCollection->add(new MediaRelation('item', '2', 'item-2'));
-                }
-            );
-
-        $this->itemMapper
-            ->method('createMediaRelation')
-            ->willReturnCallback(
-                function (RdfResource $mediaResource, string $sourceId) {
-                    new MediaRelation('item', $mediaResource->getUri());
                 }
             );
 
@@ -132,6 +145,68 @@ class RdfMediaRelationRepositoryTest extends TestCase
         ];
 
         $result = $this->subject->findAll(new FindAllQuery($mediaId));
+
+        $this->assertSame(json_encode($expected), json_encode(iterator_to_array($result->getIterator())));
+    }
+
+    public function testFindAllByItemId(): void
+    {
+        $itemId = 'itemId';
+
+        $this->mediaMapper
+            ->method('createMediaRelation')
+            ->willReturnOnConsecutiveCalls(
+                ...[
+                    (new MediaRelation('media', '1'))->withSourceId('item1'),
+                    (new MediaRelation('media', '2'))->withSourceId('item1'),
+
+                ]
+            );
+
+        $expected = [
+            [
+                'type' => 'media',
+                'id' => '1',
+                'label' => '',
+            ],
+            [
+                'type' => 'media',
+                'id' => '2',
+                'label' => '',
+            ],
+        ];
+
+        $result = [
+            $this->createMock(RdfResource::class),
+            $this->createMock(RdfResource::class),
+        ];
+
+        $this->complexSearch
+            ->method('query')
+            ->willReturn($this->queryBuilder);
+
+        $this->complexSearch
+            ->method('getGateway')
+            ->willReturn($this->searchGateway);
+
+        $this->complexSearch
+            ->method('searchType')
+            ->willReturn($this->query);
+
+        $this->searchGateway
+            ->method('search')
+            ->willReturn($result);
+
+        $this->query
+            ->method('add')
+            ->willReturn($this->query);
+
+        $this->query
+            ->method('__call')
+            ->with('equals')
+            ->willReturn($this->query);
+
+        $result = $this->subject->findAll(new FindAllQuery(null, $itemId));
 
         $this->assertSame(json_encode($expected), json_encode(iterator_to_array($result->getIterator())));
     }

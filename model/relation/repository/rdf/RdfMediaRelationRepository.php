@@ -173,7 +173,7 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
         return $this->getServiceLocator()->get(ComplexSearchService::SERVICE_ID);
     }
 
-    private function getRdfMediaRelationMap(): RdfMediaRelationMap
+    private function getRdfMediaRelationMap(): RdfMediaRelationMapInterface
     {
         return $this->getServiceLocator()->get(RdfMediaRelationMap::class);
     }

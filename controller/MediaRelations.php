@@ -33,7 +33,7 @@ use Psr\Http\Message\ResponseInterface;
 use tao_actions_CommonModule;
 use Throwable;
 
-class Media extends tao_actions_CommonModule
+class MediaRelations extends tao_actions_CommonModule
 {
     use LoggerAwareTrait;
 

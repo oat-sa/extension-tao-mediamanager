@@ -51,13 +51,6 @@ class SharedStimulus implements JsonSerializable
         return $this->body;
     }
 
-    public function setBody($body): self
-    {
-        $this->body = $body;
-
-        return $this;
-    }
-
     public function getId(): string
     {
         return $this->id;

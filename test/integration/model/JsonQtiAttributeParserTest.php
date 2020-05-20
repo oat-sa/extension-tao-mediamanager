@@ -55,7 +55,7 @@ class JsonQtiAttributeParserTest extends TestCase
         $sharedStimulus = new SharedStimulus('id', '', '', $xml);
         $renderer = new JsonQtiAttributeParser();
 
-        $attributes = json_decode($renderer->parse($sharedStimulus)->getBody(), true);
+        $attributes = $renderer->parse($sharedStimulus);
 
         $this->assertArrayHasKey('qtiClass', $attributes);
         $this->assertSame('include', $attributes['qtiClass']);

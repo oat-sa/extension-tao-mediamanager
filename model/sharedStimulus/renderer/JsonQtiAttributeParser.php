@@ -32,12 +32,12 @@ use oat\taoQtiItem\model\qti\XInclude;
 
 class JsonQtiAttributeParser extends ConfigurableService
 {
-    public function parse(SharedStimulus $sharedStimulus): SharedStimulus
+    public function parse(SharedStimulus $sharedStimulus): array
     {
         $document = $this->createDomDocument($sharedStimulus);
         $xinclude = $this->createXInclude($document);
 
-        return $sharedStimulus->setBody(json_encode($xinclude->toArray()));
+        return $xinclude->toArray();
     }
 
     private function createDomDocument(SharedStimulus $sharedStimulus) : DOMDocument

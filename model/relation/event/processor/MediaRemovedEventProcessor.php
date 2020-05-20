@@ -22,28 +22,24 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\event\processor;
 
-use LogicException;
 use oat\oatbox\event\Event;
 use oat\oatbox\service\ConfigurableService;
-use oat\taoItems\model\event\ItemRemovedEvent;
+use oat\taoMediaManager\model\relation\event\MediaRemovedEvent;
 use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
 
-class ItemRemovedProcessor extends ConfigurableService implements ProcessorInterface
+class MediaRemovedEventProcessor extends ConfigurableService implements EventProcessorInterface
 {
+    /**
+     * @inheritDoc
+     */
     public function process(Event $event): void
     {
-        if (!$event instanceof ItemRemovedEvent) {
+        if (!$event instanceof MediaRemovedEvent) {
             throw new InvalidEventException($event);
         }
 
-        $id = $event->jsonSerialize()['itemUri'] ?? null;
-
-        if (empty($id)) {
-            throw new InvalidEventException($event, 'Missing itemUri');
-        }
-
         $this->getItemRelationUpdateService()
-            ->updateByItem((string)$id);
+            ->removeMedia($event->getMediaId());
     }
 
     private function getItemRelationUpdateService(): ItemRelationUpdateService

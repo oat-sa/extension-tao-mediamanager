@@ -26,13 +26,13 @@ use oat\generis\test\TestCase;
 use oat\oatbox\event\Event;
 use oat\taoItems\model\event\ItemRemovedEvent;
 use oat\taoMediaManager\model\relation\event\processor\InvalidEventException;
-use oat\taoMediaManager\model\relation\event\processor\ItemRemovedProcessor;
+use oat\taoMediaManager\model\relation\event\processor\ItemRemovedEventProcessor;
 use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
 use PHPUnit\Framework\MockObject\MockObject;
 
 class ItemRemovedProcessorTest extends TestCase
 {
-    /** @var ItemRemovedProcessor */
+    /** @var ItemRemovedEventProcessor */
     private $subject;
 
     /** @var ItemRelationUpdateService|MockObject */
@@ -41,7 +41,7 @@ class ItemRemovedProcessorTest extends TestCase
     public function setUp(): void
     {
         $this->updateService = $this->createMock(ItemRelationUpdateService::class);
-        $this->subject = new ItemRemovedProcessor();
+        $this->subject = new ItemRemovedEventProcessor();
         $this->subject->setServiceLocator(
             $this->getServiceLocatorMock(
                 [

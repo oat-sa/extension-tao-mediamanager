@@ -27,13 +27,13 @@ use oat\generis\test\TestCase;
 use oat\taoMediaManager\model\relation\event\MediaRemovedEvent;
 use oat\taoMediaManager\model\relation\event\MediaSavedEvent;
 use oat\taoMediaManager\model\relation\event\processor\InvalidEventException;
-use oat\taoMediaManager\model\relation\event\processor\MediaRemovedProcessor;
+use oat\taoMediaManager\model\relation\event\processor\MediaRemovedEventProcessor;
 use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
 use PHPUnit\Framework\MockObject\MockObject;
 
 class MediaRemovedProcessorTest extends TestCase
 {
-    /** @var MediaRemovedProcessor */
+    /** @var MediaRemovedEventProcessor */
     private $subject;
 
     /** @var ItemRelationUpdateService|MockObject */
@@ -42,7 +42,7 @@ class MediaRemovedProcessorTest extends TestCase
     public function setUp(): void
     {
         $this->updateService = $this->createMock(ItemRelationUpdateService::class);
-        $this->subject = new MediaRemovedProcessor();
+        $this->subject = new MediaRemovedEventProcessor();
         $this->subject->setServiceLocator(
             $this->getServiceLocatorMock(
                 [

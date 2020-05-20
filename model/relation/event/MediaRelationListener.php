@@ -25,10 +25,10 @@ namespace oat\taoMediaManager\model\relation\event;
 use oat\oatbox\event\Event;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ConfigurableService;
-use oat\taoMediaManager\model\relation\event\processor\ItemRemovedProcessor;
-use oat\taoMediaManager\model\relation\event\processor\ItemUpdatedProcessor;
-use oat\taoMediaManager\model\relation\event\processor\MediaRemovedProcessor;
-use oat\taoMediaManager\model\relation\event\processor\ProcessorInterface;
+use oat\taoMediaManager\model\relation\event\processor\ItemRemovedEventProcessor;
+use oat\taoMediaManager\model\relation\event\processor\ItemUpdatedEventProcessor;
+use oat\taoMediaManager\model\relation\event\processor\MediaRemovedEventProcessor;
+use oat\taoMediaManager\model\relation\event\processor\EventProcessorInterface;
 use Throwable;
 
 class MediaRelationListener extends ConfigurableService
@@ -37,17 +37,17 @@ class MediaRelationListener extends ConfigurableService
 
     public function whenItemIsUpdated(Event $event): void
     {
-        $this->process(ItemUpdatedProcessor::class, $event);
+        $this->process(ItemUpdatedEventProcessor::class, $event);
     }
 
     public function whenItemIsRemoved(Event $event): void
     {
-        $this->process(ItemRemovedProcessor::class, $event);
+        $this->process(ItemRemovedEventProcessor::class, $event);
     }
 
     public function whenMediaIsRemoved(Event $event): void
     {
-        $this->process(MediaRemovedProcessor::class, $event);
+        $this->process(MediaRemovedEventProcessor::class, $event);
     }
 
     public function whenMediaIsSaved(Event $event): void
@@ -60,7 +60,7 @@ class MediaRelationListener extends ConfigurableService
         try {
             $this->logDebug(sprintf('Processing event %s', get_class($event)));
 
-            /** @var ProcessorInterface $processor */
+            /** @var EventProcessorInterface $processor */
             $processor = $this->getServiceLocator()->get($processor);
             $processor->process($event);
 

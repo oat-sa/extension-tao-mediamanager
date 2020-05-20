@@ -27,10 +27,10 @@ use oat\generis\test\TestCase;
 use oat\oatbox\event\Event;
 use oat\oatbox\log\LoggerService;
 use oat\taoMediaManager\model\relation\event\MediaRelationListener;
-use oat\taoMediaManager\model\relation\event\processor\ItemRemovedProcessor;
-use oat\taoMediaManager\model\relation\event\processor\ItemUpdatedProcessor;
-use oat\taoMediaManager\model\relation\event\processor\MediaRemovedProcessor;
-use oat\taoMediaManager\model\relation\event\processor\ProcessorInterface;
+use oat\taoMediaManager\model\relation\event\processor\ItemRemovedEventProcessor;
+use oat\taoMediaManager\model\relation\event\processor\ItemUpdatedEventProcessor;
+use oat\taoMediaManager\model\relation\event\processor\MediaRemovedEventProcessor;
+use oat\taoMediaManager\model\relation\event\processor\EventProcessorInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 
 class MediaRelationListenerTest extends TestCase
@@ -38,7 +38,7 @@ class MediaRelationListenerTest extends TestCase
     /** @var MediaRelationListener */
     private $subject;
 
-    /** @var ProcessorInterface|MockObject */
+    /** @var EventProcessorInterface|MockObject */
     private $processor;
 
     /** @var Event|MockObject */
@@ -50,16 +50,16 @@ class MediaRelationListenerTest extends TestCase
     public function setUp(): void
     {
         $this->event = $this->createMock(Event::class);
-        $this->processor = $this->createMock(ProcessorInterface::class);
+        $this->processor = $this->createMock(EventProcessorInterface::class);
         $this->logger = $this->createMock(LoggerService::class);
         $this->subject = new MediaRelationListener();
         $this->subject->setLogger($this->logger);
         $this->subject->setServiceLocator(
             $this->getServiceLocatorMock(
                 [
-                    ItemUpdatedProcessor::class => $this->processor,
-                    ItemRemovedProcessor::class => $this->processor,
-                    MediaRemovedProcessor::class => $this->processor,
+                    ItemUpdatedEventProcessor::class => $this->processor,
+                    ItemRemovedEventProcessor::class => $this->processor,
+                    MediaRemovedEventProcessor::class => $this->processor,
                 ]
             )
         );

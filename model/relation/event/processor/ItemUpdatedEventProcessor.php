@@ -28,10 +28,13 @@ use oat\oatbox\service\ConfigurableService;
 use oat\taoItems\model\event\ItemUpdatedEvent;
 use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
 
-class ItemUpdatedProcessor extends ConfigurableService implements ProcessorInterface
+class ItemUpdatedEventProcessor extends ConfigurableService implements EventProcessorInterface
 {
     private const INCLUDE_ELEMENT_IDS_KEY = 'includeElementIds';
 
+    /**
+     * @inheritDoc
+     */
     public function process(Event $event): void
     {
         if (!$event instanceof ItemUpdatedEvent) {

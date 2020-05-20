@@ -23,8 +23,33 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\relation\event\processor;
 
 use oat\oatbox\event\Event;
+use oat\oatbox\service\ConfigurableService;
+use oat\taoItems\model\event\ItemRemovedEvent;
+use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
 
-interface ProcessorInterface
+class ItemRemovedEventProcessor extends ConfigurableService implements EventProcessorInterface
 {
-    public function process(Event $event): void;
+    /**
+     * @inheritDoc
+     */
+    public function process(Event $event): void
+    {
+        if (!$event instanceof ItemRemovedEvent) {
+            throw new InvalidEventException($event);
+        }
+
+        $id = $event->jsonSerialize()['itemUri'] ?? null;
+
+        if (empty($id)) {
+            throw new InvalidEventException($event, 'Missing itemUri');
+        }
+
+        $this->getItemRelationUpdateService()
+            ->updateByItem((string)$id);
+    }
+
+    private function getItemRelationUpdateService(): ItemRelationUpdateService
+    {
+        return $this->getServiceLocator()->get(ItemRelationUpdateService::class);
+    }
 }

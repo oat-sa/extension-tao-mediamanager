@@ -112,7 +112,7 @@ class SharedStimulus extends tao_actions_CommonModule
         return $this->getServiceLocator()->get(SharedStimulusRepository::class);
     }
 
-    private function getSharedStimulusAttributesRenderer()
+    private function getSharedStimulusAttributesRenderer(): JsonQtiAttributeRenderer
     {
         return $this->getServiceLocator()->get(JsonQtiAttributeRenderer::class);
     }

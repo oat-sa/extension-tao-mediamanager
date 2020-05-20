@@ -32,7 +32,7 @@ use oat\taoQtiItem\model\qti\XInclude;
 
 class JsonQtiAttributeRenderer extends ConfigurableService
 {
-    public function render(SharedStimulus $sharedStimulus)
+    public function render(SharedStimulus $sharedStimulus): array
     {
         $document = $this->createDomDocument($sharedStimulus);
         $xinclude = $this->createXInclude($document);
@@ -58,7 +58,7 @@ class JsonQtiAttributeRenderer extends ConfigurableService
         return $this->hydrateXInclude(new XInclude(), $document);
     }
 
-    private function hydrateXInclude(XInclude $xinclude, DOMDocument $document)
+    private function hydrateXInclude(XInclude $xinclude, DOMDocument $document): XInclude
     {
         $parser = new ParserFactory($document);
         $parser->loadContainerStatic($document->firstChild, $xinclude->getBody());

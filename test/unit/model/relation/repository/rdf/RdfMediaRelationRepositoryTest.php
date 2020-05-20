@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\test\unit\model\relation\repository\rdf;
 
+use LogicException;
 use oat\generis\model\data\Ontology;
 use oat\generis\test\TestCase;
 use oat\taoMediaManager\model\relation\MediaRelation;
@@ -40,38 +41,24 @@ class RdfMediaRelationRepositoryTest extends TestCase
     /** @var Ontology|MockObject */
     private $ontology;
 
+    /** @var RdfMediaRelationMapInterface|MockObject */
+    private $itemMapper;
+
+    /** @var RdfMediaRelationMapInterface|MockObject */
+    private $mediaMapper;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->ontology = $this->createMock(Ontology::class);
+        $this->itemMapper = $this->createMock(RdfMediaRelationMapInterface::class);
+        $this->mediaMapper = $this->createMock(RdfMediaRelationMapInterface::class);
         $this->subject = new RdfMediaRelationRepository(
             [
                 RdfMediaRelationRepository::MAP_OPTION => [
-                    new class implements RdfMediaRelationMapInterface {
-                        public function mapMediaRelations(RdfResource $mediaResource, MediaRelationCollection $mediaRelationCollection): void
-                        {
-                            $mediaRelationCollection->add(new MediaRelation('item', '1'));
-                            $mediaRelationCollection->add(new MediaRelation('item', '2', 'item-2'));
-                        }
-
-                        public function createMediaRelation(RdfResource $mediaResource, string $sourceId): MediaRelation
-                        {
-                            return new MediaRelation('item', $mediaResource->getUri());
-                        }
-                    },
-                    new class implements RdfMediaRelationMapInterface {
-                        public function mapMediaRelations(RdfResource $mediaResource, MediaRelationCollection $mediaRelationCollection): void
-                        {
-                            $mediaRelationCollection->add(new MediaRelation('media', '1'));
-                            $mediaRelationCollection->add(new MediaRelation('media', '2', 'media-2'));
-                        }
-
-                        public function createMediaRelation(RdfResource $mediaResource, string $sourceId): MediaRelation
-                        {
-                            return new MediaRelation('media', $mediaResource->getUri());
-                        }
-                    }
+                    $this->itemMapper,
+                    $this->mediaMapper,
                 ]
             ]
         );
@@ -86,6 +73,40 @@ class RdfMediaRelationRepositoryTest extends TestCase
             ->method('getResource')
             ->with($mediaId)
             ->willReturn($this->createMock(RdfResource::class));
+
+        $this->mediaMapper
+            ->method('mapMediaRelations')
+            ->willReturnCallback(
+                function (RdfResource $mediaResource, MediaRelationCollection $mediaRelationCollection) {
+                    $mediaRelationCollection->add(new MediaRelation('media', '1'));
+                    $mediaRelationCollection->add(new MediaRelation('media', '2', 'media-2'));
+                }
+            );
+
+        $this->mediaMapper
+            ->method('createMediaRelation')
+            ->willReturnCallback(
+                function (RdfResource $mediaResource, string $sourceId) {
+                    new MediaRelation('media', $mediaResource->getUri());
+                }
+            );
+
+        $this->itemMapper
+            ->method('mapMediaRelations')
+            ->willReturnCallback(
+                function (RdfResource $mediaResource, MediaRelationCollection $mediaRelationCollection) {
+                    $mediaRelationCollection->add(new MediaRelation('item', '1'));
+                    $mediaRelationCollection->add(new MediaRelation('item', '2', 'item-2'));
+                }
+            );
+
+        $this->itemMapper
+            ->method('createMediaRelation')
+            ->willReturnCallback(
+                function (RdfResource $mediaResource, string $sourceId) {
+                    new MediaRelation('item', $mediaResource->getUri());
+                }
+            );
 
         $expected = [
             [
@@ -113,5 +134,13 @@ class RdfMediaRelationRepositoryTest extends TestCase
         $result = $this->subject->findAll(new FindAllQuery($mediaId));
 
         $this->assertSame(json_encode($expected), json_encode(iterator_to_array($result->getIterator())));
+    }
+
+    public function testFindAllWithInvalidFilterWillThrowException(): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Invalid query filter');
+
+        $this->subject->findAll(new FindAllQuery());
     }
 }

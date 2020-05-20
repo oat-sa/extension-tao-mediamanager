@@ -26,6 +26,8 @@ use common_Exception;
 use common_exception_NotImplemented;
 use oat\oatbox\event\EventManager;
 use oat\tao\scripts\update\OntologyUpdater;
+use oat\taoItems\model\event\ItemRemovedEvent;
+use oat\taoItems\model\event\ItemUpdatedEvent;
 use oat\taoMediaManager\model\relation\event\MediaRelationListener;
 use oat\taoMediaManager\model\relation\event\MediaRemovedEvent;
 use oat\taoMediaManager\model\relation\event\MediaSavedEvent;
@@ -73,8 +75,8 @@ class Updater extends \common_ext_ExtensionUpdater
 
         if ($this->isVersion('9.7.0')) {
             $eventManager = $this->getServiceManager()->get(EventManager::SERVICE_ID);
-            $eventManager->attach('oat\\taoItems\\model\\event\\ItemUpdatedEvent', [MediaRelationListener::class, 'whenItemIsUpdated']);
-            $eventManager->attach('oat\\taoItems\\model\\event\\ItemRemovedEvent', [MediaRelationListener::class, 'whenItemIsRemoved']);
+            $eventManager->attach(ItemUpdatedEvent::class, [MediaRelationListener::class, 'whenItemIsUpdated']);
+            $eventManager->attach(ItemRemovedEvent::class, [MediaRelationListener::class, 'whenItemIsRemoved']);
             $eventManager->attach(MediaRemovedEvent::class, [MediaRelationListener::class, 'whenMediaIsRemoved']);
             $eventManager->attach(MediaSavedEvent::class, [MediaRelationListener::class, 'whenMediaIsSaved']);
 

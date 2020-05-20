@@ -24,9 +24,11 @@ namespace oat\taoMediaManager\model\sharedStimulus;
 
 class UpdateCommand
 {
-
+    /** @var string */
     private $id;
+    /** @var string */
     private $body;
+    /** @var string */
     private $userId;
 
     public function __construct(string $id, string $body, string $userId)

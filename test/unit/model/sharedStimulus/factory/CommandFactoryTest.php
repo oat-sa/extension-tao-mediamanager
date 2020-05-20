@@ -69,7 +69,7 @@ class CommandFactoryTest extends TestCase
         $this->assertEquals($expectedCommand, $this->factory->makeCreateCommandByRequest($request));
     }
 
-    public function testMakeGetCommandByRequest(): void
+    public function testMakeUpdateCommandByRequest(): void
     {
         $request = $this->createMock(ServerRequestInterface::class);
         $request->method('getBody')
@@ -82,7 +82,7 @@ class CommandFactoryTest extends TestCase
 
         $this->assertEquals(
             new UpdateCommand(self::URI, self::BODY, self::USER_ID),
-            $this->factory->patchStimulusByRequest($request, $user)
+            $this->factory->makeUpdateCommandByRequest($request, $user)
         );
     }
 }

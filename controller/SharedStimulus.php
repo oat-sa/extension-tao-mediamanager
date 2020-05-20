@@ -96,7 +96,7 @@ class SharedStimulus extends tao_actions_CommonModule
             $user = common_session_SessionManager::getSession()->getUser();
 
             $command = $this->getCommandFactory()
-                ->patchStimulusByRequest($this->getPsrRequest(), $user);
+                ->makeUpdateCommandByRequest($this->getPsrRequest(), $user);
 
             $sharedStimulus = $this->getUpdateService()->update($command);
 

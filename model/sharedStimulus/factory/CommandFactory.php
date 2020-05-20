@@ -42,7 +42,7 @@ class CommandFactory extends ConfigurableService
         );
     }
 
-    public function patchStimulusByRequest(ServerRequestInterface $request, User $user): UpdateCommand
+    public function makeUpdateCommandByRequest(ServerRequestInterface $request, User $user): UpdateCommand
     {
         $id = $request->getQueryParams()['id'];
         $body = $request->getBody();

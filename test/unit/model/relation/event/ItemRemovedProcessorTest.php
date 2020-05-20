@@ -22,7 +22,9 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\test\unit\model\relation\event;
 
+use JsonSerializable;
 use oat\generis\test\TestCase;
+use oat\oatbox\event\Event;
 use oat\taoMediaManager\model\relation\event\processor\ItemRemovedProcessor;
 use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -50,6 +52,28 @@ class ItemRemovedProcessorTest extends TestCase
 
     public function testProcess(): void
     {
-        $this->markTestIncomplete('Wip');
+        $this->updateService
+            ->expects($this->once())
+            ->method('updateByItem')
+            ->with('itemId');
+
+        $this->subject->process($this->getCorrectEvent());
+    }
+
+    private function getCorrectEvent(): Event
+    {
+        return $event = new class implements Event, JsonSerializable {
+            public function getName(): string
+            {
+                return 'event';
+            }
+
+            public function jsonSerialize(): array
+            {
+                return [
+                    'itemUri' => 'itemId'
+                ];
+            }
+        };
     }
 }

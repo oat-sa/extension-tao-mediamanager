@@ -33,7 +33,7 @@ class MediaRemovedProcessor extends ConfigurableService implements ProcessorInte
     public function process(Event $event): void
     {
         if (!$event instanceof MediaRemovedEvent) {
-            throw new LogicException(sprintf('Event %s is not accepted', $event));
+            throw new LogicException(sprintf('Event %s is not accepted', get_class($event)));
         }
 
         $this->getItemRelationUpdateService()

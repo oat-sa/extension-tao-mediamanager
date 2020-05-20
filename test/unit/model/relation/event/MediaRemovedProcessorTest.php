@@ -22,7 +22,10 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\test\unit\model\relation\event;
 
+use LogicException;
 use oat\generis\test\TestCase;
+use oat\taoMediaManager\model\relation\event\MediaRemovedEvent;
+use oat\taoMediaManager\model\relation\event\MediaSavedEvent;
 use oat\taoMediaManager\model\relation\event\processor\MediaRemovedProcessor;
 use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -50,6 +53,19 @@ class MediaRemovedProcessorTest extends TestCase
 
     public function testProcess(): void
     {
-        $this->markTestIncomplete('Wip');
+        $this->updateService
+            ->expects($this->once())
+            ->method('removeMedia')
+            ->with('mediaId');
+
+        $this->subject->process(new MediaRemovedEvent('mediaId'));
+    }
+
+    public function testInvalidEventWillThrowException(): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Event ' . MediaSavedEvent::class . ' is not accepted');
+
+        $this->subject->process(new MediaSavedEvent());
     }
 }

@@ -32,7 +32,8 @@ return [
     'requires' => [
         'tao' => '>=42.5.0',
         'generis' => '>=12.17.0',
-        'taoItems' => '>=6.0.0'
+        'taoItems' => '>=6.0.0',
+        'taoQtiItem' => '>=24.2.0'
     ],
     'models' => [
         'http://www.tao.lu/Ontologies/TAOMedia.rdf'

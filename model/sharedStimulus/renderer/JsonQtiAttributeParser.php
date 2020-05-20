@@ -30,14 +30,14 @@ use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 use oat\taoQtiItem\model\qti\ParserFactory;
 use oat\taoQtiItem\model\qti\XInclude;
 
-class JsonQtiAttributeRenderer extends ConfigurableService
+class JsonQtiAttributeParser extends ConfigurableService
 {
-    public function render(SharedStimulus $sharedStimulus): array
+    public function parse(SharedStimulus $sharedStimulus): SharedStimulus
     {
         $document = $this->createDomDocument($sharedStimulus);
         $xinclude = $this->createXInclude($document);
 
-        return $xinclude->toArray();
+        return $sharedStimulus->setBody($xinclude->toArray());
     }
 
     private function createDomDocument(SharedStimulus $sharedStimulus) : DOMDocument

@@ -64,7 +64,36 @@ components:
               example: "http://tao.docker.localhost/tao.rdf#i5e89a2063326711164b1a816b433b1ec"
             body:
               type: string
-              example: '<?xml version="1.0" encoding="UTF-8"?><div xmlns="http://www.imsglobal.org/xsd/imsqti_v2p2"></div>'
+              example: '{
+                          "success": true,
+                          "data": {
+                            "serial": "i5ec3f09d28d19",
+                            "qtiClass": "include",
+                            "attributes": {},
+                            "body": {
+                              "serial": "i5ec3f09d28ef1",
+                              "body": "\n    <p>SharedStimulus definition file is on XML format and so do not support \"&amp;\" symbol in remote image url, it requires to be escaped for <i>&amp;amp<\/i><\/p>\n    <p>{{i5ec3f09d297cd}}<\/p>\n    <p>{{i5ec3f09d29b09}}<\/p>\n",
+                              "elements": {
+                                "i5ec3f09d297cd": {
+                                  "serial": "i5ec3f09d297cd",
+                                  "qtiClass": "img",
+                                  "attributes": {
+                                    "src": "https:\/\/via.placeholder.com\/300x300.png?text=remote+shared+stimulus+media",
+                                    "alt": "my first image"
+                                  }
+                                },
+                                "i5ec3f09d29b09": {
+                                  "serial": "i5ec3f09d29b09",
+                                  "qtiClass": "img",
+                                  "attributes": {
+                                    "src": "https:\/\/via.placeholder.com\/300x300.png?text=another+remote+media",
+                                    "alt": "my first image"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }'
     SharedStimulusCreatedResponse:
       properties:
         success:

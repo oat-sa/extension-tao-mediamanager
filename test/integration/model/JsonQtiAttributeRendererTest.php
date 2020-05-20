@@ -25,7 +25,7 @@ namespace oat\taoMediaManager\test\integration\model;
 
 use LogicException;
 use oat\generis\test\TestCase;
-use oat\taoMediaManager\model\sharedStimulus\renderer\JsonQtiAttributeRenderer;
+use oat\taoMediaManager\model\sharedStimulus\renderer\JsonQtiAttributeParser;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 
 class JsonQtiAttributeRendererTest extends TestCase
@@ -34,7 +34,7 @@ class JsonQtiAttributeRendererTest extends TestCase
     {
         $this->expectException(LogicException::class);
         $sharedStimulus = new SharedStimulus('id', '', '', '');
-        $renderer = new JsonQtiAttributeRenderer();
+        $renderer = new JsonQtiAttributeParser();
 
         $this->assertEmpty($renderer->render($sharedStimulus));
     }
@@ -53,7 +53,7 @@ class JsonQtiAttributeRendererTest extends TestCase
     private function renderXmlBody($xml)
     {
         $sharedStimulus = new SharedStimulus('id', '', '', $xml);
-        $renderer = new JsonQtiAttributeRenderer();
+        $renderer = new JsonQtiAttributeParser();
 
         $attributes = $renderer->render($sharedStimulus);
 

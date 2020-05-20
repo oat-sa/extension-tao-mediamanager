@@ -29,7 +29,7 @@ use oat\tao\model\http\response\ErrorJsonResponse;
 use oat\tao\model\http\response\SuccessJsonResponse;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
 use oat\taoMediaManager\model\sharedStimulus\factory\QueryFactory;
-use oat\taoMediaManager\model\sharedStimulus\renderer\JsonQtiAttributeRenderer;
+use oat\taoMediaManager\model\sharedStimulus\renderer\JsonQtiAttributeParser;
 use oat\taoMediaManager\model\sharedStimulus\repository\SharedStimulusRepository;
 use oat\taoMediaManager\model\sharedStimulus\service\CreateService;
 use tao_actions_CommonModule;
@@ -51,7 +51,9 @@ class SharedStimulus extends tao_actions_CommonModule
             $sharedStimulus = $this->getCreateService()
                 ->create($command);
 
-            $formatter->withBody(new SuccessJsonResponse($sharedStimulus->jsonSerialize()));
+            $this->getSharedStimulusAttributesParser()->parse($sharedStimulus);
+
+            $formatter->withBody(new SuccessJsonResponse(json_encode($sharedStimulus)));
         } catch (Throwable $exception) {
             $this->logError(sprintf('Error creating Shared Stimulus: %s', $exception->getMessage()));
 
@@ -74,9 +76,9 @@ class SharedStimulus extends tao_actions_CommonModule
             $sharedStimulus = $this->getSharedStimulusRepository()
                 ->find($command);
 
-            $data = $this->getSharedStimulusAttributesRenderer()->render($sharedStimulus);
+            $this->getSharedStimulusAttributesParser()->parse($sharedStimulus);
 
-            $formatter->withBody(new SuccessJsonResponse($data));
+            $formatter->withBody(new SuccessJsonResponse(json_encode($sharedStimulus)));
         } catch (Throwable $exception) {
             $this->logError(sprintf('Error retrieving Shared Stimulus: %s', $exception->getMessage()));
 
@@ -112,8 +114,8 @@ class SharedStimulus extends tao_actions_CommonModule
         return $this->getServiceLocator()->get(SharedStimulusRepository::class);
     }
 
-    private function getSharedStimulusAttributesRenderer(): JsonQtiAttributeRenderer
+    private function getSharedStimulusAttributesParser(): JsonQtiAttributeParser
     {
-        return $this->getServiceLocator()->get(JsonQtiAttributeRenderer::class);
+        return $this->getServiceLocator()->get(JsonQtiAttributeParser::class);
     }
 }

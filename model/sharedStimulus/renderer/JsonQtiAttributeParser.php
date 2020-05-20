@@ -37,7 +37,7 @@ class JsonQtiAttributeParser extends ConfigurableService
         $document = $this->createDomDocument($sharedStimulus);
         $xinclude = $this->createXInclude($document);
 
-        return $sharedStimulus->setBody($xinclude->toArray());
+        return $sharedStimulus->setBody(json_encode($xinclude->toArray()));
     }
 
     private function createDomDocument(SharedStimulus $sharedStimulus) : DOMDocument

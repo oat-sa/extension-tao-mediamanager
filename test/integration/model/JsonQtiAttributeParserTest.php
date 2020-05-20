@@ -28,7 +28,7 @@ use oat\generis\test\TestCase;
 use oat\taoMediaManager\model\sharedStimulus\renderer\JsonQtiAttributeParser;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 
-class JsonQtiAttributeRendererTest extends TestCase
+class JsonQtiAttributeParserTest extends TestCase
 {
     public function testRendererEmptyBody()
     {
@@ -36,7 +36,7 @@ class JsonQtiAttributeRendererTest extends TestCase
         $sharedStimulus = new SharedStimulus('id', '', '', '');
         $renderer = new JsonQtiAttributeParser();
 
-        $this->assertEmpty($renderer->render($sharedStimulus));
+        $this->assertEmpty($renderer->parse($sharedStimulus));
     }
 
     public function testRenderSimpleSharedStimulus()
@@ -55,7 +55,7 @@ class JsonQtiAttributeRendererTest extends TestCase
         $sharedStimulus = new SharedStimulus('id', '', '', $xml);
         $renderer = new JsonQtiAttributeParser();
 
-        $attributes = $renderer->render($sharedStimulus);
+        $attributes = json_decode($renderer->parse($sharedStimulus)->getBody(), true);
 
         $this->assertArrayHasKey('qtiClass', $attributes);
         $this->assertSame('include', $attributes['qtiClass']);

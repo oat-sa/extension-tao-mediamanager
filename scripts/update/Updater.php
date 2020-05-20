@@ -15,14 +15,16 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
  *
  *
  */
 
 namespace oat\taoMediaManager\scripts\update;
 
+use oat\oatbox\filesystem\FileSystemService;
 use oat\tao\scripts\update\OntologyUpdater;
+use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -45,5 +47,22 @@ class Updater extends \common_ext_ExtensionUpdater
         }
 
         $this->skip('9.4.0', '9.6.0');
+
+        if ($this->isVersion('9.6.0')) {
+            /** @var FileSystemService $filesystemService */
+            $filesystemService = $this->getServiceManager()->get(FileSystemService::SERVICE_ID);
+            /** @var  $adapters */
+            if ($filesystemService->hasDirectory('memory')) {
+                $adapters = $filesystemService->getOption(FileSystemService::OPTION_ADAPTERS);
+                $dirs = $filesystemService->getOption(FileSystemService::OPTION_DIRECTORIES);
+                $dirs[CommandFactory::DEFAULT_DIRECTORY] = 'memory';
+                $filesystemService->setOption(FileSystemService::OPTION_DIRECTORIES, $dirs);
+            } else {
+                $fileSystem = $filesystemService->createFileSystem(CommandFactory::DEFAULT_DIRECTORY);
+            }
+
+            $this->getServiceManager()->register(FileSystemService::SERVICE_ID, $filesystemService);
+//            $this->setVersion('9.7.0');
+        }
     }
 }

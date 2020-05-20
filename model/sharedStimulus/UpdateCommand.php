@@ -27,20 +27,20 @@ class UpdateCommand
     /** @var string */
     private $id;
     /** @var string */
-    private $body;
+    private $fileReference;
     /** @var string */
     private $userId;
 
-    public function __construct(string $id, string $body, string $userId)
+    public function __construct(string $id, string $fileReference, string $userId)
     {
         $this->id = $id;
-        $this->body = $body;
+        $this->fileReference = $fileReference;
         $this->userId = $userId;
     }
 
-    public function getBody(): string
+    public function getFileReference(): string
     {
-        return $this->body;
+        return $this->fileReference;
     }
 
     public function getId(): string

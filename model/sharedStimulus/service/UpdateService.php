@@ -24,13 +24,14 @@ namespace oat\taoMediaManager\model\sharedStimulus\service;
 
 use core_kernel_classes_Resource as Resource;
 use core_kernel_persistence_Exception;
-use ErrorException;
 use InvalidArgumentException;
+use oat\generis\model\fileReference\FileReferenceSerializer;
 use oat\generis\model\OntologyAwareTrait;
+use oat\oatbox\filesystem\File;
 use oat\oatbox\service\ConfigurableService;
-use oat\tao\model\media\MediaAsset;
 use oat\tao\model\media\TaoMediaResolver;
 use oat\taoMediaManager\model\MediaService;
+use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 use oat\taoMediaManager\model\sharedStimulus\UpdateCommand;
 use oat\taoMediaManager\model\SharedStimulusImporter;
@@ -41,66 +42,36 @@ class UpdateService extends ConfigurableService
 {
     use OntologyAwareTrait;
 
-    public const OPTION_TEMP_UPLOAD_PATH = 'temp_upload_path';
-
     /**
-     * @throws ErrorException
      * @throws core_kernel_persistence_Exception
      */
     public function update(UpdateCommand $command): SharedStimulus
     {
-        $newBody = $command->getBody();
+        /** @var File $file */
+        $file = $this->getServiceLocator()->get(FileReferenceSerializer::SERVICE_ID)->unserialize(
+            $command->getFileReference()
+        );
+
         $id = $command->getId();
         $userId = $command->getUserId();
 
         $resource = $this->getResource($id);
 
-        $fileName = $this->getTempFileName();
-        $filePath = $this->saveTemporaryFile($fileName, $newBody);
-
         $this->validateResource($resource);
-        $this->validateXml($filePath);
+        $this->validateXml($file);
 
-        $this->getMediaService()->editMediaInstance($filePath, $id, null, $userId);
+        $this->getMediaService()->editMediaInstance($file, $id, null, $userId);
 
         return new SharedStimulus(
             $id,
             $resource->getLabel(),
-            $resource->getOnePropertyValue($this->getProperty(MediaService::PROPERTY_LANGUAGE))->getUri(),
-            $newBody
+            $resource->getOnePropertyValue($this->getProperty(MediaService::PROPERTY_LANGUAGE))->getUri()
         );
-    }
-
-
-    private function getTempFileName(): string
-    {
-        return 'shared_stimulus_' . uniqid() . '.xml';
     }
 
     private function getMediaService(): MediaService
     {
         return MediaService::singleton();
-    }
-
-    /**
-     * @throws ErrorException
-     */
-    private function saveTemporaryFile(string $fileName, string $templateContent): string
-    {
-        $fileDirectory = $this->getOption(self::OPTION_TEMP_UPLOAD_PATH) ?? sys_get_temp_dir();
-
-        $filePath = $fileDirectory . DIRECTORY_SEPARATOR . $fileName;
-
-        if (!is_writable($fileDirectory) || file_put_contents($filePath, $templateContent) === false) {
-            throw new ErrorException(
-                sprintf(
-                    'Could not save Shared Stimulus to temporary path %s',
-                    $filePath
-                )
-            );
-        }
-
-        return $filePath;
     }
 
     /**
@@ -120,10 +91,10 @@ class UpdateService extends ConfigurableService
         }
     }
 
-    private function validateXml(string $fileName): void
+    private function validateXml(File $file): void
     {
         try {
-            SharedStimulusImporter::isValidSharedStimulus($fileName);
+            SharedStimulusImporter::isValidSharedStimulus($file);
         } catch (XmlStorageException $e) {
             $this->logAlert(sprintf('Incorrect shared stimulus xml, %s', $e->getMessage()));
             throw new InvalidArgumentException('Invalid XML provided');
@@ -131,7 +102,7 @@ class UpdateService extends ConfigurableService
 
         $resolver = new TaoMediaResolver();
         $xmlDocument = new XmlDocument();
-        $xmlDocument->load($fileName, false);
+        $xmlDocument->loadFromString($file->read(), false);
 
         $images = $xmlDocument->getDocumentComponent()->getComponentsByClassName('img');
 
@@ -139,7 +110,7 @@ class UpdateService extends ConfigurableService
             $source = $image->getSrc();
             if (false === strpos($source, 'data:image')) {
                 $asset = $resolver->resolve($source);
-                if ($asset instanceof MediaAsset) {
+                if ($asset->getMediaSource() instanceof MediaSource) {
                     $info = $asset->getMediaSource()->getFileInfo($asset->getMediaIdentifier());
                 }
             }

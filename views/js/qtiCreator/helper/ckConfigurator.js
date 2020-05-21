@@ -21,7 +21,7 @@
 define(['lodash', 'ui/ckeditor/ckConfigurator', 'mathJax'], function(_, ckConfigurator, mathJax) {
   'use strict';
 
-  var _defaults = {
+  const _defaults = {
       qtiImage : true,
       qtiMedia : true,
       qtiInclude : false,
@@ -47,7 +47,7 @@ define(['lodash', 'ui/ckeditor/ckConfigurator', 'mathJax'], function(_, ckConfig
    *
    * @see http://docs.ckeditor.com/#!/api/CKEDITOR.config
    */
-  var getConfig = function(editor, toolbarType = 'qtiInline', options){
+  const getConfig = function(editor, toolbarType = 'qtiInline', options){
       return ckConfigurator.getConfig(editor, toolbarType, _.defaults(options || {}, _defaults));
   };
 

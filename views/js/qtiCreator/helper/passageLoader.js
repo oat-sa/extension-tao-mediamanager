@@ -46,6 +46,29 @@ define([
                 }).done(function(response) {
 
                     var loader, itemData, newItem;
+                    response.languagesList = {
+                        'da-DK': 'Danish',
+                        'de-DE': 'German',
+                        'el-GR': 'Greek',
+                        'en-GB': 'British English',
+                        'en-US': 'English',
+                        'es-ES': 'Spanish',
+                        'es-MX': 'Mexican Spanish',
+                        'fr-CA': 'French Canadian',
+                        'fr-FR': 'French',
+                        'is-IS': 'Icelandic',
+                        'it-IT': 'Italian',
+                        'ja-JP': 'Japanese',
+                        'lt-LT': 'Lithuanian',
+                        'nl-BE': 'Flemish',
+                        'nl-NL': 'Dutch',
+                        'pt-PT': 'Portuguese',
+                        'ru-RU': 'Russian',
+                        'sv-SE': 'Swedish',
+                        'uk-UA': 'Ukrainian',
+                        'zh-CN': 'Simplified Chinese from China',
+                        'zh-TW': 'Traditional Chinese from Taiwan'
+                    }
 
                     newItem = new Item().id(_generateIdentifier(config.uri)).attr('title', response.data.name);
 

@@ -41,7 +41,8 @@ define([
                 id: $panel.attr('data-id'),
                 assetDataUrl: '/taoMediaManager/SharedStimulus/get',
                 // TO DO will be filled later
-                baseUrl: '...'
+                baseUrl: '/taoMediaManager/SharedStimulus/get',
+                lang: "en-US"
             }})
             .on('error', err => {
                 console.error(err);

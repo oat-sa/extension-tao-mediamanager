@@ -30,9 +30,5 @@ define([
 
         panel.initSidebarAccordion($container);
         panel.initFormVisibilityListener();
-        // panel.closeSections($container.find('section'));
-        // panel.openSections($container.find('#item-editor-text-property-bar'), false);
-        // panel.showPanel($container.find('#item-editor-item-property-bar'))
-        // panel.showPanel($container.find('#item-editor-text-property-bar'))
     };
 });

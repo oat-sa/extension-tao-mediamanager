@@ -18,7 +18,7 @@
  */
 define([
     'lodash',
-    'taoQtiItem/qtiCreator/helper/panel',
+    'taoMediaManager/qtiCreator/helper/panel',
     'taoQtiItem/qtiCreator/editor/styleEditor/styleEditor',
     'taoQtiItem/qtiCreator/editor/styleEditor/styleSheetToggler',
     'taoQtiItem/qtiCreator/editor/styleEditor/fontSelector',
@@ -36,13 +36,17 @@ define([
 
         panel.initSidebarAccordion($container);
         panel.initFormVisibilityListener();
+        panel.closeSections($container.find('section'));
+        // panel.openSections($container.find('#item-editor-text-property-bar'), false);
+        panel.showPanel($container.find('#item-editor-item-property-bar'))
+        // panel.showPanel($container.find('#item-editor-text-property-bar'))
 
-        styleEditor.init(widget.element, config);
-        styleSheetToggler.init(config);
+        // styleEditor.init(widget.element, config);
+        // styleSheetToggler.init(config);
 
-        fontSelector();
-        colorSelector();
-        fontSizeChanger();
-        itemResizer(widget.element);
+        // fontSelector();
+        // colorSelector();
+        // fontSizeChanger();
+        // itemResizer(widget.element);
     };
 });

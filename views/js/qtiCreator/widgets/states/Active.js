@@ -18,7 +18,7 @@
  */
 define([
     'jquery',
-    'taoQtiItem/qtiCreator/widgets/states/factory',
+    'taoMediaManager/qtiCreator/widgets/states/factory',
     'taoQtiItem/qtiCreator/widgets/helpers/content'
 ], function($, stateFactory, contentHelper){
     'use strict';

@@ -18,9 +18,9 @@
  */
 define([
     'lodash',
-    'taoQtiItem/qtiCreator/widgets/states/factory',
-    'taoQtiItem/qtiCreator/widgets/states/Active',
-    'tpl!taoQtiItem/qtiCreator/tpl/forms/item',
+    'taoMediaManager/qtiCreator/widgets/states/factory',
+    'taoMediaManager/qtiCreator/widgets/states/Active',
+    'tpl!taoMediaManager/qtiCreator/tpl/forms/item',
     'taoQtiItem/qtiCreator/widgets/helpers/formElement'
 ], function(_, stateFactory, Active, formTpl, formElement){
     'use strict';

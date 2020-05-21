@@ -1,7 +1,6 @@
 define([
-    'taoMediaManager/qtiCreator/widgets/states/factory',
-    'taoMediaManager/qtiCreator/widgets/choices/states/states',
-    'taoMediaManager/qtiCreator/widgets/choices/inlineChoice/states/Question'
-], function(factory, states){
-    return factory.createBundle(states, arguments);
+    'taoQtiItem/qtiCreator/widgets/states/factory',
+    'taoQtiItem/qtiCreator/widgets/item/states/Active'
+], function(factory){
+    return factory.createBundle(arguments);
 });

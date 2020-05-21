@@ -37,11 +37,12 @@ define([
     'taoQtiItem/qtiCreator/helper/creatorRenderer',
     'taoQtiItem/qtiCreator/helper/commonRenderer', //for read-only element : preview + xinclude
     'taoQtiItem/qtiCreator/helper/xincludeRenderer',
-    'taoQtiItem/qtiCreator/editor/propertiesPanel',
+    'taoMediaManager/qtiCreator/editor/propertiesPanel',
     'taoQtiItem/qtiCreator/model/helper/event',
+    'taoMediaManager/qtiCreator/widgets/item/Widget'
 ], function($, _, __, eventifier, Promise, qtiCreatorContextFactory, passageLoader,
             creatorRenderer, commonRenderer, xincludeRenderer,
-            propertiesPanel, eventHelper){
+            propertiesPanel, eventHelper, stimulusWidget){
     'use strict';
 
     /**
@@ -79,7 +80,7 @@ define([
      * @returns {itemCreator} an event emitter object, with the usual lifecycle
      * @throws {TypeError}
      */
-    var itemCreatorFactory = function itemCreatorFactory(config, areaBroker, pluginFactories){
+    var passageCreatorFactory = function passageCreatorFactory(config, areaBroker, pluginFactories){
 
         var itemCreator;
         var qtiCreatorContext = qtiCreatorContextFactory();
@@ -270,7 +271,7 @@ define([
                                  }
                              });
 
-                            //  propertiesPanel(areaBroker.getPropertyPanelArea(), widget, config.properties);
+                             propertiesPanel(areaBroker.getPropertyPanelArea(), stimulusWidget, config.properties);
 
                              //init event listeners:
                              eventHelper.initElementToWidgetListeners();
@@ -330,5 +331,5 @@ define([
         return itemCreator;
     };
 
-    return itemCreatorFactory;
+    return passageCreatorFactory;
 });

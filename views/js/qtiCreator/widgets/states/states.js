@@ -13,22 +13,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2017 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
  *
  */
 define([
-    'taoQtiItem/qtiCreator/widgets/states/factory',
-    'taoQtiItem/qtiCreator/widgets/states/Active',
-    'taoQtiItem/qtiCreator/widgets/states/Answer',
-    'taoQtiItem/qtiCreator/widgets/states/Choice',
-    'taoQtiItem/qtiCreator/widgets/states/Correct',
-    'taoQtiItem/qtiCreator/widgets/states/Deleting',
-    'taoQtiItem/qtiCreator/widgets/states/Inactive',
-    'taoQtiItem/qtiCreator/widgets/states/Map',
-    'taoQtiItem/qtiCreator/widgets/states/NoRp',
-    'taoQtiItem/qtiCreator/widgets/states/Question',
-    'taoQtiItem/qtiCreator/widgets/states/Sleep',
-    'taoQtiItem/qtiCreator/widgets/states/Invalid'
+    'taoMediaManager/qtiCreator/widgets/states/factory',
+    'taoMediaManager/qtiCreator/widgets/states/Active'
 ], function(factory){
     'use strict';
     return factory.createBundle(arguments);

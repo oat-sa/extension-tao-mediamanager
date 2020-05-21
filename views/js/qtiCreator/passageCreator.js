@@ -39,7 +39,7 @@ define([
     'taoQtiItem/qtiCreator/helper/xincludeRenderer',
     'taoMediaManager/qtiCreator/editor/propertiesPanel',
     'taoQtiItem/qtiCreator/model/helper/event',
-    'taoMediaManager/qtiCreator/widgets/item/Widget'
+    'taoMediaManager/qtiCreator/widgets/media/stimulus/Widget'
 ], function($, _, __, eventifier, Promise, qtiCreatorContextFactory, passageLoader,
             creatorRenderer, commonRenderer, xincludeRenderer,
             propertiesPanel, eventHelper, stimulusWidget){

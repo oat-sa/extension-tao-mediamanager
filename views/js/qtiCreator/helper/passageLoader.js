@@ -43,34 +43,65 @@ define([
                     data : {
                         id : config.id
                     }
-                }).done(function(response) {
+                }).done(function(response){
 
                     var loader, itemData, newItem;
 
+                    var mockBody = {
+                        "serial": "container_containerstatic_5ec29c5c7806a515391441",
+                        "body": "\n    <p>SharedStimulus definition file is on XML format and so do not support \"&amp;\" symbol in remote image url, it requires to be escaped for <i>&amp;amp<\/i><\/p>\n    <p>{{img_5ec29c5c8b0d5286470339}}<\/p>\n    <p>{{img_5ec29c5c92311756247821}}<\/p>\n",
+                        "elements": {
+                            "img_5ec29c5c8b0d5286470339": {
+                                "serial": "img_5ec29c5c8b0d5286470339",
+                                "qtiClass": "img",
+                                "attributes": {
+                                    "src": "https:\/\/via.placeholder.com\/300x300.png?text=remote+shared+stimulus+media",
+                                    "alt": "my first image"
+                                },
+                            },
+                            "img_5ec29c5c92311756247821": {
+                                "serial": "img_5ec29c5c92311756247821",
+                                "qtiClass": "img",
+                                "attributes": {
+                                    "src": "https:\/\/via.placeholder.com\/300x300.png?text=another+remote+media",
+                                    "alt": "my first image"
+                                },
+                            }
+                        },
+                    };
+
                     newItem = new Item().id(_generateIdentifier(config.uri)).attr('title', response.data.name);
-
-                    newItem.createResponseProcessing();
-
-                    //set default namespaces
-                    newItem.setNamespaces({
-                        '' : qtiNamespace,
-                        'xsi' : 'http://www.w3.org/2001/XMLSchema-instance',
-                        'm' :'http://www.w3.org/1998/Math/MathML'
-                    });//note : always add math element : since it has become difficult to know when a math element has been added to the item
-
-                    //set default schema location
-                    newItem.setSchemaLocations(qtiSchemaLocation);
-
-                    //tag the item as a new one
                     newItem.data('new', true);
                     newItem.data('dummy', true);
 
-                    //add languages list to the item
-                    if (response.data.languagesList) {
-                        newItem.data('languagesList', data.languagesList);
-                    }
+                    itemData = Object.assign({}, newItem);
+                    delete itemData.bdy;
+                    delete itemData.rootElement;
+                    itemData.body = mockBody;
+                    itemData.qtiClass = 'assessmentItem';
 
-                    callback(newItem);
+                    loader = new Loader().setClassesLocation(qtiClasses);
+                    loader.loadItemData(itemData, function(loadedItem){
+                        var namespaces;
+
+                        //hack to fix #2652
+                        if(loadedItem.isEmpty()){
+                            loadedItem.body('');
+                        }
+
+                        // convert item to current QTI version
+                        namespaces = loadedItem.getNamespaces();
+                        namespaces[''] = qtiNamespace;
+                        loadedItem.setNamespaces(namespaces);
+                        loadedItem.setSchemaLocations(qtiSchemaLocation);
+
+                        //add languages list to the item
+                        if (response.data.languagesList) {
+                            newItem.data('languagesList', data.languagesList);
+                        }
+
+                        callback(loadedItem, this.getLoadedClasses());
+                    });
                 });
             }
         }

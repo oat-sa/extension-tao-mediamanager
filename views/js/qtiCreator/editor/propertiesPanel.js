@@ -13,19 +13,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2016 (original work) Open Assessment Technologies SA ;
+ * Copyright (c) 2020 (original work) Open Assessment Technologies SA ;
  *
  */
 define([
     'lodash',
-    'taoMediaManager/qtiCreator/helper/panel',
-    'taoQtiItem/qtiCreator/editor/styleEditor/styleEditor',
-    'taoQtiItem/qtiCreator/editor/styleEditor/styleSheetToggler',
-    'taoQtiItem/qtiCreator/editor/styleEditor/fontSelector',
-    'taoQtiItem/qtiCreator/editor/styleEditor/colorSelector',
-    'taoQtiItem/qtiCreator/editor/styleEditor/fontSizeChanger',
-    'taoQtiItem/qtiCreator/editor/styleEditor/itemResizer',
-], function(_, panel, styleEditor, styleSheetToggler, fontSelector, colorSelector, fontSizeChanger, itemResizer){
+    'taoMediaManager/qtiCreator/helper/panel'
+], function(_, panel) {
     'use strict';
 
     /**
@@ -36,17 +30,9 @@ define([
 
         panel.initSidebarAccordion($container);
         panel.initFormVisibilityListener();
-        panel.closeSections($container.find('section'));
+        // panel.closeSections($container.find('section'));
         // panel.openSections($container.find('#item-editor-text-property-bar'), false);
-        panel.showPanel($container.find('#item-editor-item-property-bar'))
+        // panel.showPanel($container.find('#item-editor-item-property-bar'))
         // panel.showPanel($container.find('#item-editor-text-property-bar'))
-
-        // styleEditor.init(widget.element, config);
-        // styleSheetToggler.init(config);
-
-        // fontSelector();
-        // colorSelector();
-        // fontSizeChanger();
-        // itemResizer(widget.element);
     };
 });

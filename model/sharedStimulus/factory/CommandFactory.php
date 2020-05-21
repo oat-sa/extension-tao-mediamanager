@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus\factory;
 
-use InvalidArgumentException;
 use League\Flysystem\FilesystemInterface;
 use oat\generis\model\fileReference\FileReferenceSerializer;
 use oat\oatbox\filesystem\Directory;
@@ -52,16 +51,11 @@ class CommandFactory extends ConfigurableService
         );
     }
 
-    public function makeUpdateCommandByRequest(ServerRequestInterface $request, User $user): UpdateCommand
+    public function makeUpdateCommand(string $id, string $body, User $user): UpdateCommand
     {
-        $id = $request->getQueryParams()['id'] ?? null;
-
-        if (is_null($id)) {
-            throw new InvalidArgumentException('ID param is required');
-        }
-        $name = md5($id);
+        $name = hash('md5', $id);
         $file = $this->getDirectory()->getFile($name);
-        $file->write((string)$request->getBody());
+        $file->write($body);
 
         return new UpdateCommand(
             $id,

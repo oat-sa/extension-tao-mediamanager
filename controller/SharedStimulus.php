@@ -32,7 +32,6 @@ use oat\tao\model\http\response\ErrorJsonResponse;
 use oat\tao\model\http\response\SuccessJsonResponse;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
 use oat\taoMediaManager\model\sharedStimulus\factory\QueryFactory;
-use oat\taoMediaManager\model\sharedStimulus\factory\UpdateFactory;
 use oat\taoMediaManager\model\sharedStimulus\repository\SharedStimulusRepository;
 use oat\taoMediaManager\model\sharedStimulus\service\CreateService;
 use oat\taoMediaManager\model\sharedStimulus\service\UpdateService;
@@ -95,12 +94,14 @@ class SharedStimulus extends tao_actions_CommonModule
             ->withJsonHeader();
 
         try {
-            $this->getValidator()->validate($this->getPsrRequest());
+            $request = $this->getPsrRequest();
+            $this->getValidator()->validate($request);
 
             $user = common_session_SessionManager::getSession()->getUser();
+            $id = $request->getQueryParams()['id'];
+            $body = json_decode((string)$request->getBody(), true)['body'];
 
-            $command = $this->getCommandFactory()
-                ->makeUpdateCommandByRequest($this->getPsrRequest(), $user);
+            $command = $this->getCommandFactory()->makeUpdateCommand($id, $body, $user);
 
             $sharedStimulus = $this->getUpdateService()->update($command);
 

@@ -1,8 +1,7 @@
 define([
     'jquery',
     'taoMediaManager/qtiCreator/helper/ckConfigurator',
-    'ckeditor',
-    'css!ckeditor/skins/tao/editor'
+    'ckeditor'
 ], function($, ckConfigurator, ckEditor) {
     'use strict';
 

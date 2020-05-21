@@ -38,9 +38,9 @@ paths:
           $ref: '#/components/responses/BadRequestResponse'
         500:
           $ref: '#/components/responses/InternalServerErrorResponse'
-  /taoMediaManager/SharedStimulus/update:
-    post:
-      summary: Updates a shared stimulus
+  /taoMediaManager/SharedStimulus/patch:
+    patch:
+      summary: Updates a shared stimulus body
       parameters:
         - in: query
           name: id
@@ -51,7 +51,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/xml:
+          application/json:
             schema:
               $ref: '#/components/schemas/SharedStimulusUpdate'
       responses:
@@ -89,12 +89,14 @@ components:
               type: string
               example: '<?xml version="1.0" encoding="UTF-8"?><div xmlns="http://www.imsglobal.org/xsd/imsqti_v2p2"></div>'
     SharedStimulusUpdate:
-      type: string
-      example:
-        '<?xml version="1.0" encoding="UTF-8"?> <div xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="stimulus_content" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/qti/qtiv2p1/imsqti_v2p1.xsd">
+      type: object
+      properties:
+        body:
+          type: string
+          example: '<?xml version="1.0" encoding="UTF-8"?> <div xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="stimulus_content" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/qti/qtiv2p1/imsqti_v2p1.xsd">
                     <div class="stimulus-container">
                         <div class="stimulus-container-inner">
-                            <img src="taomedia://mediamanager/https_2_proctorio_0_docker_0_localhost_1_ontologies_1_tao_0_rdf_3_i5ec28eac81084866a0cf53be182d2df" id="cde_p2837_269"/>
+                            <img src="https://www.wikipedia.org/portal/wikipedia.org/assets/img/Wikipedia-logo-v2.png" id="cde_p2837_269"/>
                             <ol id="cde_p2837_259">
                                 <li id="cde_p2837_260">el 1</li>
                                 <li id="cde_p2837_261">el 2</li>
@@ -102,6 +104,8 @@ components:
                             </ol>
                     </div>
                 </div>'
+      required:
+        - body
     SharedStimulusCreatedResponse:
       properties:
         success:

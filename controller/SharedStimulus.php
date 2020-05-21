@@ -24,6 +24,8 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\controller;
 
 use common_session_SessionManager;
+use League\OpenAPIValidation\PSR7\ServerRequestValidator;
+use League\OpenAPIValidation\PSR7\ValidatorBuilder;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\tao\model\http\formatter\ResponseFormatter;
 use oat\tao\model\http\response\ErrorJsonResponse;
@@ -87,12 +89,14 @@ class SharedStimulus extends tao_actions_CommonModule
         $this->setResponse($formatter->format($this->getPsrResponse()));
     }
 
-    public function update(): void
+    public function patch(): void
     {
         $formatter = $this->getResponseFormatter()
             ->withJsonHeader();
 
         try {
+            $this->getValidator()->validate($this->getPsrRequest());
+
             $user = common_session_SessionManager::getSession()->getUser();
 
             $command = $this->getCommandFactory()
@@ -141,4 +145,10 @@ class SharedStimulus extends tao_actions_CommonModule
         return $this->getServiceLocator()->get(SharedStimulusRepository::class);
     }
 
+    private function getValidator(): ServerRequestValidator
+    {
+        return (new ValidatorBuilder())->fromYamlFile(
+            ROOT_PATH . '/taoMediaManager/doc/taoMediaManagerApi.yml'
+        )->getServerRequestValidator();
+    }
 }

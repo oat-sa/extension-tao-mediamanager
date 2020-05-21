@@ -1,15 +1,15 @@
 module.exports = function(grunt) {
 
-    var watch       = grunt.config('watch') || {};
-    var qunit       = grunt.config('qunit') || {};
-    var testUrl     = 'http://127.0.0.1:' + grunt.option('testPort');
-    var root        = grunt.option('root');
+    const watch       = grunt.config('watch') || {};
+    const qunit       = grunt.config('qunit') || {};
+    const testUrl     = 'http://127.0.0.1:' + grunt.option('testPort');
+    const root        = grunt.option('root');
 
-    var testRunners = root + '/taoMediaManager/views/js/test/**/test.html';
-    var testFiles = root + '/taoMediaManager/views/js/test/**/test.js';
+    const testRunners = root + '/taoMediaManager/views/js/test/**/test.html';
+    const testFiles = root + '/taoMediaManager/views/js/test/**/test.js';
 
     //extract unit tests
-    var extractTests = function extractTests(){
+    const extractTests = function extractTests(){
         return grunt.file.expand([testRunners]).map(function(path){
             return path.replace(root, testUrl);
         });

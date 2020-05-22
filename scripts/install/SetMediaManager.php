@@ -37,6 +37,7 @@ use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterfa
 use oat\taoMediaManager\model\relation\repository\rdf\map\RdfItemRelationMap;
 use oat\taoMediaManager\model\relation\repository\rdf\map\RdfMediaRelationMap;
 use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRelationRepository;
+use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
 
 class SetMediaManager extends InstallAction
 {
@@ -75,7 +76,17 @@ class SetMediaManager extends InstallAction
 
         $this->getServiceManager()->register(EventManager::SERVICE_ID, $eventManager);
 
-        $serviceManager->get(MediaService::SERVICE_ID)->addMediaSource(new MediaSource());
+        $this->getServiceManager()->get(MediaService::SERVICE_ID)->addMediaSource(new MediaSource());
+
+        if ($fsService->hasDirectory('memory')) {
+            $dirs = $fsService->getOption(FileSystemService::OPTION_DIRECTORIES);
+            $dirs[CommandFactory::DEFAULT_DIRECTORY] = 'memory';
+            $fsService->setOption(FileSystemService::OPTION_DIRECTORIES, $dirs);
+        } else {
+            $fileSystem = $fsService->createFileSystem(CommandFactory::DEFAULT_DIRECTORY);
+        }
+
+        $this->getServiceManager()->register(FileSystemService::SERVICE_ID, $fsService);
 
         return common_report_Report::createSuccess('MediaManager successfully installed');
     }

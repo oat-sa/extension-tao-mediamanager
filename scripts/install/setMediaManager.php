@@ -71,5 +71,4 @@ $eventManager->attach(MediaSavedEvent::class, [MediaRelationListener::class, 'wh
 
 $serviceManager->register(EventManager::SERVICE_ID, $eventManager);
 
-$mediaManager = new MediaSource();
-MediaService::singleton()->addMediaSource($mediaManager);
+MediaService::singleton()->addMediaSource(new MediaSource());

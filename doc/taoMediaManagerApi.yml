@@ -53,7 +53,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SharedStimulusUpdate'
+              $ref: '#/components/schemas/SharedStimulusPatch'
       responses:
         200:
           $ref: '#/components/responses/SharedStimulusPatchResponse'

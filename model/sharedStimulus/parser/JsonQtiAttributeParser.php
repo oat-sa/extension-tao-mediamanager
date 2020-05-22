@@ -26,7 +26,6 @@ namespace oat\taoMediaManager\model\sharedStimulus\parser;
 use DOMDocument;
 use LogicException;
 use oat\oatbox\service\ConfigurableService;
-use oat\taoMediaManager\model\relation\event\processor\InvalidEventException;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 use oat\taoQtiItem\model\qti\ParserFactory;
 use oat\taoQtiItem\model\qti\XInclude;
@@ -35,23 +34,17 @@ class JsonQtiAttributeParser extends ConfigurableService
 {
     public function parse(SharedStimulus $sharedStimulus): array
     {
-        try {
-            $document = $this->createDomDocument($sharedStimulus);
-            $xinclude = $this->createXInclude($document);
+        $document = $this->createDomDocument($sharedStimulus);
+        $xinclude = $this->createXInclude($document);
 
-            $body = $xinclude->toArray();
-        } catch (EmptyMediaContentException $e) {
-            $body = [];
-        }
-
-        return $body;
+        return $xinclude->toArray();
     }
 
     private function createDomDocument(SharedStimulus $sharedStimulus) : DOMDocument
     {
         $content = $sharedStimulus->getBody();
         if (empty($content)) {
-            throw new EmptyMediaContentException('SharedStimulus content is empty and cannot be parsed.');
+            throw new LogicException('SharedStimulus content is empty and cannot be parsed.');
         }
 
         $document = new DOMDocument();

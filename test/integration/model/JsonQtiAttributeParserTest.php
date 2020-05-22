@@ -40,6 +40,7 @@ class JsonQtiAttributeParserTest extends TestCase
 
     public function testRendererEmptyBody()
     {
+        $this->expectException(LogicException::class);
         $sharedStimulus = new SharedStimulus('id', '', '', '');
 
         $this->assertEmpty($this->subject->parse($sharedStimulus));

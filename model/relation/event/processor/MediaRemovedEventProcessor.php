@@ -20,24 +20,30 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\relation\repository\rdf\map;
+namespace oat\taoMediaManager\model\relation\event\processor;
 
-use oat\taoMediaManager\model\relation\MediaRelation;
-use core_kernel_classes_Resource as RdfResource;
+use oat\oatbox\event\Event;
+use oat\oatbox\service\ConfigurableService;
+use oat\taoMediaManager\model\relation\event\MediaRemovedEvent;
+use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
 
-class RdfItemRelationMap extends AbstractRdfMediaRelationMap
+class MediaRemovedEventProcessor extends ConfigurableService implements EventProcessorInterface
 {
-    /** @var string */
-    public const ITEM_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem';
-
-    protected function getMediaRelationPropertyUri(): string
+    /**
+     * @inheritDoc
+     */
+    public function process(Event $event): void
     {
-        return self::ITEM_RELATION_PROPERTY;
+        if (!$event instanceof MediaRemovedEvent) {
+            throw new InvalidEventException($event);
+        }
+
+        $this->getItemRelationUpdateService()
+            ->removeMedia($event->getMediaId());
     }
 
-    public function createMediaRelation(RdfResource $mediaResource, string $sourceId): MediaRelation
+    private function getItemRelationUpdateService(): ItemRelationUpdateService
     {
-        return (new MediaRelation(MediaRelation::ITEM_TYPE, $mediaResource->getUri(), $mediaResource->getLabel()))
-            ->withSourceId($sourceId);
+        return $this->getServiceLocator()->get(ItemRelationUpdateService::class);
     }
 }

@@ -22,13 +22,24 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus\factory;
 
+use League\Flysystem\FilesystemInterface;
+use oat\generis\model\fileReference\FileReferenceSerializer;
+use oat\oatbox\filesystem\Directory;
+use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
+use oat\oatbox\user\User;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\sharedStimulus\CreateCommand;
+use oat\taoMediaManager\model\sharedStimulus\PatchCommand;
 use Psr\Http\Message\ServerRequestInterface;
 
 class CommandFactory extends ConfigurableService
 {
+    public const DEFAULT_DIRECTORY = 'sharedStimulusUploads';
+
+    /** @var FilesystemInterface */
+    private $directory;
+
     public function makeCreateCommandByRequest(ServerRequestInterface $request): CreateCommand
     {
         $parsedBody = json_decode((string)$request->getBody(), true);
@@ -38,5 +49,33 @@ class CommandFactory extends ConfigurableService
             $parsedBody['name'] ?? null,
             $parsedBody['languageId'] ?? $parsedBody['languageUri'] ?? null
         );
+    }
+
+    public function makePatchCommand(string $id, string $body, User $user): PatchCommand
+    {
+        $name = hash('md5', $id);
+        $file = $this->getDirectory()->getFile($name);
+        $file->put($body);
+
+        return new PatchCommand(
+            $id,
+            $this->getSerializer()->serialize($file),
+            $user->getIdentifier()
+        );
+    }
+
+    private function getDirectory(): Directory
+    {
+        if (is_null($this->directory)) {
+            /** @var FileSystemService $fileSystemService */
+            $fileSystemService = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
+            $this->directory = $fileSystemService->getDirectory(self::DEFAULT_DIRECTORY);
+        }
+        return $this->directory;
+    }
+
+    private function getSerializer(): FileReferenceSerializer
+    {
+        return $this->getServiceLocator()->get(FileReferenceSerializer::SERVICE_ID);
     }
 }

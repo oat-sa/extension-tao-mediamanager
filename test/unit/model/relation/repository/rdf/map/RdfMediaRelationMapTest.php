@@ -22,13 +22,14 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\test\unit\model\relation\repository\rdf\map;
 
+use core_kernel_classes_Resource;
 use oat\generis\test\TestCase;
 use oat\taoMediaManager\model\relation\repository\rdf\map\RdfMediaRelationMap;
 use ReflectionMethod;
 
 class RdfMediaRelationMapTest extends TestCase
 {
-    public function testGetMediaRelationPropertyUri()
+    public function testGetMediaRelationPropertyUri(): void
     {
         $map = new RdfMediaRelationMap();
         $method = new ReflectionMethod($map, 'getMediaRelationPropertyUri');
@@ -36,14 +37,19 @@ class RdfMediaRelationMapTest extends TestCase
         $this->assertSame('http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedMedia', $method->invoke($map));
     }
 
-    public function testCreateMediaRelation()
+    public function testCreateMediaRelation(): void
     {
-        $map = new RdfMediaRelationMap();
-        $method = new ReflectionMethod($map, 'createMediaRelation');
-        $method->setAccessible(true);
-        $mediaRelation = $method->invoke($map, 'id', 'label');
+        $resource = $this->createMock(core_kernel_classes_Resource::class);
+        $resource->method('getUri')
+            ->willReturn('id');
+        $resource->method('getLabel')
+            ->willReturn('label');
+
+        $mediaRelation = (new RdfMediaRelationMap())->createMediaRelation($resource, 'sourceId');
+
         $this->assertSame('media', $mediaRelation->getType());
         $this->assertSame('id', $mediaRelation->getId());
         $this->assertSame('label', $mediaRelation->getLabel());
+        $this->assertSame('sourceId', $mediaRelation->getSourceId());
     }
 }

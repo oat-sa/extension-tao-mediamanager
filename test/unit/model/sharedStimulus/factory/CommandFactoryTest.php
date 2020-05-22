@@ -22,9 +22,15 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\test\unit\model\sharedStimulus\factory;
 
+use oat\generis\model\fileReference\FileReferenceSerializer;
 use oat\generis\test\TestCase;
+use oat\oatbox\filesystem\Directory;
+use oat\oatbox\filesystem\File;
+use oat\oatbox\filesystem\FileSystemService;
+use oat\oatbox\user\User;
 use oat\taoMediaManager\model\sharedStimulus\CreateCommand;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
+use oat\taoMediaManager\model\sharedStimulus\PatchCommand;
 use Psr\Http\Message\ServerRequestInterface;
 
 class CommandFactoryTest extends TestCase
@@ -32,13 +38,35 @@ class CommandFactoryTest extends TestCase
     private const CLASS_URI = 'uri';
     private const LANGUAGE_URI = 'uri';
     private const NAME = 'name';
+    private const URI = 'uri';
+    private const BODY = 'body';
+    private const USER_ID = 'u_id';
 
     /** @var CommandFactory */
     private $factory;
 
     public function setUp(): void
     {
+        $serializer = $this->createMock(FileReferenceSerializer::class);
+        $serializer->method('serialize')->willReturn(self::BODY);
+
+        $file = $this->createMock(File::class);
+
+        $directory = $this->createMock(Directory::class);
+        $directory->method('getFile')->willReturn($file);
+
+        $fileSystemService = $this->createMock(FileSystemService::class);
+        $fileSystemService->method('getDirectory')->willReturn($directory);
+
+        $serviceLocator = $this->getServiceLocatorMock(
+            [
+                FileReferenceSerializer::SERVICE_ID => $serializer,
+                FileSystemService::SERVICE_ID => $fileSystemService
+            ]
+        );
+
         $this->factory = new CommandFactory();
+        $this->factory->setServiceLocator($serviceLocator);
     }
 
     public function testMakeCreateCommandByRequest(): void
@@ -62,5 +90,16 @@ class CommandFactoryTest extends TestCase
             );
 
         $this->assertEquals($expectedCommand, $this->factory->makeCreateCommandByRequest($request));
+    }
+
+    public function testMakePatchCommand(): void
+    {
+        $user = $this->createMock(User::class);
+        $user->method('getIdentifier')->willReturn(self::USER_ID);
+
+        $this->assertEquals(
+            new PatchCommand(self::URI, self::BODY, self::USER_ID),
+            $this->factory->makePatchCommand(self::URI, self::BODY, $user)
+        );
     }
 }

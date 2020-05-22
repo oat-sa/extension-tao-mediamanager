@@ -16,8 +16,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
- *
  */
+
+use oat\taoMediaManager\scripts\install\SetMediaManager;
 
 $extpath = __DIR__ . DIRECTORY_SEPARATOR;
 $taopath = __DIR__ . DIRECTORY_SEPARATOR . 'tao' . DIRECTORY_SEPARATOR;
@@ -27,12 +28,13 @@ return [
     'label' => 'extension-tao-mediamanager',
     'description' => 'TAO media manager extension',
     'license' => 'GPL-2.0',
-    'version' => '9.7.0',
+    'version' => '9.9.0',
     'author' => 'Open Assessment Technologies SA',
     'requires' => [
         'tao' => '>=42.5.0',
         'generis' => '>=12.17.0',
-        'taoItems' => '>=6.0.0'
+        'taoItems' => '>=6.0.0',
+        'taoQtiItem' => '>=24.2.0'
     ],
     'models' => [
         'http://www.tao.lu/Ontologies/TAOMedia.rdf'
@@ -47,7 +49,7 @@ return [
             __DIR__ . '/model/ontology/taomedia.rdf',
         ],
         'php' => [
-            __DIR__ . '/scripts/install/setMediaManager.php',
+            SetMediaManager::class,
         ]
     ],
     'update' => 'oat\\taoMediaManager\\scripts\\update\\Updater',

@@ -20,24 +20,36 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\relation\repository\rdf\map;
+namespace oat\taoMediaManager\model\sharedStimulus;
 
-use oat\taoMediaManager\model\relation\MediaRelation;
-use core_kernel_classes_Resource as RdfResource;
-
-class RdfItemRelationMap extends AbstractRdfMediaRelationMap
+class PatchCommand
 {
     /** @var string */
-    public const ITEM_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem';
+    private $id;
+    /** @var string */
+    private $fileReference;
+    /** @var string */
+    private $userId;
 
-    protected function getMediaRelationPropertyUri(): string
+    public function __construct(string $id, string $fileReference, string $userId)
     {
-        return self::ITEM_RELATION_PROPERTY;
+        $this->id = $id;
+        $this->fileReference = $fileReference;
+        $this->userId = $userId;
     }
 
-    public function createMediaRelation(RdfResource $mediaResource, string $sourceId): MediaRelation
+    public function getFileReference(): string
     {
-        return (new MediaRelation(MediaRelation::ITEM_TYPE, $mediaResource->getUri(), $mediaResource->getLabel()))
-            ->withSourceId($sourceId);
+        return $this->fileReference;
+    }
+
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    public function getUserId(): string
+    {
+        return $this->userId;
     }
 }

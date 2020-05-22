@@ -21,7 +21,7 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\sharedStimulus\renderer;
+namespace oat\taoMediaManager\model\sharedStimulus\parser;
 
 use DOMDocument;
 use LogicException;

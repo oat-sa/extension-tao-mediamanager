@@ -32,7 +32,7 @@ use oat\tao\model\http\response\ErrorJsonResponse;
 use oat\tao\model\http\response\SuccessJsonResponse;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
 use oat\taoMediaManager\model\sharedStimulus\factory\QueryFactory;
-use oat\taoMediaManager\model\sharedStimulus\renderer\JsonQtiAttributeParser;
+use oat\taoMediaManager\model\sharedStimulus\parser\JsonQtiAttributeParser;
 use oat\taoMediaManager\model\sharedStimulus\repository\SharedStimulusRepository;
 use oat\taoMediaManager\model\sharedStimulus\service\CreateService;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus as SharedStimulusObject;
@@ -155,6 +155,11 @@ class SharedStimulus extends tao_actions_CommonModule
     private function getSharedStimulusRepository(): SharedStimulusRepository
     {
         return $this->getServiceLocator()->get(SharedStimulusRepository::class);
+    }
+
+    private function getSharedStimulusAttributesParser(): JsonQtiAttributeParser
+    {
+        return $this->getServiceLocator()->get(JsonQtiAttributeParser::class);
     }
 
     private function getValidator(): ServerRequestValidator

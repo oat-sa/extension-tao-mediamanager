@@ -55,7 +55,7 @@ class CommandFactory extends ConfigurableService
     {
         $name = hash('md5', $id);
         $file = $this->getDirectory()->getFile($name);
-        $file->write($body);
+        $file->put($body);
 
         return new PatchCommand(
             $id,

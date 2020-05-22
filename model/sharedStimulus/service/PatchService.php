@@ -66,6 +66,7 @@ class PatchService extends ConfigurableService
         $this->validateXml($file);
 
         $this->getMediaService()->editMediaInstance($file, $id, null, $userId);
+        $file->delete();
 
         return new SharedStimulus(
             $id,

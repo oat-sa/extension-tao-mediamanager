@@ -15,15 +15,27 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
- *
- *
+ * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
  */
+
+declare(strict_types=1);
 
 namespace oat\taoMediaManager\scripts\update;
 
+use common_Exception;
+use common_exception_NotImplemented;
+use oat\oatbox\event\EventManager;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\tao\scripts\update\OntologyUpdater;
+use oat\taoItems\model\event\ItemRemovedEvent;
+use oat\taoItems\model\event\ItemUpdatedEvent;
+use oat\taoMediaManager\model\relation\event\MediaRelationListener;
+use oat\taoMediaManager\model\relation\event\MediaRemovedEvent;
+use oat\taoMediaManager\model\relation\event\MediaSavedEvent;
+use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
+use oat\taoMediaManager\model\relation\repository\rdf\map\RdfItemRelationMap;
+use oat\taoMediaManager\model\relation\repository\rdf\map\RdfMediaRelationMap;
+use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRelationRepository;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
 
 class Updater extends \common_ext_ExtensionUpdater
@@ -31,12 +43,13 @@ class Updater extends \common_ext_ExtensionUpdater
     /**
      * @param string $initialVersion
      * @return string|void
-     * @throws \common_exception_NotImplemented
+     * @throws common_exception_NotImplemented
+     * @throws common_Exception
      */
     public function update($initialVersion)
     {
         if ($this->isBetween('0.0.0', '0.2.5')) {
-            throw new \common_exception_NotImplemented('Updates from versions prior to Tao 3.1 are not longer supported, please update to Tao 3.1 first');
+            throw new common_exception_NotImplemented('Updates from versions prior to Tao 3.1 are not longer supported, please update to Tao 3.1 first');
         }
 
         $this->skip('0.3.0', '9.3.0');
@@ -49,6 +62,32 @@ class Updater extends \common_ext_ExtensionUpdater
         $this->skip('9.4.0', '9.6.0');
 
         if ($this->isVersion('9.6.0')) {
+            OntologyUpdater::syncModels();
+            $this->getServiceManager()->register(
+                MediaRelationRepositoryInterface::SERVICE_ID,
+                new RdfMediaRelationRepository([
+                    RdfMediaRelationRepository::MAP_OPTION => [
+                        new RdfItemRelationMap(),
+                        new RdfMediaRelationMap()
+                    ]
+                ])
+            );
+            $this->setVersion('9.7.0');
+        }
+
+        if ($this->isVersion('9.7.0')) {
+            $eventManager = $this->getServiceManager()->get(EventManager::SERVICE_ID);
+            $eventManager->attach(ItemUpdatedEvent::class, [MediaRelationListener::class, 'whenItemIsUpdated']);
+            $eventManager->attach(ItemRemovedEvent::class, [MediaRelationListener::class, 'whenItemIsRemoved']);
+            $eventManager->attach(MediaRemovedEvent::class, [MediaRelationListener::class, 'whenMediaIsRemoved']);
+            $eventManager->attach(MediaSavedEvent::class, [MediaRelationListener::class, 'whenMediaIsSaved']);
+
+            $this->getServiceManager()->register(EventManager::SERVICE_ID, $eventManager);
+
+            $this->setVersion('9.8.0');
+        }
+
+        if ($this->isVersion('9.8.0')) {
             /** @var FileSystemService $filesystemService */
             $filesystemService = $this->getServiceManager()->get(FileSystemService::SERVICE_ID);
             /** @var  $adapters */
@@ -62,7 +101,7 @@ class Updater extends \common_ext_ExtensionUpdater
             }
 
             $this->getServiceManager()->register(FileSystemService::SERVICE_ID, $filesystemService);
-//            $this->setVersion('9.7.0');
+            $this->setVersion('9.9.0');
         }
     }
 }

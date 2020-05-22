@@ -28,7 +28,10 @@ use oat\generis\model\OntologyRdfs;
 use oat\oatbox\filesystem\File;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\tao\model\ClassServiceTrait;
+use common_ext_ExtensionsManager;
+use oat\oatbox\log\LoggerAwareTrait;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
+use oat\taoMediaManager\model\relation\event\MediaRemovedEvent;
 use oat\taoRevision\model\RepositoryInterface;
 use tao_models_classes_GenerisService;
 
@@ -153,7 +156,15 @@ class MediaService extends tao_models_classes_GenerisService
     public function deleteResource(core_kernel_classes_Resource $resource)
     {
         $link = $this->getLink($resource);
-        return ClassServiceTrait::deleteResource($resource) && $this->getFileManager()->deleteFile($link);
+
+        if (ClassServiceTrait::deleteResource($resource) && $this->getFileManager()->deleteFile($link)) {
+            $this->getEventManager()
+                ->trigger(new MediaRemovedEvent($resource->getUri()));
+
+            return true;
+        }
+
+        return false;
     }
 
     /**

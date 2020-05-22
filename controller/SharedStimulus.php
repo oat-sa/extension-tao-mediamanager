@@ -34,7 +34,7 @@ use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
 use oat\taoMediaManager\model\sharedStimulus\factory\QueryFactory;
 use oat\taoMediaManager\model\sharedStimulus\repository\SharedStimulusRepository;
 use oat\taoMediaManager\model\sharedStimulus\service\CreateService;
-use oat\taoMediaManager\model\sharedStimulus\service\UpdateService;
+use oat\taoMediaManager\model\sharedStimulus\service\PatchService;
 use tao_actions_CommonModule;
 use Throwable;
 
@@ -103,7 +103,7 @@ class SharedStimulus extends tao_actions_CommonModule
 
             $command = $this->getCommandFactory()->makePatchCommand($id, $body, $user);
 
-            $sharedStimulus = $this->getUpdateService()->patch($command);
+            $sharedStimulus = $this->getPatchService()->patch($command);
 
             $formatter->withBody(new SuccessJsonResponse([]));
         } catch (Throwable $exception) {
@@ -136,9 +136,9 @@ class SharedStimulus extends tao_actions_CommonModule
         return $this->getServiceLocator()->get(CreateService::class);
     }
 
-    private function getUpdateService(): UpdateService
+    private function getPatchService(): PatchService
     {
-        return $this->getServiceLocator()->get(UpdateService::class);
+        return $this->getServiceLocator()->get(PatchService::class);
     }
 
     private function getSharedStimulusRepository(): SharedStimulusRepository

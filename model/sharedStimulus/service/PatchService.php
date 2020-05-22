@@ -32,15 +32,20 @@ use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\media\TaoMediaResolver;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
-use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 use oat\taoMediaManager\model\sharedStimulus\PatchCommand;
+use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 use oat\taoMediaManager\model\SharedStimulusImporter;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
 
-class UpdateService extends ConfigurableService
+class PatchService extends ConfigurableService
 {
     use OntologyAwareTrait;
+
+    /**
+     * @var TaoMediaResolver
+     */
+    private $mediaResolver;
 
     /**
      * @throws core_kernel_persistence_Exception
@@ -100,7 +105,6 @@ class UpdateService extends ConfigurableService
             throw new InvalidArgumentException('Invalid XML provided');
         }
 
-        $resolver = new TaoMediaResolver();
         $xmlDocument = new XmlDocument();
         $xmlDocument->loadFromString($file->read(), false);
 
@@ -109,11 +113,22 @@ class UpdateService extends ConfigurableService
         foreach ($images as $image) {
             $source = $image->getSrc();
             if (false === strpos($source, 'data:image')) {
-                $asset = $resolver->resolve($source);
+                $asset = $this->getMediaResolver()->resolve($source);
                 if ($asset->getMediaSource() instanceof MediaSource) {
                     $info = $asset->getMediaSource()->getFileInfo($asset->getMediaIdentifier());
                 }
             }
         }
+    }
+
+    public function withMediaResolver(TaoMediaResolver $resolver): self
+    {
+        $this->mediaResolver = $resolver;
+        return $this;
+    }
+
+    private function getMediaResolver(): TaoMediaResolver
+    {
+        return $this->mediaResolver ?? new TaoMediaResolver();
     }
 }

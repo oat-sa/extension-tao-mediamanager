@@ -16,10 +16,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
- *
  */
 
-use oat\taoMediaManager\scripts\install\SetupMediaManager;
+use oat\taoMediaManager\scripts\install\SetMediaManager;
 
 $extpath = __DIR__ . DIRECTORY_SEPARATOR;
 $taopath = __DIR__ . DIRECTORY_SEPARATOR . 'tao' . DIRECTORY_SEPARATOR;
@@ -49,7 +48,7 @@ return [
             __DIR__ . '/model/ontology/taomedia.rdf',
         ],
         'php' => [
-            SetupMediaManager::class
+            SetMediaManager::class,
         ]
     ],
     'update' => 'oat\\taoMediaManager\\scripts\\update\\Updater',

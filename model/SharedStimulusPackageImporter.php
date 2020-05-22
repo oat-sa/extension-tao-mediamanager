@@ -15,9 +15,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2018 (original work) Open Assessment Technologies SA;
- *
+ * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
  */
+
+declare(strict_types=1);
 
 namespace oat\taoMediaManager\model;
 
@@ -69,7 +70,7 @@ class SharedStimulusPackageImporter extends ZipImporter
                 ? $e->getUserMessage()
                 : __('An error has occurred. Please contact your administrator.');
             $report = Report::createFailure($message);
-            $this->logError($e->getMessage());
+            $this->logError($e->getTraceAsString());
         }
 
         return $report;
@@ -216,8 +217,16 @@ class SharedStimulusPackageImporter extends ZipImporter
     {
         SharedStimulusImporter::isValidSharedStimulus($xmlFile);
 
-        $service = MediaService::singleton();
-        if ($mediaResourceUri = $service->createMediaInstance($xmlFile, $class->getUri(), $lang, basename($xmlFile), 'application/qti+xml', $userId)) {
+        $mediaResourceUri = $this->getMediaService()->createMediaInstance(
+            $xmlFile,
+            $class->getUri(),
+            $lang,
+            basename($xmlFile),
+            'application/qti+xml',
+            $userId
+        );
+
+        if ($mediaResourceUri !== false) {
             $report = Report::createSuccess(__('Imported %s', basename($xmlFile)));
             $report->setData(['uriResource' => $mediaResourceUri]);
         } else {
@@ -258,8 +267,7 @@ class SharedStimulusPackageImporter extends ZipImporter
         $filepath = dirname($xmlFile) . '/' . $name;
         \tao_helpers_File::copy($xmlFile, $filepath);
 
-        $service = MediaService::singleton();
-        if (!$service->editMediaInstance($filepath, $instance->getUri(), $lang, $userId)) {
+        if (!$this->getMediaService()->editMediaInstance($filepath, $instance->getUri(), $lang, $userId)) {
             $report = Report::createFailure(__('Fail to edit Shared Stimulus'));
         } else {
             $report = Report::createSuccess(__('Shared Stimulus edited successfully'));
@@ -307,5 +315,10 @@ class SharedStimulusPackageImporter extends ZipImporter
     private function getDecodedUri($form)
     {
         return \tao_helpers_Uri::decode($form instanceof Form ? $form->getValue('lang') : $form['lang']);
+    }
+
+    private function getMediaService(): MediaService
+    {
+        return $this->getServiceLocator()->get(MediaService::class);
     }
 }

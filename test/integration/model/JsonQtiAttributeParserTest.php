@@ -25,7 +25,7 @@ namespace oat\taoMediaManager\test\integration\model;
 
 use LogicException;
 use oat\generis\test\TestCase;
-use oat\taoMediaManager\model\sharedStimulus\renderer\JsonQtiAttributeParser;
+use oat\taoMediaManager\model\sharedStimulus\parser\JsonQtiAttributeParser;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 
 class JsonQtiAttributeParserTest extends TestCase

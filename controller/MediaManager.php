@@ -18,6 +18,8 @@
  * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
  */
 
+declare(strict_types=1);
+
 namespace oat\taoMediaManager\controller;
 
 use oat\taoMediaManager\model\editInstanceForm;
@@ -108,6 +110,6 @@ class MediaManager extends \tao_actions_SaSModule
 
     protected function getClassService()
     {
-        return MediaService::singleton();
+        return $this->getServiceLocator()->get(MediaService::class);
     }
 }

@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus;
 
-class UpdateCommand
+class PatchCommand
 {
     /** @var string */
     private $id;

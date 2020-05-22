@@ -33,7 +33,7 @@ use oat\tao\model\media\TaoMediaResolver;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
-use oat\taoMediaManager\model\sharedStimulus\UpdateCommand;
+use oat\taoMediaManager\model\sharedStimulus\PatchCommand;
 use oat\taoMediaManager\model\SharedStimulusImporter;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
@@ -45,7 +45,7 @@ class UpdateService extends ConfigurableService
     /**
      * @throws core_kernel_persistence_Exception
      */
-    public function update(UpdateCommand $command): SharedStimulus
+    public function patch(PatchCommand $command): SharedStimulus
     {
         /** @var File $file */
         $file = $this->getServiceLocator()->get(FileReferenceSerializer::SERVICE_ID)->unserialize(

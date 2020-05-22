@@ -30,7 +30,7 @@ use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\user\User;
 use oat\taoMediaManager\model\sharedStimulus\CreateCommand;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
-use oat\taoMediaManager\model\sharedStimulus\UpdateCommand;
+use oat\taoMediaManager\model\sharedStimulus\PatchCommand;
 use Psr\Http\Message\ServerRequestInterface;
 
 class CommandFactoryTest extends TestCase
@@ -92,14 +92,14 @@ class CommandFactoryTest extends TestCase
         $this->assertEquals($expectedCommand, $this->factory->makeCreateCommandByRequest($request));
     }
 
-    public function testMakeUpdateCommandByRequest(): void
+    public function testMakePatchCommand(): void
     {
         $user = $this->createMock(User::class);
         $user->method('getIdentifier')->willReturn(self::USER_ID);
 
         $this->assertEquals(
-            new UpdateCommand(self::URI, self::BODY, self::USER_ID),
-            $this->factory->makeUpdateCommand(self::URI, self::BODY, $user)
+            new PatchCommand(self::URI, self::BODY, self::USER_ID),
+            $this->factory->makePatchCommand(self::URI, self::BODY, $user)
         );
     }
 }

@@ -30,7 +30,7 @@ use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\user\User;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\sharedStimulus\CreateCommand;
-use oat\taoMediaManager\model\sharedStimulus\UpdateCommand;
+use oat\taoMediaManager\model\sharedStimulus\PatchCommand;
 use Psr\Http\Message\ServerRequestInterface;
 
 class CommandFactory extends ConfigurableService
@@ -51,13 +51,13 @@ class CommandFactory extends ConfigurableService
         );
     }
 
-    public function makeUpdateCommand(string $id, string $body, User $user): UpdateCommand
+    public function makePatchCommand(string $id, string $body, User $user): PatchCommand
     {
         $name = hash('md5', $id);
         $file = $this->getDirectory()->getFile($name);
         $file->write($body);
 
-        return new UpdateCommand(
+        return new PatchCommand(
             $id,
             $this->getSerializer()->serialize($file),
             $user->getIdentifier()

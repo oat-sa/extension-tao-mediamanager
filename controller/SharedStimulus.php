@@ -101,9 +101,9 @@ class SharedStimulus extends tao_actions_CommonModule
             $id = $request->getQueryParams()['id'];
             $body = json_decode((string)$request->getBody(), true)['body'];
 
-            $command = $this->getCommandFactory()->makeUpdateCommand($id, $body, $user);
+            $command = $this->getCommandFactory()->makePatchCommand($id, $body, $user);
 
-            $sharedStimulus = $this->getUpdateService()->update($command);
+            $sharedStimulus = $this->getUpdateService()->patch($command);
 
             $formatter->withBody(new SuccessJsonResponse([]));
         } catch (Throwable $exception) {

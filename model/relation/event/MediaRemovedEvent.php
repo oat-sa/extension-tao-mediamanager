@@ -20,24 +20,30 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\relation\repository\rdf\map;
+namespace oat\taoMediaManager\model\relation\event;
 
-use oat\taoMediaManager\model\relation\MediaRelation;
-use core_kernel_classes_Resource as RdfResource;
+use oat\oatbox\event\Event;
 
-class RdfItemRelationMap extends AbstractRdfMediaRelationMap
+class MediaRemovedEvent implements Event
 {
     /** @var string */
-    public const ITEM_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem';
+    private $mediaId;
 
-    protected function getMediaRelationPropertyUri(): string
+    public function __construct(string $mediaId)
     {
-        return self::ITEM_RELATION_PROPERTY;
+        $this->mediaId = $mediaId;
     }
 
-    public function createMediaRelation(RdfResource $mediaResource, string $sourceId): MediaRelation
+    public function getMediaId(): string
     {
-        return (new MediaRelation(MediaRelation::ITEM_TYPE, $mediaResource->getUri(), $mediaResource->getLabel()))
-            ->withSourceId($sourceId);
+        return $this->mediaId;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getName()
+    {
+        return get_class($this);
     }
 }

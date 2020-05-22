@@ -56,7 +56,7 @@ paths:
               $ref: '#/components/schemas/SharedStimulusUpdate'
       responses:
         200:
-          $ref: '#/components/responses/SharedStimulusUpdatedResponse'
+          $ref: '#/components/responses/SharedStimulusPatchResponse'
         400:
           $ref: '#/components/responses/BadRequestResponse'
         500:
@@ -88,7 +88,7 @@ components:
             body:
               type: string
               example: '<?xml version="1.0" encoding="UTF-8"?><div xmlns="http://www.imsglobal.org/xsd/imsqti_v2p2"></div>'
-    SharedStimulusUpdate:
+    SharedStimulusPatch:
       type: object
       properties:
         body:
@@ -113,7 +113,7 @@ components:
           example: true
         data:
           $ref: '#/components/schemas/SharedStimulusCreated'
-    SharedStimulusUpdatedResponse:
+    SharedStimulusPatchResponse:
       properties:
         success:
           type: boolean
@@ -149,9 +149,9 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
-    SharedStimulusUpdatedResponse:
-      description: Response for the updated SharedStimulus
+    SharedStimulusPatchResponse:
+      description: Response for the patched SharedStimulus
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/SharedStimulusUpdatedResponse'
+            $ref: '#/components/schemas/SharedStimulusPatchResponse'

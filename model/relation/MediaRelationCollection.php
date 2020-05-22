@@ -29,7 +29,7 @@ use JsonSerializable;
 
 class MediaRelationCollection implements IteratorAggregate, JsonSerializable
 {
-    /** @var MediaRelation[]  */
+    /** @var MediaRelation[] */
     private $mediaRelations = [];
 
     public function __construct(MediaRelation ...$mediaRelations)
@@ -47,11 +47,33 @@ class MediaRelationCollection implements IteratorAggregate, JsonSerializable
     public function add(MediaRelation $mediaRelation): self
     {
         $this->mediaRelations[] = $mediaRelation;
+
         return $this;
     }
 
     public function jsonSerialize(): array
     {
         return $this->mediaRelations;
+    }
+
+    public function filterNewMediaIds(array $currentMediaIds): array
+    {
+        return array_diff($currentMediaIds, $this->getMediaIds());
+    }
+
+    public function filterRemovedMediaIds(array $currentMediaIds): array
+    {
+        return array_diff($this->getMediaIds(), $currentMediaIds);
+    }
+
+    private function getMediaIds(): array
+    {
+        $mediaIds = [];
+
+        foreach ($this->mediaRelations as $relation) {
+            $mediaIds[] = $relation->getId();
+        }
+
+        return $mediaIds;
     }
 }

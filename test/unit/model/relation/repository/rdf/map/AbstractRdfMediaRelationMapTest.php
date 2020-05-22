@@ -35,7 +35,7 @@ class AbstractRdfMediaRelationMapTest extends TestCase
 {
     public function testGetMediaRelations()
     {
-        $values =[
+        $values = [
             'asset-uri-1' => new MediaRelation('media', 'asset-uri-1', 'asset-label-1'),
             'asset-uri-2' => new MediaRelation('media', 'asset-uri-2', 'asset-label-2'),
         ];
@@ -47,6 +47,7 @@ class AbstractRdfMediaRelationMapTest extends TestCase
 
         $mediaResourceProphecy = $this->prophesize(RdfResource::class);
         $mediaResourceProphecy->getPropertyValues(Argument::exact($property))->willReturn(array_keys($values));
+        $mediaResourceProphecy->getUri()->willReturn('sourceId');
 
         foreach ($values as $mediaRelation) {
             $relationMediaProphecy = $this->prophesize(RdfResource::class);
@@ -69,16 +70,15 @@ class AbstractRdfMediaRelationMapTest extends TestCase
 
     private function getAbstractMap(): AbstractRdfMediaRelationMap
     {
-        return new class extends AbstractRdfMediaRelationMap
-        {
+        return new class extends AbstractRdfMediaRelationMap {
             protected function getMediaRelationPropertyUri(): string
             {
                 return 'uri-fixture';
             }
 
-            protected function createMediaRelation(string $uri, string $label): MediaRelation
+            public function createMediaRelation(RdfResource $resource, string $sourceId): MediaRelation
             {
-                return new MediaRelation('media', $uri, $label);
+                return (new MediaRelation('media', $resource->getUri(), $resource->getLabel()))->withSourceId($sourceId);
             }
         };
     }

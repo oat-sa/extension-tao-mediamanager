@@ -29,16 +29,25 @@ namespace oat\taoMediaManager\model\relation\repository\query;
  */
 class FindAllQuery
 {
-    /** @var string  */
+    /** @var string */
     private $mediaId;
 
-    public function __construct(string $mediaId)
+    /** @var string */
+    private $itemId;
+
+    public function __construct(string $mediaId = null, string $itemId = null)
     {
         $this->mediaId = $mediaId;
+        $this->itemId = $itemId;
     }
 
-    public function getMediaId(): string
+    public function getMediaId(): ?string
     {
         return $this->mediaId;
+    }
+
+    public function getItemId(): ?string
+    {
+        return $this->itemId;
     }
 }

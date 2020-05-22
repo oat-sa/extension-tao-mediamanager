@@ -21,6 +21,7 @@
 
 namespace oat\taoMediaManager\scripts\install;
 
+use common_report_Report;
 use oat\oatbox\extension\InstallAction;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\tao\model\media\MediaService;
@@ -53,5 +54,7 @@ class SetupMediaManager extends InstallAction
         }
 
         $serviceManager->register(FileSystemService::SERVICE_ID, $fsService);
+
+        return common_report_Report::createSuccess('Successfully installed');
     }
 }

@@ -25,6 +25,7 @@ namespace oat\taoMediaManager\scripts\update;
 use common_Exception;
 use common_exception_NotImplemented;
 use oat\oatbox\event\EventManager;
+use oat\oatbox\filesystem\FileSystemService;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\taoItems\model\event\ItemRemovedEvent;
 use oat\taoItems\model\event\ItemUpdatedEvent;
@@ -35,6 +36,7 @@ use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterfa
 use oat\taoMediaManager\model\relation\repository\rdf\map\RdfItemRelationMap;
 use oat\taoMediaManager\model\relation\repository\rdf\map\RdfMediaRelationMap;
 use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRelationRepository;
+use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
 
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -83,6 +85,22 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->getServiceManager()->register(EventManager::SERVICE_ID, $eventManager);
 
             $this->setVersion('9.8.0');
+        }
+
+        if ($this->isVersion('9.8.0')) {
+            /** @var FileSystemService $filesystemService */
+            $filesystemService = $this->getServiceManager()->get(FileSystemService::SERVICE_ID);
+            /** @var  $adapters */
+            if ($filesystemService->hasDirectory('memory')) {
+                $dirs = $filesystemService->getOption(FileSystemService::OPTION_DIRECTORIES);
+                $dirs[CommandFactory::DEFAULT_DIRECTORY] = 'memory';
+                $filesystemService->setOption(FileSystemService::OPTION_DIRECTORIES, $dirs);
+            } else {
+                $fileSystem = $filesystemService->createFileSystem(CommandFactory::DEFAULT_DIRECTORY);
+            }
+
+            $this->getServiceManager()->register(FileSystemService::SERVICE_ID, $filesystemService);
+            $this->setVersion('9.9.0');
         }
     }
 }

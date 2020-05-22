@@ -77,6 +77,6 @@ class SetMediaManager extends InstallAction
 
         $serviceManager->get(MediaService::SERVICE_ID)->addMediaSource(new MediaSource());
 
-        return common_report_Report::createSuccess('Successfully installed');
+        return common_report_Report::createSuccess('MediaManager successfully installed');
     }
 }

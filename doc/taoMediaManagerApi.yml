@@ -137,7 +137,19 @@ components:
               example: "http://tao.docker.localhost/tao.rdf#i5e89a2063326711164b1a816b433b1ec"
             body:
               type: string
-              example: '<?xml version="1.0" encoding="UTF-8"?><div xmlns="http://www.imsglobal.org/xsd/imsqti_v2p2"></div>'
+              example: '{
+                "success": true,
+                "data": {
+                  "serial": "i5ec3f09d28d19",
+                  "qtiClass": "include",
+                  "attributes": {},
+                  "body": {
+                    "serial": "i5ec3f09d28ef1",
+                    "body": "\n",
+                    "elements": {}
+                  }
+                }
+              }'
     SharedStimulusPatch:
       type: object
       properties:

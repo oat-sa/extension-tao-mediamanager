@@ -32,8 +32,10 @@ use oat\tao\model\http\response\ErrorJsonResponse;
 use oat\tao\model\http\response\SuccessJsonResponse;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
 use oat\taoMediaManager\model\sharedStimulus\factory\QueryFactory;
+use oat\taoMediaManager\model\sharedStimulus\parser\JsonQtiAttributeParser;
 use oat\taoMediaManager\model\sharedStimulus\repository\SharedStimulusRepository;
 use oat\taoMediaManager\model\sharedStimulus\service\CreateService;
+use oat\taoMediaManager\model\sharedStimulus\SharedStimulus as SharedStimulusObject;
 use oat\taoMediaManager\model\sharedStimulus\service\PatchService;
 use tao_actions_CommonModule;
 use Throwable;
@@ -54,7 +56,7 @@ class SharedStimulus extends tao_actions_CommonModule
             $sharedStimulus = $this->getCreateService()
                 ->create($command);
 
-            $formatter->withBody(new SuccessJsonResponse($sharedStimulus->jsonSerialize()));
+            $this->renderSharedStimulus($formatter, $sharedStimulus);
         } catch (Throwable $exception) {
             $this->logError(sprintf('Error creating Shared Stimulus: %s', $exception->getMessage()));
 
@@ -77,7 +79,7 @@ class SharedStimulus extends tao_actions_CommonModule
             $sharedStimulus = $this->getSharedStimulusRepository()
                 ->find($command);
 
-            $formatter->withBody(new SuccessJsonResponse($sharedStimulus->jsonSerialize()));
+            $this->renderSharedStimulus($formatter, $sharedStimulus);
         } catch (Throwable $exception) {
             $this->logError(sprintf('Error retrieving Shared Stimulus: %s', $exception->getMessage()));
 
@@ -116,6 +118,15 @@ class SharedStimulus extends tao_actions_CommonModule
         $this->setResponse($formatter->format($this->getPsrResponse()));
     }
 
+    private function renderSharedStimulus(ResponseFormatter $formatter, SharedStimulusObject $sharedStimulus): void
+    {
+        $data = $sharedStimulus->jsonSerialize();
+        if (isset($data['body'])) {
+            $data['body'] = $this->getSharedStimulusAttributesParser()->parse($sharedStimulus);
+        }
+        $formatter->withBody(new SuccessJsonResponse($data));
+    }
+
     private function getResponseFormatter(): ResponseFormatter
     {
         return $this->getServiceLocator()->get(ResponseFormatter::class);
@@ -144,6 +155,11 @@ class SharedStimulus extends tao_actions_CommonModule
     private function getSharedStimulusRepository(): SharedStimulusRepository
     {
         return $this->getServiceLocator()->get(SharedStimulusRepository::class);
+    }
+
+    private function getSharedStimulusAttributesParser(): JsonQtiAttributeParser
+    {
+        return $this->getServiceLocator()->get(JsonQtiAttributeParser::class);
     }
 
     private function getValidator(): ServerRequestValidator

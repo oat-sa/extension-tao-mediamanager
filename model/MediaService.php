@@ -122,7 +122,7 @@ class MediaService extends ConfigurableService
             ];
 
             $instance = $clazz->createInstanceWithProperties($properties);
-            $this->getEventManager()->trigger(new MediaSavedEvent($instance->getUri()));
+            $this->getEventManager()->trigger(new MediaSavedEvent());
 
             // @todo: move taoRevision stuff under a listener of MediaSavedEvent
             if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
@@ -163,7 +163,7 @@ class MediaService extends ConfigurableService
                 $instance->editPropertyValues($this->getProperty(self::PROPERTY_LANGUAGE), $language);
             }
 
-            $this->getEventManager()->trigger(new MediaSavedEvent($instance->getUri()));
+            $this->getEventManager()->trigger(new MediaSavedEvent());
 
             // @todo: move taoRevision stuff under a listener of MediaSavedEvent
             if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {

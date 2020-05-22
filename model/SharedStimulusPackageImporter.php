@@ -70,7 +70,7 @@ class SharedStimulusPackageImporter extends ZipImporter
                 ? $e->getUserMessage()
                 : __('An error has occurred. Please contact your administrator.');
             $report = Report::createFailure($message);
-            $this->logError($e->getTraceAsString());
+            $this->logError($e->getMessage());
         }
 
         return $report;

@@ -25,18 +25,24 @@ namespace oat\taoMediaManager\test\integration\model;
 
 use LogicException;
 use oat\generis\test\TestCase;
-use oat\taoMediaManager\model\sharedStimulus\renderer\JsonQtiAttributeParser;
+use oat\taoMediaManager\model\sharedStimulus\parser\JsonQtiAttributeParser;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 
 class JsonQtiAttributeParserTest extends TestCase
 {
+    /** @var JsonQtiAttributeParser */
+    private $subject;
+
+    public function setUp(): void
+    {
+        $this->subject = new JsonQtiAttributeParser();
+    }
+
     public function testRendererEmptyBody()
     {
-        $this->expectException(LogicException::class);
         $sharedStimulus = new SharedStimulus('id', '', '', '');
-        $renderer = new JsonQtiAttributeParser();
 
-        $this->assertEmpty($renderer->parse($sharedStimulus));
+        $this->assertEmpty($this->subject->parse($sharedStimulus));
     }
 
     public function testRenderSimpleSharedStimulus()
@@ -53,9 +59,8 @@ class JsonQtiAttributeParserTest extends TestCase
     private function renderXmlBody($xml)
     {
         $sharedStimulus = new SharedStimulus('id', '', '', $xml);
-        $renderer = new JsonQtiAttributeParser();
 
-        $attributes = $renderer->parse($sharedStimulus);
+        $attributes = $this->subject->parse($sharedStimulus);
 
         $this->assertArrayHasKey('qtiClass', $attributes);
         $this->assertSame('include', $attributes['qtiClass']);

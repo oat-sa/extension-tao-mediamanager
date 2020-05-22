@@ -92,7 +92,6 @@ class Updater extends \common_ext_ExtensionUpdater
             $filesystemService = $this->getServiceManager()->get(FileSystemService::SERVICE_ID);
             /** @var  $adapters */
             if ($filesystemService->hasDirectory('memory')) {
-                $adapters = $filesystemService->getOption(FileSystemService::OPTION_ADAPTERS);
                 $dirs = $filesystemService->getOption(FileSystemService::OPTION_DIRECTORIES);
                 $dirs[CommandFactory::DEFAULT_DIRECTORY] = 'memory';
                 $filesystemService->setOption(FileSystemService::OPTION_DIRECTORIES, $dirs);

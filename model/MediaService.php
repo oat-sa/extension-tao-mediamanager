@@ -28,8 +28,6 @@ use oat\generis\model\OntologyRdfs;
 use oat\oatbox\filesystem\File;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\tao\model\ClassServiceTrait;
-use common_ext_ExtensionsManager;
-use oat\oatbox\log\LoggerAwareTrait;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\relation\event\MediaRemovedEvent;
 use oat\taoRevision\model\RepositoryInterface;

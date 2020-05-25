@@ -30,7 +30,7 @@ use oat\taoMediaManager\model\relation\event\processor\ItemUpdatedEventProcessor
 use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
 use PHPUnit\Framework\MockObject\MockObject;
 
-class ItemUpdatedProcessorTest extends TestCase
+class ItemUpdatedEventProcessorTest extends TestCase
 {
     /** @var ItemUpdatedEventProcessor */
     private $subject;
@@ -56,14 +56,20 @@ class ItemUpdatedProcessorTest extends TestCase
         $this->updateService
             ->expects($this->once())
             ->method('updateByItem')
-            ->with('itemId', ['mediaId']);
+            ->with('itemId', ['mediaId1', 'mediaId2', 'mediaId3']);
 
         $this->subject->process(
             new ItemUpdatedEvent(
                 'itemId',
                 [
                     'includeElementIds' => [
-                        'mediaId'
+                        'mediaId1'
+                    ],
+                    'objectElementIds' => [
+                        'mediaId2'
+                    ],
+                    'imgElementIds' => [
+                        'mediaId3'
                     ]
                 ]
             )

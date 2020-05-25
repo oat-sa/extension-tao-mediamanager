@@ -78,12 +78,12 @@ define([
                     uri : '',
                     shuffleChoices : false,
                     itemOptionForm : $('#item-editor-item-property-bar .panel'),
-                    interactionOptionForm : $('#item-editor-interaction-property-bar .panel'),
-                    choiceOptionForm : $('#item-editor-choice-property-bar .panel'),
-                    responseOptionForm : $('#item-editor-response-property-bar .panel'),
-                    bodyElementOptionForm : areaBroker.getElementPropertyPanelArea(),
+                    // interactionOptionForm : $('#item-editor-interaction-property-bar .panel'),
+                    // choiceOptionForm : $('#item-editor-choice-property-bar .panel'),
+                    // responseOptionForm : $('#item-editor-response-property-bar .panel'),
+                    // bodyElementOptionForm : areaBroker.getElementPropertyPanelArea(),
                     textOptionForm : $('#item-editor-text-property-bar .panel'),
-                    modalFeedbackOptionForm : $('#item-editor-modal-feedback-property-bar .panel'),
+                    // modalFeedbackOptionForm : $('#item-editor-modal-feedback-property-bar .panel'),
                     mediaManager : {
                         appendContainer : '#mediaManager',
                         browseUrl : config.properties.getFilesUrl,
@@ -93,7 +93,7 @@ define([
                         fileExistsUrl : config.properties.fileExistsUrl,
                         mediaSourcesUrl : config.properties.mediaSourcesUrl
                     },
-                    interactions : _extractInteractionsConfig(config),
+                    // interactions : _extractInteractionsConfig(config),
                     qtiCreatorContext : config.qtiCreatorContext,
                     locations: config.properties.locations
                 });

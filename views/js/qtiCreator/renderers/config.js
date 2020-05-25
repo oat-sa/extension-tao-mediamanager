@@ -41,7 +41,7 @@ define([
         'math' : 'taoQtiItem/qtiCreator/renderers/Math',
         'object' : 'taoQtiItem/qtiCreator/renderers/Object',
         'table' : 'taoQtiItem/qtiCreator/renderers/Table',
-        'modalFeedback' : 'taoQtiItem/qtiCreator/renderers/ModalFeedback',
+        // 'modalFeedback' : 'taoQtiItem/qtiCreator/renderers/ModalFeedback',
         // 'choiceInteraction' : 'taoQtiItem/qtiCreator/renderers/interactions/ChoiceInteraction',
         // 'orderInteraction' : 'taoQtiItem/qtiCreator/renderers/interactions/OrderInteraction',
         // 'matchInteraction' : 'taoQtiItem/qtiCreator/renderers/interactions/MatchInteraction',
@@ -70,7 +70,7 @@ define([
         // 'gap' : 'taoQtiItem/qtiCreator/renderers/choices/Gap',
         // 'gapText' : 'taoQtiItem/qtiCreator/renderers/choices/GapText',
         // 'hottext' : 'taoQtiItem/qtiCreator/renderers/choices/Hottext',
-        'printedVariable' : 'taoQtiItem/qtiCreator/renderers/PrintedVariable'
+        // 'printedVariable' : 'taoQtiItem/qtiCreator/renderers/PrintedVariable'
     }, commonRenderConfig.locations);
 
     return {

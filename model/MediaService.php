@@ -48,22 +48,16 @@ class MediaService extends ConfigurableService
     use GenerisServiceTrait;
     use LoggerAwareTrait;
 
-    /** @var string */
     public const ROOT_CLASS_URI = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Media';
 
-    /** @var string */
     public const PROPERTY_LINK = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Link';
 
-    /** @var string */
     public const PROPERTY_LANGUAGE = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Language';
 
-    /** @var string */
     public const PROPERTY_ALT_TEXT = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AltText';
 
-    /** @var string */
     public const PROPERTY_MD5 = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#md5';
 
-    /** @var string */
     public const PROPERTY_MIME_TYPE = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#mimeType';
 
     /**
@@ -122,6 +116,8 @@ class MediaService extends ConfigurableService
             ];
 
             $instance = $clazz->createInstanceWithProperties($properties);
+            $id = $instance->getUri();
+
             $this->getEventManager()->trigger(new MediaSavedEvent());
 
             // @todo: move taoRevision stuff under a listener of MediaSavedEvent
@@ -130,7 +126,7 @@ class MediaService extends ConfigurableService
                 $this->getRepositoryService()->commit($instance, __('Initial import'), null, $userId);
             }
 
-            return $instance->getUri();
+            return $id;
         }
         return false;
     }
@@ -142,11 +138,11 @@ class MediaService extends ConfigurableService
      */
     public function editMediaInstance(
         $fileSource,
-        string $instanceUri,
+        string $id,
         string $language = null,
         string $userId = null
     ): bool {
-        $instance = $this->getResource($instanceUri);
+        $instance = $this->getResource($id);
         $link = $this->getLink($instance);
 
         $fileManager = $this->getFileManager();

@@ -100,7 +100,8 @@ define([
                     itemData = Object.assign({}, newItem);
                     delete itemData.bdy;
                     delete itemData.rootElement;
-                    itemData.body = mockBody;
+                    // itemData.body = mockBody;
+                    itemData.body = response.data.body.body;
                     itemData.qtiClass = 'assessmentItem';
 
                     loader = new Loader().setClassesLocation(qtiClasses);
@@ -119,8 +120,8 @@ define([
                         loadedItem.setSchemaLocations(qtiSchemaLocation);
 
                         //add languages list to the item
-                        if (response.data.languagesList) {
-                            newItem.data('languagesList', data.languagesList);
+                        if (response.languagesList) {
+                            loadedItem.data('languagesList', response.languagesList);
                         }
 
                         callback(loadedItem, this.getLoadedClasses());

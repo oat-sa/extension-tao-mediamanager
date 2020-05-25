@@ -125,6 +125,12 @@ define([
                 return reject(new Error(__('The item cannot be saved because it contains an unsupported custom interaction.')));
             }
 
+            // TO DO
+            // Shared stimulus save
+            // cut shared stimulus body that is in container
+            // put it inside xml template for shared stimulus
+            // send it to the server
+
             $.ajax({
                 url : urlUtil.build(self.saveItemUrl, {uri: self.itemUri}),
                 type : 'POST',

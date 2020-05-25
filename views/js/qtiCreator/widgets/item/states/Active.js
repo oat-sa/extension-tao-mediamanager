@@ -33,10 +33,10 @@ define([
 
         //build form:
         $form.html(formTpl({
-            serial : item.getSerial(),
-            identifier : item.id(),
-            title : item.attr('title'),
-            timeDependent : !!item.attr('timeDependent'),
+            // serial : item.getSerial(),
+            // identifier : item.id(),
+            // title : item.attr('title'),
+            // timeDependent : !!item.attr('timeDependent'),
             'xml:lang' : item.attr('xml:lang'),
             languagesList : item.data('languagesList')
         }));

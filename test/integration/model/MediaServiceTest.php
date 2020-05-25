@@ -15,12 +15,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2018 (original work) Open Assessment Technologies SA;
- *
+ * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
  */
+
+declare(strict_types=1);
 
 namespace oat\taoMediaManager\test\integration\model;
 
+use oat\oatbox\service\ServiceManager;
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\taoMediaManager\model\MediaService;
 use oat\generis\test\TestCase;
@@ -64,11 +66,11 @@ class MediaServiceTest extends TestCase
             ->with($fileTmp, basename($fileTmp))
             ->willReturn('MyGreatLink');
 
-        $mediaService = MediaService::singleton();
+        $serviceManager = ServiceManager::getServiceManager();
+        $serviceManager->overload(FlySystemManagement::SERVICE_ID, $fileManagerMock);
 
-        $ref = new \ReflectionProperty(MediaService::class, 'fileManager');
-        $ref->setAccessible(true);
-        $ref->setValue($mediaService, $fileManagerMock);
+        $mediaService = new MediaService();
+        $mediaService->setServiceLocator($serviceManager);
 
         return $mediaService;
     }
@@ -84,11 +86,11 @@ class MediaServiceTest extends TestCase
             ->with($fileTmp)
             ->willReturn(true);
 
-        $mediaService = MediaService::singleton();
+        $serviceManager = ServiceManager::getServiceManager();
+        $serviceManager->overload(FlySystemManagement::SERVICE_ID, $fileManagerMock);
 
-        $ref = new \ReflectionProperty(MediaService::class, 'fileManager');
-        $ref->setAccessible(true);
-        $ref->setValue($mediaService, $fileManagerMock);
+        $mediaService = new MediaService();
+        $mediaService->setServiceLocator($serviceManager);
 
         return $mediaService;
     }
@@ -141,7 +143,6 @@ class MediaServiceTest extends TestCase
         );
 
         // remove what has been done
-        $inst = new \core_kernel_classes_Resource($instanceUri);
-        $this->assertTrue($inst->delete());
+        $this->assertTrue($instance->delete());
     }
 }

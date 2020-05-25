@@ -15,9 +15,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2018 (original work) Open Assessment Technologies SA;
- *
+ * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
  */
+
+declare(strict_types=1);
 
 namespace oat\taoMediaManager\model;
 
@@ -97,7 +98,7 @@ class SharedStimulusImporter extends ConfigurableService implements
         $uploadedFile = $this->fetchUploadedFile($form);
 
         try {
-            $service = MediaService::singleton();
+            $service = $this->getMediaService();
             $classUri = $class->getUri();
 
             $instanceUri = $form instanceof Form
@@ -329,5 +330,10 @@ class SharedStimulusImporter extends ConfigurableService implements
             $form->getValues(),
             $this->getDefaultTaskParameters($form)
         );
+    }
+
+    private function getMediaService(): MediaService
+    {
+        return $this->getServiceLocator()->get(MediaService::class);
     }
 }

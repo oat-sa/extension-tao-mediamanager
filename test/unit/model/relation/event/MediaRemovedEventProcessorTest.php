@@ -31,7 +31,7 @@ use oat\taoMediaManager\model\relation\event\processor\MediaRemovedEventProcesso
 use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
 use PHPUnit\Framework\MockObject\MockObject;
 
-class MediaRemovedProcessorTest extends TestCase
+class MediaRemovedEventProcessorTest extends TestCase
 {
     /** @var MediaRemovedEventProcessor */
     private $subject;

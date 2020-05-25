@@ -15,24 +15,22 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2019 (original work) Open Assessment Technologies SA;
- *
+ * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
  */
+
+declare(strict_types=1);
 
 namespace oat\taoMediaManager\test\integration\model;
 
 use oat\generis\test\TestCase;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\log\LoggerService;
-use oat\oatbox\service\ServiceManager;
 use oat\tao\model\upload\UploadService;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\SharedStimulusImporter;
-use Prophecy\Argument;
 use Psr\Log\NullLogger;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
-use Zend\ServiceManager\ServiceLocatorInterface;
 use oat\generis\test\MockObject;
 
 include __DIR__ . '/../../../includes/raw_start.php';
@@ -47,21 +45,12 @@ class SharedStimulusImporterTest extends TestCase
 
     public function setUp(): void
     {
-        $this->service = $this->getMockBuilder('oat\taoMediaManager\model\MediaService')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $ref = new \ReflectionProperty('tao_models_classes_Service', 'instances');
-        $ref->setAccessible(true);
-        $ref->setValue(null, ['oat\taoMediaManager\model\MediaService' => $this->service]);
+        $this->service = $this->getMockBuilder(MediaService::class)
+            ->disableOriginalConstructor()->getMock();
     }
 
     public function tearDown(): void
     {
-        $ref = new \ReflectionProperty('tao_models_classes_Service', 'instances');
-        $ref->setAccessible(true);
-        $ref->setValue(null, []);
-
         $this->removeTempFileSystem();
     }
 
@@ -199,17 +188,8 @@ class SharedStimulusImporterTest extends TestCase
             ->getMock();
 
         $instance = new \core_kernel_classes_Resource('http://fancyDomain.com/tao.rdf#fancyInstanceUri');
-        $sharedImporter = (new SharedStimulusImporter())->setInstanceUri($instance->getUri());
 
-        $serviceMangerMock = $this->createMock(ServiceLocatorInterface::class);
-        $uploadServiceMock = $this->createMock(UploadService::class);
-
-        $serviceMangerMock->expects($this->atLeastOnce())
-            ->method('get')
-            ->with(UploadService::SERVICE_ID)
-            ->willReturn($uploadServiceMock);
-
-        $sharedImporter->setServiceLocator($serviceMangerMock);
+        $sharedImporter = $this->getSharedStimulusImporter($instance->getUri());
 
         $filename = dirname(__DIR__) . '/sample/sharedStimulus/stimulusPackage.zip';
         $myClass = new \core_kernel_classes_Class('http://fancyDomain.com/tao.rdf#fancyUri');
@@ -260,16 +240,17 @@ class SharedStimulusImporterTest extends TestCase
             ->method('remove')
             ->willReturn(true);
 
-        $sm = $this->prophesize(ServiceManager::class);
-        $sm->get(Argument::is(UploadService::SERVICE_ID))->willReturn($uploadServiceMock);
-        $sm->get(Argument::is(LoggerService::SERVICE_ID))->willReturn(new NullLogger());
+        $importer = new SharedStimulusImporter();
 
         if (!is_null($uri)) {
-            $importer = (new SharedStimulusImporter())->setInstanceUri($uri);
-        } else {
-            $importer = new SharedStimulusImporter();
+            $importer->setInstanceUri($uri);
         }
-        $importer->setServiceLocator($sm->reveal());
+
+        $importer->setServiceLocator($this->getServiceLocatorMock([
+            UploadService::SERVICE_ID => $uploadServiceMock,
+            LoggerService::SERVICE_ID => new NullLogger(),
+            MediaService::class => $this->service,
+        ]));
 
         return $importer;
     }

@@ -15,22 +15,21 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
- *
- *
+ * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
  */
+
+declare(strict_types=1);
 
 namespace oat\taoMediaManager\test\integration\model;
 
 use oat\generis\test\TestCase;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\log\LoggerService;
-use oat\oatbox\service\ServiceManager;
 use oat\tao\model\import\InvalidSourcePathException;
 use oat\tao\model\upload\UploadService;
 use oat\taoMediaManager\model\FileImportForm;
+use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\SharedStimulusPackageImporter;
-use Prophecy\Argument;
 use Psr\Log\NullLogger;
 use qtism\data\storage\xml\XmlDocument;
 use oat\generis\test\MockObject;
@@ -45,21 +44,12 @@ class SharedStimulusPackageImporterTest extends TestCase
 
     public function setUp(): void
     {
-        $this->service = $this->getMockBuilder('oat\taoMediaManager\model\MediaService')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $ref = new \ReflectionProperty(\tao_models_classes_Service::class, 'instances');
-        $ref->setAccessible(true);
-        $ref->setValue(null, ['oat\taoMediaManager\model\MediaService' => $this->service]);
+        $this->service = $this->getMockBuilder(MediaService::class)
+            ->disableOriginalConstructor()->getMock();
     }
 
     public function tearDown(): void
     {
-        $ref = new \ReflectionProperty(\tao_models_classes_Service::class, 'instances');
-        $ref->setAccessible(true);
-        $ref->setValue(null, []);
-
         $this->removeTempFileSystem();
     }
 
@@ -229,19 +219,14 @@ class SharedStimulusPackageImporterTest extends TestCase
 
     private function getPackageImporter()
     {
-        $uploadServiceMock = $this->getMockBuilder(UploadService::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $uploadServiceMock->expects($this->any())
-            ->method('remove')
-            ->willReturn(true);
-
-        $sm = $this->prophesize(ServiceManager::class);
-        $sm->get(Argument::is(UploadService::SERVICE_ID))->willReturn($uploadServiceMock);
-        $sm->get(Argument::is(LoggerService::SERVICE_ID))->willReturn(new NullLogger());
+        $uploadServiceMock = $this->createConfiguredMock(UploadService::class, ['remove' => true]);
 
         $importer = new SharedStimulusPackageImporter();
-        $importer->setServiceLocator($sm->reveal());
+        $importer->setServiceLocator($this->getServiceLocatorMock([
+            UploadService::SERVICE_ID => $uploadServiceMock,
+            LoggerService::SERVICE_ID => new NullLogger(),
+            MediaService::class => $this->service,
+        ]));
 
         return $importer;
     }

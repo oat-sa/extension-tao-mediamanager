@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\event\processor;
 
-use LogicException;
 use oat\oatbox\event\Event;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoItems\model\event\ItemUpdatedEvent;
@@ -31,6 +30,8 @@ use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
 class ItemUpdatedEventProcessor extends ConfigurableService implements EventProcessorInterface
 {
     private const INCLUDE_ELEMENT_IDS_KEY = 'includeElementIds';
+    private const OBJECT_ELEMENT_IDS_KEY = 'objectElementIds';
+    private const IMG_ELEMENT_IDS_KEY = 'imgElementIds';
 
     /**
      * @inheritDoc
@@ -43,10 +44,26 @@ class ItemUpdatedEventProcessor extends ConfigurableService implements EventProc
 
         $data = $event->getData();
 
-        if (array_key_exists(self::INCLUDE_ELEMENT_IDS_KEY, $data)) {
+        if ($this->mustUpdateItemRelation($data)) {
             $this->getItemRelationUpdateService()
-                ->updateByItem($event->getItemUri(), $data[self::INCLUDE_ELEMENT_IDS_KEY]);
+                ->updateByItem($event->getItemUri(), $this->getAggregatedMediaIds($data));
         }
+    }
+
+    private function mustUpdateItemRelation(array $data): bool
+    {
+        return array_key_exists(self::INCLUDE_ELEMENT_IDS_KEY, $data)
+            || array_key_exists(self::OBJECT_ELEMENT_IDS_KEY, $data)
+            || array_key_exists(self::IMG_ELEMENT_IDS_KEY, $data);
+    }
+
+    private function getAggregatedMediaIds(array $data): array
+    {
+        return array_merge(
+            $data[self::INCLUDE_ELEMENT_IDS_KEY] ?? [],
+            $data[self::OBJECT_ELEMENT_IDS_KEY] ?? [],
+            $data[self::IMG_ELEMENT_IDS_KEY] ?? []
+        );
     }
 
     private function getItemRelationUpdateService(): ItemRelationUpdateService

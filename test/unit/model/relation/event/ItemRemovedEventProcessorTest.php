@@ -30,7 +30,7 @@ use oat\taoMediaManager\model\relation\event\processor\ItemRemovedEventProcessor
 use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
 use PHPUnit\Framework\MockObject\MockObject;
 
-class ItemRemovedProcessorTest extends TestCase
+class ItemRemovedEventProcessorTest extends TestCase
 {
     /** @var ItemRemovedEventProcessor */
     private $subject;

@@ -13,9 +13,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2017 (original work) Open Assessment Technologies SA ;
+ * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA ;
  *
  */
+
 define([
     'lodash',
     'taoQtiItem/qtiCreator/widgets/states/factory',
@@ -25,11 +26,11 @@ define([
 ], function(_, stateFactory, Active, formTpl, formElement){
     'use strict';
 
-    var ItemStateActive = stateFactory.create(Active, function enterActiveState(){
-        var _widget = this.widget;
-        var item = _widget.element;
-        var $form = _widget.$form;
-        var areaBroker = this.widget.getAreaBroker();
+    const ItemStateActive = stateFactory.create(Active, function enterActiveState() {
+        const _widget = this.widget;
+        const item = _widget.element;
+        const $form = _widget.$form;
+        const areaBroker = this.widget.getAreaBroker();
 
         //build form:
         $form.html(formTpl({
@@ -47,7 +48,7 @@ define([
         //init data validation and binding
         formElement.setChangeCallbacks($form, item, {
             identifier : formElement.getAttributeChangeCallback(),
-            title : function titleChange(i, title){
+            title : function titleChange(i, title) {
                 item.attr('title', title);
                 areaBroker.getTitleArea().text(item.attr('title'));
             },

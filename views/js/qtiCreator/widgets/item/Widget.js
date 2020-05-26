@@ -13,9 +13,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2015 (original work) Open Assessment Technologies SA ;
+ * Copyright (c) 2020 (original work) Open Assessment Technologies SA ;
  *
  */
+
 define([
     'lodash',
     'i18n',
@@ -57,15 +58,15 @@ define([
 
     'use strict';
 
-    var ItemWidget = Widget.clone();
+    const ItemWidget = Widget.clone();
 
-    ItemWidget.initCreator = function(config){
-        var self = this;
+    ItemWidget.initCreator = function(config) {
+        const self = this;
         this.registerStates(states);
 
         Widget.initCreator.call(this);
 
-        if(!config || !config.uri){
+        if (!config || !config.uri) {
             throw new Error('missing required config parameter uri in item widget initialization');
         }
 
@@ -77,8 +78,8 @@ define([
 
         //this.initUiComponents();
 
-        return new Promise(function(resolve){
-            self.initTextWidgets(function(){
+        return new Promise(function(resolve) {
+            self.initTextWidgets(function() {
 
                 //when the text widgets are ready:
                 this.initGridEditor();
@@ -94,8 +95,7 @@ define([
         });
     };
 
-    ItemWidget.buildContainer = function(){
-
+    ItemWidget.buildContainer = function() {
         this.$container = this.$original;
     };
 
@@ -105,10 +105,10 @@ define([
      *
      * @returns {Promise} that wraps the request
      */
-    ItemWidget.save = function(){
-        var self = this;
-        return new Promise(function(resolve, reject){
-            var xml;
+    ItemWidget.save = function() {
+        const self = this;
+        return new Promise(function(resolve, reject) {
+            let xml;
 
             // transform application errors into object Error in order to make them displayable
             function rejectError(err) {
@@ -121,7 +121,7 @@ define([
             xml = xmlNsHandler.restoreNs(xmlRenderer.render(self.element), self.element.getNamespaces());
 
             //@todo : remove this hotfix : prevent unsupported custom interaction to be saved
-            if(hasUnsupportedInteraction(xml)){
+            if (hasUnsupportedInteraction(xml)) {
                 return reject(new Error(__('The item cannot be saved because it contains an unsupported custom interaction.')));
             }
 
@@ -138,82 +138,30 @@ define([
                 dataType : 'json',
                 data : xml
             })
-                .done(function(data) {
-                    if (!data || data.success) {
-                        resolve(data);
-                    } else {
-                        rejectError(data);
-                    }
-                })
-                .fail(rejectError);
+            .done(function(data) {
+                if (!data || data.success) {
+                    resolve(data);
+                } else {
+                    rejectError(data);
+                }
+            })
+            .fail(rejectError);
         });
     };
 
-    ItemWidget.initUiComponents = function(){
+    ItemWidget.initUiComponents = function() {
 
-        var _widget = this,
+        const _widget = this,
             element = _widget.element,
-            $saveBtn = $('#save-trigger'),
-            $previewBtn = $('.preview-trigger');
-
-        //init save button:
-      /*  $saveBtn.on('click', function(e){
-
-            var $saveButton = $(this);
-
-            //trigger save event
-            $saveButton.trigger('beforesave.qti-creator');
-
-            if($saveButton.hasClass('disabled')){
-                e.preventDefault();
-                return;
-            }
-
-            $saveButton.addClass('active');
-
-            //defer exceution of save function to give beforesave chance to be executed
-            _.defer(function(){
-
-                $.when(styleEditor.save(), _widget.save()).done(function(){
-
-                    var success = true,
-                        feedbackArgs = {
-                        message : __('Your item has been saved'),
-                        type : 'success'
-                    },
-                    i = arguments.length;
-
-                    $saveButton.removeClass('active');
-
-                    while(i--){
-                        if(arguments[i][1].toLowerCase() !== 'success'){
-                            feedbackArgs = {
-                                message : __('Failed to save item'),
-                                type : 'error'
-                            };
-                            success = false;
-                            break;
-                        }
-                    }
-
-                    $saveButton.trigger('aftersave.qti-creator', [success]);
-                    _createInfoBox(feedbackArgs);
-                });
-            });
-
-        });*/
-
-        //$previewBtn.on('click', function(){
-            //itemEditor.initPreview(_widget);
-        //});
+            $saveBtn = $('#save-trigger');
 
         //listen to invalid states:
         _widget.on('metaChange', function(data){
-            if(data.element.getSerial() === element.getSerial() && data.key === 'invalid'){
-                var invalid = element.data('invalid');
-                if(_.size(invalid)){
+            if (data.element.getSerial() === element.getSerial() && data.key === 'invalid') {
+                const invalid = element.data('invalid');
+                if (_.size(invalid)) {
                     $saveBtn.addClass('disabled');
-                }else{
+                } else {
                     $saveBtn.removeClass('disabled');
                 }
             }
@@ -221,9 +169,9 @@ define([
 
     };
 
-    ItemWidget.initGridEditor = function(){
+    ItemWidget.initGridEditor = function() {
 
-        var _this = this,
+        const _this = this,
             item = this.element,
             $itemBody = this.$container.find('.qti-itemBody'),
             $itemEditorPanel = $('#item-editor-panel');
@@ -231,27 +179,27 @@ define([
         $itemBody.gridEditor();
         $itemBody.gridEditor('resizable');
         $itemBody.gridEditor('addInsertables', $('.tool-list > [data-qti-class]:not(.disabled)'), {
-            helper : function(){
+            helper : function() {
                 return $(this).find('.icon').clone().addClass('dragging');
             }
         });
 
-        $itemBody.on('beforedragoverstart.gridEdit', function(){
+        $itemBody.on('beforedragoverstart.gridEdit', function() {
 
             $itemEditorPanel.addClass('dragging');
             $itemBody.removeClass('hoverable').addClass('inserting');
 
-        }).on('dragoverstop.gridEdit', function(){
+        }).on('dragoverstop.gridEdit', function() {
 
             $itemEditorPanel.removeClass('dragging');
             $itemBody.addClass('hoverable').removeClass('inserting');
 
-        }).on('dropped.gridEdit.insertable', function(e, qtiClass, $placeholder){
+        }).on('dropped.gridEdit.insertable', function(e, qtiClass, $placeholder) {
 
             //a new qti element has been added: update the model + render
             $placeholder.removeAttr('id');//prevent it from being deleted
 
-            if(qtiClass === 'rubricBlock'){
+            if (qtiClass === 'rubricBlock') {
                 //qti strange exception: a rubricBlock must be the first child of itemBody, nothing else...
                 //so in this specific case, consider the whole row as the rubricBlock
                 //by the way, in our grid system, rubricBlock can only have a width of col-12
@@ -264,43 +212,43 @@ define([
                 'data-qti-class' : qtiClass
             });//add data attribute to get the dom ready to be replaced by rendering
 
-            var $widget = $placeholder.parent().closest('.widget-box, .qti-item');
-            var $editable = $placeholder.closest('[data-html-editable], .qti-itemBody');
-            var widget = $widget.data('widget');
-            var element = widget.element;
-            var container = Element.isA(element, '_container') ? element : element.getBody();
+            const $widget = $placeholder.parent().closest('.widget-box, .qti-item');
+            const $editable = $placeholder.closest('[data-html-editable], .qti-itemBody');
+            const widget = $widget.data('widget');
+            const element = widget.element;
+            const container = Element.isA(element, '_container') ? element : element.getBody();
 
-            if(!element || !$editable.length){
+            if (!element || !$editable.length) {
                 throw new Error('cannot create new element');
             }
 
-            containerHelper.createElements(container, contentHelper.getContent($editable), function(newElts){
+            containerHelper.createElements(container, contentHelper.getContent($editable), function(newElts) {
 
-                creatorRenderer.get().load(function(){
-                    var self = this;
+                creatorRenderer.get().load(function() {
+                    const self = this;
 
-                    _.forEach(newElts, function(elt, serial){
-                        var $widget,
+                    _.forEach(newElts, function(elt){
+                        let $widget,
                             widget,
                             $colParent = $placeholder.parent();
 
 
                         elt.setRenderer(self);
 
-                        if(Element.isA(elt, '_container')){
+                        if (Element.isA(elt, '_container')) {
                             $colParent.empty();//clear the col content, and leave an empty text field
                             $colParent.html(elt.render());
                             widget = _this.initTextWidget(elt, $colParent);
                             $widget = widget.$container;
-                        }else{
+                        } else {
                             elt.render($placeholder);
 
                             //TODO resolve the promise it returns
                             elt.postRender();
                             widget = elt.data('widget');
-                            if(Element.isA(elt, 'blockInteraction')){
+                            if (Element.isA(elt, 'blockInteraction')) {
                                 $widget = widget.$container;
-                            }else{
+                            } else {
                                 //leave the container in place
                                 $widget = widget.$original;
                             }
@@ -311,9 +259,9 @@ define([
                         $widget.trigger('resize.gridEdit');
 
                         //active it right away:
-                        if(Element.isA(elt, 'interaction')){
+                        if (Element.isA(elt, 'interaction')) {
                             widget.changeState('question');
-                        }else{
+                        } else {
                             widget.changeState('active');
                         }
 
@@ -321,7 +269,7 @@ define([
                 }, this.getUsedClasses());
             });
 
-        }).on('resizestop.gridEdit', function(){
+        }).on('resizestop.gridEdit', function() {
 
             item.body($itemBody.gridEditor('getContent'));
 
@@ -329,9 +277,9 @@ define([
 
     };
 
-    ItemWidget.initTextWidgets = function(callback){
+    ItemWidget.initTextWidgets = function(callback) {
 
-        var _this = this,
+        let _this = this,
             item = this.element,
             $originalContainer = this.$container,
             i = 1,
@@ -340,40 +288,40 @@ define([
         callback = callback || _.noop;
 
         //temporarily tag col that need to be transformed into
-        $originalContainer.find('.qti-itemBody > .grid-row').each(function(){
+        $originalContainer.find('.qti-itemBody > .grid-row').each(function() {
 
-            var $row = $(this);
+            const $row = $(this);
 
-            if(!$row.hasClass('widget-box')){//not a rubricBlock
-                $row.children().each(function(){
+            if (!$row.hasClass('widget-box')) {//not a rubricBlock
+                $row.children().each(function() {
 
-                    var $col = $(this),
+                    let $col = $(this),
                         isTextBlock = false;
 
-                    $col.contents().each(function(){
+                    $col.contents().each(function() {
                         if(this.nodeType === 3 && this.nodeValue && this.nodeValue.trim()){
                             isTextBlock = true;
                             return false;
                         }
                     });
 
-                    var $widget = $col.children();
-                    if($widget.length > 1 || !$widget.hasClass('widget-blockInteraction')){//not an immediate qti element
-                        if($widget.hasClass('colrow')){
-                            $widget.each(function(){
-                                var $subElement = $(this);
-                                var $subWidget = $subElement.children();
-                                if($subWidget.length > 1 || !$subWidget.hasClass('widget-blockInteraction')){
+                    const $widget = $col.children();
+                    if ($widget.length > 1 || !$widget.hasClass('widget-blockInteraction')) {//not an immediate qti element
+                        if ($widget.hasClass('colrow')) {
+                            $widget.each(function() {
+                                const $subElement = $(this);
+                                const $subWidget = $subElement.children();
+                                if ($subWidget.length > 1 || !$subWidget.hasClass('widget-blockInteraction')) {
                                     $subElement.attr('data-text-block-id', 'text-block-' + i);
                                     i++;
                                 }
                             });
-                        }else{
+                        } else {
                             isTextBlock = true;
                         }
                     }
 
-                    if(isTextBlock){
+                    if (isTextBlock) {
                         $col.attr('data-text-block-id', 'text-block-' + i);
                         i++;
                     }
@@ -382,10 +330,10 @@ define([
         });
 
         //clone the container to create the new container model:
-        var $clonedContainer = $originalContainer.clone();
-        $clonedContainer.find('.qti-itemBody > .grid-row [data-text-block-id]').each(function(){
+        const $clonedContainer = $originalContainer.clone();
+        $clonedContainer.find('.qti-itemBody > .grid-row [data-text-block-id]').each(function() {
 
-            var $originalTextBlock = $(this),
+            const $originalTextBlock = $(this),
                 textBlockId = $originalTextBlock.data('text-block-id'),
                 $subContainer = $originalTextBlock.clone(),
                 subContainerElements = contentHelper.serializeElements($subContainer),
@@ -403,22 +351,23 @@ define([
         //create new container model with the created sub containers
         contentHelper.serializeElements($clonedContainer);
 
-        var serializedItemBody = $clonedContainer.find('.qti-itemBody').html(),
+        const serializedItemBody = $clonedContainer.find('.qti-itemBody').html(),
             itemBody = item.getBody();
 
-        if(subContainers.length){
+        if (subContainers.length) {
 
-            containerHelper.createElements(itemBody, serializedItemBody, function(newElts){
+            containerHelper.createElements(itemBody, serializedItemBody, function(newElts) {
 
-                if(_.size(newElts) !== subContainers.length){
+                if (_.size(newElts) !== subContainers.length) {
 
                     throw 'number of sub-containers mismatch';
-                }else{
+
+                } else {
 
                     _.each(newElts, function(container){
 
-                        var containerData = subContainers.shift();//get data in order
-                        var containerElements = _detachElements(itemBody, containerData.elements);
+                        const containerData = subContainers.shift();//get data in order
+                        const containerElements = _detachElements(itemBody, containerData.elements);
 
                         container.setElements(containerElements, containerData.body);
 
@@ -432,16 +381,16 @@ define([
                 }
             });
 
-        }else{
+        } else {
 
             callback.call(_this);
         }
 
     };
 
-    var _detachElements = function(container, elements){
+    const _detachElements = function(container, elements) {
 
-        var containerElements = {};
+        const containerElements = {};
         _.each(elements, function(elementSerial){
             containerElements[elementSerial] = container.elements[elementSerial];
             delete container.elements[elementSerial];
@@ -449,7 +398,7 @@ define([
         return containerElements;
     };
 
-    ItemWidget.initTextWidget = function(container, $col){
+    ItemWidget.initTextWidget = function(container, $col) {
         return TextWidget.build(container, $col, this.renderer.getOption('textOptionForm'), {});
     };
 
@@ -459,16 +408,16 @@ define([
      * @param {Boolean} [options.state = false] - log state change in console
      * @param {Boolean} [options.xml = false] - real-time qti xml display under the creator
      */
-    ItemWidget.debug = function(options){
+    ItemWidget.debug = function(options) {
 
         options = options || {};
 
-        if(options.state){
+        if (options.state) {
             devTools.listenStateChange();
         }
 
-        if(options.xml){
-            var $code = $('<code>', {'class' : 'language-markup'}),
+        if (options.xml) {
+            const $code = $('<code>', {'class' : 'language-markup'}),
                 $pre = $('<pre>', {'class' : 'line-numbers'}).append($code);
 
             $('#item-editor-wrapper').append($pre);
@@ -477,27 +426,8 @@ define([
 
     };
 
-    var _createInfoBox = function(data){
-        var $messageBox = $(genericFeedbackPopup(data)),
-            closeTrigger = $messageBox.find('.close-trigger');
-
-        $('body').append($messageBox);
-
-        closeTrigger.on('click', function(){
-            $messageBox.fadeOut(function(){
-                $(this).remove();
-            });
-        });
-
-        setTimeout(function(){
-            closeTrigger.trigger('click');
-        }, 2000);
-
-        return $messageBox;
-    };
-
-    function hasUnsupportedInteraction(xml){
-        var $qti = $(xml);
+    function hasUnsupportedInteraction(xml) {
+        const $qti = $(xml);
         return ($qti.find('div.qti-interaction.qti-customInteraction[data-serial]').length > 0);
     }
 

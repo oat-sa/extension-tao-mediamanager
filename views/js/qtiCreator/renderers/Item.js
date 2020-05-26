@@ -13,7 +13,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ * Copyright (c) 2020 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  */
 
 define([
@@ -22,17 +22,17 @@ define([
   'taoQtiItem/qtiCommonRenderer/renderers/Item',
   'taoMediaManager/qtiCreator/widgets/item/Widget',
   'tpl!taoQtiItem/qtiCreator/tpl/item'
-], function($, _, CommonRenderer, Widget, tpl){
+], function($, _, CommonRenderer, Widget, tpl) {
   'use strict';
 
-  var CreatorItem = _.clone(CommonRenderer);
+  const CreatorItem = _.clone(CommonRenderer);
 
-  var _normalizeItemBody = function _normalizeItemBody($itemBody) {
+  const _normalizeItemBody = function _normalizeItemBody($itemBody) {
 
       $itemBody.children().each(function(){
-          var $child = $(this);
+          const $child = $(this);
           //must be a grid-row for editing:
-          if(!$child.hasClass('grid-row') && !$child.hasClass('qti-infoControl')){
+          if (!$child.hasClass('grid-row') && !$child.hasClass('qti-infoControl')) {
               $child.wrap('<div class="grid-row"><div class="col-12"></div></div>');
           }
       });
@@ -42,9 +42,9 @@ define([
 
   CreatorItem.template = tpl;
 
-  CreatorItem.render = function(item, options){
+  CreatorItem.render = function(item, options) {
 
-      var $itemContainer = CommonRenderer.getContainer(item);
+      const $itemContainer = CommonRenderer.getContainer(item);
 
       _normalizeItemBody($itemContainer.find('.qti-itemBody'));
 

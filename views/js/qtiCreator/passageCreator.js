@@ -13,7 +13,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2016 (original work) Open Assessment Technologies SA ;
+ * Copyright (c) 2020 (original work) Open Assessment Technologies SA ;
  *
  */
 
@@ -52,10 +52,10 @@ define([
      *
      * @returns {Promise} that resolve with the loaded item model
      */
-    var loadPassage = function loadPassage(id, uri, assetDataUrl){
-        return new Promise(function(resolve, reject){
-            passageLoader.loadPassage({id, uri, assetDataUrl}, function(item){
-                if(!item){
+    const loadPassage = function loadPassage(id, uri, assetDataUrl) {
+        return new Promise(function(resolve, reject) {
+            passageLoader.loadPassage({id, uri, assetDataUrl}, function(item) {
+                if (!item) {
                     reject(new Error('Unable to load the passage'));
                 }
 
@@ -79,11 +79,11 @@ define([
      * @returns {itemCreator} an event emitter object, with the usual lifecycle
      * @throws {TypeError}
      */
-    var passageCreatorFactory = function passageCreatorFactory(config, areaBroker, pluginFactories){
+    const passageCreatorFactory = function passageCreatorFactory(config, areaBroker, pluginFactories) {
 
-        var itemCreator;
-        var qtiCreatorContext = qtiCreatorContextFactory();
-        var plugins = {};
+        let itemCreator;
+        const qtiCreatorContext = qtiCreatorContextFactory();
+        const plugins = {};
 
         /**
          * Run a method in all plugins
@@ -91,8 +91,8 @@ define([
          * @param {String} method - the method to run
          * @returns {Promise} once that resolve when all plugins are done
          */
-        var pluginRun =  function pluginRun(method){
-            var execStack = [];
+        const pluginRun =  function pluginRun(method) {
+            const execStack = [];
 
             _.forEach(plugins, function (plugin){
                 if(_.isFunction(plugin[method])){
@@ -104,13 +104,13 @@ define([
         };
 
         //validate parameters
-        if(!_.isPlainObject(config)){
+        if (!_.isPlainObject(config)) {
             throw new TypeError('The item creator configuration is required');
         }
-        if(!config.properties || _.isEmpty(config.properties.uri) ||  _.isEmpty(config.properties.baseUrl)){
+        if (!config.properties || _.isEmpty(config.properties.uri) ||  _.isEmpty(config.properties.baseUrl)) {
             throw new TypeError('The creator configuration must contains the required properties triples: uri, label and baseUrl');
         }
-        if(!areaBroker){
+        if (!areaBroker) {
             throw new TypeError('Without an areaBroker there are no chance to see something you know');
         }
 
@@ -129,12 +129,12 @@ define([
              * @fires itemCreator#init - once initialized
              * @fires itemCreator#error - if something went wrong
              */
-            init: function init(){
-                var self = this;
+            init() {
+                const self = this;
 
                 //instantiate the plugins first
-                _.forEach(pluginFactories, function(pluginFactory){
-                    var plugin = pluginFactory(self, areaBroker);
+                _.forEach(pluginFactories, function(pluginFactory) {
+                    const plugin = pluginFactory(self, areaBroker);
                     plugins[plugin.getName()] = plugin;
                 });
 
@@ -149,20 +149,20 @@ define([
                  * @fires itemCreator#saved once the save is done
                  * @fires itemCreator#error
                  */
-                this.on('save', function(silent){
-                    var item = this.getItem();
-                    var itemWidget = item.data('widget');
+                this.on('save', function(silent) {
+                    const item = this.getItem();
+                    const itemWidget = item.data('widget');
 
                     //do the save
                     Promise.all([
                         itemWidget.save()
-                    ]).then(function(){
-                        if(!silent){
+                    ]).then(function() {
+                        if (!silent) {
                             self.trigger('success', __('Your item has been saved'));
                         }
 
                         self.trigger('saved');
-                    }).catch(function(err){
+                    }).catch(function(err) {
                         self.trigger('error', err);
                     });
                 });
@@ -171,24 +171,24 @@ define([
                     $('.item-editor-item', areaBroker.getItemPanelArea()).empty();
                 });
 
-                var usedCustomInteractionIds = [];
-                loadPassage(config.properties.id, config.properties.uri, config.properties.assetDataUrl).then(function(item){
-                    if(! _.isObject(item)){
+                const usedCustomInteractionIds = [];
+                loadPassage(config.properties.id, config.properties.uri, config.properties.assetDataUrl).then(function(item) {
+                    if (! _.isObject(item)) {
                         self.trigger('error', new Error('Unable to load the item ' + config.properties.label));
                         return;
                     }
 
-                    _.forEach(item.getComposingElements(), function(element){
-                        if(element.is('customInteraction')){
+                    _.forEach(item.getComposingElements(), function(element) {
+                        if (element.is('customInteraction')) {
                             usedCustomInteractionIds.push(element.typeIdentifier);
                         }
                     });
 
                     self.item = item;
                     return true;
-                }).then(function(){
+                }).then(function() {
                     //initialize all the plugins
-                    return pluginRun('init').then(function(){
+                    return pluginRun('init').then(function() {
 
                         /**
                          * @event itemCreator#init the initialization is done
@@ -202,7 +202,7 @@ define([
                         self.trigger('error', err);
                     });
                     return qtiCreatorContext.init();
-                }).catch(function(err){
+                }).catch(function(err) {
                     self.trigger('error', err);
                 });
 
@@ -218,11 +218,11 @@ define([
              * @fires itemCreator#ready - once the creator's components' are ready (not yet reliable)
              * @fires itemCreator#error - if something went wrong
              */
-            render : function render(){
-                var self = this;
-                var item = this.getItem();
+            render() {
+                const self = this;
+                const item = this.getItem();
 
-                if(!item || !_.isFunction(item.getUsedClasses)){
+                if (!item || !_.isFunction(item.getUsedClasses)) {
                     return this.trigger('error', new Error('We need an item to render.'));
                 }
 
@@ -234,8 +234,8 @@ define([
 
                 //the renderers' widgets do not handle async yet, so we rely on this event
                 //TODO ready should be triggered once every renderer's widget is done (ie. promisify everything)
-                $(document).on('ready.qti-widget', function(e, elt){
-                    if(elt.element.qtiClass === 'assessmentItem'){
+                $(document).on('ready.qti-widget', function(e, elt) {
+                    if (elt.element.qtiClass === 'assessmentItem') {
                         self.trigger('ready');
                     }
                 });
@@ -246,8 +246,8 @@ define([
                 creatorRenderer
                     .get(true, config, areaBroker)
                     .setOptions(config.properties)
-                    .load(function(){
-                        var widget;
+                    .load(function() {
+                        let widget;
 
                         //set renderer
                         item.setRenderer(this);
@@ -264,8 +264,8 @@ define([
                              areaBroker.getContainer().data('widget', item);
 
                              widget = item.data('widget');
-                             _.each(item.getComposingElements(), function(element){
-                                 if(element.qtiClass === 'include'){
+                             _.each(item.getComposingElements(), function(element) {
+                                 if (element.qtiClass === 'include') {
                                      xincludeRenderer.render(element.data('widget'), config.properties.baseUrl);
                                  }
                              });
@@ -275,11 +275,11 @@ define([
                              //init event listeners:
                              eventHelper.initElementToWidgetListeners();
 
-                             return pluginRun('render').then(function(){
+                             return pluginRun('render').then(function() {
                                  self.trigger('render');
                              });
                          })
-                         .catch(function(err){
+                         .catch(function(err) {
                              self.trigger('error', err);
                          });
 
@@ -293,8 +293,8 @@ define([
              *
              * @returns {itemCreator} chains
              */
-            destroy : function destroy(){
-                var self = this;
+            destroy() {
+                const self = this;
 
                 $(document).off('.qti-widget');
 
@@ -314,7 +314,7 @@ define([
              * Give an access to the loaded item
              * @returns {Object} the item
              */
-            getItem : function getItem(){
+            getItem() {
                 return this.item;
             },
 
@@ -322,7 +322,7 @@ define([
              * Give an access to the config
              * @returns {Object} the config
              */
-            getConfig : function getConfig(){
+            getConfig() {
                 return config;
             }
         });

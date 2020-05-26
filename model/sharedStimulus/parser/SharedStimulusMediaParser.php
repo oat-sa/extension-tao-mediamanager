@@ -68,31 +68,39 @@ class SharedStimulusMediaParser extends ConfigurableService
             throw new TaoMediaException('Shared stimulus XML cannot be processed.', 0, $e);
         }
 
-        $matches = [];
+        return array_merge(
+            $this->processImages($xmlDocument, $processImageIdentifier),
+            $this->processVideos($xmlDocument, $processImageIdentifier)
+        );
+    }
 
+    private function processImages(XmlDocument $xmlDocument, callable $processImageIdentifier): array
+    {
+        $mediaImages = [];
         $images = $xmlDocument->getDocumentComponent()->getComponentsByClassName('img');
         foreach ($images as $image) {
-            $source = $image->getSrc();
-            if (false !== strpos($source, 'data:image')) {
-                continue;
-            }
-            $this->processMediaSource($source, $processImageIdentifier, $matches);
+            $this->processMediaSource($image->getSrc(), $processImageIdentifier, $mediaImages);
         }
+        return $mediaImages;
+    }
 
+    private function processVideos(XmlDocument $xmlDocument, callable $processImageIdentifier): array
+    {
+        $mediaVideos = [];
         $videos = $xmlDocument->getDocumentComponent()->getComponentsByClassName('object');
         foreach ($videos as $video) {
-            $source = $video->getData();
-            $this->processMediaSource($source, $processImageIdentifier, $matches);
+            $this->processMediaSource($video->getData(), $processImageIdentifier, $mediaVideos);
         }
-
-        return $matches;
+        return $mediaVideos;
     }
 
     private function processMediaSource(string $uri, callable $processor, array &$matches): void
     {
-        $asset = $this->getMediaResolver()->resolve($uri);
-        if ($asset->getMediaSource() instanceof MediaSource) {
-            $matches[] = $processor($asset);
+        if (false !== strpos($uri, 'data:image')) {
+            $asset = $this->getMediaResolver()->resolve($uri);
+            if ($asset->getMediaSource() instanceof MediaSource) {
+                $matches[] = $processor($asset);
+            }
         }
     }
 

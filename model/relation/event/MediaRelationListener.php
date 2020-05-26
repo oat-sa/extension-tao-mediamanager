@@ -68,7 +68,6 @@ class MediaRelationListener extends ConfigurableService
             $this->logDebug(sprintf('Event %s processed', get_class($event)));
         } catch (Throwable $exception) {
             $this->logError(sprintf('Error processing event %s: %s', get_class($event), $exception->getMessage()));
-            $this->logError(sprintf($exception->getTraceAsString()));
         }
     }
 }

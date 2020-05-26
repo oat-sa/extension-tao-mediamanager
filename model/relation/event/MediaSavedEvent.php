@@ -53,6 +53,6 @@ class MediaSavedEvent implements Event
      */
     public function getName()
     {
-        return get_class($this);
+        return __CLASS__;
     }
 }

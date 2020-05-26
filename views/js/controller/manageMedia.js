@@ -34,15 +34,15 @@ define([
 ], function($, __, module, helpers, binder, uri, previewer, section, passageAuthoringFactory, request) {
     'use strict';
 
-    var manageMediaController =  {
+    const manageMediaController =  {
 
         /**
          * Controller entry point
          */
-        start : function(){
-            binder.register('newPassage', function instanciate(actionContext){
-                var self = this;
-                var classUri = uri.decode(actionContext.id);
+        start() {
+            binder.register('newPassage', function instanciate(actionContext) {
+                const self = this;
+                const classUri = uri.decode(actionContext.id);
 
                 return request({
                     url: self.url,

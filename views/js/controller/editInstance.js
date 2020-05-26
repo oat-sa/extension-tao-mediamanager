@@ -36,19 +36,19 @@ define([
 ], function($, __, module, helpers, binder, uri, previewer, section, passageAuthoringFactory, request, router, uikitLoader) {
     'use strict';
 
-    var manageMediaController =  {
+    const manageMediaController =  {
 
         /**
          * Controller entry point
          */
-        start : function(){
+        start() {
 
-            var $previewer = $('.previewer');
-            var file = {};
+            const $previewer = $('.previewer');
+            const file = {};
             file.url = $previewer.data('url');
             file.mime = $previewer.data('type');
 
-            if(!$previewer.data('xml')){
+            if (!$previewer.data('xml')) {
                 $previewer.previewer(file);
             }
             else{
@@ -63,12 +63,12 @@ define([
             }
 
             $('#edit-media').off()
-                .on('click', function(){
-                    var action = {binding : "load", url: helpers._url('editMedia', 'MediaImport', 'taoMediaManager')};
+                .on('click', function() {
+                    const action = {binding : "load", url: helpers._url('editMedia', 'MediaImport', 'taoMediaManager')};
                     binder.exec(action, {classUri : $(this).data('classuri'), id : $(this).data('uri')} || this._resourceContext);
                 });
 
-            binder.register('passageAuthoring', function passageAuthoring(actionContext){
+            binder.register('passageAuthoring', function passageAuthoring(actionContext) {
                 section.create({
                     id : 'authoring',
                     name : __('Authoring'),

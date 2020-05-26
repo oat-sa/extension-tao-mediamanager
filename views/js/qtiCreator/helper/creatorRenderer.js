@@ -13,8 +13,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2015 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ * Copyright (c) 2020 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  */
+
 define([
     'jquery',
     'lodash',
@@ -22,33 +23,11 @@ define([
     'taoItems/assets/manager',
     'taoItems/assets/strategies',
     'util/dom'
-], function($, _, Renderer, assetManagerFactory, assetStrategies, dom){
+], function($, _, Renderer, assetManagerFactory, assetStrategies, dom) {
     "use strict";
 
     //configure and instanciate once only:
-    var _creatorRenderer = null;
-
-    //list of configurable interactions
-    //some interactions allow additional non-standard but sometimes useful configuration
-    var _configurableInteractions = ['endAttempt'];
-
-    /**
-     * Extract interaction-specific configuration from the main one
-     *
-     * @param {object} config - the configuration object of the creatorRenderer
-     * @returns {module.exports.properties|Function.properties|config.properties}
-     */
-    var _extractInteractionsConfig = function _extractInteractionsConfig(config){
-        var ret = {};
-        if(config && config.properties){
-            _.each(_configurableInteractions, function(interactionName){
-                if(config.properties[interactionName]){
-                    ret[interactionName] = config.properties[interactionName];
-                }
-            });
-        }
-        return ret;
-    };
+    let _creatorRenderer = null;
 
     /**
      * Get a preconfigured renderer singleton
@@ -58,32 +37,26 @@ define([
      * @param {Object} areaBroker - the QtiCreator area broker
      * @returns {Object} - a configured instance of creatorRenderer
      */
-    var get = function(reset, config, areaBroker){
-        var $bodyEltForm;
+    const get = function(reset, config, areaBroker) {
+        let $bodyEltForm;
 
         config = config || {};
         config.properties = config.properties || {};
 
-        if(!_creatorRenderer || reset){
+        if (!_creatorRenderer || reset) {
 
             $bodyEltForm = _creatorRenderer ? _creatorRenderer.getOption('bodyElementOptionForm') : null;
-            if(reset ||
+            if (reset ||
                 !$bodyEltForm ||
                 !$bodyEltForm.length ||
                 !dom.contains($bodyEltForm)){
 
                 _creatorRenderer = new Renderer({
-                    //assetManager : assetManager,
                     lang : '',
                     uri : '',
                     shuffleChoices : false,
                     itemOptionForm : $('#item-editor-item-property-bar .panel'),
-                    // interactionOptionForm : $('#item-editor-interaction-property-bar .panel'),
-                    // choiceOptionForm : $('#item-editor-choice-property-bar .panel'),
-                    // responseOptionForm : $('#item-editor-response-property-bar .panel'),
-                    // bodyElementOptionForm : areaBroker.getElementPropertyPanelArea(),
                     textOptionForm : $('#item-editor-text-property-bar .panel'),
-                    // modalFeedbackOptionForm : $('#item-editor-modal-feedback-property-bar .panel'),
                     mediaManager : {
                         appendContainer : '#mediaManager',
                         browseUrl : config.properties.getFilesUrl,
@@ -93,7 +66,6 @@ define([
                         fileExistsUrl : config.properties.fileExistsUrl,
                         mediaSourcesUrl : config.properties.mediaSourcesUrl
                     },
-                    // interactions : _extractInteractionsConfig(config),
                     qtiCreatorContext : config.qtiCreatorContext,
                     locations: config.properties.locations
                 });

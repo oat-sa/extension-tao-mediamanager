@@ -13,8 +13,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2015 (original work) Open Assessment Technologies SA ;
+ * Copyright (c) 2020 (original work) Open Assessment Technologies SA ;
  */
+
 define([
     'jquery',
     'taoQtiItem/qtiItem/core/Loader',
@@ -22,21 +23,22 @@ define([
     'taoQtiItem/qtiCreator/model/qtiClasses'
 ], function($, Loader, Item, qtiClasses){
     "use strict";
-    var _generateIdentifier = function _generateIdentifier(uri){
-        var pos = uri.lastIndexOf('#');
+
+    const _generateIdentifier = function _generateIdentifier(uri) {
+        const pos = uri.lastIndexOf('#');
         return uri.substr(pos + 1);
     };
 
-    var qtiNamespace = 'http://www.imsglobal.org/xsd/imsqti_v2p2';
+    const qtiNamespace = 'http://www.imsglobal.org/xsd/imsqti_v2p2';
 
-    var qtiSchemaLocation = {
+    const qtiSchemaLocation = {
         'http://www.imsglobal.org/xsd/imsqti_v2p2' : 'http://www.imsglobal.org/xsd/qti/qtiv2p2/imsqti_v2p2.xsd'
     };
 
-    var creatorLoader = {
-        loadPassage : function loadPassage(config, callback){
+    const creatorLoader = {
+        loadPassage : function loadPassage(config, callback) {
 
-            if(config.id){
+            if (config.id) {
                 $.ajax({
                     url : config.assetDataUrl,
                     dataType : 'json',
@@ -45,7 +47,7 @@ define([
                     }
                 }).done(function(response){
 
-                    var loader, itemData, newItem;
+                    let loader, itemData, newItem;
                     response.languagesList = {
                         'da-DK': 'Danish',
                         'de-DE': 'German',
@@ -70,29 +72,6 @@ define([
                         'zh-TW': 'Traditional Chinese from Taiwan'
                     }
 
-                    var mockBody = {
-                        "serial": "container_containerstatic_5ec29c5c7806a515391441",
-                        "body": "\n    <p>SharedStimulus definition file is on XML format and so do not support \"&amp;\" symbol in remote image url, it requires to be escaped for <i>&amp;amp<\/i><\/p>\n    <p>{{img_5ec29c5c8b0d5286470339}}<\/p>\n    <p>{{img_5ec29c5c92311756247821}}<\/p>\n",
-                        "elements": {
-                            "img_5ec29c5c8b0d5286470339": {
-                                "serial": "img_5ec29c5c8b0d5286470339",
-                                "qtiClass": "img",
-                                "attributes": {
-                                    "src": "https:\/\/via.placeholder.com\/300x300.png?text=remote+shared+stimulus+media",
-                                    "alt": "my first image"
-                                },
-                            },
-                            "img_5ec29c5c92311756247821": {
-                                "serial": "img_5ec29c5c92311756247821",
-                                "qtiClass": "img",
-                                "attributes": {
-                                    "src": "https:\/\/via.placeholder.com\/300x300.png?text=another+remote+media",
-                                    "alt": "my first image"
-                                },
-                            }
-                        },
-                    };
-
                     newItem = new Item().id(_generateIdentifier(config.uri)).attr('title', response.data.name);
                     newItem.data('new', true);
                     newItem.data('dummy', true);
@@ -100,16 +79,15 @@ define([
                     itemData = Object.assign({}, newItem);
                     delete itemData.bdy;
                     delete itemData.rootElement;
-                    // itemData.body = mockBody;
                     itemData.body = response.data.body.body;
                     itemData.qtiClass = 'assessmentItem';
 
                     loader = new Loader().setClassesLocation(qtiClasses);
-                    loader.loadItemData(itemData, function(loadedItem){
-                        var namespaces;
+                    loader.loadItemData(itemData, function(loadedItem) {
+                        let namespaces;
 
                         //hack to fix #2652
-                        if(loadedItem.isEmpty()){
+                        if (loadedItem.isEmpty()) {
                             loadedItem.body('');
                         }
 

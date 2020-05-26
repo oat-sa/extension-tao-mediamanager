@@ -13,7 +13,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2016 (original work) Open Assessment Technlogies SA
+ * Copyright (c) 2020 (original work) Open Assessment Technlogies SA
  *
  */
 
@@ -31,7 +31,7 @@
  * var $content = broker.getArea('itemPanel');
  * var $content = broker.getItemPanelArea();
  *
- * @author Bertrand Chevrier <bertrand@taotesting.com>
+ * @author Juan Luis Gutierrez Dos Santos <juanluis.gutierrezdossantos@taotesting.com>
  */
 define([
     'lodash',
@@ -39,7 +39,7 @@ define([
 ], function (_, areaBroker) {
     'use strict';
 
-    var requireAreas = [
+    const requireAreas = [
         'menu',
         'menuLeft',
         'menuRight',

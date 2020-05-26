@@ -40,14 +40,13 @@ define([
         /**
          * Get the title and area to render
          */
-        init : function init() {
-            var config = this.getHost().getConfig();
-            var item   = this.getHost().getItem();
+        init() {
+            const config = this.getHost().getConfig();
+            const item  = this.getHost().getItem();
 
-            if(item && !_.isEmpty(item.attr('title'))){
+            if (item && !_.isEmpty(item.attr('title'))){
                 this.title = item.attr('title');
-            }
-            else if(config && config.properties && config.properties.label){
+            } else if (config && config.properties && config.properties.label) {
                 this.title = config.properties.label;
             }
         },
@@ -55,8 +54,8 @@ define([
         /**
          * Hook to the host's render
          */
-        render : function render() {
-            if(this.title){
+        render() {
+            if (this.title) {
                 //attach the element to the title area
                 this.getAreaBroker()
                     .getTitleArea()

@@ -1,4 +1,3 @@
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -43,9 +42,9 @@ define([
         /**
          * Initialize the plugin (called during itemCreator's init)
          */
-        init : function init() {
-            var self = this;
-            var passageCreator = this.getHost();
+        init() {
+            const self = this;
+            const passageCreator = this.getHost();
 
             this.$element = $(buttonTpl({
                 icon: 'save',
@@ -69,9 +68,9 @@ define([
         /**
          * Called during the passageCreator's render phase
          */
-        render : function render() {
+        render() {
             //attach the element to the menu area
-            var $container = this.getAreaBroker().getMenuArea();
+            const $container = this.getAreaBroker().getMenuArea();
             $container.append(this.$element);
             this.show();
         },
@@ -79,14 +78,14 @@ define([
         /**
          * Called during the passageCreator's destroy phase
          */
-        destroy : function destroy() {
+        destroy() {
             this.$element.remove();
         },
 
         /**
          * Enable the button
          */
-        enable : function enable() {
+        enable() {
             this.$element
                 .removeProp('disabled')
                 .removeClass('disabled');
@@ -95,7 +94,7 @@ define([
         /**
          * Disable the button
          */
-        disable : function disable() {
+        disable() {
             this.$element
                 .prop('disabled', true)
                 .addClass('disabled');
@@ -104,14 +103,14 @@ define([
         /**
          * Show the button
          */
-        show: function show() {
+        show() {
             hider.show(this.$element);
         },
 
         /**
          * Hide the button
          */
-        hide: function hide() {
+        hide() {
             hider.hide(this.$element);
         }
     });

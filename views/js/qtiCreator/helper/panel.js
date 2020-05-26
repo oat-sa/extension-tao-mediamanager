@@ -13,8 +13,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2015 (original work) Open Assessment Technologies SA ;
+ * Copyright (c) 2020 (original work) Open Assessment Technologies SA ;
  */
+
 define([
     'jquery',
     'lodash',
@@ -22,28 +23,28 @@ define([
 ], function($, _, Element){
     "use strict";
 
-    var _getItemContainer = function(){
+    const _getItemContainer = function(){
         return $('#item-editor-panel');
     };
 
-    var showPanel = function($panel, $fold){
+    const showPanel = function($panel, $fold){
 
         $panel.show();
         openSections($panel.children('section'));
 
-        if($fold && $fold.length){
+        if ($fold && $fold.length) {
             closeSections($fold.children('section'));
         }
     };
 
-    var initFormVisibilityListener = function(){
+    const initFormVisibilityListener = function(){
 
         //first of all, clear all listener
         $(document).off('.panel');
 
-        var $itemContainer = _getItemContainer();
+        const $itemContainer = _getItemContainer();
 
-        var _staticElements = {
+        const _staticElements = {
             _tooltip : 'Tooltip',
             img : 'Image',
             object : 'Media',
@@ -55,7 +56,7 @@ define([
         };
 
         // all sections on the right sidebar are invisible by default
-        var $formInteractionPanel = $('#item-editor-interaction-property-bar'),
+        const $formInteractionPanel = $('#item-editor-interaction-property-bar'),
             $formChoicePanel = $('#item-editor-choice-property-bar'),
             $formResponsePanel = $('#item-editor-response-property-bar'),
             $formItemPanel = $('#item-editor-item-property-bar'),
@@ -68,9 +69,9 @@ define([
             $itemIcon = $appearanceToggler.find('.icon-item'),
             $styleIcon = $appearanceToggler.find('.icon-style');
 
-        var _toggleAppearanceEditor = function(active){
+        const _toggleAppearanceEditor = function(active){
 
-            if(active){
+            if (active) {
 
                 $appearanceToggler.addClass('active');
                 $formStylePanel.show();
@@ -99,7 +100,7 @@ define([
                 $menuLabel.text($menuLabel.data('item'));
                 $itemIcon.show();
                 $styleIcon.hide();
-            }else{
+            } else {
                 $appearanceToggler.removeClass('active');
                 $formStylePanel.hide();
                 showPanel($formItemPanel);
@@ -111,7 +112,7 @@ define([
 
         $appearanceToggler.on('click', function(){
 
-            if($appearanceToggler.hasClass('active')){
+            if ($appearanceToggler.hasClass('active')) {
                 _toggleAppearanceEditor(false);
             }else{
                 _toggleAppearanceEditor(true);
@@ -123,37 +124,35 @@ define([
             showPanel($formItemPanel);
         }, 200);
 
-        $(document).on('afterStateInit.qti-widget.panel', function(e, element, state){
+        $(document).on('afterStateInit.qti-widget.panel', function(e, element, state) {
 
-            switch(state.name){
+            switch(state.name) {
                 case 'active':
 
                     _toggleAppearanceEditor(false);
-                    if(!Element.isA(element, 'assessmentItem')){
+                    if (!Element.isA(element, 'assessmentItem')) {
                         $formItemPanel.hide();
                     }
 
-                    var label = _staticElements[element.qtiClass];
-                    if(label){
+                    const label = _staticElements[element.qtiClass];
+                    if (label) {
                         $formBodyElementPanel.find('h2').html(label + ' Properties');
                         showPanel($formBodyElementPanel);
-                    }else if(element.qtiClass === '_container'){
+                    } else if (element.qtiClass === '_container') {
                         showPanel($formTextBlockPanel);
                     }
 
-                    if(element.qtiClass === 'modalFeedback'){
+                    if (element.qtiClass === 'modalFeedback') {
                         showPanel($formModalFeedbackPanel);
                         $formResponsePanel.hide();
                     }
                     break;
 
                 case 'question':
-
                     showPanel($formInteractionPanel);
                     break;
 
                 case 'answer':
-
                     showPanel($formResponsePanel);
                     break;
 
@@ -162,32 +161,31 @@ define([
                     break;
 
                 case 'sleep':
-
-                    if(_staticElements[element.qtiClass]){
+                    if (_staticElements[element.qtiClass]) {
                         $formBodyElementPanel.hide();
-                    }else if(element.qtiClass === '_container'){
+                    } else if (element.qtiClass === '_container') {
                         $formTextBlockPanel.hide();
                     }
 
-                    if(!Element.isA(element, 'choice')){
-                        if(!$itemContainer.find('.widget-box.edit-active').length){
+                    if (!Element.isA(element, 'choice')) {
+                        if (!$itemContainer.find('.widget-box.edit-active').length) {
                             showPanel($formItemPanel);
                         }
                     }
                     break;
             }
 
-        }).on('afterStateExit.qti-widget.panel', function(e, element, state){
+        }).on('afterStateExit.qti-widget.panel', function(e, element, state) {
 
-            switch(state.name){
+            switch(state.name) {
                 case 'active':
-                    if(element.qtiClass === 'modalFeedback'){
+                    if (element.qtiClass === 'modalFeedback') {
                         showPanel($formResponsePanel);
                         $formModalFeedbackPanel.hide();
                     }
                     break;
                 case 'question':
-                    if(element.is('interaction')){
+                    if (element.is('interaction')) {
                         $formChoicePanel.hide();
                         $formInteractionPanel.hide();
                     }
@@ -203,48 +201,48 @@ define([
 
         }).on('elementCreated.qti-widget.panel', function(e, data){
 
-            if(data.element.qtiClass === '_container'){
+            if (data.element.qtiClass === '_container') {
                 enableSubGroup('inline-interactions');
             }
 
         }).on('deleted.qti-widget.panel', function(e, data){
 
-            if(data.element.qtiClass === '_container'){
+            if (data.element.qtiClass === '_container') {
                 toggleInlineInteractionGroup();
             }
 
         });
     };
 
-    var toggleInlineInteractionGroup = function(){
+    const toggleInlineInteractionGroup = function(){
 
-        var $itemContainer = _getItemContainer();
-        if($itemContainer.find('.widget-textBlock').length){
+        const $itemContainer = _getItemContainer();
+        if ($itemContainer.find('.widget-textBlock').length) {
             enableSubGroup('inline-interactions');
-        }else{
+        } else {
             disableSubGroup('inline-interactions');
         }
     };
 
     // selectors and classes
-    var heading = 'h2',
+    const heading = 'h2',
         section = 'section',
         panel = 'hr, .panel',
         closed = 'closed',
         ns = 'accordion';
 
-    var initSidebarAccordion = function($sidebar){
+    const initSidebarAccordion = function($sidebar) {
 
-        var $sections = $sidebar.find(section),
+        const $sections = $sidebar.find(section),
             $allPanels = $sidebar.children(panel).hide(),
             $allTriggers = $sidebar.find(heading);
 
-        if($allTriggers.length === 0){
+        if ($allTriggers.length === 0) {
             return true;
         }
 
         // setup events
-        $allTriggers.each(function(){
+        $allTriggers.each(function() {
             var $heading = $(this),
                 $section = $heading.parents(section),
                 $panel = $section.children(panel),
@@ -255,29 +253,27 @@ define([
             $heading.append($closer).append($opener).addClass(closed);
 
             // this allows multiple calls, required when blocks are added dynamically
-            if($heading.hasClass('_accordion')) {
+            if ($heading.hasClass('_accordion')) {
                 return;
-            }
-            else {
+            } else {
                 $heading.addClass('_accordion');
             }
 
             // toggle heading class arrow (actually switch arrow)
-            $panel.on('panelclose.' + ns + ' panelopen.' + ns, function(e, args){
-                var fn = e.type === 'panelclose' ? 'add' : 'remove';
+            $panel.on('panelclose.' + ns + ' panelopen.' + ns, function(e, args) {
+                const fn = e.type === 'panelclose' ? 'add' : 'remove';
                 args.heading[fn + 'Class'](closed);
             });
 
             $panel.trigger('panel' + action + '.' + ns, {heading : $heading});
-
         });
 
-        $sections.each(function(){
+        $sections.each(function() {
 
             // assign click action to headings
-            $(this).find(heading).on('click', function(e, args){
+            $(this).find(heading).on('click', function(e, args) {
 
-                var $heading = $(this),
+                let $heading = $(this),
                     $panel = $heading.parents(section).children(panel),
                     preserveOthers = !!(args && args.preserveOthers),
                     actions = {
@@ -288,7 +284,7 @@ define([
                     forceState = (args && args.forceState ? args.forceState : false),
                     classFn;
 
-                if(forceState){
+                if (forceState) {
                     classFn = forceState === 'open' ? 'addClass' : 'removeClass';
                     $heading[classFn](closed);
                 }
@@ -298,9 +294,9 @@ define([
                 // whether or not to close other sections in the same sidebar
                 // @todo (optional): remove 'false' in the condition below
                 // to change the style to accordion, i.e. to allow for only one open section
-                if(false && !preserveOthers){
-                    $allPanels.not($panel).each(function(){
-                        var $panel = $(this),
+                if (false && !preserveOthers) {
+                    $allPanels.not($panel).each(function() {
+                        const $panel = $(this),
                             $heading = $panel.parent().find(heading),
                             _action = 'close';
 
@@ -319,7 +315,7 @@ define([
      *
      * @param sections
      */
-    var _toggleSections = function(sections, preserveOthers, state){
+    const _toggleSections = function(sections, preserveOthers, state){
         sections.each(function(){
             $(this).find(heading).trigger('click', {preserveOthers : preserveOthers, forceState : state});
         });
@@ -330,7 +326,7 @@ define([
      *
      * @param sections
      */
-    var closeSections = function(sections, preserveOthers){
+    const closeSections = function(sections, preserveOthers){
         _toggleSections(sections, !!preserveOthers, 'close');
     };
 
@@ -339,7 +335,7 @@ define([
      *
      * @param sections
      */
-    var openSections = function(sections, preserveOthers){
+    const openSections = function(sections, preserveOthers){
         _toggleSections(sections, !!preserveOthers, 'open');
     };
 
@@ -347,10 +343,10 @@ define([
      * toggle availability of sub group
      * @param subGroup
      */
-    var _toggleSubGroup = function(subGroup, state){
+    const _toggleSubGroup = function(subGroup, state){
         subGroup = $('.' + subGroup);
-        if(subGroup.length){
-            var fn = state === 'disable' ? 'addClass' : 'removeClass';
+        if (subGroup.length) {
+            const fn = state === 'disable' ? 'addClass' : 'removeClass';
             subGroup.data('cover')[fn]('blocking');
         }
     };
@@ -359,7 +355,7 @@ define([
      * enable sub group
      * @param subGroup
      */
-    var enableSubGroup = function(subGroup){
+    const enableSubGroup = function(subGroup){
         _toggleSubGroup(subGroup, 'enable');
     };
 

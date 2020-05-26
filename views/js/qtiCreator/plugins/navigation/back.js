@@ -1,4 +1,3 @@
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -43,8 +42,8 @@ define([
         /**
          * Initialize the plugin
          */
-        init : function init() {
-            var passageCreator = this.getHost();
+        init() {
+            const passageCreator = this.getHost();
 
             passageCreator.on('exit', function(){
                 window.history.back();
@@ -65,9 +64,9 @@ define([
         /**
          * Called during the passageCreator's render phase
          */
-        render : function render() {
+        render() {
             //attach the element to the menu area
-            var $container = this.getAreaBroker().getMenuLeftArea();
+            const $container = this.getAreaBroker().getMenuLeftArea();
             $container.append(this.$element);
             this.show();
         },
@@ -75,14 +74,14 @@ define([
         /**
          * Called during the passageCreator's destroy phase
          */
-        destroy : function destroy() {
+        destroy() {
             this.$element.remove();
         },
 
         /**
          * Enable the button
          */
-        enable : function enable() {
+        enable() {
             this.$element
                 .removeProp('disabled')
                 .removeClass('disabled');
@@ -91,7 +90,7 @@ define([
         /**
          * Disable the button
          */
-        disable : function disable() {
+        disable() {
             this.$element
                 .prop('disabled', true)
                 .addClass('disabled');
@@ -100,14 +99,14 @@ define([
         /**
          * Show the button
          */
-        show: function show() {
+        show() {
             hider.show(this.$element);
         },
 
         /**
          * Hide the button
          */
-        hide: function hide( ){
+        hide(){
             hider.hide(this.$element);
         }
     });

@@ -13,8 +13,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2015 (original work) Open Assessment Technologies SA ;
+ * Copyright (c) 2020 (original work) Open Assessment Technologies SA ;
  */
+
 define([
     'jquery',
     'taoQtiItem/qtiItem/core/Loader',
@@ -22,21 +23,22 @@ define([
     'taoQtiItem/qtiCreator/model/qtiClasses'
 ], function($, Loader, Item, qtiClasses){
     "use strict";
-    var _generateIdentifier = function _generateIdentifier(uri){
-        var pos = uri.lastIndexOf('#');
+
+    const _generateIdentifier = function _generateIdentifier(uri) {
+        const pos = uri.lastIndexOf('#');
         return uri.substr(pos + 1);
     };
 
-    var qtiNamespace = 'http://www.imsglobal.org/xsd/imsqti_v2p2';
+    const qtiNamespace = 'http://www.imsglobal.org/xsd/imsqti_v2p2';
 
-    var qtiSchemaLocation = {
+    const qtiSchemaLocation = {
         'http://www.imsglobal.org/xsd/imsqti_v2p2' : 'http://www.imsglobal.org/xsd/qti/qtiv2p2/imsqti_v2p2.xsd'
     };
 
-    var creatorLoader = {
-        loadPassage : function loadPassage(config, callback){
+    const creatorLoader = {
+        loadPassage : function loadPassage(config, callback) {
 
-            if(config.id){
+            if (config.id) {
                 $.ajax({
                     url : config.assetDataUrl,
                     dataType : 'json',
@@ -45,7 +47,7 @@ define([
                     }
                 }).done(function(response){
 
-                    var loader, itemData, newItem;
+                    let loader, itemData, newItem;
                     response.languagesList = {
                         'da-DK': 'Danish',
                         'de-DE': 'German',
@@ -79,16 +81,14 @@ define([
                     delete itemData.rootElement;
 
                     itemData.body = response.data.body.body;
+                    if (itemData.body.body.match(/^\n$/)) { // place empty container if body is empty
+                        itemData.body.body = '<div class="grid-row"><div class="col-12"><p>Lorem ipsum dolor sit amet, consectetur adipisicing ...</p></div></div>';
+                    }
                     itemData.qtiClass = 'assessmentItem';
 
                     loader = new Loader().setClassesLocation(qtiClasses);
-                    loader.loadItemData(itemData, function(loadedItem){
-                        var namespaces;
-
-                        //hack to fix #2652
-                        if(loadedItem.isEmpty()){
-                            loadedItem.body('');
-                        }
+                    loader.loadItemData(itemData, function(loadedItem) {
+                        let namespaces;
 
                         // convert item to current QTI version
                         namespaces = loadedItem.getNamespaces();

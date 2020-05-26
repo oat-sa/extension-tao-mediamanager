@@ -1,11 +1,12 @@
-define(['lodash'], function(_){
+define(['lodash'], function(_) {
     "use strict";
-    var invalidator = {
-        completelyValid : function(element){
 
-            var item = element.getRootElement();
-            var serial, invalidElements;
-            if(item){
+    const invalidator = {
+        completelyValid(element) {
+
+            const item = element.getRootElement();
+            let serial, invalidElements;
+            if (item) {
                 serial = element.getSerial();
                 invalidElements = item.data('invalid') || {};
 
@@ -13,43 +14,43 @@ define(['lodash'], function(_){
                 item.data('invalid', invalidElements);
             }
         },
-        valid : function(element, key){
+        valid(element, key) {
 
-            var item = element.getRootElement();
-            var serial = element.getSerial();
-            var invalidElements;
+            const item = element.getRootElement();
+            const serial = element.getSerial();
+            let invalidElements;
 
-            if(item){
+            if (item) {
                 invalidElements = item.data('invalid') || {};
 
-                if(key){
+                if (key) {
 
-                    if(invalidElements[serial] && invalidElements[serial][key]){
+                    if (invalidElements[serial] && invalidElements[serial][key]) {
                         delete invalidElements[serial][key];
-                        if(!_.size(invalidElements[serial])){
+                        if (!_.size(invalidElements[serial])) {
                             delete invalidElements[serial];
                         }
 
                         item.data('invalid', invalidElements);
                     }
 
-                }else{
+                } else {
                     throw new Error('missing required argument "key"');
                 }
             }
         },
-        invalid : function(element, key, message, stateName){
+        invalid(element, key, message, stateName) {
 
-            var item = element.getRootElement();
-            var serial = element.getSerial();
-            var invalidElements;
+            const item = element.getRootElement();
+            const serial = element.getSerial();
+            let invalidElements;
 
-            if(item){
+            if (item) {
                 invalidElements = item.data('invalid') || {};
 
-                if(key){
+                if (key) {
 
-                    if(!invalidElements[serial]){
+                    if (!invalidElements[serial]) {
                         invalidElements[serial] = {};
                     }
 
@@ -59,18 +60,18 @@ define(['lodash'], function(_){
                     };
                     item.data('invalid', invalidElements);
 
-                }else{
+                } else {
                     throw new Error('missing required arguments "key"');
                 }
             }
         },
-        isValid : function(element){
+        isValid(element) {
 
-            var item = element.getRootElement();
-            var serial = element.getSerial();
-            var invalidElements;
+            const item = element.getRootElement();
+            const serial = element.getSerial();
+            let invalidElements;
 
-            if(item){
+            if (item) {
                 invalidElements = item.data('invalid') || {};
                 return !invalidElements[serial];
             }

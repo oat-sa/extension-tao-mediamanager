@@ -29,12 +29,12 @@ define([
 ], function($, __, uri, passageAuthoringFactory, feedback) {
     'use strict';
 
-    var manageMediaController =  {
+    const manageMediaController =  {
 
         /**
          * Controller entry point
          */
-        start : function(){
+        start() {
             const $panel = $('#panel-authoring');
             passageAuthoringFactory($panel, { properties: {
                 uri: $panel.attr('data-uri'),

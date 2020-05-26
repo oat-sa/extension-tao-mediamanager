@@ -13,7 +13,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2017 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
  *
  */
 define([
@@ -32,12 +32,13 @@ define([
     'taoQtiItem/qtiCreator/helper/xincludeRenderer',
     'taoQtiItem/qtiCreator/editor/gridEditor/content',
     'taoQtiItem/qtiCreator/editor/ckEditor/htmlEditor'
-], function(_, $, Promise, Loader, Container, Item, event, allQtiClasses, commonRenderer, xmlRenderer, simpleParser, creatorRenderer, xincludeRenderer, content, htmlEditor){
+], function(_, $, Promise, Loader, Container, Item, event, allQtiClasses, commonRenderer, xmlRenderer, simpleParser, creatorRenderer, xincludeRenderer, content, htmlEditor) {
+
     "use strict";
 
-    var _ns = 'containereditor';
+    const _ns = 'containereditor';
 
-    var _defaults = {
+    const _defaults = {
         change : _.noop,
         markup : '',
         markupSelector : '',
@@ -49,18 +50,18 @@ define([
     function parser($container){
 
         //detect math ns :
-        var mathNs = 'm';//for 'http://www.w3.org/1998/Math/MathML'
+        const mathNs = 'm';//for 'http://www.w3.org/1998/Math/MathML'
 
         //parse qti xml content to build a data object
-        var data = simpleParser.parse($container.clone(), {
+        const data = simpleParser.parse($container.clone(), {
             ns : {
                 math : mathNs
             }
         });
 
-        if(data.body){
+        if (data.body) {
             return data.body;
-        }else{
+        } else {
             throw new Error('invalid content for qti container');
         }
     }
@@ -86,14 +87,14 @@ define([
      */
     function create($container, options){
 
-        var html, htmls, data, loader;
+        let html, htmls, data, loader;
 
         options = _.defaults(options || {}, _defaults);
 
         //assign proper markup
-        if(options.markup){
+        if (options.markup) {
             html = options.markup;
-            if(options.markupSelector){
+            if (options.markupSelector) {
                 htmls = extractHtmlFromMarkup(html, options.markupSelector);
                 html = htmls[0] || '';
             }
@@ -102,15 +103,15 @@ define([
 
         data = parser($container);
         loader = new Loader().setClassesLocation(allQtiClasses);
-        loader.loadRequiredClasses(data, function(){
+        loader.loadRequiredClasses(data, function() {
 
-            var item,
+            let item,
                 containerEditors,
                 renderer,
                 qtiClasses = ['img', 'object', 'math', 'include', 'printedVariable', '_container', '_tooltip'];
 
             //create a new container object
-            var container = new Container();
+            const container = new Container();
 
             //tag the new container as statelss, which means that its state is not supposed to change
             container.data('stateless', true);
@@ -129,7 +130,7 @@ define([
             }
 
             //associate it to the interaction?
-            if(options.related){
+            if (options.related) {
                 containerEditors = options.related.data('container-editors') || [];
                 containerEditors.push(container);
                 options.related.data('container-editors', containerEditors);
@@ -139,9 +140,9 @@ define([
 
             //apply common renderer :
             renderer = creatorRenderer.get(options.resetRenderer, {}, options.areaBroker);
-            renderer.load(function(){
+            renderer.load(function() {
 
-                var baseUrl = this.getOption('baseUrl');
+                const baseUrl = this.getOption('baseUrl');
                 container.setRenderer(this);
                 $container.html(container.render());
                 container.postRender();
@@ -183,15 +184,14 @@ define([
 
     }
 
-    function buildContainer($container){
-
+    function buildContainer($container) {
         $container.wrapInner($('<div>', {'class' : 'container-editor', 'data-html-editable' : true}));
     }
 
-    function cleanup($container){
-        var container = $container.data('container');
+    function cleanup($container) {
+        const container = $container.data('container');
         return new Promise(function (resolve) {
-            if(container){
+            if(container) {
                 $(document).off('.' + container.serial);
                 commonRenderer.load(['img', 'object', 'math', 'include', '_container', 'printedVariable', '_tooltip'], function(){
                     $container.html(container.render(this));
@@ -214,7 +214,7 @@ define([
      * @param {Object} options.areaBroker
      * @returns {Object} The fake widget object
      */
-    function createFakeWidget($editableContainer, container, options){
+    function createFakeWidget($editableContainer, container, options) {
 
         var widget = {
             $container : $editableContainer,
@@ -230,11 +230,11 @@ define([
         return widget;
     }
 
-    function buildEditor($editableContainer, container, options){
+    function buildEditor($editableContainer, container, options) {
 
         $editableContainer.attr('data-html-editable-container', true);
 
-        if(!htmlEditor.hasEditor($editableContainer)){
+        if (!htmlEditor.hasEditor($editableContainer)) {
 
             htmlEditor.buildEditor($editableContainer, _.defaults(options || {}, {
                 shieldInnerContent : false,
@@ -248,7 +248,7 @@ define([
         }
     }
 
-    function destroy($editableContainer){
+    function destroy($editableContainer) {
         return htmlEditor.destroyEditor($editableContainer)
             .then(function() {
                 $editableContainer.removeAttr('data-html-editable-container');
@@ -256,9 +256,9 @@ define([
             });
     }
 
-    function extractHtmlFromMarkup(markupStr, selector){
-        var $found = $('<div>').html(markupStr).find(selector);
-        var ret = [];
+    function extractHtmlFromMarkup(markupStr, selector) {
+        const $found = $('<div>').html(markupStr).find(selector);
+        let ret = [];
         $found.each(function(){
             ret.push($(this).html());
         });

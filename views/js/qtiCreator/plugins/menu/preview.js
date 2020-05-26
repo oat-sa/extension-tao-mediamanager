@@ -46,17 +46,17 @@ define([
          * Initialize the plugin (called during itemCreator's init)
          * @fires {itemCreator#preview}
          */
-        init : function init() {
-            var self = this;
-            var passageCreator = this.getHost();
+        init() {
+            const self = this;
+            const passageCreator = this.getHost();
 
             /**
              * Preview an item
              * @event passageCreator#preview
              * @param {String} uri - the uri of this item to preview
              */
-            passageCreator.on('preview', function(uri){
-              	var type = 'qtiItem';
+            passageCreator.on('preview', function(uri) {
+              	const type = 'qtiItem';
 
                 // TO DO should be created empty item with shared stimulus inside
                 previewerFactory(type, uri, { }, {
@@ -87,23 +87,23 @@ define([
         /**
          * Initialize the plugin (called during passageCreator's render)
          */
-        render : function render() {
+        render() {
              //attach the element to the menu area
-             var $container = this.getAreaBroker().getMenuArea();
+             const $container = this.getAreaBroker().getMenuArea();
              $container.append(this.$element);
         },
 
         /**
          * Called during the passageCreator's destroy phase
          */
-        destroy : function destroy() {
+        destroy() {
             this.$element.remove();
         },
 
         /**
          * Enable the button
          */
-        enable : function enable() {
+        enable() {
             this.$element
                 .removeProp('disabled')
                 .removeClass('disabled');
@@ -112,7 +112,7 @@ define([
         /**
          * Disable the button
          */
-        disable : function disable() {
+        disable() {
             this.$element
                 .prop('disabled', true)
                 .addClass('disabled');
@@ -121,14 +121,14 @@ define([
         /**
          * Show the button
          */
-        show: function show() {
+        show() {
             hider.show(this.$element);
         },
 
         /**
          * Hide the button
          */
-        hide: function hide() {
+        hide() {
             hider.hide(this.$element);
         }
     });

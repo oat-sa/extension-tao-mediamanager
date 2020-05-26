@@ -1,4 +1,4 @@
-/*
+/**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
@@ -13,13 +13,17 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
- *
+ * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
+ */
+
+/**
+ * Define the Qti Item Creator Renderer
  */
 define([
-    'taoMediaManager/qtiCreator/widgets/states/factory',
-    'taoMediaManager/qtiCreator/widgets/states/Active'
-], function(factory){
+    'taoQtiItem/qtiRunner/core/Renderer',
+    'taoMediaManager/qtiCreator/renderers/config'
+], function(Renderer, config){
     'use strict';
-    return factory.createBundle(arguments);
+
+    return Renderer.build(config.locations, config.name, config.options);
 });

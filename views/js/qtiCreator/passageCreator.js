@@ -34,15 +34,14 @@ define([
     'core/promise',
     'taoQtiItem/qtiCreator/context/qtiCreatorContext',
     'taoMediaManager/qtiCreator/helper/passageLoader',
-    'taoQtiItem/qtiCreator/helper/creatorRenderer',
+    'taoMediaManager/qtiCreator/helper/creatorRenderer',
     'taoQtiItem/qtiCreator/helper/commonRenderer', //for read-only element : preview + xinclude
     'taoQtiItem/qtiCreator/helper/xincludeRenderer',
     'taoMediaManager/qtiCreator/editor/propertiesPanel',
-    'taoQtiItem/qtiCreator/model/helper/event',
-    'taoMediaManager/qtiCreator/widgets/media/stimulus/Widget'
+    'taoQtiItem/qtiCreator/model/helper/event'
 ], function($, _, __, eventifier, Promise, qtiCreatorContextFactory, passageLoader,
             creatorRenderer, commonRenderer, xincludeRenderer,
-            propertiesPanel, eventHelper, stimulusWidget){
+            propertiesPanel, eventHelper){
     'use strict';
 
     /**
@@ -271,7 +270,7 @@ define([
                                  }
                              });
 
-                             propertiesPanel(areaBroker.getPropertyPanelArea(), stimulusWidget, config.properties);
+                             propertiesPanel(areaBroker.getPropertyPanelArea(), widget, config.properties);
 
                              //init event listeners:
                              eventHelper.initElementToWidgetListeners();

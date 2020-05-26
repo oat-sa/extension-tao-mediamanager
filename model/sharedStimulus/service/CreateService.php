@@ -48,8 +48,9 @@ class CreateService extends ConfigurableService
      */
     public function create(CreateCommand $command): SharedStimulus
     {
+        $defaultContent = $this->getDefaultTemplateContent();
         $fileName = $this->getTempFileName();
-        $filePath = $this->saveTemporaryFile($fileName, $this->getDefaultTemplateContent());
+        $filePath = $this->saveTemporaryFile($fileName, $defaultContent);
 
         $uploadService = $this->getUploadService();
 
@@ -85,7 +86,8 @@ class CreateService extends ConfigurableService
         return new SharedStimulus(
             current($importResponse->getChildren())->getData()['uriResource'],
             $sharedStimulusName,
-            $command->getLanguageId()
+            $command->getLanguageId(),
+            $defaultContent
         );
     }
 

@@ -42,16 +42,12 @@ define([
         start : function(){
             binder.register('newPassage', function instanciate(actionContext){
                 var self = this;
-                var classUri = uri.decode(actionContext.classUri);
-                var signature = actionContext.signature;
-                if (actionContext.type !== 'class') {
-                    signature = actionContext.classSignature;
-                }
+                var classUri = uri.decode(actionContext.id);
 
                 return request({
                     url: self.url,
                     method: "POST",
-                    data: { classId: classUri, type: 'instance', signature: signature },
+                    data: { classId: classUri },
                     dataType: 'json'
                 })
                 .then(function(response) {

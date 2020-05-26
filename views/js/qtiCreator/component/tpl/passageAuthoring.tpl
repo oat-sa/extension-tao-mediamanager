@@ -47,35 +47,13 @@
                 <div class="item-editor-item-related sidebar-right-section-box" id="item-editor-item-property-bar">
                     <section class="tool-group clearfix" id="sidebar-right-item-properties">
                         <h2>{{__ 'Passage Properties'}}</h2>
-
-
-                        <div class="panel">
-                            <label for="xml:lang">
-                                {{__ 'Language'}}
-                            </label>
-                            <span class="icon-help tooltipstered" data-tooltip="~ .tooltip-content:first" data-tooltip-theme="info"></span>
-                            <span class="tooltip-content">
-                                {{__ 'Define item language.'}}
-                            </span>
-                            <select name="xml:lang" class="select2" data-has-search="false">
-                                {{#each languagesList}}
-                                <option value="{{@key}}"{{#equal @key ../xml:lang}} selected="selected"{{/equal}}>{{this}}</option>
-                                {{/each}}
-                            </select>
-                        </div>
-
+                        <div class="panel"></div>
                     </section>
                 </div>
                 <div class="item-editor-item-related sidebar-right-section-box" id="item-editor-text-property-bar">
                     <section class="tool-group clearfix" id="sidebar-right-text-block-properties">
                         <h2>{{__ 'Passage Properties'}}</h2>
-
-                        <div class="panel">
-                            <label for="">{{__ 'Text Block CSS Class'}}</label>
-                            <span class="icon-help tooltipstered" data-tooltip="~ .tooltip-content:first" data-tooltip-theme="info"></span>
-                            <div class="tooltip-content">{{__ 'Set a CSS class name in order to customize the display style'}}</div>
-                            <input type="text" name="identifier" value="astronomy" placeholder="e.g. my-item_123456" data-validate="$notEmpty; $qtiIdentifier; $availableIdentifier(serial=item_5eb93041e9fa0418550555);">
-                        </div>
+                        <div class="panel"></div>
                     </section>
                 </div>
             </div>

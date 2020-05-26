@@ -77,6 +77,7 @@ define([
                     itemData = Object.assign({}, newItem);
                     delete itemData.bdy;
                     delete itemData.rootElement;
+
                     itemData.body = response.data.body.body;
                     itemData.qtiClass = 'assessmentItem';
 
@@ -96,8 +97,8 @@ define([
                         loadedItem.setSchemaLocations(qtiSchemaLocation);
 
                         //add languages list to the item
-                        if (response.data.languagesList) {
-                            newItem.data('languagesList', data.languagesList);
+                        if (response.languagesList) {
+                            loadedItem.data('languagesList', response.languagesList);
                         }
 
                         callback(loadedItem, this.getLoadedClasses());

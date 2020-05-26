@@ -18,8 +18,8 @@
  */
 define([
     'lodash',
-    'taoMediaManager/qtiCreator/widgets/states/factory',
-    'taoMediaManager/qtiCreator/widgets/states/Active',
+    'taoQtiItem/qtiCreator/widgets/states/factory',
+    'taoQtiItem/qtiCreator/widgets/states/Active',
     'tpl!taoMediaManager/qtiCreator/tpl/forms/item',
     'taoQtiItem/qtiCreator/widgets/helpers/formElement'
 ], function(_, stateFactory, Active, formTpl, formElement){
@@ -33,10 +33,10 @@ define([
 
         //build form:
         $form.html(formTpl({
-            serial : item.getSerial(),
-            identifier : item.id(),
-            title : item.attr('title'),
-            timeDependent : !!item.attr('timeDependent'),
+            // serial : item.getSerial(),
+            // identifier : item.id(),
+            // title : item.attr('title'),
+            // timeDependent : !!item.attr('timeDependent'),
             'xml:lang' : item.attr('xml:lang'),
             languagesList : item.data('languagesList')
         }));

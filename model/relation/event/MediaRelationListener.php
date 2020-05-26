@@ -29,6 +29,7 @@ use oat\taoMediaManager\model\relation\event\processor\ItemRemovedEventProcessor
 use oat\taoMediaManager\model\relation\event\processor\ItemUpdatedEventProcessor;
 use oat\taoMediaManager\model\relation\event\processor\MediaRemovedEventProcessor;
 use oat\taoMediaManager\model\relation\event\processor\EventProcessorInterface;
+use oat\taoMediaManager\model\relation\event\processor\MediaSavedEventProcessor;
 use Throwable;
 
 class MediaRelationListener extends ConfigurableService
@@ -52,7 +53,7 @@ class MediaRelationListener extends ConfigurableService
 
     public function whenMediaIsSaved(Event $event): void
     {
-        //@TODO will be used to related shared stimulus with other media
+        $this->process(MediaSavedEventProcessor::class, $event);
     }
 
     private function process(string $processor, Event $event): void
@@ -67,6 +68,7 @@ class MediaRelationListener extends ConfigurableService
             $this->logDebug(sprintf('Event %s processed', get_class($event)));
         } catch (Throwable $exception) {
             $this->logError(sprintf('Error processing event %s: %s', get_class($event), $exception->getMessage()));
+            $this->logError(sprintf($exception->getTraceAsString()));
         }
     }
 }

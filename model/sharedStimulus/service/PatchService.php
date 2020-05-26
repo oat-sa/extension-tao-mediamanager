@@ -29,14 +29,15 @@ use oat\generis\model\fileReference\FileReferenceSerializer;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\filesystem\File;
 use oat\oatbox\service\ConfigurableService;
+use oat\tao\model\media\TaoMediaException;
 use oat\tao\model\media\TaoMediaResolver;
 use oat\taoMediaManager\model\MediaService;
-use oat\taoMediaManager\model\MediaSource;
+use oat\taoMediaManager\model\sharedStimulus\parser\SharedStimulusMediaParser;
 use oat\taoMediaManager\model\sharedStimulus\PatchCommand;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 use oat\taoMediaManager\model\SharedStimulusImporter;
-use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
+use tao_models_classes_FileNotFoundException as FileNotFoundException;
 
 class PatchService extends ConfigurableService
 {
@@ -97,6 +98,9 @@ class PatchService extends ConfigurableService
         }
     }
 
+    /**
+     * @throws TaoMediaException|FileNotFoundException
+     */
     private function validateXml(File $file): void
     {
         try {
@@ -106,30 +110,11 @@ class PatchService extends ConfigurableService
             throw new InvalidArgumentException('Invalid XML provided');
         }
 
-        $xmlDocument = new XmlDocument();
-        $xmlDocument->loadFromString($file->read(), false);
-
-        $images = $xmlDocument->getDocumentComponent()->getComponentsByClassName('img');
-
-        foreach ($images as $image) {
-            $source = $image->getSrc();
-            if (false === strpos($source, 'data:image')) {
-                $asset = $this->getMediaResolver()->resolve($source);
-                if ($asset->getMediaSource() instanceof MediaSource) {
-                    $info = $asset->getMediaSource()->getFileInfo($asset->getMediaIdentifier());
-                }
-            }
-        }
+        $this->getMediaParser()->parseImageFileInfo($file->read());
     }
 
-    public function withMediaResolver(TaoMediaResolver $resolver): self
+    public function getMediaParser(): SharedStimulusMediaParser
     {
-        $this->mediaResolver = $resolver;
-        return $this;
-    }
-
-    private function getMediaResolver(): TaoMediaResolver
-    {
-        return $this->mediaResolver ?? new TaoMediaResolver();
+        return $this->getServiceLocator()->get(SharedStimulusMediaParser::class);
     }
 }

@@ -20,39 +20,20 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\relation\event;
+namespace oat\taoMediaManager\model\relation\service\update;
 
-use oat\oatbox\event\Event;
+use oat\taoMediaManager\model\relation\MediaRelation;
+use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
 
-class MediaSavedEvent implements Event
+class ItemRelationUpdateService extends AbstractRelationUpdateService
 {
-    /** @var string */
-    private $mediaId;
-
-    /** @var array */
-    private $elementIds;
-
-    public function __construct(string $mediaId, array $elementIds)
+    protected function getRelationType(): string
     {
-        $this->mediaId = $mediaId;
-        $this->elementIds = $elementIds;
+        return MediaRelation::ITEM_TYPE;
     }
 
-    public function getMediaId(): string
+    protected function createFindAllQueryForUpdate(string $sourceId): FindAllQuery
     {
-        return $this->mediaId;
-    }
-
-    public function getElementIds(): array
-    {
-        return $this->elementIds;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getName()
-    {
-        return get_class($this);
+        return new FindAllQuery('', $sourceId);
     }
 }

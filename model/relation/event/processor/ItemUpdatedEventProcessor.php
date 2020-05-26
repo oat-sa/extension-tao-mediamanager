@@ -25,7 +25,7 @@ namespace oat\taoMediaManager\model\relation\event\processor;
 use oat\oatbox\event\Event;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoItems\model\event\ItemUpdatedEvent;
-use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
+use oat\taoMediaManager\model\relation\service\update\ItemRelationUpdateService;
 
 class ItemUpdatedEventProcessor extends ConfigurableService implements EventProcessorInterface
 {
@@ -46,7 +46,7 @@ class ItemUpdatedEventProcessor extends ConfigurableService implements EventProc
 
         if ($this->mustUpdateItemRelation($data)) {
             $this->getItemRelationUpdateService()
-                ->updateByItem($event->getItemUri(), $this->getAggregatedMediaIds($data));
+                ->updateBySourceId($event->getItemUri(), $this->getAggregatedMediaIds($data));
         }
     }
 

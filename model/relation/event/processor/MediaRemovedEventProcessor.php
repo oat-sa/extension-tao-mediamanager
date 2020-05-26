@@ -25,7 +25,7 @@ namespace oat\taoMediaManager\model\relation\event\processor;
 use oat\oatbox\event\Event;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\relation\event\MediaRemovedEvent;
-use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
+use oat\taoMediaManager\model\relation\service\update\MediaRelationUpdateService;
 
 class MediaRemovedEventProcessor extends ConfigurableService implements EventProcessorInterface
 {
@@ -38,12 +38,12 @@ class MediaRemovedEventProcessor extends ConfigurableService implements EventPro
             throw new InvalidEventException($event);
         }
 
-        $this->getItemRelationUpdateService()
-            ->removeMedia($event->getMediaId());
+        $this->getMediaRelationUpdateService()
+            ->removeMediaRelations($event->getMediaId());
     }
 
-    private function getItemRelationUpdateService(): ItemRelationUpdateService
+    private function getMediaRelationUpdateService(): MediaRelationUpdateService
     {
-        return $this->getServiceLocator()->get(ItemRelationUpdateService::class);
+        return $this->getServiceLocator()->get(MediaRelationUpdateService::class);
     }
 }

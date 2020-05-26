@@ -62,6 +62,12 @@ define([
                 });
             }
 
+            if (file.mime !== 'application/qti+xml') {
+                $('#media-authoring').hide();
+            } else {
+                $('#media-authoring').show();
+            }
+
             $('#edit-media').off()
                 .on('click', function() {
                     const action = {binding : "load", url: helpers._url('editMedia', 'MediaImport', 'taoMediaManager')};

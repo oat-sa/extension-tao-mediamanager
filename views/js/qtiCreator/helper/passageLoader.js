@@ -79,6 +79,7 @@ define([
                     itemData = Object.assign({}, newItem);
                     delete itemData.bdy;
                     delete itemData.rootElement;
+
                     itemData.body = response.data.body.body;
                     if (itemData.body.body.match(/^\n$/)) { // place empty container if body is empty
                         itemData.body.body = '<div class="grid-row"><div class="col-12"><p>Lorem ipsum dolor sit amet, consectetur adipisicing ...</p></div></div>';

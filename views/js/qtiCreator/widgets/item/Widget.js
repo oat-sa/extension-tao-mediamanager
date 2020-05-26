@@ -127,8 +127,8 @@ define([
 
             // TO DO
             // Shared stimulus save
-            // cut shared stimulus body that is in container
-            // put it inside xml template for shared stimulus
+            // should be moved in save plugin
+            // should be created xmlRenderer for item
             // send it to the server
 
             $.ajax({

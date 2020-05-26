@@ -80,16 +80,14 @@ define([
                     delete itemData.bdy;
                     delete itemData.rootElement;
                     itemData.body = response.data.body.body;
+                    if (itemData.body.body.match(/^\n$/)) { // place empty container if body is empty
+                        itemData.body.body = '<div class="grid-row"><div class="col-12"><p>Lorem ipsum dolor sit amet, consectetur adipisicing ...</p></div></div>';
+                    }
                     itemData.qtiClass = 'assessmentItem';
 
                     loader = new Loader().setClassesLocation(qtiClasses);
                     loader.loadItemData(itemData, function(loadedItem) {
                         let namespaces;
-
-                        //hack to fix #2652
-                        if (loadedItem.isEmpty()) {
-                            loadedItem.body('');
-                        }
 
                         // convert item to current QTI version
                         namespaces = loadedItem.getNamespaces();

@@ -64,6 +64,8 @@ define([
 
             if (file.mime !== 'application/qti+xml') {
                 $('#media-authoring').hide();
+            } else {
+                $('#media-authoring').show();
             }
 
             $('#edit-media').off()

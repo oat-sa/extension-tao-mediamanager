@@ -5,16 +5,7 @@
 
         <ul class="menu action-group plain item-editor-menu"></ul>
 
-        <ul class="menu-right action-group plain item-editor-menu">
-            <li id="appearance-trigger" class="btn-info small rgt">
-                <span class="li-inner">
-                    <span class="icon-item"></span>
-                    <span class="icon-style"></span>
-                    <span class="menu-label" data-item="{{__ 'Passage Properties'}}"
-                          data-style="{{__ 'Style Editor'}}">{{__ 'Style Editor'}}</span>
-                </span>
-            </li>
-        </ul>
+        <ul class="menu-right action-group plain item-editor-menu"></ul>
     </nav>
     <div class="wrapper clearfix content sidebar-popup-parent" id="item-editor-wrapper">
 

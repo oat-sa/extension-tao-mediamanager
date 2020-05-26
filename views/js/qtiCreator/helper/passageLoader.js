@@ -70,29 +70,6 @@ define([
                         'zh-TW': 'Traditional Chinese from Taiwan'
                     }
 
-                    var mockBody = {
-                        "serial": "container_containerstatic_5ec29c5c7806a515391441",
-                        "body": "\n    <p>SharedStimulus definition file is on XML format and so do not support \"&amp;\" symbol in remote image url, it requires to be escaped for <i>&amp;amp<\/i><\/p>\n    <p>{{img_5ec29c5c8b0d5286470339}}<\/p>\n    <p>{{img_5ec29c5c92311756247821}}<\/p>\n",
-                        "elements": {
-                            "img_5ec29c5c8b0d5286470339": {
-                                "serial": "img_5ec29c5c8b0d5286470339",
-                                "qtiClass": "img",
-                                "attributes": {
-                                    "src": "https:\/\/via.placeholder.com\/300x300.png?text=remote+shared+stimulus+media",
-                                    "alt": "my first image"
-                                },
-                            },
-                            "img_5ec29c5c92311756247821": {
-                                "serial": "img_5ec29c5c92311756247821",
-                                "qtiClass": "img",
-                                "attributes": {
-                                    "src": "https:\/\/via.placeholder.com\/300x300.png?text=another+remote+media",
-                                    "alt": "my first image"
-                                },
-                            }
-                        },
-                    };
-
                     newItem = new Item().id(_generateIdentifier(config.uri)).attr('title', response.data.name);
                     newItem.data('new', true);
                     newItem.data('dummy', true);
@@ -100,18 +77,15 @@ define([
                     itemData = Object.assign({}, newItem);
                     delete itemData.bdy;
                     delete itemData.rootElement;
-                    // itemData.body = mockBody;
                     itemData.body = response.data.body.body;
+                    if (itemData.body.body.match(/^\n$/)) { // place empty container if body is empty 
+                        itemData.body.body = '<div class="grid-row"><div class="col-12"><p>Lorem ipsum dolor sit amet, consectetur adipisicing ...</p></div></div>';
+                    }
                     itemData.qtiClass = 'assessmentItem';
 
                     loader = new Loader().setClassesLocation(qtiClasses);
                     loader.loadItemData(itemData, function(loadedItem){
                         var namespaces;
-
-                        //hack to fix #2652
-                        if(loadedItem.isEmpty()){
-                            loadedItem.body('');
-                        }
 
                         // convert item to current QTI version
                         namespaces = loadedItem.getNamespaces();

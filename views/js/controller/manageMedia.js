@@ -1,5 +1,24 @@
+
 /**
- * @author Bertrand Chevrier <bertrand@taotesting.com>
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; under version 2
+ * of the License (non-upgradable).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * Copyright (c) 2020 (original work) Open Assessment Technologies SA ;
+ */
+
+/**
+ * @author Juan Luis Gutierrez Dos Santos <juanluis.gutierrezdossantos@taotesting.com>
  */
 define([
     'jquery',
@@ -13,52 +32,22 @@ define([
     'taoMediaManager/qtiCreator/component/passageAuthoring',
     'core/request'
 ], function($, __, module, helpers, binder, uri, previewer, section, passageAuthoringFactory, request) {
-    'use strict';
 
-    var manageMediaController =  {
+
+    const manageMediaController =  {
 
         /**
          * Controller entry point
          */
-        start : function(){
-
-            var $previewer = $('.previewer');
-            var file = {};
-            file.url = $previewer.data('url');
-            file.mime = $previewer.data('type');
-
-            if(!$previewer.data('xml')){
-                $previewer.previewer(file);
-            }
-            else{
-                $.ajax({
-                    url: file.url,
-                    data: {xml:true},
-                    method: "POST",
-                }).success(function(response){
-                    file.xml = response;
-                    $previewer.previewer(file);
-                });
-            }
-
-            $('#edit-media').off()
-                .on('click', function(){
-                    var action = {binding : "load", url: helpers._url('editMedia', 'MediaImport', 'taoMediaManager')};
-                    binder.exec(action, {classUri : $(this).data('classuri'), id : $(this).data('uri')} || this._resourceContext);
-                });
-
-            binder.register('newPassage', function instanciate(actionContext){
-                var self = this;
-                var classUri = uri.decode(actionContext.classUri);
-                var signature = actionContext.signature;
-                if (actionContext.type !== 'class') {
-                    signature = actionContext.classSignature;
-                }
+        start() {
+            binder.register('newPassage', function instanciate(actionContext) {
+                const self = this;
+                const classUri = uri.decode(actionContext.id);
 
                 return request({
                     url: self.url,
                     method: "POST",
-                    data: { id: classUri, type: 'instance', signature: signature },
+                    data: { classId: classUri },
                     dataType: 'json'
                 })
                 .then(function(response) {
@@ -66,8 +55,8 @@ define([
                         //backward compat format for jstree
                         if(actionContext.tree){
                             $(actionContext.tree).trigger('addnode.taotree', [{
-                                uri       : uri.decode(response.data.uri),
-                                label     : response.data.label,
+                                uri       : uri.decode(response.data.id),
+                                label     : response.data.name,
                                 parent    : uri.decode(actionContext.classUri),
                                 cssClass  : 'node-instance'
                             }]);
@@ -75,8 +64,8 @@ define([
 
                         //return format (resourceSelector)
                         return {
-                            uri       : uri.decode(response.data.uri),
-                            label     : response.data.label,
+                            uri       : uri.decode(response.data.id),
+                            label     : response.data.name,
                             classUri  : uri.decode(actionContext.classUri),
                             type      : 'instance'
                         };
@@ -87,38 +76,42 @@ define([
                 });
             });
 
-            binder.register('passageAuthoring', function passageAuthoring(actionContext){
+            binder.register('deletePassage', function remove(actionContext) {
+                var self = this;
+                var data = {};
 
-                var data = _.pick(actionContext, ['id']);
-                var wideDifferenciator = '[data-content-target="wide"]';
-                section.create({
-                    id : 'authoring',
-                    name : __('Authoring'),
-                    url : this.url,
-                    content : '<div class="assets-authoring"></div>',
-                    visible : false
-                })
-                    .show();
-                const plugins = [{
-                    module: 'taoQtiItem/qtiCreator/plugins/content/title',
-                    bundle: 'taoQtiItem/loader/taoQtiItem.min',
-                    category: 'content'
-                }, {
-                    module: 'taoQtiItem/qtiCreator/plugins/content/changeTracker',
-                    bundle: 'taoQtiItem/loader/taoQtiItem.min',
-                    category: 'content'
-                }, {
-                    module: 'taoQtiItem/qtiCreator/plugins/panel/outcomeEditor',
-                    bundle: 'taoQtiItem/loader/taoQtiItem.min',
-                    category: 'panel'
-                }];
-                passageAuthoringFactory($('.assets-authoring'), { plugins, properties: {
-                        uri: actionContext.uri,
-                        label: 'Asset',
-                        baseUrl: "/",
-                        itemDataUrl: 'http://bosa/taoMediaManager/MediaManager/getFile?uri=' +  encodeURIComponent(uri.decode(actionContext.uri))
-                    }});
+                data.uri        = uri.decode(actionContext.uri);
+                data.classUri   = uri.decode(actionContext.id);
 
+                return new Promise( function (resolve, reject){
+                    confirmDialog(__("Please confirm deletion"), function accept(){
+                        request({
+                            url: self.url,
+                            method: "POST",
+                            data: data,
+                            dataType: 'json',
+                        })
+                            .then(function(response) {
+                                if (response.success && response.deleted) {
+                                    feedback().success(response.message || __('Resource deleted'));
+
+                                    if (actionContext.tree){
+                                        $(actionContext.tree).trigger('removenode.taotree', [{
+                                            id : actionContext.uri || actionContext.classUri
+                                        }]);
+                                    }
+                                    return resolve({
+                                        uri : actionContext.uri || actionContext.classUri
+                                    });
+
+                                } else {
+                                    reject(response.msg || __("Unable to delete the selected resource"));
+                                }
+                            });
+                    }, function cancel(){
+                        reject({ cancel : true });
+                    });
+                });
             });
         }
     };

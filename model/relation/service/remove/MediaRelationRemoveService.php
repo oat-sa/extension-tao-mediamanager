@@ -20,20 +20,28 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\relation\service\update;
+namespace oat\taoMediaManager\model\relation\service\remove;
 
+use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\relation\MediaRelation;
+use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
 use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
 
-class MediaRelationUpdateService extends AbstractRelationUpdateService
+class MediaRelationRemoveService extends ConfigurableService
 {
-    protected function getRelationType(): string
+    public function removeMediaRelations(string $mediaId): void
     {
-        return MediaRelation::MEDIA_TYPE;
+        $repository = $this->getMediaRelationRepository();
+        $medias = $repository->findAll(new FindAllQuery($mediaId))->getIterator();
+
+        /** @var MediaRelation $media */
+        foreach ($medias as $media) {
+            $repository->remove($media->withSourceId($mediaId));
+        }
     }
 
-    protected function createFindAllQueryForUpdate(string $sourceId): FindAllQuery
+    private function getMediaRelationRepository(): MediaRelationRepositoryInterface
     {
-        return new FindAllQuery($sourceId);
+        return $this->getServiceLocator()->get(MediaRelationRepositoryInterface::SERVICE_ID);
     }
 }

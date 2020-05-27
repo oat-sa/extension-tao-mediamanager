@@ -29,10 +29,6 @@ use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
 
 abstract class AbstractRelationUpdateService extends ConfigurableService
 {
-    abstract protected function getRelationType(): string;
-
-    abstract protected function createFindAllQueryForUpdate(string $sourceId): FindAllQuery;
-
     public function updateBySourceId(string $sourceId, array $currentMediaIds = []): void
     {
         $repository = $this->getMediaRelationRepository();
@@ -48,7 +44,11 @@ abstract class AbstractRelationUpdateService extends ConfigurableService
         }
     }
 
-    protected function getMediaRelationRepository(): MediaRelationRepositoryInterface
+    abstract protected function getRelationType(): string;
+
+    abstract protected function createFindAllQueryForUpdate(string $sourceId): FindAllQuery;
+
+    private function getMediaRelationRepository(): MediaRelationRepositoryInterface
     {
         return $this->getServiceLocator()->get(MediaRelationRepositoryInterface::SERVICE_ID);
     }

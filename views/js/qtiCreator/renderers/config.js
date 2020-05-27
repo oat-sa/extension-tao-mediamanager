@@ -24,7 +24,6 @@ define([
     'taoItems/assets/strategies'
 ], function(_,  context, commonRenderConfig, assetManagerFactory, assetStrategies) {
 
-
     //asset manager using base url
     const assetManager = assetManagerFactory([
         assetStrategies.taomedia,
@@ -37,11 +36,10 @@ define([
         '_container' : 'taoQtiItem/qtiCreator/renderers/Container',
         '_tooltip' : 'taoQtiItem/qtiCreator/renderers/Tooltip',
         'assessmentItem' : 'taoMediaManager/qtiCreator/renderers/Item',
-        'rubricBlock' : 'taoQtiItem/qtiCreator/renderers/RubricBlock',
         'img' : 'taoQtiItem/qtiCreator/renderers/Img',
         'math' : 'taoQtiItem/qtiCreator/renderers/Math',
         'object' : 'taoQtiItem/qtiCreator/renderers/Object',
-        'table' : 'taoQtiItem/qtiCreator/renderers/Table'
+        'table' : 'taoMediaManager/qtiCreator/renderers/Table'
     }, commonRenderConfig.locations);
 
     return {

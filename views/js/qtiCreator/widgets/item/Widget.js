@@ -26,13 +26,12 @@ define([
     'taoQtiItem/qtiCreator/widgets/Widget',
     'taoMediaManager/qtiCreator/widgets/item/states/states',
     'taoQtiItem/qtiItem/core/Element',
-    'taoQtiItem/qtiCreator/helper/creatorRenderer',
+    'taoMediaManager/qtiCreator/helper/creatorRenderer',
     'taoQtiItem/qtiCreator/model/helper/container',
     'taoQtiItem/qtiCreator/editor/gridEditor/content',
     'taoQtiItem/qtiCreator/helper/xmlRenderer',
     'taoQtiItem/qtiCreator/helper/devTools',
-    'taoQtiItem/qtiCreator/widgets/static/text/Widget',
-    'taoQtiItem/qtiCreator/editor/styleEditor/styleEditor',
+    'taoMediaManager/qtiCreator/widgets/static/text/Widget',
     'taoQtiItem/qtiItem/helper/xmlNsHandler',
     'taoQtiItem/qtiCreator/editor/jquery.gridEditor'
 ], function(
@@ -50,10 +49,8 @@ define([
     xmlRenderer,
     devTools,
     TextWidget,
-    styleEditor,
     xmlNsHandler
 ){
-
 
 
     const ItemWidget = Widget.clone();
@@ -111,7 +108,7 @@ define([
             // transform application errors into object Error in order to make them displayable
             function rejectError(err) {
                 if (err.type === 'Error') {
-                    err = new Error(__('The item has not been saved!') + (err.message ? `\n${  err.message}` : ''));
+                    err = new Error(__('The item has not been saved!') + (err.message ? `\n${err.message}` : ''));
                 }
                 reject(err);
             }
@@ -149,12 +146,11 @@ define([
 
     ItemWidget.initUiComponents = function() {
 
-        const _widget = this,
-            element = _widget.element,
+        const element = this.element,
             $saveBtn = $('#save-trigger');
 
         //listen to invalid states:
-        _widget.on('metaChange', function(data){
+        this.on('metaChange', function(data){
             if (data.element.getSerial() === element.getSerial() && data.key === 'invalid') {
                 const invalid = element.data('invalid');
                 if (_.size(invalid)) {
@@ -169,7 +165,7 @@ define([
 
     ItemWidget.initGridEditor = function() {
 
-        const _this = this,
+        const self = this,
             item = this.element,
             $itemBody = this.$container.find('.qti-itemBody'),
             $itemEditorPanel = $('#item-editor-panel');
@@ -223,44 +219,43 @@ define([
             containerHelper.createElements(container, contentHelper.getContent($editable), function(newElts) {
 
                 creatorRenderer.get().load(function() {
-                    const self = this;
 
-                    _.forEach(newElts, function(elt){
-                        let $widget,
-                            widget,
+                    _.forEach(newElts, (elt) => {
+                        let $eltWidget,
+                            eltwWdget,
                             $colParent = $placeholder.parent();
 
 
-                        elt.setRenderer(self);
+                        elt.setRenderer(this);
 
                         if (Element.isA(elt, '_container')) {
                             $colParent.empty();//clear the col content, and leave an empty text field
                             $colParent.html(elt.render());
-                            widget = _this.initTextWidget(elt, $colParent);
-                            $widget = widget.$container;
+                            eltwWdget = self.initTextWidget(elt, $colParent);
+                            $eltWidget = eltwWdget.$container;
                         } else {
                             elt.render($placeholder);
 
                             //TODO resolve the promise it returns
                             elt.postRender();
-                            widget = elt.data('widget');
+                            eltwWdget = elt.data('widget');
                             if (Element.isA(elt, 'blockInteraction')) {
-                                $widget = widget.$container;
+                                $eltWidget = eltwWdget.$container;
                             } else {
                                 //leave the container in place
-                                $widget = widget.$original;
+                                $eltWidget = eltwWdget.$original;
                             }
                         }
 
                         //inform height modification
-                        $widget.trigger('contentChange.gridEdit');
-                        $widget.trigger('resize.gridEdit');
+                        $eltWidget.trigger('contentChange.gridEdit');
+                        $eltWidget.trigger('resize.gridEdit');
 
                         //active it right away:
                         if (Element.isA(elt, 'interaction')) {
-                            widget.changeState('question');
+                            eltwWdget.changeState('question');
                         } else {
-                            widget.changeState('active');
+                            eltwWdget.changeState('active');
                         }
 
                     });
@@ -275,9 +270,19 @@ define([
 
     };
 
+    const _detachElements = function(container, elements) {
+
+        const containerElements = {};
+        _.each(elements, function(elementSerial){
+            containerElements[elementSerial] = container.elements[elementSerial];
+            delete container.elements[elementSerial];
+        });
+        return containerElements;
+    };
+
     ItemWidget.initTextWidgets = function(callback) {
 
-        let _this = this,
+        let self = this,
             item = this.element,
             $originalContainer = this.$container,
             i = 1,
@@ -310,7 +315,7 @@ define([
                                 const $subElement = $(this);
                                 const $subWidget = $subElement.children();
                                 if ($subWidget.length > 1 || !$subWidget.hasClass('widget-blockInteraction')) {
-                                    $subElement.attr('data-text-block-id', `text-block-${  i}`);
+                                    $subElement.attr('data-text-block-id', `text-block-${i}`);
                                     i++;
                                 }
                             });
@@ -320,7 +325,7 @@ define([
                     }
 
                     if (isTextBlock) {
-                        $col.attr('data-text-block-id', `text-block-${  i}`);
+                        $col.attr('data-text-block-id', `text-block-${i}`);
                         i++;
                     }
                 });
@@ -342,7 +347,7 @@ define([
             subContainers.push({
                 body : subContainerBody,
                 elements : subContainerElements,
-                $original : $originalContainer.find(`[data-text-block-id="${  textBlockId  }"]`).removeAttr('data-text-block-id')
+                $original : $originalContainer.find(`[data-text-block-id="${textBlockId}"]`).removeAttr('data-text-block-id')
             });
         });
 
@@ -358,7 +363,7 @@ define([
 
                 if (_.size(newElts) !== subContainers.length) {
 
-                    throw 'number of sub-containers mismatch';
+                    throw new Error("number of sub-containers mismatch");
 
                 } else {
 
@@ -369,31 +374,21 @@ define([
 
                         container.setElements(containerElements, containerData.body);
 
-                        _this.initTextWidget(container, containerData.$original);
+                        self.initTextWidget(container, containerData.$original);
 
                     });
 
                     _.defer(function(){
-                        callback.call(_this);
+                        callback.call(self);
                     });
                 }
             });
 
         } else {
 
-            callback.call(_this);
+            callback.call(self);
         }
 
-    };
-
-    const _detachElements = function(container, elements) {
-
-        const containerElements = {};
-        _.each(elements, function(elementSerial){
-            containerElements[elementSerial] = container.elements[elementSerial];
-            delete container.elements[elementSerial];
-        });
-        return containerElements;
     };
 
     ItemWidget.initTextWidget = function(container, $col) {
@@ -402,9 +397,10 @@ define([
 
     /**
      * Enable debugging
-     * @param {Boolean} [options.state= false] - log state change in console
-     * @param {Boolean} [options.xml= false] - real-time qti xml display under the creator
-     * @param options
+     *
+     * @param {Object} [options] - log state change in console
+     * @param {Boolean} [options.state = false] - log state change in console
+     * @param {Boolean} [options.xml = false] - real-time qti xml display under the creator
      */
     ItemWidget.debug = function(options) {
 

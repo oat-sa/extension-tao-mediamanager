@@ -20,11 +20,10 @@
 define([
     'lodash',
     'taoQtiItem/qtiCreator/widgets/states/factory',
-    'taoQtiItem/qtiCreator/widgets/states/Active',
+    'taoMediaManager/qtiCreator/widgets/states/Active',
     'tpl!taoMediaManager/qtiCreator/tpl/forms/item',
     'taoQtiItem/qtiCreator/widgets/helpers/formElement'
 ], function(_, stateFactory, Active, formTpl, formElement){
-
 
     const ItemStateActive = stateFactory.create(Active, function enterActiveState() {
         const _widget = this.widget;

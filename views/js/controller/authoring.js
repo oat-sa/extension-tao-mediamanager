@@ -27,7 +27,7 @@ define([
     'taoMediaManager/qtiCreator/component/passageAuthoring',
     'ui/feedback'
 ], function($, __, uri, passageAuthoringFactory, feedback) {
-    'use strict';
+
 
     const manageMediaController =  {
 
@@ -45,7 +45,6 @@ define([
                 lang: "en-US"
             }})
             .on('error', err => {
-                console.error(err);
                 feedback().error(err.message);
             });
         }

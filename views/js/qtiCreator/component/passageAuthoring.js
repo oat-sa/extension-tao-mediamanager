@@ -34,7 +34,7 @@ define([
     areaBrokerFactory,
     componentTpl
 ) {
-    'use strict';
+
 
     const defaultPlugins = [{
         module: 'taoMediaManager/qtiCreator/plugins/content/title',

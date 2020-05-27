@@ -37,7 +37,7 @@ define([
     'lodash',
     'ui/areaBroker'
 ], function (_, areaBroker) {
-    'use strict';
+
 
     const requireAreas = [
         'menu',

@@ -32,7 +32,7 @@ define([
     'taoMediaManager/qtiCreator/component/passageAuthoring',
     'core/request'
 ], function($, __, module, helpers, binder, uri, previewer, section, passageAuthoringFactory, request) {
-    'use strict';
+
 
     const manageMediaController =  {
 

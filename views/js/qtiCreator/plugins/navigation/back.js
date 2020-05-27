@@ -30,7 +30,7 @@ define([
     'ui/hider',
     'tpl!taoMediaManager/qtiCreator/plugins/button'
 ], function($, __, pluginFactory, hider, buttonTpl){
-    'use strict';
+
 
     /**
      * Returns the configured plugin

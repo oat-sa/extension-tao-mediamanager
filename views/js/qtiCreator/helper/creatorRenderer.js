@@ -24,7 +24,7 @@ define([
     'taoItems/assets/strategies',
     'util/dom'
 ], function($, _, Renderer, assetManagerFactory, assetStrategies, dom) {
-    "use strict";
+
 
     //configure and instanciate once only:
     let _creatorRenderer = null;
@@ -91,16 +91,16 @@ define([
     return {
         get : get,
 
-        setOption : function(name, value){
+        setOption : function(name, value) {
             return get().setOption(name, value);
         },
-        setOptions : function(options){
+        setOptions : function(options) {
             return get().setOptions(options);
         },
-        load : function(qtiClasses, done){
-            return get().load(function(){
-                if(_.isFunction(done)){
-                    done.apply(this, arguments);
+        load : function(qtiClasses, done) {
+            return get().load(function(...args) {
+                if(_.isFunction(done, args)) {
+                    done.apply(this, args);
                 }
             }, qtiClasses);
         }

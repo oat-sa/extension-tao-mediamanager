@@ -34,7 +34,7 @@ define([
     'taoQtiItem/qtiCreator/editor/ckEditor/htmlEditor'
 ], function(_, $, Promise, Loader, Container, Item, event, allQtiClasses, commonRenderer, xmlRenderer, simpleParser, creatorRenderer, xincludeRenderer, content, htmlEditor) {
 
-    "use strict";
+
 
     const _ns = 'containereditor';
 
@@ -156,8 +156,8 @@ define([
 
                 buildContainer($container);
                 buildEditor($container, container, {
-                    placeholder : options.placeholder || undefined,
-                    toolbar : options.toolbar || undefined,
+                    placeholder : options.placeholder || '',
+                    toolbar : options.toolbar || '',
                     qtiMedia : options.qtiMedia,
                     highlight : options.highlight,
                     removePlugins : options.removePlugins || '',
@@ -166,10 +166,10 @@ define([
                 });
 
                 $container
-                    .off('.' + _ns)
+                    .off(`.${  _ns}`)
                     .on(event.getList(_ns + event.getNs() + event.getNsModel()).join(' '), _.throttle(function(){
                         var editorContent = container.render(xmlRenderer.get());
-                        $container.trigger('containerchange.' + _ns, [editorContent]);
+                        $container.trigger(`containerchange.${  _ns}`, [editorContent]);
 
                         if(_.isFunction(options.change)){
                             options.change(editorContent);
@@ -192,7 +192,7 @@ define([
         const container = $container.data('container');
         return new Promise(function (resolve) {
             if(container) {
-                $(document).off('.' + container.serial);
+                $(document).off(`.${  container.serial}`);
                 commonRenderer.load(['img', 'object', 'math', 'include', '_container', 'printedVariable', '_tooltip'], function(){
                     $container.html(container.render(this));
                     resolve();

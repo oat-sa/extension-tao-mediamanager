@@ -34,7 +34,6 @@ define([
     'taoQtiItem/qtiCreator/widgets/static/text/Widget',
     'taoQtiItem/qtiCreator/editor/styleEditor/styleEditor',
     'taoQtiItem/qtiItem/helper/xmlNsHandler',
-    'tpl!taoQtiItem/qtiCreator/tpl/notifications/genericFeedbackPopup',
     'taoQtiItem/qtiCreator/editor/jquery.gridEditor'
 ], function(
     _,
@@ -52,11 +51,10 @@ define([
     devTools,
     TextWidget,
     styleEditor,
-    xmlNsHandler,
-    genericFeedbackPopup
-    ){
+    xmlNsHandler
+){
 
-    'use strict';
+
 
     const ItemWidget = Widget.clone();
 
@@ -113,7 +111,7 @@ define([
             // transform application errors into object Error in order to make them displayable
             function rejectError(err) {
                 if (err.type === 'Error') {
-                    err = new Error(__('The item has not been saved!') + (err.message ? '\n' + err.message : ''));
+                    err = new Error(__('The item has not been saved!') + (err.message ? `\n${  err.message}` : ''));
                 }
                 reject(err);
             }
@@ -312,7 +310,7 @@ define([
                                 const $subElement = $(this);
                                 const $subWidget = $subElement.children();
                                 if ($subWidget.length > 1 || !$subWidget.hasClass('widget-blockInteraction')) {
-                                    $subElement.attr('data-text-block-id', 'text-block-' + i);
+                                    $subElement.attr('data-text-block-id', `text-block-${  i}`);
                                     i++;
                                 }
                             });
@@ -322,7 +320,7 @@ define([
                     }
 
                     if (isTextBlock) {
-                        $col.attr('data-text-block-id', 'text-block-' + i);
+                        $col.attr('data-text-block-id', `text-block-${  i}`);
                         i++;
                     }
                 });
@@ -344,7 +342,7 @@ define([
             subContainers.push({
                 body : subContainerBody,
                 elements : subContainerElements,
-                $original : $originalContainer.find('[data-text-block-id="' + textBlockId + '"]').removeAttr('data-text-block-id')
+                $original : $originalContainer.find(`[data-text-block-id="${  textBlockId  }"]`).removeAttr('data-text-block-id')
             });
         });
 
@@ -404,9 +402,9 @@ define([
 
     /**
      * Enable debugging
-     *
-     * @param {Boolean} [options.state = false] - log state change in console
-     * @param {Boolean} [options.xml = false] - real-time qti xml display under the creator
+     * @param {Boolean} [options.state= false] - log state change in console
+     * @param {Boolean} [options.xml= false] - real-time qti xml display under the creator
+     * @param options
      */
     ItemWidget.debug = function(options) {
 

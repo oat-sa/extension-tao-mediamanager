@@ -1,5 +1,5 @@
 define(['lodash'], function(_) {
-    "use strict";
+
 
     const invalidator = {
         completelyValid(element) {

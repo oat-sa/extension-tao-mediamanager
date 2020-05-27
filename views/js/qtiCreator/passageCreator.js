@@ -40,9 +40,9 @@ define([
     'taoMediaManager/qtiCreator/editor/propertiesPanel',
     'taoQtiItem/qtiCreator/model/helper/event'
 ], function($, _, __, eventifier, Promise, qtiCreatorContextFactory, passageLoader,
-            creatorRenderer, commonRenderer, xincludeRenderer,
-            propertiesPanel, eventHelper){
-    'use strict';
+    creatorRenderer, commonRenderer, xincludeRenderer,
+    propertiesPanel, eventHelper){
+
 
     /**
      * Load an item
@@ -174,7 +174,7 @@ define([
                 const usedCustomInteractionIds = [];
                 loadPassage(config.properties.id, config.properties.uri, config.properties.assetDataUrl).then(function(item) {
                     if (! _.isObject(item)) {
-                        self.trigger('error', new Error('Unable to load the item ' + config.properties.label));
+                        self.trigger('error', new Error(`Unable to load the item ${  config.properties.label}`));
                         return;
                     }
 

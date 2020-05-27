@@ -17,48 +17,48 @@
  */
 
 define([
-  'jquery',
-  'lodash',
-  'taoQtiItem/qtiCommonRenderer/renderers/Item',
-  'taoMediaManager/qtiCreator/widgets/item/Widget',
-  'tpl!taoQtiItem/qtiCreator/tpl/item'
+    'jquery',
+    'lodash',
+    'taoQtiItem/qtiCommonRenderer/renderers/Item',
+    'taoMediaManager/qtiCreator/widgets/item/Widget',
+    'tpl!taoQtiItem/qtiCreator/tpl/item'
 ], function($, _, CommonRenderer, Widget, tpl) {
-  'use strict';
 
-  const CreatorItem = _.clone(CommonRenderer);
 
-  const _normalizeItemBody = function _normalizeItemBody($itemBody) {
+    const CreatorItem = _.clone(CommonRenderer);
 
-      $itemBody.children().each(function(){
-          const $child = $(this);
-          //must be a grid-row for editing:
-          if (!$child.hasClass('grid-row') && !$child.hasClass('qti-infoControl')) {
-              $child.wrap('<div class="grid-row"><div class="col-12"></div></div>');
-          }
-      });
+    const _normalizeItemBody = function _normalizeItemBody($itemBody) {
 
-      return $itemBody;
-  };
+        $itemBody.children().each(function(){
+            const $child = $(this);
+            //must be a grid-row for editing:
+            if (!$child.hasClass('grid-row') && !$child.hasClass('qti-infoControl')) {
+                $child.wrap('<div class="grid-row"><div class="col-12"></div></div>');
+            }
+        });
 
-  CreatorItem.template = tpl;
+        return $itemBody;
+    };
 
-  CreatorItem.render = function(item, options) {
+    CreatorItem.template = tpl;
 
-      const $itemContainer = CommonRenderer.getContainer(item);
+    CreatorItem.render = function(item, options) {
 
-      _normalizeItemBody($itemContainer.find('.qti-itemBody'));
+        const $itemContainer = CommonRenderer.getContainer(item);
 
-      options = options || {};
-      options.state = 'active';//the item widget never sleeps ! <- this sounds very scary!
-      options.renderer = this;
+        _normalizeItemBody($itemContainer.find('.qti-itemBody'));
 
-      return Widget.build(
-          item,
-          $itemContainer,
-          this.getOption('itemOptionForm'),
-          options
-      );
-  };
+        options = options || {};
+        options.state = 'active';//the item widget never sleeps ! <- this sounds very scary!
+        options.renderer = this;
 
-  return CreatorItem;
+        return Widget.build(
+            item,
+            $itemContainer,
+            this.getOption('itemOptionForm'),
+            options
+        );
+    };
+
+    return CreatorItem;
 });

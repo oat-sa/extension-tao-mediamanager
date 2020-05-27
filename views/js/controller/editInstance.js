@@ -31,10 +31,9 @@ define([
     'layout/section',
     'taoMediaManager/qtiCreator/component/passageAuthoring',
     'core/request',
-    'core/router',
-    'uikitLoader'
-], function($, __, module, helpers, binder, uri, previewer, section, passageAuthoringFactory, request, router, uikitLoader) {
-    'use strict';
+    'core/router'
+], function($, __, module, helpers, binder, uri, previewer, section, passageAuthoringFactory, request, router) {
+
 
     const manageMediaController =  {
 
@@ -50,8 +49,7 @@ define([
 
             if (!$previewer.data('xml')) {
                 $previewer.previewer(file);
-            }
-            else{
+            } else{
                 $.ajax({
                     url: file.url,
                     data: {xml:true},

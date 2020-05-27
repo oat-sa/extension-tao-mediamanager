@@ -33,7 +33,7 @@ define([
     'taoItems/previewer/factory',
     'tpl!taoMediaManager/qtiCreator/plugins/button',
 ], function($, __, pluginFactory, hider, previewerFactory, buttonTpl){
-    'use strict';
+
 
     /**
      * Returns the configured plugin
@@ -56,7 +56,7 @@ define([
              * @param {String} uri - the uri of this item to preview
              */
             passageCreator.on('preview', function(uri) {
-              	const type = 'qtiItem';
+                const type = 'qtiItem';
 
                 // TO DO should be created empty item with shared stimulus inside
                 previewerFactory(type, uri, { }, {
@@ -88,9 +88,9 @@ define([
          * Initialize the plugin (called during passageCreator's render)
          */
         render() {
-             //attach the element to the menu area
-             const $container = this.getAreaBroker().getMenuArea();
-             $container.append(this.$element);
+            //attach the element to the menu area
+            const $container = this.getAreaBroker().getMenuArea();
+            $container.append(this.$element);
         },
 
         /**

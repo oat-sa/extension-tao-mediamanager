@@ -19,39 +19,39 @@
  * @author Hanna Dzmitryieva <hanna@taotesting.com>
  */
 define(['lodash', 'ui/ckeditor/ckConfigurator', 'mathJax'], function(_, ckConfigurator, mathJax) {
-  'use strict';
 
-  const _defaults = {
-      qtiImage : true,
-      qtiMedia : true,
-      qtiInclude : false,
-      underline : true,
-      mathJax : !!mathJax,
-      removePlugins: 'taoqtiinclude'
-  };
 
-  /**
-   * Generate a configuration object for CKEDITOR
-   *
-   * @param editor instance of ckeditor
-   * @param toolbarType block | inline | flow | qtiBlock | qtiInline | qtiFlow | reset to get back to normal
-   * @param {Object} [options] - is based on the CKEDITOR config object with some additional sugar
-   *        Note that it's here you need to add parameters for the resource manager.
-   *        Some options are not covered in http://docs.ckeditor.com/#!/api/CKEDITOR.config
-   * @param [options.dtdOverrides] - @see dtdOverrides which pre-defines them
-   * @param {Object} [options.positionedPlugins] - @see ckConfig.positionedPlugins
-   * @param {Boolean} [options.qtiImage] - enables the qtiImage plugin
-   * @param {Boolean} [options.qtiInclude] - enables the qtiInclude plugin
-   * @param {Boolean} [options.underline] - enables the underline plugin
-   * @param {Boolean} [options.mathJax] - enables the mathJax plugin
-   *
-   * @see http://docs.ckeditor.com/#!/api/CKEDITOR.config
-   */
-  const getConfig = function(editor, toolbarType = 'qtiInline', options) {
-      return ckConfigurator.getConfig(editor, toolbarType, _.defaults(options || {}, _defaults));
-  };
+    const _defaults = {
+        qtiImage : true,
+        qtiMedia : true,
+        qtiInclude : false,
+        underline : true,
+        mathJax : !!mathJax,
+        removePlugins: 'taoqtiinclude'
+    };
 
-  return {
-      getConfig : getConfig
-  };
+    /**
+     * Generate a configuration object for CKEDITOR
+     *
+     * @param editor instance of ckeditor
+     * @param toolbarType block | inline | flow | qtiBlock | qtiInline | qtiFlow | reset to get back to normal
+     * @param {Object} [options] - is based on the CKEDITOR config object with some additional sugar
+     *        Note that it's here you need to add parameters for the resource manager.
+     *        Some options are not covered in http://docs.ckeditor.com/#!/api/CKEDITOR.config
+     * @param [options.dtdOverrides] - @see dtdOverrides which pre-defines them
+     * @param {Object} [options.positionedPlugins] - @see ckConfig.positionedPlugins
+     * @param {Boolean} [options.qtiImage] - enables the qtiImage plugin
+     * @param {Boolean} [options.qtiInclude] - enables the qtiInclude plugin
+     * @param {Boolean} [options.underline] - enables the underline plugin
+     * @param {Boolean} [options.mathJax] - enables the mathJax plugin
+     *
+     * @see http://docs.ckeditor.com/#!/api/CKEDITOR.config
+     */
+    const getConfig = function(editor, toolbarType = 'qtiInline', options) {
+        return ckConfigurator.getConfig(editor, toolbarType, _.defaults(options || {}, _defaults));
+    };
+
+    return {
+        getConfig : getConfig
+    };
 });

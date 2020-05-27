@@ -24,11 +24,12 @@
  */
 
 define([
+    'lodash',
     'jquery',
     'i18n',
     'core/plugin'
-], function($, __, pluginFactory) {
-    'use strict';
+], function(_, $, __, pluginFactory) {
+
 
     /**
      * Returns the configured plugin

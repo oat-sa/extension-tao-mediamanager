@@ -22,7 +22,7 @@ define([
     'taoQtiItem/qtiCreator/model/Item',
     'taoQtiItem/qtiCreator/model/qtiClasses'
 ], function($, Loader, Item, qtiClasses){
-    "use strict";
+
 
     const _generateIdentifier = function _generateIdentifier(uri) {
         const pos = uri.lastIndexOf('#');
@@ -70,7 +70,7 @@ define([
                         'uk-UA': 'Ukrainian',
                         'zh-CN': 'Simplified Chinese from China',
                         'zh-TW': 'Traditional Chinese from Taiwan'
-                    }
+                    };
 
                     newItem = new Item().id(_generateIdentifier(config.uri)).attr('title', response.data.name);
                     newItem.data('new', true);

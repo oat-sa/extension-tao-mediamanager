@@ -16,17 +16,18 @@
  * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
  *
  */
+
 define([
     'lodash',
     'taoMediaManager/qtiCreator/helper/panel'
 ], function(_, panel) {
-    'use strict';
+
 
     /**
      * Set up the properties panel, including the style editor
      * @param {jQueryElement} $container - the panel container
      */
-    return function setUpInteractionPanel($container, widget, config){
+    return function setUpInteractionPanel($container){
         panel.initSidebarAccordion($container);
         panel.initFormVisibilityListener();
     };

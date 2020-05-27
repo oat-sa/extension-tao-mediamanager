@@ -26,7 +26,7 @@ use oat\generis\test\TestCase;
 use oat\taoMediaManager\model\relation\MediaRelation;
 use oat\taoMediaManager\model\relation\MediaRelationCollection;
 use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
-use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
+use oat\taoMediaManager\model\relation\service\update\ItemRelationUpdateService;
 use PHPUnit\Framework\MockObject\MockObject;
 
 class ItemRelationUpdateServiceTest extends TestCase
@@ -92,7 +92,7 @@ class ItemRelationUpdateServiceTest extends TestCase
             );
 
         $this->assertNull(
-            $this->subject->updateByItem(
+            $this->subject->updateBySourceId(
                 $itemId,
                 [
                     'new_media_1',

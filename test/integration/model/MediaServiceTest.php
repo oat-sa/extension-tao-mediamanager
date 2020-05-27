@@ -63,7 +63,7 @@ class MediaServiceTest extends TestCase
 
         $fileManagerMock->expects($this->once())
             ->method('storeFile')
-            ->with($fileTmp, basename($fileTmp))
+            ->with($fileTmp)
             ->willReturn('MyGreatLink');
 
         $serviceManager = ServiceManager::getServiceManager();
@@ -106,6 +106,7 @@ class MediaServiceTest extends TestCase
 
         $instance = new \core_kernel_classes_Resource($uri);
         $thing = $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LINK));
+
         $linkResult = $thing instanceof \core_kernel_classes_Resource ? $thing->getUri() : (string)$thing;
         $this->assertInstanceOf(
             '\core_kernel_classes_Resource',
@@ -130,7 +131,7 @@ class MediaServiceTest extends TestCase
         $lang = 'EN-en';
 
         $instanceUri = 'http://myFancyDomain.com/myGreatInstanceUri';
-        $instance = new \core_kernel_classes_Class($instanceUri);
+        $instance = new \core_kernel_classes_Resource($instanceUri);
         $instance->setPropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LINK), 'MyLink');
 
         $mediaService = $this->initializeMockForEditInstance('MyLink');

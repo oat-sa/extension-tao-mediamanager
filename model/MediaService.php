@@ -124,8 +124,8 @@ class MediaService extends ConfigurableService
         $instance = $clazz->createInstanceWithProperties($properties);
         $id = $instance->getUri();
 
-        $elementIds = $this->getSharedStimulusParser()->parse($content);
-        $this->getEventManager()->trigger(new MediaSavedEvent($id, $elementIds));
+        $this->triggerMediaEvent($id, $mimeType, $content);
+
 
         // @todo: move taoRevision stuff under a listener of MediaSavedEvent
         if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
@@ -164,9 +164,7 @@ class MediaService extends ConfigurableService
                 $instance->editPropertyValues($this->getProperty(self::PROPERTY_LANGUAGE), $language);
             }
 
-            $content = $fileSource instanceof File ? $fileSource->read() : file_get_contents($fileSource);
-            $elementIds = $this->getSharedStimulusParser()->parse($content);
-            $this->getEventManager()->trigger(new MediaSavedEvent($id, $elementIds));
+            $this->triggerMediaEventFromFile($id, $fileSource);
 
             // @todo: move taoRevision stuff under a listener of MediaSavedEvent
             if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
@@ -191,9 +189,38 @@ class MediaService extends ConfigurableService
         return false;
     }
 
+    private function triggerMediaEvent(string $id, string $mimeType, string $content): void
+    {
+        $elementIds = $this->isSharedStimulus($mimeType)
+            ? $this->getSharedStimulusParser()->parse($content)
+            : [];
+
+        $this->getEventManager()->trigger(new MediaSavedEvent($id, $elementIds));
+    }
+
+    private function triggerMediaEventFromFile(string $id, string $fileSource): void
+    {
+        $mimeType = $fileSource instanceof File ? $fileSource->getMimeType() : tao_helpers_File::getMimeType($fileSource);
+
+        if ($this->isSharedStimulus($mimeType)) {
+            $content = $fileSource instanceof File ? $fileSource->read() : file_get_contents($fileSource);
+        } else {
+            $content = '';
+        }
+
+        $this->triggerMediaEvent($id, $mimeType, $content);
+    }
+
+    private function isSharedStimulus($mimeType)
+    {
+        return $mimeType == 'application/qti+xml';
+    }
+
+
     private function getLink(RdfResource $resource): string
     {
         $instance = $resource->getUniquePropertyValue($this->getProperty(self::PROPERTY_LINK));
+
         return $instance instanceof RdfResource ? $instance->getUri() : (string)$instance;
     }
 

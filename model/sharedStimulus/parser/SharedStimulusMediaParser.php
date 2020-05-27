@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus\parser;
 
+use LogicException;
+use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\media\MediaAsset;
 use oat\tao\model\media\TaoMediaException;
@@ -34,8 +36,10 @@ use tao_models_classes_FileNotFoundException as FileNotFoundException;
 
 class SharedStimulusMediaParser extends ConfigurableService
 {
+    use OntologyAwareTrait;
+
     /**
-     * @throws TaoMediaException
+     * @throws TaoMediaException|LogicException
      */
     public function parse(string $xml): array
     {
@@ -78,9 +82,11 @@ class SharedStimulusMediaParser extends ConfigurableService
     {
         $mediaImages = [];
         $images = $xmlDocument->getDocumentComponent()->getComponentsByClassName('img');
+
         foreach ($images as $image) {
             $this->processMediaSource($image->getSrc(), $processImageIdentifier, $mediaImages);
         }
+
         return $mediaImages;
     }
 
@@ -88,16 +94,19 @@ class SharedStimulusMediaParser extends ConfigurableService
     {
         $mediaVideos = [];
         $videos = $xmlDocument->getDocumentComponent()->getComponentsByClassName('object');
+
         foreach ($videos as $video) {
             $this->processMediaSource($video->getData(), $processImageIdentifier, $mediaVideos);
         }
+
         return $mediaVideos;
     }
 
     private function processMediaSource(string $uri, callable $processor, array &$matches): void
     {
-        if (false !== strpos($uri, 'data:image')) {
+        if (false === strpos($uri, 'data:image')) {
             $asset = $this->getMediaResolver()->resolve($uri);
+
             if ($asset->getMediaSource() instanceof MediaSource) {
                 $matches[] = $processor($asset);
             }
@@ -112,8 +121,17 @@ class SharedStimulusMediaParser extends ConfigurableService
         return $asset->getMediaSource()->getFileInfo($asset->getMediaIdentifier());
     }
 
+    /**
+     * @throws LogicException
+     */
     private function getMediaFileUri(MediaAsset $asset): string
     {
+        $assetIdentifier = $asset->getMediaIdentifier();
+
+        if (!$this->getResource($assetIdentifier)->exists()) {
+            throw new user(sprintf('Referenced TAO Media "%s" does not exist.', $assetIdentifier));
+        }
+
         return tao_helpers_Uri::decode($asset->getMediaIdentifier());
     }
 

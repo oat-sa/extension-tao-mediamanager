@@ -25,7 +25,6 @@ define([
     'util/dom'
 ], function($, _, Renderer, assetManagerFactory, assetStrategies, dom) {
 
-
     //configure and instanciate once only:
     let _creatorRenderer = null;
 
@@ -56,6 +55,7 @@ define([
                     uri : '',
                     shuffleChoices : false,
                     itemOptionForm : $('#item-editor-item-property-bar .panel'),
+                    bodyElementOptionForm : areaBroker.getElementPropertyPanelArea(),
                     textOptionForm : $('#item-editor-text-property-bar .panel'),
                     mediaManager : {
                         appendContainer : '#mediaManager',
@@ -97,10 +97,10 @@ define([
         setOptions : function(options) {
             return get().setOptions(options);
         },
-        load : function(qtiClasses, done) {
-            return get().load(function(...args) {
-                if(_.isFunction(done, args)) {
-                    done.apply(this, args);
+        load : function(qtiClasses, done){
+            return get().load(function(...rest){
+                if(_.isFunction(done)){
+                    done.apply(this, rest);
                 }
             }, qtiClasses);
         }

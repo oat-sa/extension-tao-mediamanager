@@ -99,11 +99,11 @@ define([
                 // to change the style to accordion, i.e. to allow for only one open section
                 if (!preserveOthers) {
                     $allPanels.not($panel).each(function() {
-                        const $panel = $(this),
-                            $heading = $panel.parent().find(heading),
+                        const $selectedPanel = $(this),
+                            $selectedHeading = $panel.parent().find(heading),
                             _action = 'close';
 
-                        $panel.trigger(`panel${  _action  }.${  ns}`, {heading : $heading})[actions[_action]]();
+                        $selectedPanel.trigger(`panel${  _action  }.${  ns}`, {heading : $selectedHeading})[actions[_action]]();
                     });
                 }
 
@@ -115,9 +115,9 @@ define([
 
     /**
      * Toggle section display
-     * @param sections
-     * @param preserveOthers
-     * @param state
+     * @param {Array} sections
+     * @param {String} preserveOthers
+     * @param {String} state
      */
     const _toggleSections = function(sections, preserveOthers, state){
         sections.each(function(){
@@ -127,8 +127,8 @@ define([
 
     /**
      * Close specific sections
-     * @param sections
-     * @param preserveOthers
+     * @param {Array} sections
+     * @param {String} preserveOthers
      */
     const closeSections = function(sections, preserveOthers){
         _toggleSections(sections, !!preserveOthers, 'close');
@@ -136,8 +136,8 @@ define([
 
     /**
      * Open specific sections
-     * @param sections
-     * @param preserveOthers
+     * @param {Array} sections
+     * @param {String} preserveOthers
      */
     const openSections = function(sections, preserveOthers){
         _toggleSections(sections, !!preserveOthers, 'open');
@@ -145,8 +145,8 @@ define([
 
     /**
      * toggle availability of sub group
-     * @param subGroup
-     * @param state
+     * @param {Object} subGroup
+     * @param {String} state
      */
     const _toggleSubGroup = function(subGroup, state){
         subGroup = $(`.${  subGroup}`);
@@ -158,7 +158,7 @@ define([
 
     /**
      * enable sub group
-     * @param subGroup
+     * @param {Object} subGroup
      */
     const enableSubGroup = function(subGroup){
         _toggleSubGroup(subGroup, 'enable');
@@ -166,7 +166,7 @@ define([
 
     /**
      * disable sub group
-     * @param subGroup
+     * @param {Object} subGroup
      */
     const disableSubGroup = function(subGroup){
         _toggleSubGroup(subGroup, 'disable');

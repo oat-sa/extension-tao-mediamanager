@@ -18,7 +18,7 @@
 
 /**
  * configure the extension bundles
- * @param grunt
+ * @param {Object} grunt
  * @author Bertrand Chevrier <bertrand@taotesting.com>
  */
 module.exports = function(grunt) {

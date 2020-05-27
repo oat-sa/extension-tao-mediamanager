@@ -27,7 +27,7 @@ use oat\oatbox\event\Event;
 use oat\taoItems\model\event\ItemUpdatedEvent;
 use oat\taoMediaManager\model\relation\event\processor\InvalidEventException;
 use oat\taoMediaManager\model\relation\event\processor\ItemUpdatedEventProcessor;
-use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
+use oat\taoMediaManager\model\relation\service\update\ItemRelationUpdateService;
 use PHPUnit\Framework\MockObject\MockObject;
 
 class ItemUpdatedEventProcessorTest extends TestCase
@@ -55,7 +55,7 @@ class ItemUpdatedEventProcessorTest extends TestCase
     {
         $this->updateService
             ->expects($this->once())
-            ->method('updateByItem')
+            ->method('updateBySourceId')
             ->with('itemId', ['mediaId1', 'mediaId2', 'mediaId3']);
 
         $this->subject->process(

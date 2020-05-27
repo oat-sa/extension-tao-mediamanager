@@ -107,7 +107,7 @@ class SharedStimulusMediaParser extends ConfigurableService
     /**
      * @throws FileNotFoundException
      */
-    private function extractImageFileInfo(MediaAsset $asset)
+    private function extractImageFileInfo(MediaAsset $asset): array
     {
         return $asset->getMediaSource()->getFileInfo($asset->getMediaIdentifier());
     }

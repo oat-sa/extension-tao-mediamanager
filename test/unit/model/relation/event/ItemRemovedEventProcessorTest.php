@@ -27,7 +27,7 @@ use oat\oatbox\event\Event;
 use oat\taoItems\model\event\ItemRemovedEvent;
 use oat\taoMediaManager\model\relation\event\processor\InvalidEventException;
 use oat\taoMediaManager\model\relation\event\processor\ItemRemovedEventProcessor;
-use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
+use oat\taoMediaManager\model\relation\service\update\ItemRelationUpdateService;
 use PHPUnit\Framework\MockObject\MockObject;
 
 class ItemRemovedEventProcessorTest extends TestCase
@@ -55,7 +55,7 @@ class ItemRemovedEventProcessorTest extends TestCase
     {
         $this->updateService
             ->expects($this->once())
-            ->method('updateByItem')
+            ->method('updateBySourceId')
             ->with('itemId');
 
         $this->subject->process(new ItemRemovedEvent('itemId'));

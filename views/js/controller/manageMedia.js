@@ -30,9 +30,42 @@ define([
     'ui/previewer',
     'layout/section',
     'taoMediaManager/qtiCreator/component/passageAuthoring',
-    'core/request'
-], function($, __, module, helpers, binder, uri, previewer, section, passageAuthoringFactory, request) {
+    'core/request',
+    'ui/dialog/confirm',
+], function($, __, module, helpers, binder, uri, previewer, section, passageAuthoringFactory, request, confirmDialog) {
 
+    function accept(actionContext) {
+        const data = {};
+        data.uri        = uri.decode(actionContext.uri);
+        data.classUri   = uri.decode(actionContext.id)
+        request({
+            url: self.url,
+            method: "POST",
+            data: data,
+            dataType: 'json',
+        })
+        .then(function(response) {
+            if (response.success && response.deleted) {
+                feedback().success(response.message || __('Resource deleted'));
+
+                if (actionContext.tree){
+                    $(actionContext.tree).trigger('removenode.taotree', [{
+                        id : actionContext.uri || actionContext.classUri
+                    }]);
+                }
+                return resolve({
+                    uri : actionContext.uri || actionContext.classUri
+                });
+
+            } else {
+                // reject(response.msg || __('Unable to delete the selected resource'));
+            }
+        });
+    }
+
+    function cancel() {
+        // reject({ cancel : true });
+    }
 
     const manageMediaController =  {
 
@@ -77,40 +110,23 @@ define([
             });
 
             binder.register('deletePassage', function remove(actionContext) {
-                var self = this;
-                var data = {};
+                const urlRelatedItems = 'mediaRelations/relations?sourceId=' + uri.decode(actionContext.id);
+                let haveItemReferences;
 
-                data.uri        = uri.decode(actionContext.uri);
-                data.classUri   = uri.decode(actionContext.id);
+                request({
+                    url: urlRelatedItems,
+                    method: "GET"
+                })
+                .then(function(response) {
+                    haveItemReferences = response;
+                });
 
-                return new Promise( function (resolve, reject){
-                    confirmDialog(__("Please confirm deletion"), function accept(){
-                        request({
-                            url: self.url,
-                            method: "POST",
-                            data: data,
-                            dataType: 'json',
-                        })
-                            .then(function(response) {
-                                if (response.success && response.deleted) {
-                                    feedback().success(response.message || __('Resource deleted'));
-
-                                    if (actionContext.tree){
-                                        $(actionContext.tree).trigger('removenode.taotree', [{
-                                            id : actionContext.uri || actionContext.classUri
-                                        }]);
-                                    }
-                                    return resolve({
-                                        uri : actionContext.uri || actionContext.classUri
-                                    });
-
-                                } else {
-                                    reject(response.msg || __("Unable to delete the selected resource"));
-                                }
-                            });
-                    }, function cancel(){
-                        reject({ cancel : true });
-                    });
+                return new Promise( function (resolve, reject) {
+                    if (haveItemReferences) {
+                        confirmDialog(__('Please confirm deletion'), accept, cancel);
+                    } else {
+                        confirmDialog(__('Please confirm deletion'), accept, cancel);
+                    }
                 });
             });
         }

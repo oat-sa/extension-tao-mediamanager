@@ -129,7 +129,7 @@ class SharedStimulusMediaParser extends ConfigurableService
         $assetIdentifier = $asset->getMediaIdentifier();
 
         if (!$this->getResource($assetIdentifier)->exists()) {
-            throw new user(sprintf('Referenced TAO Media "%s" does not exist.', $assetIdentifier));
+            throw new LogicException(sprintf('Referenced TAO Media "%s" does not exist.', $assetIdentifier));
         }
 
         return tao_helpers_Uri::decode($asset->getMediaIdentifier());

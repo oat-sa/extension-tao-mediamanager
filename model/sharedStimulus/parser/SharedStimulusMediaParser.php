@@ -126,13 +126,13 @@ class SharedStimulusMediaParser extends ConfigurableService
      */
     private function getMediaFileUri(MediaAsset $asset): string
     {
-        $assetIdentifier = $asset->getMediaIdentifier();
+        $assetIdentifier = tao_helpers_Uri::decode($asset->getMediaIdentifier());
 
         if (!$this->getResource($assetIdentifier)->exists()) {
-            throw new LogicException(sprintf('Referenced TAO Media "%s" does not exist.', $assetIdentifier));
+            throw new InvalidMediaReferenceException($assetIdentifier);
         }
 
-        return tao_helpers_Uri::decode($asset->getMediaIdentifier());
+        return $assetIdentifier;
     }
 
     private function getMediaResolver(): TaoMediaResolver

@@ -1419,3 +1419,9 @@ img.dragging.ui-draggable-dragging {
     height: 100%;
   }
 }
+
+[data-qti-class="_container"] {
+  .mini-tlb {
+    display: none !important;
+  }
+}

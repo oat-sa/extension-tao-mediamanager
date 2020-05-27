@@ -358,7 +358,7 @@ define([
 
                 if (_.size(newElts) !== subContainers.length) {
 
-                    throw 'number of sub-containers mismatch';
+                    throw new Error('number of sub-containers mismatch');
 
                 } else {
 

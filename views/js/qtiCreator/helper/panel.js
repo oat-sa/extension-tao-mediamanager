@@ -27,16 +27,6 @@ define([
         return $('#item-editor-panel');
     };
 
-    const toggleInlineInteractionGroup = function(){
-
-        const $itemContainer = _getItemContainer();
-        if ($itemContainer.find('.widget-textBlock').length) {
-            enableSubGroup('inline-interactions');
-        } else {
-            disableSubGroup('inline-interactions');
-        }
-    };
-
     // selectors and classes
     const heading = 'h2',
         section = 'section',
@@ -107,7 +97,7 @@ define([
                 // whether or not to close other sections in the same sidebar
                 // @todo (optional): remove 'false' in the condition below
                 // to change the style to accordion, i.e. to allow for only one open section
-                if (false && !preserveOthers) {
+                if (!preserveOthers) {
                     $allPanels.not($panel).each(function() {
                         const $panel = $(this),
                             $heading = $panel.parent().find(heading),
@@ -180,6 +170,26 @@ define([
      */
     const disableSubGroup = function(subGroup){
         _toggleSubGroup(subGroup, 'disable');
+    };
+
+    const showPanel = function($panel, $fold){
+
+        $panel.show();
+        openSections($panel.children('section'));
+
+        if ($fold && $fold.length) {
+            closeSections($fold.children('section'));
+        }
+    };
+
+    const toggleInlineInteractionGroup = function(){
+
+        const $itemContainer = _getItemContainer();
+        if ($itemContainer.find('.widget-textBlock').length) {
+            enableSubGroup('inline-interactions');
+        } else {
+            disableSubGroup('inline-interactions');
+        }
     };
 
     const initFormVisibilityListener = function(){
@@ -272,7 +282,7 @@ define([
         $(document).on('afterStateInit.qti-widget.panel', function(e, element, state) {
 
             switch(state.name) {
-                case 'active':
+                case 'active': {
 
                     _toggleAppearanceEditor(false);
                     if (!Element.isA(element, 'assessmentItem')) {
@@ -281,7 +291,7 @@ define([
 
                     const label = _staticElements[element.qtiClass];
                     if (label) {
-                        $formBodyElementPanel.find('h2').html(`${label  } Properties`);
+                        $formBodyElementPanel.find('h2').html(`${label} Properties`);
                         showPanel($formBodyElementPanel);
                     } else if (element.qtiClass === '_container') {
                         showPanel($formTextBlockPanel);
@@ -292,20 +302,20 @@ define([
                         $formResponsePanel.hide();
                     }
                     break;
-
-                case 'question':
+                }
+                case 'question': {
                     showPanel($formInteractionPanel);
                     break;
-
-                case 'answer':
+                }
+                case 'answer': {
                     showPanel($formResponsePanel);
                     break;
-
-                case 'choice':
+                }
+                case 'choice': {
                     showPanel($formChoicePanel, $formInteractionPanel);
                     break;
-
-                case 'sleep':
+                }
+                case 'sleep': {
                     if (_staticElements[element.qtiClass]) {
                         $formBodyElementPanel.hide();
                     } else if (element.qtiClass === '_container') {
@@ -318,6 +328,7 @@ define([
                         }
                     }
                     break;
+                }
             }
 
         }).on('afterStateExit.qti-widget.panel', function(e, element, state) {
@@ -357,16 +368,6 @@ define([
             }
 
         });
-    };
-
-    const showPanel = function($panel, $fold){
-
-        $panel.show();
-        openSections($panel.children('section'));
-
-        if ($fold && $fold.length) {
-            closeSections($fold.children('section'));
-        }
     };
 
     return {

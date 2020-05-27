@@ -33,17 +33,18 @@ define(['lodash', 'ui/ckeditor/ckConfigurator', 'mathJax'], function(_, ckConfig
     /**
      * Generate a configuration object for CKEDITOR
      *
-     * @param editor instance of ckeditor
-     * @param toolbarType block | inline | flow | qtiBlock | qtiInline | qtiFlow | reset to get back to normal
+     * @param {object} editor instance of ckeditor
+     * @param {String} toolbarType block | inline | flow | qtiBlock | qtiInline | qtiFlow | reset to get back to normal
      * @param {Object} [options] - is based on the CKEDITOR config object with some additional sugar
      *        Note that it's here you need to add parameters for the resource manager.
      *        Some options are not covered in http://docs.ckeditor.com/#!/api/CKEDITOR.config
-     * @param [options.dtdOverrides] - @see dtdOverrides which pre-defines them
+     * @param {String} [options.dtdOverrides] - @see dtdOverrides which pre-defines them
      * @param {Object} [options.positionedPlugins] - @see ckConfig.positionedPlugins
      * @param {Boolean} [options.qtiImage] - enables the qtiImage plugin
      * @param {Boolean} [options.qtiInclude] - enables the qtiInclude plugin
      * @param {Boolean} [options.underline] - enables the underline plugin
      * @param {Boolean} [options.mathJax] - enables the mathJax plugin
+     * @returns {Function} - a function for get the config
      *
      * @see http://docs.ckeditor.com/#!/api/CKEDITOR.config
      */

@@ -36,12 +36,13 @@ define([
          */
         start() {
             const $panel = $('#panel-authoring');
+            const assetDataUrl = urlUtil.route('get', 'SharedStimulus', 'taoMediaManager')
             passageAuthoringFactory($panel, { properties: {
                 uri: $panel.attr('data-uri'),
                 id: $panel.attr('data-id'),
-                assetDataUrl: '/taoMediaManager/SharedStimulus/get',
+                assetDataUrl,
                 // TO DO will be filled later
-                baseUrl: '/taoMediaManager/SharedStimulus/get',
+                baseUrl: assetDataUrl,
                 lang: "en-US"
             }})
             .on('error', err => {

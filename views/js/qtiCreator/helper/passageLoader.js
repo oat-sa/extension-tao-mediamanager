@@ -72,7 +72,7 @@ define([
                         'zh-TW': 'Traditional Chinese from Taiwan'
                     };
 
-                    newItem = new Item().id(_generateIdentifier(config.uri)).attr('title', response.data.name);
+                    newItem = new Item().id(generateIdentifier(config.uri)).attr('title', response.data.name);
                     newItem.data('new', true);
                     newItem.data('dummy', true);
 

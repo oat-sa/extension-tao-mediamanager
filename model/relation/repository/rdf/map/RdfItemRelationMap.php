@@ -26,7 +26,6 @@ use oat\taoMediaManager\model\relation\MediaRelation;
 
 class RdfItemRelationMap extends AbstractRdfMediaRelationMap
 {
-    /** @var string */
     private const ITEM_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem';
 
     public function getTargetType(): string

@@ -31,8 +31,9 @@ define([
     'layout/section',
     'taoMediaManager/qtiCreator/component/passageAuthoring',
     'core/request',
+    'ui/feedback',
     'ui/dialog/confirm',
-], function($, __, module, helpers, binder, uri, previewer, section, passageAuthoringFactory, request, confirmDialog) {
+], function($, __, module, helpers, binder, uri, previewer, section, passageAuthoringFactory, request, confirmDialog, feedback) {
 
     const manageMediaController =  {
 
@@ -93,11 +94,11 @@ define([
                         let message;
                         haveItemReferences = response;
                         if (haveItemReferences) {
-                            message = __("Please confirm deletion")
+                            message = __("Please confirm deletion");
                         } else {
-                            message = __("Please confirm deletion")
+                            message = __("Please confirm deletion");
                         }
-                        confirmDialog(message, function accept(){
+                        confirmDialog(message, function accept() {
                             request({
                                 url: self.url,
                                 method: "POST",
@@ -121,7 +122,7 @@ define([
                                     reject(response.msg || __("Unable to delete the selected resource"));
                                 }
                             });
-                        }, function cancel(){
+                        }, function cancel() {
                             reject({ cancel : true });
                         });
                     })

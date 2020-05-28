@@ -34,39 +34,6 @@ define([
     'ui/dialog/confirm',
 ], function($, __, module, helpers, binder, uri, previewer, section, passageAuthoringFactory, request, confirmDialog) {
 
-    function accept(actionContext) {
-        const data = {};
-        data.uri        = uri.decode(actionContext.uri);
-        data.classUri   = uri.decode(actionContext.id)
-        request({
-            url: self.url,
-            method: "POST",
-            data: data,
-            dataType: 'json',
-        })
-        .then(function(response) {
-            if (response.success && response.deleted) {
-                feedback().success(response.message || __('Resource deleted'));
-
-                if (actionContext.tree){
-                    $(actionContext.tree).trigger('removenode.taotree', [{
-                        id : actionContext.uri || actionContext.classUri
-                    }]);
-                }
-                return resolve({
-                    uri : actionContext.uri || actionContext.classUri
-                });
-
-            } else {
-                // reject(response.msg || __('Unable to delete the selected resource'));
-            }
-        });
-    }
-
-    function cancel() {
-        // reject({ cancel : true });
-    }
-
     const manageMediaController =  {
 
         /**
@@ -110,29 +77,49 @@ define([
             });
 
             binder.register('deletePassage', function remove(actionContext) {
-                const pathArray = this.url.split( '/' );
+                const pathArray = this.url.split('/');
                 const protocol = pathArray[0];
                 const host = pathArray[2];
                 const url = protocol + '//' + host;
                 const urlRelatedItems = url + '/mediaRelations/relations?sourceId=' + uri.decode(actionContext.id);
                 let haveItemReferences;
 
-                return request({
-                    url: urlRelatedItems,
-                    method: "GET"
-                })
-                .then(function(response) {
-                    haveItemReferences = response;
-                })
-                .then(function() {
-                    if (haveItemReferences) {
-                        confirmDialog(__('Please confirm deletion'), accept, cancel);
-                    } else {
-                        confirmDialog(__('Please confirm deletion'), accept, cancel);
-                    }
-                })
-                .catch(function(err) {
-                    console.log(err);
+                return new Promise( function (resolve, reject) {
+                    request({
+                        url: urlRelatedItems,
+                        method: "GET"
+                    })
+                    .then(function(response) {
+                        haveItemReferences = response;
+                        const message = __("Please confirm deletion")
+                        confirmDialog(message, function accept(){
+                            request({
+                                url: self.url,
+                                method: "POST",
+                                data: data,
+                                dataType: 'json',
+                            })
+                            .then(function(response) {
+                                if (response.success && response.deleted) {
+                                    feedback().success(response.message || __('Resource deleted'));
+
+                                    if (actionContext.tree){
+                                        $(actionContext.tree).trigger('removenode.taotree', [{
+                                            id : actionContext.uri || actionContext.classUri
+                                        }]);
+                                    }
+                                    return resolve({
+                                        uri : actionContext.uri || actionContext.classUri
+                                    });
+
+                                } else {
+                                    reject(response.msg || __("Unable to delete the selected resource"));
+                                }
+                            });
+                        }, function cancel(){
+                            reject({ cancel : true });
+                        });
+                    })
                 });
             });
         }

@@ -36,7 +36,7 @@ define([
     };
 
     const creatorLoader = {
-        loadPassage : function loadPassage(config, callback) {
+        loadPassage(config, callback) {
 
             if (config.id) {
                 $.ajax({

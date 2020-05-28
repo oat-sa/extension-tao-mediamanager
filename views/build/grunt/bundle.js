@@ -22,9 +22,25 @@
  * @author Bertrand Chevrier <bertrand@taotesting.com>
  */
 module.exports = function(grunt) {
+    'use strict';
 
+    const sassConfig = grunt.config('sass') || {};
+    const runnerScssPath = path.join(root, 'node_modules/@oat-sa/tao-test-runner-qti/scss');
 
     grunt.config.merge({
+        sass : {
+            taomediamanager: {
+                files : [
+                    {
+                        dest : path.join(root, 'css/media.css'),
+                        src : path.join(root, 'scss/media.scss')
+                    }, {
+                        dest : path.join(root, 'css/passage-creator.css'),
+                        src : path.join(root, 'scss/passage-creator.scss')
+                    }
+                ]
+            },
+        },
         bundle : {
             taomediamanager : {
                 options : {

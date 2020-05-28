@@ -90,8 +90,13 @@ define([
                         method: "GET"
                     })
                     .then(function(response) {
+                        let message;
                         haveItemReferences = response;
-                        const message = __("Please confirm deletion")
+                        if (haveItemReferences) {
+                            message = __("Please confirm deletion")
+                        } else {
+                            message = __("Please confirm deletion")
+                        }
                         confirmDialog(message, function accept(){
                             request({
                                 url: self.url,

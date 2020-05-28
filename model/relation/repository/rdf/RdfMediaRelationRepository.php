@@ -63,9 +63,9 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
             throw new LogicException(
                 sprintf(
                     'Error saving media relation %s [%s:%s]',
-                    $relation->getId(),
                     $relation->getType(),
-                    $relation->getSourceId()
+                    $relation->getSourceId(),
+                    $relation->getId()
                 )
             );
         }

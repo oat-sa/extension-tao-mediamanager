@@ -87,9 +87,7 @@ abstract class AbstractRdfMediaRelationMap extends ConfigurableService implement
     {
         return (new MediaRelation($this->getTargetType(), $mediaResource->getUri(), $mediaResource->getLabel()))
             ->withSourceId($sourceId);
-
     }
-
 
     private function getComplexSearchService(): ComplexSearchService
     {

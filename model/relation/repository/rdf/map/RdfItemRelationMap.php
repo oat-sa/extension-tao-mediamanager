@@ -23,12 +23,11 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\relation\repository\rdf\map;
 
 use oat\taoMediaManager\model\relation\MediaRelation;
-use core_kernel_classes_Resource as RdfResource;
 
 class RdfItemRelationMap extends AbstractRdfMediaRelationMap
 {
     /** @var string */
-    public const ITEM_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem';
+    private const ITEM_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem';
 
     public function getTargetType(): string
     {
@@ -39,5 +38,4 @@ class RdfItemRelationMap extends AbstractRdfMediaRelationMap
     {
         return self::ITEM_RELATION_PROPERTY;
     }
-
 }

@@ -42,15 +42,15 @@ define([
         config = config || {};
         config.properties = config.properties || {};
 
-        if (!_creatorRenderer || reset) {
+        if (!creatorRenderer || reset) {
 
-            $bodyEltForm = _creatorRenderer ? _creatorRenderer.getOption('bodyElementOptionForm') : null;
+            $bodyEltForm = creatorRenderer ? creatorRenderer.getOption('bodyElementOptionForm') : null;
             if (reset ||
                 !$bodyEltForm ||
                 !$bodyEltForm.length ||
                 !dom.contains($bodyEltForm)){
 
-                _creatorRenderer = new Renderer({
+                creatorRenderer = new Renderer({
                     lang : '',
                     uri : '',
                     shuffleChoices : false,
@@ -71,12 +71,12 @@ define([
                 });
 
                 //update the resolver baseUrl
-                _creatorRenderer.getAssetManager().setData({baseUrl : config.properties.baseUrl || '' });
+                creatorRenderer.getAssetManager().setData({baseUrl : config.properties.baseUrl || '' });
 
-                _creatorRenderer.setAreaBroker(areaBroker);
+                creatorRenderer.setAreaBroker(areaBroker);
 
                 // extend creator renderer to give access to the creator context
-                _.assign(_creatorRenderer, {
+                _.assign(creatorRenderer, {
                     getCreatorContext: function getCreatorContext() {
                         return this.getOption('qtiCreatorContext');
                     }
@@ -84,7 +84,7 @@ define([
             }
         }
 
-        return _creatorRenderer;
+        return creatorRenderer;
     };
 
 

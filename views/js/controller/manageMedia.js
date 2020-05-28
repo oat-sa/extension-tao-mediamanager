@@ -110,23 +110,29 @@ define([
             });
 
             binder.register('deletePassage', function remove(actionContext) {
-                const urlRelatedItems = 'mediaRelations/relations?sourceId=' + uri.decode(actionContext.id);
+                const pathArray = this.url.split( '/' );
+                const protocol = pathArray[0];
+                const host = pathArray[2];
+                const url = protocol + '//' + host;
+                const urlRelatedItems = url + '/mediaRelations/relations?sourceId=' + uri.decode(actionContext.id);
                 let haveItemReferences;
 
-                request({
+                return request({
                     url: urlRelatedItems,
                     method: "GET"
                 })
                 .then(function(response) {
                     haveItemReferences = response;
-                });
-
-                return new Promise( function (resolve, reject) {
+                })
+                .then(function() {
                     if (haveItemReferences) {
                         confirmDialog(__('Please confirm deletion'), accept, cancel);
                     } else {
                         confirmDialog(__('Please confirm deletion'), accept, cancel);
                     }
+                })
+                .catch(function(err) {
+                    console.log(err);
                 });
             });
         }

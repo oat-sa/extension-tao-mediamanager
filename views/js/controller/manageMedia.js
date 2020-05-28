@@ -33,7 +33,8 @@ define([
     'core/request',
     'ui/feedback',
     'ui/dialog/confirm',
-], function($, __, module, helpers, binder, uri, previewer, section, passageAuthoringFactory, request, confirmDialog, feedback) {
+    'util/url'
+], function($, __, module, helpers, binder, uri, previewer, section, passageAuthoringFactory, request, confirmDialog, feedback, urlUtil) {
 
     const manageMediaController =  {
 
@@ -78,16 +79,14 @@ define([
             });
 
             binder.register('deletePassage', function remove(actionContext) {
-                const pathArray = this.url.split('/');
-                const protocol = pathArray[0];
-                const host = pathArray[2];
-                const url = protocol + '//' + host;
-                const urlRelatedItems = url + '/mediaRelations/relations?sourceId=' + uri.decode(actionContext.id);
                 let haveItemReferences;
 
                 return new Promise( function (resolve, reject) {
                     request({
-                        url: urlRelatedItems,
+                        url: urlUtil.route('relations', 'mediaRelations', 'taoMediaManager'),
+                        data: {
+                            sourceId: actionContext.id
+                        },
                         method: "GET"
                     })
                     .then(function(response) {

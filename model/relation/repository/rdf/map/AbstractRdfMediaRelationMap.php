@@ -22,8 +22,13 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\repository\rdf\map;
 
+use common_exception_Error;
+use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\ConfigurableService;
+use oat\search\base\exception\SearchGateWayExeption;
+use oat\taoMediaManager\model\MediaService;
+use oat\taoMediaManager\model\relation\MediaRelation;
 use oat\taoMediaManager\model\relation\MediaRelationCollection;
 use core_kernel_classes_Resource as RdfResource;
 
@@ -31,20 +36,63 @@ abstract class AbstractRdfMediaRelationMap extends ConfigurableService implement
 {
     use OntologyAwareTrait;
 
-    abstract protected function getMediaRelationPropertyUri(): string;
-
     public function mapMediaRelations(
-        RdfResource $mediaResource,
+        RdfResource $source,
         MediaRelationCollection $mediaRelationCollection
     ): void
     {
-        $mediaRelations = $mediaResource->getPropertyValues($this->getProperty($this->getMediaRelationPropertyUri()));
+        $mediaRelations = $source->getPropertyValues($this->getProperty($this->getMediaRelationPropertyUri()));
 
         foreach ($mediaRelations as $mediaRelation) {
             $mediaRelationResource = $this->getResource($mediaRelation);
             $mediaRelationCollection->add(
-                $this->createMediaRelation($mediaRelationResource, $mediaResource->getUri())
+                $this->createMediaRelation($mediaRelationResource, $source->getUri())
             );
         }
+    }
+
+    /**
+     * @throws common_exception_Error
+     * @throws SearchGateWayExeption
+     */
+    public function findAllByTarget(string $targetId): MediaRelationCollection
+    {
+        $search = $this->getComplexSearchService();
+
+        $queryBuilder = $search->query();
+
+        $query = $search->searchType($queryBuilder, MediaService::ROOT_CLASS_URI, true)
+            ->add($this->getMediaRelationPropertyUri())
+            ->equals($targetId);
+
+        $queryBuilder->setCriteria($query);
+
+        $result = $search->getGateway()
+            ->search($queryBuilder);
+
+        $mediaRelationCollections = new MediaRelationCollection();
+
+        /** @var RdfResource $resource */
+        foreach ($result as $resource) {
+
+            $mediaRelationCollections->add(
+                $this->createMediaRelation($this->getResource($targetId), $resource->getUri())
+            );
+        }
+
+        return $mediaRelationCollections;
+    }
+
+    private function createMediaRelation(RdfResource $mediaResource, string $sourceId): MediaRelation
+    {
+        return (new MediaRelation($this->getTargetType(), $mediaResource->getUri(), $mediaResource->getLabel()))
+            ->withSourceId($sourceId);
+
+    }
+
+
+    private function getComplexSearchService(): ComplexSearchService
+    {
+        return $this->getServiceLocator()->get(ComplexSearchService::SERVICE_ID);
     }
 }

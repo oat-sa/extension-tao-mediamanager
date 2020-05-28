@@ -45,7 +45,7 @@ class ItemRemovedEventProcessor extends ConfigurableService implements EventProc
         }
 
         $this->getItemRelationUpdateService()
-            ->updateBySourceId((string)$id);
+            ->updateByTargetId((string)$id);
     }
 
     private function getItemRelationUpdateService(): ItemRelationUpdateService

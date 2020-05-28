@@ -46,7 +46,7 @@ class ItemUpdatedEventProcessor extends ConfigurableService implements EventProc
 
         if ($this->mustUpdateItemRelation($data)) {
             $this->getItemRelationUpdateService()
-                ->updateBySourceId($event->getItemUri(), $this->getAggregatedMediaIds($data));
+                ->updateByTargetId($event->getItemUri(), $this->getAggregatedMediaIds($data));
         }
     }
 

@@ -34,6 +34,17 @@ use qtism\data\storage\xml\XmlStorageException;
 use tao_helpers_Uri;
 use tao_models_classes_FileNotFoundException as FileNotFoundException;
 
+/**
+ * @todo As:
+ * - this parser is taoMediaManager agnostic
+ *     - excepts extractImageFileInfo
+ *       - use for validation (atm)
+ *       - should be part of another service
+ * - taomedia://url is parsed from taoMediaResolver
+ * then it can be moved to qti item
+ * and use to create media relation from item
+ * but need to include shared stimulus detection
+ */
 class SharedStimulusMediaParser extends ConfigurableService
 {
     use OntologyAwareTrait;

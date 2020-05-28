@@ -30,14 +30,14 @@ class RdfItemRelationMap extends AbstractRdfMediaRelationMap
     /** @var string */
     public const ITEM_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem';
 
-    protected function getMediaRelationPropertyUri(): string
+    public function getTargetType(): string
+    {
+        return MediaRelation::ITEM_TYPE;
+    }
+
+    public function getMediaRelationPropertyUri(): string
     {
         return self::ITEM_RELATION_PROPERTY;
     }
 
-    public function createMediaRelation(RdfResource $mediaResource, string $sourceId): MediaRelation
-    {
-        return (new MediaRelation(MediaRelation::ITEM_TYPE, $mediaResource->getUri(), $mediaResource->getLabel()))
-            ->withSourceId($sourceId);
-    }
 }

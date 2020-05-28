@@ -16,26 +16,25 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
+ *
  */
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\relation\repository\rdf\map;
+namespace oat\taoMediaManager\model\relation\repository\query;
 
-use oat\taoMediaManager\model\relation\MediaRelation;
-
-class RdfMediaRelationMap extends AbstractRdfMediaRelationMap
+class FindAllByMediaQuery implements FindAllQuery
 {
     /** @var string */
-    public const MEDIA_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedMedia';
+    private $mediaId;
 
-    public function getTargetType(): string
+    public function __construct(string $mediaId = null)
     {
-        return MediaRelation::MEDIA_TYPE;
+        $this->mediaId = $mediaId;
     }
 
-    public function getMediaRelationPropertyUri(): string
+    public function getMediaId(): string
     {
-        return self::MEDIA_RELATION_PROPERTY;
+        return $this->mediaId;
     }
 }

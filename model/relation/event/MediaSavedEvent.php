@@ -30,12 +30,12 @@ class MediaSavedEvent implements Event
     private $mediaId;
 
     /** @var array */
-    private $elementIds;
+    private $referencedMedias;
 
-    public function __construct(string $mediaId, array $elementIds)
+    public function __construct(string $mediaId, array $referencedMedias)
     {
         $this->mediaId = $mediaId;
-        $this->elementIds = $elementIds;
+        $this->referencedMedias = $referencedMedias;
     }
 
     public function getMediaId(): string
@@ -43,9 +43,9 @@ class MediaSavedEvent implements Event
         return $this->mediaId;
     }
 
-    public function getElementIds(): array
+    public function getReferencedMedias(): array
     {
-        return $this->elementIds;
+        return $this->referencedMedias;
     }
 
     /**

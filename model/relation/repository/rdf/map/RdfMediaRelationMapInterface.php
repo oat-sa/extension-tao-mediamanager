@@ -28,14 +28,9 @@ use core_kernel_classes_Resource as RdfResource;
 
 interface RdfMediaRelationMapInterface
 {
-    /**
-     * Based on RdfMediaResource, hydrate MediaRelationCollection
-     *
-     * @param RdfResource $mediaResource
-     * @param MediaRelationCollection $mediaRelationCollection
-     * @return void
-     */
+    public function getTargetType(): string;
+
     public function mapMediaRelations(RdfResource $mediaResource, MediaRelationCollection $mediaRelationCollection): void;
 
-    public function createMediaRelation(RdfResource $mediaResource, string $sourceId): MediaRelation;
+    public function getMediaRelationPropertyUri(): string;
 }

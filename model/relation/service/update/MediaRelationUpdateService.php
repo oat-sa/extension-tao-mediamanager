@@ -23,17 +23,11 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\relation\service\update;
 
 use oat\taoMediaManager\model\relation\MediaRelation;
-use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
 
 class MediaRelationUpdateService extends AbstractRelationUpdateService
 {
     protected function getRelationType(): string
     {
         return MediaRelation::MEDIA_TYPE;
-    }
-
-    protected function createFindAllQueryForUpdate(string $sourceId): FindAllQuery
-    {
-        return new FindAllQuery($sourceId);
     }
 }

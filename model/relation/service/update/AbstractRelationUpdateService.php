@@ -25,37 +25,41 @@ namespace oat\taoMediaManager\model\relation\service\update;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\relation\MediaRelation;
 use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
+use oat\taoMediaManager\model\relation\repository\query\FindAllByTargetQuery;
 use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
 
 abstract class AbstractRelationUpdateService extends ConfigurableService
 {
-    public function updateBySourceId(string $sourceId, array $currentMediaIds = []): void
+    public function updateByTargetId(string $targetId, array $currentMediaIds = []): void
     {
         $repository = $this->getMediaRelationRepository();
 
-        $collection = $repository->findAll($this->createFindAllQueryForUpdate($sourceId));
+        $collection = $repository->findAll($this->createFindAllQueryForUpdate($targetId));
 
         foreach ($collection->filterNewMediaIds($currentMediaIds) as $mediaId) {
-            $repository->save($this->createMediaRelation($mediaId, $sourceId));
+            $repository->save($this->createMediaRelation($targetId, $mediaId));
         }
 
         foreach ($collection->filterRemovedMediaIds($currentMediaIds) as $mediaId) {
-            $repository->remove($this->createMediaRelation($mediaId, $sourceId));
+            $repository->remove($this->createMediaRelation($targetId, $mediaId));
         }
     }
 
     abstract protected function getRelationType(): string;
 
-    abstract protected function createFindAllQueryForUpdate(string $sourceId): FindAllQuery;
+    private function createFindAllQueryForUpdate(string $targetId): FindAllQuery
+    {
+        return new FindAllByTargetQuery($targetId, $this->getRelationType());
+    }
+
+    private function createMediaRelation(string $targetId, string $mediaId): MediaRelation
+    {
+        return (new MediaRelation($this->getRelationType(), $targetId))
+            ->withSourceId($mediaId);
+    }
 
     private function getMediaRelationRepository(): MediaRelationRepositoryInterface
     {
         return $this->getServiceLocator()->get(MediaRelationRepositoryInterface::SERVICE_ID);
-    }
-
-    private function createMediaRelation(string $targetId, string $sourceId): MediaRelation
-    {
-        return (new MediaRelation($this->getRelationType(), $targetId))
-            ->withSourceId($sourceId);
     }
 }

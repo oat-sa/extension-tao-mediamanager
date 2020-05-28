@@ -41,7 +41,7 @@ class MediaRelations extends tao_actions_CommonModule
     {
         try {
             $collection = $this->getMediaRelationService()
-                ->getMediaRelation($this->getSourceIdParameter())
+                ->getMediaRelations($this->getSourceIdParameter())
                 ->jsonSerialize();
 
             $this->setResponse($this->formatResponse(new SuccessJsonResponse($collection), 200));

@@ -72,7 +72,7 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
 
         $this->getLogger()->info(
             sprintf(
-                'Media relation saved, media "%s" is part of %s "%s"',
+                'Media relation saved, media "%s" is now part of %s "%s"',
                 $relation->getSourceId(),
                 $relation->getType(),
                 $relation->getId()

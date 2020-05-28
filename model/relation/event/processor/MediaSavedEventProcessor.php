@@ -39,7 +39,7 @@ class MediaSavedEventProcessor extends ConfigurableService implements EventProce
         }
 
         $this->getMediaRelationUpdateService()
-            ->updateByTargetId($event->getMediaId(), $event->getReferencedMedias());
+            ->updateByTargetId($event->getMediaId(), $event->getReferencedMediaIds());
     }
 
     private function getMediaRelationUpdateService(): MediaRelationUpdateService

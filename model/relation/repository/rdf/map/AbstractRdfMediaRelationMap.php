@@ -74,7 +74,6 @@ abstract class AbstractRdfMediaRelationMap extends ConfigurableService implement
 
         /** @var RdfResource $resource */
         foreach ($result as $resource) {
-
             $mediaRelationCollections->add(
                 $this->createMediaRelation($this->getResource($targetId), $resource->getUri())
             );

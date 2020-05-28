@@ -24,7 +24,7 @@ define([
 ], function($, Loader, Item, qtiClasses){
 
 
-    const _generateIdentifier = function _generateIdentifier(uri) {
+    function generateIdentifier(uri) {
         const pos = uri.lastIndexOf('#');
         return uri.substr(pos + 1);
     };

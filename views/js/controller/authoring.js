@@ -28,8 +28,7 @@ define([
     'ui/feedback',
     'util/url'
 ], function($, __, uri, passageAuthoringFactory, feedback, urlUtil) {
-
-
+git
     const manageMediaController =  {
 
         /**

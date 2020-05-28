@@ -26,7 +26,7 @@ define([
 ], function($, _, Renderer, assetManagerFactory, assetStrategies, dom) {
 
     //configure and instanciate once only:
-    let _creatorRenderer = null;
+    let creatorRenderer = null;
 
     /**
      * Get a preconfigured renderer singleton

@@ -24,7 +24,10 @@ namespace oat\taoMediaManager\test\unit\model\relation\event;
 
 use oat\generis\test\TestCase;
 use oat\oatbox\event\Event;
+use oat\tao\model\media\MediaAsset;
+use oat\tao\model\media\TaoMediaResolver;
 use oat\taoItems\model\event\ItemUpdatedEvent;
+use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\relation\event\processor\InvalidEventException;
 use oat\taoMediaManager\model\relation\event\processor\ItemUpdatedEventProcessor;
 use oat\taoMediaManager\model\relation\service\update\ItemRelationUpdateService;
@@ -32,16 +35,33 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 class ItemUpdatedEventProcessorTest extends TestCase
 {
+    private const MEDIA_LINK_1 = 'taomedia://mediamanager/https_2_test-tao-deploy_0_docker_0_localhost_1_ontologies_1_tao_0_rdf_3_i5ec293a38ebe623833180e3b0a547a6d4';
+    private const MEDIA_LINK_2 = 'taomedia://mediamanager/https_2_test-tao-deploy_0_docker_0_localhost_1_ontologies_1_tao_0_rdf_3_i5ec293a38ebe623833180e3b0a547a6d5';
+    private const MEDIA_LINK_3 = 'taomedia://mediamanager/https_2_test-tao-deploy_0_docker_0_localhost_1_ontologies_1_tao_0_rdf_3_i5ec293a38ebe623833180e3b0a547a6d6';
+
+    private const MEDIA_LINK_1_URI = 'https_2_test-tao-deploy_0_docker_0_localhost_1_ontologies_1_tao_0_rdf_3_i5ec293a38ebe623833180e3b0a547a6d4';
+    private const MEDIA_LINK_2_URI = 'https_2_test-tao-deploy_0_docker_0_localhost_1_ontologies_1_tao_0_rdf_3_i5ec293a38ebe623833180e3b0a547a6d5';
+    private const MEDIA_LINK_3_URI = 'https_2_test-tao-deploy_0_docker_0_localhost_1_ontologies_1_tao_0_rdf_3_i5ec293a38ebe623833180e3b0a547a6d6';
+
+    private const MEDIA_LINK_1_PARSED = 'https://test-tao-deploy.docker.localhost/ontologies/tao.rdf#i5ec293a38ebe623833180e3b0a547a6d4';
+    private const MEDIA_LINK_2_PARSED = 'https://test-tao-deploy.docker.localhost/ontologies/tao.rdf#i5ec293a38ebe623833180e3b0a547a6d5';
+    private const MEDIA_LINK_3_PARSED = 'https://test-tao-deploy.docker.localhost/ontologies/tao.rdf#i5ec293a38ebe623833180e3b0a547a6d6';
+
     /** @var ItemUpdatedEventProcessor */
     private $subject;
 
     /** @var ItemRelationUpdateService|MockObject */
     private $updateService;
 
+    /** @var TaoMediaResolver|MockObject */
+    private $mediaResolver;
+
     public function setUp(): void
     {
+        $this->mediaResolver = $this->createMock(TaoMediaResolver::class);
         $this->updateService = $this->createMock(ItemRelationUpdateService::class);
         $this->subject = new ItemUpdatedEventProcessor();
+        $this->subject->withMediaResolver($this->mediaResolver);
         $this->subject->setServiceLocator(
             $this->getServiceLocatorMock(
                 [
@@ -55,21 +75,38 @@ class ItemUpdatedEventProcessorTest extends TestCase
     {
         $this->updateService
             ->expects($this->once())
-            ->method('updateBySourceId')
-            ->with('itemId', ['mediaId1', 'mediaId2', 'mediaId3']);
+            ->method('updateByTargetId')
+            ->with(
+                'itemId',
+                [
+                    self::MEDIA_LINK_1_PARSED,
+                    self::MEDIA_LINK_2_PARSED,
+                    self::MEDIA_LINK_3_PARSED,
+                ]
+            );
+
+        $this->mediaResolver
+            ->method('resolve')
+            ->willReturnOnConsecutiveCalls(
+                ... [
+                    new MediaAsset(new MediaSource(), self::MEDIA_LINK_1_URI),
+                    new MediaAsset(new MediaSource(), self::MEDIA_LINK_2_URI),
+                    new MediaAsset(new MediaSource(), self::MEDIA_LINK_3_URI),
+                ]
+            );
 
         $this->subject->process(
             new ItemUpdatedEvent(
                 'itemId',
                 [
-                    'includeElementIds' => [
-                        'mediaId1'
+                    'includeElementReferences' => [
+                        self::MEDIA_LINK_1
                     ],
-                    'objectElementIds' => [
-                        'mediaId2'
+                    'objectElementReferences' => [
+                        self::MEDIA_LINK_2
                     ],
-                    'imgElementIds' => [
-                        'mediaId3'
+                    'imgElementReferences' => [
+                        self::MEDIA_LINK_3
                     ]
                 ]
             )

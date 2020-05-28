@@ -24,24 +24,19 @@
 module.exports = function(grunt) {
     'use strict';
 
-    const sassConfig = grunt.config('sass') || {};
-
     grunt.config.merge({
         sass : {
             taomediamanager: {
-                includePaths : [
-                    ...sassConfig.options.includePaths
-                ],
                 files : [
                     {
-                        dest : path.join(root, 'css/media.css'),
-                        src : path.join(root, 'scss/media.scss')
+                        dest : `${root}css/media.css`,
+                        src : `${root}scss/media.scss`
                     }, {
-                        dest : path.join(root, 'css/passage-creator.css'),
-                        src : path.join(root, 'scss/passage-creator.scss')
+                        dest : `${root}css/passage-creator.css`,
+                        src : `${root}scss/passage-creator.scss`
                     }
                 ]
-            },
+            }
         },
         bundle : {
             taomediamanager : {

@@ -25,11 +25,13 @@ module.exports = function(grunt) {
     'use strict';
 
     const sassConfig = grunt.config('sass') || {};
-    const runnerScssPath = path.join(root, 'node_modules/@oat-sa/tao-test-runner-qti/scss');
 
     grunt.config.merge({
         sass : {
             taomediamanager: {
+                includePaths : [
+                    ...sassConfig.options.includePaths
+                ],
                 files : [
                     {
                         dest : path.join(root, 'css/media.css'),

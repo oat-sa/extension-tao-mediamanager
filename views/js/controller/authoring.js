@@ -25,8 +25,9 @@ define([
     'i18n',
     'uri',
     'taoMediaManager/qtiCreator/component/passageAuthoring',
-    'ui/feedback'
-], function($, __, uri, passageAuthoringFactory, feedback) {
+    'ui/feedback',
+    'util/url'
+], function($, __, uri, passageAuthoringFactory, feedback, urlUtil) {
 
 
     const manageMediaController =  {

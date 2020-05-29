@@ -35,7 +35,6 @@ module.exports = function(grunt) {
                     bundles : [{
                         name : 'taoMediaManager',
                         default : true,
-                        bootstrap : true,
                         babel: true
                     }]
                 }

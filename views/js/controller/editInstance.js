@@ -23,16 +23,10 @@
 define([
     'jquery',
     'i18n',
-    'module',
-    'helpers',
     'layout/actions/binder',
-    'uri',
     'ui/previewer',
-    'layout/section',
-    'taoMediaManager/qtiCreator/component/passageAuthoring',
-    'core/request',
-    'core/router'
-], function($, __, module, helpers, binder, uri, previewer, section, passageAuthoringFactory, request, router) {
+    'util/url'
+], function($, __, binder, previewer, urlUtil) {
 
 
     const manageMediaController =  {
@@ -68,25 +62,9 @@ define([
 
             $('#edit-media').off()
                 .on('click', function() {
-                    const action = {binding : "load", url: helpers._url('editMedia', 'MediaImport', 'taoMediaManager')};
+                    const action = {binding : "load", url: urlUtil.route('editMedia', 'MediaImport', 'taoMediaManager')};
                     binder.exec(action, {classUri : $(this).data('classuri'), id : $(this).data('uri')} || this._resourceContext);
                 });
-
-            binder.register('passageAuthoring', function passageAuthoring(actionContext) {
-                section.create({
-                    id : 'authoring',
-                    name : __('Authoring'),
-                    url : this.url,
-                    content : ' ',
-                    visible : false
-                }).show();
-                const $panel = $('#panel-authoring');
-                $panel.attr('data-id', actionContext.id);
-                $panel.attr('data-uri', actionContext.uri);
-                // diplicate behaviour of $doc.ajaxComplete in tao/views/js/controller/backoffice.js
-                // as in old way - request html from server
-                router.dispatch(`${this.url}?id=${actionContext.id}`);
-            });
         }
     };
 

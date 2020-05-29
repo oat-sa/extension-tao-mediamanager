@@ -21,13 +21,16 @@
  * @author Juan Luis Gutierrez Dos Santos <juanluis.gutierrezdossantos@taotesting.com>
  */
 define([
+    'lodash',
     'jquery',
     'i18n',
-    'uri',
     'taoMediaManager/qtiCreator/component/passageAuthoring',
     'ui/feedback',
-    'util/url'
-], function($, __, uri, passageAuthoringFactory, feedback, urlUtil) {
+    'util/url',
+    'core/logger',
+], function(_, $, __, passageAuthoringFactory, feedback, urlUtil, loggerFactory) {
+
+    const logger = loggerFactory('taoMediaManager/authoring');
 
     const manageMediaController =  {
 
@@ -36,7 +39,7 @@ define([
          */
         start() {
             const $panel = $('#panel-authoring');
-            const assetDataUrl = urlUtil.route('get', 'SharedStimulus', 'taoMediaManager')
+            const assetDataUrl = urlUtil.route('get', 'SharedStimulus', 'taoMediaManager');
             passageAuthoringFactory($panel, { properties: {
                 uri: $panel.attr('data-uri'),
                 id: $panel.attr('data-id'),
@@ -46,7 +49,10 @@ define([
                 lang: "en-US"
             }})
             .on('error', err => {
-                feedback().error(err.message);
+                if (!_.isUndefined(err.message)) {
+                    feedback().error(err.message);
+                }
+                logger.error(err);
             });
         }
     };

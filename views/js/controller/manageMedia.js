@@ -23,60 +23,61 @@
 define([
     'jquery',
     'i18n',
-    'module',
-    'helpers',
     'layout/actions/binder',
     'uri',
-    'ui/previewer',
     'layout/section',
-    'taoMediaManager/qtiCreator/component/passageAuthoring',
-    'core/request'
-], function($, __, module, helpers, binder, uri, previewer, section, passageAuthoringFactory, request) {
+    'core/request',
+    'core/router',
+], function($, __, binder, uri, section, request, router) {
 
+    binder.register('newPassage', function instanciate(actionContext) {
+        const self = this;
+        const classUri = uri.decode(actionContext.id);
 
-    const manageMediaController =  {
+        return request({
+            url: self.url,
+            method: "POST",
+            data: { classId: classUri },
+            dataType: 'json'
+        })
+        .then(function(response) {
+            if (response.success && response.data) {
+                //backward compat format for jstree
+                if(actionContext.tree){
+                    $(actionContext.tree).trigger('addnode.taotree', [{
+                        uri       : uri.decode(response.data.id),
+                        label     : response.data.name,
+                        parent    : uri.decode(actionContext.classUri),
+                        cssClass  : 'node-instance'
+                    }]);
+                }
 
-        /**
-         * Controller entry point
-         */
-        start() {
-            binder.register('newPassage', function instanciate(actionContext) {
-                const self = this;
-                const classUri = uri.decode(actionContext.id);
+                //return format (resourceSelector)
+                return {
+                    uri       : uri.decode(response.data.id),
+                    label     : response.data.name,
+                    classUri  : uri.decode(actionContext.classUri),
+                    type      : 'instance'
+                };
 
-                return request({
-                    url: self.url,
-                    method: "POST",
-                    data: { classId: classUri },
-                    dataType: 'json'
-                })
-                .then(function(response) {
-                    if (response.success && response.data) {
-                        //backward compat format for jstree
-                        if(actionContext.tree){
-                            $(actionContext.tree).trigger('addnode.taotree', [{
-                                uri       : uri.decode(response.data.id),
-                                label     : response.data.name,
-                                parent    : uri.decode(actionContext.classUri),
-                                cssClass  : 'node-instance'
-                            }]);
-                        }
-
-                        //return format (resourceSelector)
-                        return {
-                            uri       : uri.decode(response.data.id),
-                            label     : response.data.name,
-                            classUri  : uri.decode(actionContext.classUri),
-                            type      : 'instance'
-                        };
-
-                    } else {
-                        throw new Error(__('Adding the new resource has failed'));
-                    }
-                });
-            });
-        }
-    };
-
-    return manageMediaController;
+            } else {
+                throw new Error(__('Adding the new resource has failed'));
+            }
+        });
+    });
+    binder.register('passageAuthoring', function passageAuthoring(actionContext) {
+        section.create({
+            id : 'authoring',
+            name : __('Authoring'),
+            url : this.url,
+            content : ' ',
+            visible : false
+        }).show();
+        const $panel = $('#panel-authoring');
+        $panel.attr('data-id', actionContext.id);
+        $panel.attr('data-uri', actionContext.uri);
+        // duplicate behaviour of $doc.ajaxComplete in tao/views/js/controller/backoffice.js
+        // as in old way - request html from server
+        router.dispatch(`${this.url}?id=${actionContext.id}`);
+    });
 });

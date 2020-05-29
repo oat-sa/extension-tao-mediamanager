@@ -25,7 +25,9 @@ define([
     'taoMediaManager/qtiCreator/passageCreator',
     'taoMediaManager/qtiCreator/editor/areaBroker',
     'tpl!taoMediaManager/qtiCreator/component/tpl/passageAuthoring',
-    'css!taoMediaManagerCss/passage-creator.css'
+    'css!taoQtiItemCss/qti-runner.css',
+    'css!taoQtiItemCss/themes/default.css',
+    'css!taoQtiItemCss/item-creator.css'
 ], function (
     _,
     componentFactory,

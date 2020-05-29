@@ -25,19 +25,6 @@ module.exports = function(grunt) {
     'use strict';
 
     grunt.config.merge({
-        sass : {
-            taomediamanager: {
-                files : [
-                    {
-                        dest : `${root}css/media.css`,
-                        src : `${root}scss/media.scss`
-                    }, {
-                        dest : `${root}css/passage-creator.css`,
-                        src : `${root}scss/passage-creator.scss`
-                    }
-                ]
-            }
-        },
         bundle : {
             taomediamanager : {
                 options : {

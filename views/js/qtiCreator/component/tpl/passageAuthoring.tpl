@@ -1,4 +1,4 @@
-<div id="passage-authoring-scope" data-content-target="wide">
+<div id="item-editor-scope" data-content-target="wide">
 
     <nav class="action-bar plain content-action-bar horizontal-action-bar">
         <ul class="menu-left action-group plain item-editor-menu"></ul>

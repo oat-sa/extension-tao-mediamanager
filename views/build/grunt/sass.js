@@ -18,39 +18,29 @@
 
 module.exports = function(grunt) {
 
-    var sass    = grunt.config('sass') || {};
-    var watch   = grunt.config('watch') || {};
-    var notify  = grunt.config('notify') || {};
-    var root    = `${grunt.option('root')  }/taoMediaManager/views/`;
+    var root    = `${grunt.option('root')}/taoMediaManager/views/`;
 
-    // Override include paths
-    sass.taomediamanager = {
-        options : {},
-        files : {}
-    };
-
-    //files goes heres
-    sass.taomediamanager.files[`${root  }css/media.css`] = `${root  }scss/media.scss`;
-    sass.taomediamanager.files[`${root  }css/passage-creator.css`] = `${root  }scss/passage-creator.scss`;
-
-    watch.taomediamanagersass = {
-        files : [`${root  }scss/**/*.scss`],
-        tasks : ['sass:taomediamanager', 'notify:taomediamanagersass'],
-        options : {
-            debounceDelay : 1000
+    grunt.config.merge({
+        sass : {
+            taomediamanager :  {
+                files : [{
+                    expand: true,
+                    src: `${root}js/**/scss/*.scss`,
+                    rename : function rename(dest, src){
+                        return src.replace(/scss/g, 'css');
+                    }
+                }]
+            }
+        },
+        notify : {
+            taomediamanagersass : {
+                options: {
+                    title: 'Grunt SASS',
+                    message: 'SASS files compiled to CSS'
+                }
+            }
         }
-    };
-
-    notify.taomediamanagersass = {
-        options: {
-            title: 'Grunt SASS',
-            message: 'SASS files compiled to CSS'
-        }
-    };
-
-    grunt.config('sass', sass);
-    grunt.config('watch', watch);
-    grunt.config('notify', notify);
+    });
 
     //register an alias for main build
     grunt.registerTask('taomediamanagersass', ['sass:taomediamanager']);

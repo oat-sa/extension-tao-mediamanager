@@ -39,8 +39,8 @@ define([
 
 
     const defaultPlugins = [{
-        module: 'taoMediaManager/qtiCreator/plugins/content/title',
-        bundle: 'taoMediaManager/loader/taoMediaManager.min',
+        module: 'taoQtiItem/qtiCreator/plugins/content/title',
+        bundle: 'taoQtiItem/loader/taoQtiItem.min',
         category: 'content'
     }, {
         module: 'taoMediaManager/qtiCreator/plugins/navigation/back',

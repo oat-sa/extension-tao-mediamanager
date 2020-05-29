@@ -32,8 +32,6 @@ use oat\search\QueryBuilder;
 use oat\taoMediaManager\model\relation\MediaRelation;
 use oat\taoMediaManager\model\relation\MediaRelationCollection;
 use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
-use oat\taoMediaManager\model\relation\repository\rdf\map\RdfMediaRelationMap;
-use oat\taoMediaManager\model\relation\repository\rdf\map\RdfMediaRelationMapInterface;
 use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRelationRepository;
 use core_kernel_classes_Resource as RdfResource;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -45,12 +43,6 @@ class RdfMediaRelationRepositoryTest extends TestCase
 
     /** @var Ontology|MockObject */
     private $ontology;
-
-    /** @var RdfMediaRelationMapInterface|MockObject */
-    private $itemMapper;
-
-    /** @var RdfMediaRelationMapInterface|MockObject */
-    private $mediaMapper;
 
     /** @var ComplexSearchService|MockObject */
     private $complexSearch;
@@ -73,22 +65,12 @@ class RdfMediaRelationRepositoryTest extends TestCase
         $this->queryBuilder = $this->createMock(QueryBuilder::class);
         $this->searchGateway = $this->createMock(SearchGateWayInterface::class);
         $this->ontology = $this->createMock(Ontology::class);
-        $this->itemMapper = $this->createMock(RdfMediaRelationMapInterface::class);
-        $this->mediaMapper = $this->createMock(RdfMediaRelationMapInterface::class);
-        $this->subject = new RdfMediaRelationRepository(
-            [
-                RdfMediaRelationRepository::MAP_OPTION => [
-                    $this->itemMapper,
-                    $this->mediaMapper,
-                ]
-            ]
-        );
+        $this->subject = new RdfMediaRelationRepository();
         $this->subject->setServiceLocator(
             $this->getServiceLocatorMock(
                 [
                     Ontology::SERVICE_ID => $this->ontology,
                     ComplexSearchService::SERVICE_ID => $this->complexSearch,
-                    RdfMediaRelationMap::class => $this->mediaMapper,
                 ]
             )
         );
@@ -102,24 +84,6 @@ class RdfMediaRelationRepositoryTest extends TestCase
             ->method('getResource')
             ->with($mediaId)
             ->willReturn($this->createMock(RdfResource::class));
-
-        $this->mediaMapper
-            ->method('mapMediaRelations')
-            ->willReturnCallback(
-                function (RdfResource $mediaResource, MediaRelationCollection $mediaRelationCollection) {
-                    $mediaRelationCollection->add(new MediaRelation('media', '1'));
-                    $mediaRelationCollection->add(new MediaRelation('media', '2', 'media-2'));
-                }
-            );
-
-        $this->itemMapper
-            ->method('mapMediaRelations')
-            ->willReturnCallback(
-                function (RdfResource $mediaResource, MediaRelationCollection $mediaRelationCollection) {
-                    $mediaRelationCollection->add(new MediaRelation('item', '1'));
-                    $mediaRelationCollection->add(new MediaRelation('item', '2', 'item-2'));
-                }
-            );
 
         $expected = [
             [
@@ -152,16 +116,6 @@ class RdfMediaRelationRepositoryTest extends TestCase
     public function testFindAllByItemId(): void
     {
         $itemId = 'itemId';
-
-        $this->mediaMapper
-            ->method('createMediaRelation')
-            ->willReturnOnConsecutiveCalls(
-                ...[
-                    (new MediaRelation('media', '1'))->withSourceId('item1'),
-                    (new MediaRelation('media', '2'))->withSourceId('item1'),
-
-                ]
-            );
 
         $expected = [
             [

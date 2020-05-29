@@ -18,7 +18,7 @@
 
 module.exports = function(grunt) {
 
-    var root    = `${grunt.option('root')  }/taoMediaManager/views/`;
+    var root    = `${grunt.option('root')}/taoMediaManager/views/`;
 
     grunt.config.merge({
         sass : {

@@ -31,7 +31,7 @@ define([
     'core/plugin',
     'ui/hider',
     'taoItems/previewer/factory',
-    'tpl!taoMediaManager/qtiCreator/plugins/button',
+    'tpl!taoQtiItem/qtiCreator/plugins/button',
 ], function($, __, pluginFactory, hider, previewerFactory, buttonTpl){
 
 

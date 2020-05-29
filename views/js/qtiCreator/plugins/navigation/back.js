@@ -28,7 +28,7 @@ define([
     'i18n',
     'core/plugin',
     'ui/hider',
-    'tpl!taoMediaManager/qtiCreator/plugins/button'
+    'tpl!taoQtiItem/qtiCreator/plugins/button'
 ], function($, __, pluginFactory, hider, buttonTpl){
 
 

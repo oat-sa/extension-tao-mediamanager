@@ -25,8 +25,9 @@ define([
     'i18n',
     'layout/actions/binder',
     'ui/previewer',
-    'util/url'
-], function($, __, binder, previewer, urlUtil) {
+    'util/url',
+    'core/dataProvider/request',
+], function($, __, binder, previewer, urlUtil, request) {
 
 
     const manageMediaController =  {
@@ -44,14 +45,11 @@ define([
             if (!$previewer.data('xml')) {
                 $previewer.previewer(file);
             } else{
-                $.ajax({
-                    url: file.url,
-                    data: {xml:true},
-                    method: "POST",
-                }).success(function(response){
-                    file.xml = response;
-                    $previewer.previewer(file);
-                });
+                request(file.url, { xml:true }, "POST")
+                    .then(function(response){
+                        file.xml = response;
+                        $previewer.previewer(file);
+                    });
             }
 
             if (file.mime !== 'application/qti+xml') {

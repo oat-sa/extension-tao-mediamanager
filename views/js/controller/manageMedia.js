@@ -21,32 +21,31 @@
  * @author Juan Luis Gutierrez Dos Santos <juanluis.gutierrezdossantos@taotesting.com>
  */
 define([
+    'lodash',
     'jquery',
     'i18n',
     'layout/actions/binder',
     'uri',
     'layout/section',
-    'core/request',
+    'core/dataProvider/request',
     'core/router',
-], function($, __, binder, uri, section, request, router) {
+    'core/logger',
+    'ui/feedback',
+], function(_, $, __, binder, uri, section, request, router, loggerFactory, feedback) {
+
+    const logger = loggerFactory('taoMediaManager/manageMedia');
 
     binder.register('newPassage', function instanciate(actionContext) {
         const self = this;
         const classUri = uri.decode(actionContext.id);
 
-        return request({
-            url: self.url,
-            method: "POST",
-            data: { classId: classUri },
-            dataType: 'json'
-        })
-        .then(function(response) {
-            if (response.success && response.data) {
+        return request(self.url, { classId: classUri }, "POST")
+            .then(function(data) {
                 //backward compat format for jstree
                 if(actionContext.tree){
                     $(actionContext.tree).trigger('addnode.taotree', [{
-                        uri       : uri.decode(response.data.id),
-                        label     : response.data.name,
+                        uri       : uri.decode(data.id),
+                        label     : data.name,
                         parent    : uri.decode(actionContext.classUri),
                         cssClass  : 'node-instance'
                     }]);
@@ -54,16 +53,18 @@ define([
 
                 //return format (resourceSelector)
                 return {
-                    uri       : uri.decode(response.data.id),
-                    label     : response.data.name,
+                    uri       : uri.decode(data.id),
+                    label     : data.name,
                     classUri  : uri.decode(actionContext.classUri),
                     type      : 'instance'
                 };
-
-            } else {
-                throw new Error(__('Adding the new resource has failed'));
-            }
-        });
+            })
+            .catch(err => {
+                if (!_.isUndefined(err.message)) {
+                    feedback().error(err.message);
+                }
+                logger.error(err);
+            });
     });
     binder.register('passageAuthoring', function passageAuthoring(actionContext) {
         section.create({

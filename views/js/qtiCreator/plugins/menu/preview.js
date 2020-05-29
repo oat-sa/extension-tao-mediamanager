@@ -30,7 +30,7 @@ define([
     'i18n',
     'core/plugin',
     'ui/hider',
-    'taoItems/previewer/factory',
+    'taoMediaManager/previewer/adapter/item/qtiSharedStimulusItem',
     'tpl!taoQtiItem/qtiCreator/plugins/button',
 ], function($, __, pluginFactory, hider, previewerFactory, buttonTpl) {
     'use strict';
@@ -47,19 +47,17 @@ define([
          * @fires {itemCreator#preview}
          */
         init() {
-            const self = this;
-            const sharedStimulusCreator = this.getHost();
+            const SharedStimulusCreator = this.getHost();
 
             /**
              * Preview an item
-             * @event sharedStimulusCreator#preview
+             * @event SharedStimulusCreator#preview
              * @param {String} uri - the uri of this item to preview
              */
-            sharedStimulusCreator.on('preview', function(uri) {
-                const type = 'qtiItem';
+            SharedStimulusCreator.on('preview', (id) => {
 
                 // TO DO should be created empty item with shared stimulus inside
-                previewerFactory(type, uri, { }, {
+                previewerFactory.init(id, { }, {
                     readOnly: false,
                     fullPage: true
                 });
@@ -71,16 +69,12 @@ define([
                 title: __('Preview the item'),
                 text : __('Preview'),
                 cssClass: 'preview-trigger'
-            })).on('click', function previewHandler(e){
+            })).on('click', e => {
                 $(document).trigger('open-preview.qti-item');
-
                 e.preventDefault();
-
-                self.disable();
-
-                sharedStimulusCreator.trigger('preview', sharedStimulusCreator.getItem().data('uri'));
-
-                self.enable();
+                this.disable();
+                SharedStimulusCreator.trigger('preview', SharedStimulusCreator.getSharedStimulusId());
+                this.enable();
             });
         },
 

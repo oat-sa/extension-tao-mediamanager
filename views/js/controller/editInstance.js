@@ -1,4 +1,3 @@
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,12 +21,17 @@
  */
 define([
     'jquery',
+    'lodash',
     'layout/actions/binder',
     'ui/previewer',
     'util/url',
-    'core/dataProvider/request',
-], function($, binder, previewer, urlUtil, request) {
+    'taoMediaManager/previewer/component/qtiSharedStimulusItem',
+    'core/logger',
+    'ui/feedback',
+], function($, _, binder, previewer, urlUtil, qtiItemPreviewerFactory, loggerFactory, feedback) {
     'use strict';
+
+    const logger = loggerFactory('taoMediaManager/editInstance');
 
     const manageMediaController =  {
 
@@ -41,13 +45,15 @@ define([
             file.url = $previewer.data('url');
             file.mime = $previewer.data('type');
 
-            if (!$previewer.data('xml')) {
+            if (file.mime !== 'application/qti+xml') {
                 $previewer.previewer(file);
             } else{
-                request(file.url, { xml:true }, "POST")
-                    .then(function(response){
-                        file.xml = response;
-                        $previewer.previewer(file);
+                qtiItemPreviewerFactory($previewer, {itemUri:  $('#edit-media').data('uri')})
+                    .on('error', function (err) {
+                        if (!_.isUndefined(err.message)) {
+                            feedback().error(err.message);
+                        }
+                        logger.error(err);
                     });
             }
 

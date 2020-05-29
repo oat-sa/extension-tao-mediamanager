@@ -30,7 +30,7 @@ define([
     'i18n',
     'core/plugin',
     'ui/hider',
-    'taoMediaManager/previewer/adapter/item/qtiSharedStimulusItem',
+    'taoItems/previewer/factory',
     'tpl!taoQtiItem/qtiCreator/plugins/button',
 ], function($, __, pluginFactory, hider, previewerFactory, buttonTpl){
 
@@ -78,7 +78,7 @@ define([
 
                 self.disable();
 
-                sharedStimulusCreator.trigger('preview', SharedStimulusCreator.getSharedStimulusId());
+                sharedStimulusCreator.trigger('preview', sharedStimulusCreator.getItem().data('uri'));
 
                 self.enable();
             });

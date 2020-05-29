@@ -44,7 +44,7 @@ define([
          */
         init() {
             const self = this;
-            const passageCreator = this.getHost();
+            const sharedStimulusCreator = this.getHost();
 
             this.$element = $(buttonTpl({
                 icon: 'save',
@@ -54,19 +54,19 @@ define([
             })).on('click', function saveHandler(e){
                 e.preventDefault();
                 self.disable();
-                passageCreator.trigger('save');
+                sharedStimulusCreator.trigger('save');
             });
 
             this.hide();
             this.disable();
 
-            passageCreator.on('ready saved error', function(){
+            sharedStimulusCreator.on('ready saved error', function(){
                 self.enable();
             });
         },
 
         /**
-         * Called during the passageCreator's render phase
+         * Called during the sharedStimulusCreator's render phase
          */
         render() {
             //attach the element to the menu area
@@ -76,7 +76,7 @@ define([
         },
 
         /**
-         * Called during the passageCreator's destroy phase
+         * Called during the sharedStimulusCreator's destroy phase
          */
         destroy() {
             this.$element.remove();

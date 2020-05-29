@@ -26,8 +26,8 @@ define([
         return uri.substr(pos + 1);
     };
 
-    const creatorDummyItemData = function(passageData) {
-        const newItem = new Item().id(_generateIdentifier(passageData.id)).attr('title', passageData.name);
+    const creatorDummyItemData = function(sharedStimulusData) {
+        const newItem = new Item().id(_generateIdentifier(sharedStimulusData.id)).attr('title', sharedStimulusData.name);
         newItem.data('new', true);
         newItem.data('dummy', true);
 
@@ -35,7 +35,7 @@ define([
         delete itemData.bdy;
         delete itemData.rootElement;
 
-        itemData.body = passageData.body.body;
+        itemData.body = sharedStimulusData.body.body;
         if (itemData.body.body.match(/^\n$/)) { // place empty container if body is empty
             itemData.body.body = '<div class="grid-row"><div class="col-12"><p>Lorem ipsum dolor sit amet, consectetur adipisicing ...</p></div></div>';
         }

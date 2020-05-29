@@ -24,11 +24,11 @@ define([
     'lodash',
     'jquery',
     'i18n',
-    'taoMediaManager/qtiCreator/component/passageAuthoring',
+    'taoMediaManager/qtiCreator/component/sharedStimulusAuthoring',
     'ui/feedback',
     'util/url',
     'core/logger',
-], function(_, $, __, passageAuthoringFactory, feedback, urlUtil, loggerFactory) {
+], function(_, $, __, sharedStimulusAuthoringFactory, feedback, urlUtil, loggerFactory) {
 
     const logger = loggerFactory('taoMediaManager/authoring');
 
@@ -40,7 +40,7 @@ define([
         start() {
             const $panel = $('#panel-authoring');
             const assetDataUrl = urlUtil.route('get', 'SharedStimulus', 'taoMediaManager');
-            passageAuthoringFactory($panel, { properties: {
+            sharedStimulusAuthoringFactory($panel, { properties: {
                 uri: $panel.attr('data-uri'),
                 id: $panel.attr('data-id'),
                 assetDataUrl,

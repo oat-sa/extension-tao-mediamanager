@@ -43,9 +43,9 @@ define([
          * Initialize the plugin
          */
         init() {
-            const passageCreator = this.getHost();
+            const sharedStimulusCreator = this.getHost();
 
-            passageCreator.on('exit', function(){
+            sharedStimulusCreator.on('exit', function(){
                 window.history.back();
             });
 
@@ -56,13 +56,13 @@ define([
                 cssClass: 'back-action'
             })).on('click', function backHandler(e){
                 e.preventDefault();
-                passageCreator.trigger('exit');
+                sharedStimulusCreator.trigger('exit');
             });
             this.hide();
         },
 
         /**
-         * Called during the passageCreator's render phase
+         * Called during the sharedStimulusCreator's render phase
          */
         render() {
             //attach the element to the menu area
@@ -72,7 +72,7 @@ define([
         },
 
         /**
-         * Called during the passageCreator's destroy phase
+         * Called during the sharedStimulusCreator's destroy phase
          */
         destroy() {
             this.$element.remove();

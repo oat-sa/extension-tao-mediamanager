@@ -31,11 +31,12 @@ define([
     'core/router',
     'core/logger',
     'ui/feedback',
+    'css!taoMediaManagerCss/media.css',
 ], function(_, $, __, binder, uri, section, request, router, loggerFactory, feedback) {
 
     const logger = loggerFactory('taoMediaManager/manageMedia');
 
-    binder.register('newPassage', function instanciate(actionContext) {
+    binder.register('newSharedStimulus', function instanciate(actionContext) {
         const self = this;
         const classUri = uri.decode(actionContext.id);
 
@@ -66,7 +67,7 @@ define([
                 logger.error(err);
             });
     });
-    binder.register('passageAuthoring', function passageAuthoring(actionContext) {
+    binder.register('sharedStimulusAuthoring', function sharedStimulusAuthoring(actionContext) {
         section.create({
             id : 'authoring',
             name : __('Authoring'),

@@ -30,7 +30,7 @@ define([
     'i18n',
     'core/plugin',
     'ui/hider',
-    'taoItems/previewer/factory',
+    'taoMediaManager/previewer/adapter/item/qtiSharedStimulusItem',
     'tpl!taoQtiItem/qtiCreator/plugins/button',
 ], function($, __, pluginFactory, hider, previewerFactory, buttonTpl){
 
@@ -48,14 +48,14 @@ define([
          */
         init() {
             const self = this;
-            const passageCreator = this.getHost();
+            const sharedStimulusCreator = this.getHost();
 
             /**
              * Preview an item
-             * @event passageCreator#preview
+             * @event sharedStimulusCreator#preview
              * @param {String} uri - the uri of this item to preview
              */
-            passageCreator.on('preview', function(uri) {
+            sharedStimulusCreator.on('preview', function(uri) {
                 const type = 'qtiItem';
 
                 // TO DO should be created empty item with shared stimulus inside
@@ -78,14 +78,14 @@ define([
 
                 self.disable();
 
-                passageCreator.trigger('preview', passageCreator.getItem().data('uri'));
+                sharedStimulusCreator.trigger('preview', SharedStimulusCreator.getSharedStimulusId());
 
                 self.enable();
             });
         },
 
         /**
-         * Initialize the plugin (called during passageCreator's render)
+         * Initialize the plugin (called during SharedStimulusCreator's render)
          */
         render() {
             //attach the element to the menu area
@@ -94,7 +94,7 @@ define([
         },
 
         /**
-         * Called during the passageCreator's destroy phase
+         * Called during the SharedStimulusCreator's destroy phase
          */
         destroy() {
             this.$element.remove();

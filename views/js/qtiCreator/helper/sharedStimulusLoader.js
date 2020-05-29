@@ -31,7 +31,7 @@ define([
     };
 
     const creatorLoader = {
-        loadPassage(config, callback) {
+        loadSharedStimulus(config, callback) {
 
             if (config.id) {
                 request(config.assetDataUrl, { id : config.id })

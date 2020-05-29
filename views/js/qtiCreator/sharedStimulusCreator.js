@@ -33,13 +33,13 @@ define([
     'core/eventifier',
     'core/promise',
     'taoQtiItem/qtiCreator/context/qtiCreatorContext',
-    'taoMediaManager/qtiCreator/helper/passageLoader',
+    'taoMediaManager/qtiCreator/helper/sharedStimulusLoader',
     'taoMediaManager/qtiCreator/helper/creatorRenderer',
     'taoQtiItem/qtiCreator/helper/commonRenderer', //for read-only element : preview + xinclude
     'taoQtiItem/qtiCreator/helper/xincludeRenderer',
     'taoMediaManager/qtiCreator/editor/propertiesPanel',
     'taoQtiItem/qtiCreator/model/helper/event'
-], function($, _, __, eventifier, Promise, qtiCreatorContextFactory, passageLoader,
+], function($, _, __, eventifier, Promise, qtiCreatorContextFactory, sharedStimulusLoader,
     creatorRenderer, commonRenderer, xincludeRenderer,
     propertiesPanel, eventHelper){
 
@@ -52,11 +52,11 @@ define([
      *
      * @returns {Promise} that resolve with the loaded item model
      */
-    const loadPassage = function loadPassage(id, uri, assetDataUrl) {
+    const loadSharedStimulus = function loadSharedStimulus(id, uri, assetDataUrl) {
         return new Promise(function(resolve, reject) {
-            passageLoader.loadPassage({id, uri, assetDataUrl}, function(item) {
+            sharedStimulusLoader.loadSharedStimulus({id, uri, assetDataUrl}, function(item) {
                 if (!item) {
-                    reject(new Error('Unable to load the passage'));
+                    reject(new Error('Unable to load the Shared Stimulus'));
                 }
 
                 //set useful data :
@@ -79,7 +79,7 @@ define([
      * @returns {itemCreator} an event emitter object, with the usual lifecycle
      * @throws {TypeError}
      */
-    const passageCreatorFactory = function passageCreatorFactory(config, areaBroker, pluginFactories) {
+    const sharedStimulusCreatorFactory = function sharedStimulusCreatorFactory(config, areaBroker, pluginFactories) {
 
         let itemCreator;
         const qtiCreatorContext = qtiCreatorContextFactory();
@@ -172,7 +172,7 @@ define([
                 });
 
                 const usedCustomInteractionIds = [];
-                loadPassage(config.properties.id, config.properties.uri, config.properties.assetDataUrl).then(function(item) {
+                loadSharedStimulus(config.properties.id, config.properties.uri, config.properties.assetDataUrl).then(function(item) {
                     if (! _.isObject(item)) {
                         self.trigger('error', new Error(`Unable to load the item ${  config.properties.label}`));
                         return;
@@ -318,6 +318,10 @@ define([
                 return this.item;
             },
 
+            getSharedStimulusId() {
+                return config.properties.id;
+            },
+
             /**
              * Give an access to the config
              * @returns {Object} the config
@@ -330,5 +334,5 @@ define([
         return itemCreator;
     };
 
-    return passageCreatorFactory;
+    return sharedStimulusCreatorFactory;
 });

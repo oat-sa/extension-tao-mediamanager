@@ -19,7 +19,7 @@
 
 define([
     'lodash',
-    'taoMediaManager/qtiCreator/helper/panel'
+    'taoQtiItem/qtiCreator/helper/panel'
 ], function(_, panel) {
 
 

@@ -35,10 +35,10 @@ define([
 
             if (config.id) {
                 request(config.assetDataUrl, { id : config.id })
-                    .then(function(response){
+                    .then(function(data){
 
                         let loader, itemData;
-                        response.languagesList = {
+                        const languagesList = {
                             'da-DK': 'Danish',
                             'de-DE': 'German',
                             'el-GR': 'Greek',
@@ -62,7 +62,7 @@ define([
                             'zh-TW': 'Traditional Chinese from Taiwan'
                         };
 
-                        itemData = creatorDummyItemData(response.data);
+                        itemData = creatorDummyItemData(data);
 
                         loader = new Loader().setClassesLocation(qtiClasses);
                         loader.loadItemData(itemData, function(loadedItem) {
@@ -75,8 +75,8 @@ define([
                             loadedItem.setSchemaLocations(qtiSchemaLocation);
 
                             //add languages list to the item
-                            if (response.languagesList) {
-                                loadedItem.data('languagesList', response.languagesList);
+                            if (languagesList) {
+                                loadedItem.data('languagesList', languagesList);
                             }
 
                             callback(loadedItem, this.getLoadedClasses());

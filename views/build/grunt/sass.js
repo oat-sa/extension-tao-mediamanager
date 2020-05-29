@@ -31,7 +31,6 @@ module.exports = function(grunt) {
 
     //files goes heres
     sass.taomediamanager.files[`${root  }css/media.css`] = `${root  }scss/media.scss`;
-    sass.taomediamanager.files[`${root  }css/passage-creator.css`] = `${root  }scss/passage-creator.scss`;
 
     watch.taomediamanagersass = {
         files : [`${root  }scss/**/*.scss`],

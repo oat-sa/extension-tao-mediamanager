@@ -64,13 +64,7 @@ class Updater extends \common_ext_ExtensionUpdater
         if ($this->isVersion('9.6.0')) {
             OntologyUpdater::syncModels();
             $this->getServiceManager()->register(
-                MediaRelationRepositoryInterface::SERVICE_ID,
-                new RdfMediaRelationRepository([
-                    RdfMediaRelationRepository::MAP_OPTION => [
-                        new RdfItemRelationMap(),
-                        new RdfMediaRelationMap()
-                    ]
-                ])
+                MediaRelationRepositoryInterface::SERVICE_ID, new RdfMediaRelationRepository()
             );
             $this->setVersion('9.7.0');
         }

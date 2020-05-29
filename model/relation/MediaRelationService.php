@@ -24,15 +24,15 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\relation;
 
 use oat\oatbox\service\ConfigurableService;
-use oat\taoMediaManager\model\relation\repository\query\FindAllByMediaQuery;
 use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
+use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
 
 class MediaRelationService extends ConfigurableService
 {
     public function getMediaRelations(string $id): MediaRelationCollection
     {
         return $this->getMediaRelationRepository()->findAll(
-            new FindAllByMediaQuery($id)
+            new FindAllQuery($id)
         );
     }
 

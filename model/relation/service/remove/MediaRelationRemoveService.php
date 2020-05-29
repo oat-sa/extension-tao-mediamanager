@@ -33,13 +33,13 @@ class MediaRelationRemoveService extends ConfigurableService
     {
         $repository = $this->getMediaRelationRepository();
 
-        $medias = $repository
-            ->findAll(new FindAllByTargetQuery($mediaId, MediaRelation::MEDIA_TYPE))
+        $mediaRelations = $repository
+            ->findAllByTarget(new FindAllByTargetQuery($mediaId, MediaRelation::MEDIA_TYPE))
             ->getIterator();
 
         /** @var MediaRelation $media */
-        foreach ($medias as $media) {
-            $repository->remove($media);
+        foreach ($mediaRelations as $mediaRelation) {
+            $repository->remove($mediaRelation);
         }
     }
 

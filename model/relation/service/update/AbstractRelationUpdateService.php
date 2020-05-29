@@ -26,7 +26,6 @@ use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\relation\MediaRelation;
 use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
 use oat\taoMediaManager\model\relation\repository\query\FindAllByTargetQuery;
-use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
 
 abstract class AbstractRelationUpdateService extends ConfigurableService
 {
@@ -34,7 +33,9 @@ abstract class AbstractRelationUpdateService extends ConfigurableService
     {
         $repository = $this->getMediaRelationRepository();
 
-        $collection = $repository->findAll($this->createFindAllQueryForUpdate($targetId));
+        $collection = $repository->findAllByTarget(
+            new FindAllByTargetQuery($targetId, $this->getRelationType())
+        );
 
         foreach ($collection->filterNewMediaIds($currentMediaIds) as $mediaId) {
             $repository->save($this->createMediaRelation($targetId, $mediaId));
@@ -46,11 +47,6 @@ abstract class AbstractRelationUpdateService extends ConfigurableService
     }
 
     abstract protected function getRelationType(): string;
-
-    private function createFindAllQueryForUpdate(string $targetId): FindAllQuery
-    {
-        return new FindAllByTargetQuery($targetId, $this->getRelationType());
-    }
 
     private function createMediaRelation(string $targetId, string $mediaId): MediaRelation
     {

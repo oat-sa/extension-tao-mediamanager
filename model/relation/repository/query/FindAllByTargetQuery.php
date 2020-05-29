@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\repository\query;
 
-class FindAllByTargetQuery implements FindAllQuery
+class FindAllByTargetQuery
 {
     /** @var string */
     private $targetId;

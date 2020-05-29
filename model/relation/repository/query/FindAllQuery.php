@@ -23,7 +23,18 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\repository\query;
 
-interface FindAllQuery
+class FindAllQuery
 {
+    /** @var string */
+    private $mediaId;
 
+    public function __construct(string $mediaId = null)
+    {
+        $this->mediaId = $mediaId;
+    }
+
+    public function getMediaId(): string
+    {
+        return $this->mediaId;
+    }
 }

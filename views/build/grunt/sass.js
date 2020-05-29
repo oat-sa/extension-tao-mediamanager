@@ -25,7 +25,7 @@ module.exports = function(grunt) {
             taomediamanager :  {
                 files : [{
                     expand: true,
-                    src: `${root}js/**/scss/*.scss`,
+                    src: `${root}scss/*.scss`,
                     rename : function rename(dest, src){
                         return src.replace(/scss/g, 'css');
                     }

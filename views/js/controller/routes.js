@@ -24,7 +24,7 @@ define(function(){
 
     return {
         'MediaManager': {
-            'deps': 'controller/manageMedia',
+            'deps': 'controller/actions',
             'actions': {
                 'editInstance' : 'controller/editInstance',
                 'authoring': 'controller/authoring'

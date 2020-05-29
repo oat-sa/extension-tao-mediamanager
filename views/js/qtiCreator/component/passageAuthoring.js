@@ -23,7 +23,7 @@ define([
     'ui/component',
     'core/pluginLoader',
     'taoMediaManager/qtiCreator/passageCreator',
-    'taoMediaManager/qtiCreator/editor/areaBroker',
+    'taoQtiItem/qtiCreator/editor/areaBroker',
     'tpl!taoMediaManager/qtiCreator/component/tpl/passageAuthoring',
     'css!taoQtiItemCss/qti-runner.css',
     'css!taoQtiItemCss/themes/default.css',

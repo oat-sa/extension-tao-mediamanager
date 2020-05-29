@@ -91,11 +91,15 @@ define([
                     })
                     .then(function(response) {
                         let message;
-                        haveItemReferences = response;
-                        if (haveItemReferences) {
-                            message = __("Please confirm deletion");
+                        haveItemReferences = response.data;
+                        if (haveItemReferences.length > 0) {
+                            message = `__('Are you sure you want to delete this ') ${'hola'}?`;
                         } else {
-                            message = __("Please confirm deletion");
+                            message = `${__('This')} ${'hola'} ${__('is currently used in')} ${number}  ${__('item(s)')}:
+                                    item1.label
+                                    item2.label
+                                    etc
+                                ${__('Are you sure you want to delete this')} ${'hola'}?`;
                         }
                         confirmDialog(message, function accept() {
                             request({

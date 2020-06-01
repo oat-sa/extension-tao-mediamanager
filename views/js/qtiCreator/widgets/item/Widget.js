@@ -51,7 +51,7 @@ define([
     TextWidget,
     xmlNsHandler
 ){
-
+    'use strict';
 
     const ItemWidget = Widget.clone();
 

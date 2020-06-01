@@ -21,6 +21,7 @@ define([
     'taoQtiItem/qtiCreator/widgets/states/factory',
     'taoMediaManager/qtiCreator/widgets/helpers/content'
 ], function($, stateFactory, contentHelper){
+    'use strict';
 
     return stateFactory.create('active', function(){
 

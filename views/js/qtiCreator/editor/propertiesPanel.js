@@ -18,9 +18,8 @@
  */
 
 define([
-    'lodash',
     'taoQtiItem/qtiCreator/helper/panel'
-], function(_, panel) {
+], function(panel) {
 
 
     /**

@@ -21,8 +21,9 @@ define([
     'lodash',
     'taoQtiItem/qtiCommonRenderer/renderers/Item',
     'taoMediaManager/qtiCreator/widgets/item/Widget',
-    'tpl!taoQtiItem/qtiCreator/tpl/item'
-], function($, _, CommonRenderer, Widget, tpl) {
+    'tpl!taoQtiItem/qtiCreator/tpl/item',
+    'tpl!taoMediaManager/qtiCreator/renderers/tpl/wrap'
+], function($, _, CommonRenderer, Widget, tpl, wrapTpl) {
 
 
     const CreatorItem = _.clone(CommonRenderer);
@@ -33,7 +34,7 @@ define([
             const $child = $(this);
             //must be a grid-row for editing:
             if (!$child.hasClass('grid-row') && !$child.hasClass('qti-infoControl')) {
-                $child.wrap('<div class="grid-row"><div class="col-12"></div></div>');
+                $child.wrap(wrapTpl());
             }
         });
 
@@ -42,7 +43,7 @@ define([
 
     CreatorItem.template = tpl;
 
-    CreatorItem.render = function(item, options) {
+    CreatorItem.render = function render(item, options) {
 
         const $itemContainer = CommonRenderer.getContainer(item);
 

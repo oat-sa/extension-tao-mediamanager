@@ -23,6 +23,11 @@ define([
     'taoQtiItem/qtiCreator/editor/gridEditor/content'
 ], function($, _, creatorRenderer, containerHelper, gridContentHelper){
 
+    // all files that use qtiCreator/helper/creatorRenderer should be copied from taoQtiItem
+    // because they should use proper locations that are binded in Renderer
+    // qtiCreator/helper/creatorRenderer use qtiCreator/renderers/Renderer
+    // qtiCreator/renderers/Renderer return Renderer with binded locations from qtiCreator/renderers/config
+
     const contentHelper = {};
 
     /**

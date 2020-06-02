@@ -31,7 +31,6 @@ define([
     'lodash',
     'i18n',
     'core/eventifier',
-    'core/promise',
     'taoQtiItem/qtiCreator/context/qtiCreatorContext',
     'taoMediaManager/qtiCreator/helper/sharedStimulusLoader',
     'taoMediaManager/qtiCreator/helper/creatorRenderer',
@@ -39,7 +38,7 @@ define([
     'taoQtiItem/qtiCreator/helper/xincludeRenderer',
     'taoMediaManager/qtiCreator/editor/propertiesPanel',
     'taoQtiItem/qtiCreator/model/helper/event'
-], function($, _, __, eventifier, Promise, qtiCreatorContextFactory, sharedStimulusLoader,
+], function($, _, __, eventifier, qtiCreatorContextFactory, sharedStimulusLoader,
     creatorRenderer, commonRenderer, xincludeRenderer,
     propertiesPanel, eventHelper){
 
@@ -130,11 +129,9 @@ define([
              * @fires itemCreator#error - if something went wrong
              */
             init() {
-                const self = this;
-
                 //instantiate the plugins first
-                _.forEach(pluginFactories, function(pluginFactory) {
-                    const plugin = pluginFactory(self, areaBroker);
+                _.forEach(pluginFactories, pluginFactory => {
+                    const plugin = pluginFactory(this, areaBroker);
                     plugins[plugin.getName()] = plugin;
                 });
 
@@ -149,21 +146,21 @@ define([
                  * @fires itemCreator#saved once the save is done
                  * @fires itemCreator#error
                  */
-                this.on('save', function(silent) {
+                this.on('save', (silent) => {
                     const item = this.getItem();
                     const itemWidget = item.data('widget');
 
                     //do the save
                     Promise.all([
                         itemWidget.save()
-                    ]).then(function() {
+                    ]).then(() => {
                         if (!silent) {
-                            self.trigger('success', __('Your item has been saved'));
+                            this.trigger('success', __('Your item has been saved'));
                         }
 
-                        self.trigger('saved');
-                    }).catch(function(err) {
-                        self.trigger('error', err);
+                        this.trigger('saved');
+                    }).catch(err => {
+                        this.trigger('error', err);
                     });
                 });
 
@@ -171,39 +168,31 @@ define([
                     $('.item-editor-item', areaBroker.getItemPanelArea()).empty();
                 });
 
-                const usedCustomInteractionIds = [];
-                loadSharedStimulus(config.properties.id, config.properties.uri, config.properties.assetDataUrl).then(function(item) {
+                loadSharedStimulus(config.properties.id, config.properties.uri, config.properties.assetDataUrl)
+                .then(item => {
                     if (! _.isObject(item)) {
-                        self.trigger('error', new Error(`Unable to load the item ${  config.properties.label}`));
+                        this.trigger('error', new Error(`Unable to load the item ${  config.properties.label}`));
                         return;
                     }
-
-                    _.forEach(item.getComposingElements(), function(element) {
-                        if (element.is('customInteraction')) {
-                            usedCustomInteractionIds.push(element.typeIdentifier);
-                        }
-                    });
-
-                    self.item = item;
+                    this.item = item;
                     return true;
-                }).then(function() {
-                    //initialize all the plugins
-                    return pluginRun('init').then(function() {
-
-                        /**
-                         * @event itemCreator#init the initialization is done
-                         * @param {Object} item - the loaded item
-                         */
-                        self.trigger('init', self.item);
-                    });
-                }).then(function() {
+                })
+                .then(() => pluginRun('init'))
+                .then(() => {
+                    /**
+                     * @event itemCreator#init the initialization is done
+                     * @param {Object} item - the loaded item
+                     */
+                    this.trigger('init', this.item);
+                })
+                .then(() => {
                     // forward context error
-                    qtiCreatorContext.on('error', function(err) {
-                        self.trigger('error', err);
+                    qtiCreatorContext.on('error', err => {
+                        this.trigger('error', err);
                     });
                     return qtiCreatorContext.init();
-                }).catch(function(err) {
-                    self.trigger('error', err);
+                }).catch(err => {
+                    this.trigger('error', err);
                 });
 
                 return this;
@@ -234,9 +223,9 @@ define([
 
                 //the renderers' widgets do not handle async yet, so we rely on this event
                 //TODO ready should be triggered once every renderer's widget is done (ie. promisify everything)
-                $(document).on('ready.qti-widget', function(e, elt) {
+                $(document).on('ready.qti-widget', (e, elt) => {
                     if (elt.element.qtiClass === 'assessmentItem') {
-                        self.trigger('ready');
+                        this.trigger('ready');
                     }
                 });
 
@@ -294,16 +283,13 @@ define([
              * @returns {itemCreator} chains
              */
             destroy() {
-                const self = this;
-
                 $(document).off('.qti-widget');
 
-                pluginRun('destroy').then(function() {
-                    return qtiCreatorContext.destroy();
-                }).then(function() {
-                    self.trigger('destroy');
-                }).catch(function(err){
-                    self.trigger('error', err);
+                pluginRun('destroy').then(() => qtiCreatorContext.destroy())
+                .then(() => {
+                    this.trigger('destroy');
+                }).catch(err => {
+                    this.trigger('error', err);
                 });
                 return this;
             },

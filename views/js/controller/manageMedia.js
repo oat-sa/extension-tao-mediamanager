@@ -33,8 +33,9 @@ define([
     'core/request',
     'ui/feedback',
     'ui/dialog/confirm',
-    'util/url'
-], function($, __, module, helpers, binder, uri, previewer, section, passageAuthoringFactory, request, confirmDialog, feedback, urlUtil) {
+    'util/url',
+    'tpl!taoMediaManager/controller/relatedItemsPopup'
+], function($, __, module, helpers, binder, uri, previewer, section, passageAuthoringFactory, request, feedback, confirmDialog, urlUtil, relatedItemsPopupTpl) {
 
     const manageMediaController =  {
 
@@ -79,8 +80,13 @@ define([
             });
 
             binder.register('deletePassage', function remove(actionContext) {
-                let haveItemReferences;
+                const self = this;
+                var data = {};
 
+                data.uri        = uri.decode(actionContext.uri);
+                data.classUri   = uri.decode(actionContext.classUri);
+                data.id         = actionContext.id;
+                data.signature  = actionContext.signature;
                 return new Promise( function (resolve, reject) {
                     request({
                         url: urlUtil.route('relations', 'mediaRelations', 'taoMediaManager'),
@@ -89,17 +95,18 @@ define([
                         },
                         method: "GET"
                     })
-                    .then(function(response) {
+                    .then(function(responseRelated) {
                         let message;
-                        haveItemReferences = response.data;
-                        if (haveItemReferences.length > 0) {
-                            message = `__('Are you sure you want to delete this ') ${'hola'}?`;
+                        const haveItemReferences = responseRelated.data;
+                        const name = $('a.clicked', actionContext.tree).text().trim() ;
+                        if (haveItemReferences.length === 0) {
+                            message = `${__('Are you sure you want to delete this')} "${name}"?`;
                         } else {
-                            message = `${__('This')} ${'hola'} ${__('is currently used in')} ${number}  ${__('item(s)')}:
-                                    item1.label
-                                    item2.label
-                                    etc
-                                ${__('Are you sure you want to delete this')} ${'hola'}?`;
+                            message = relatedItemsPopupTpl({
+                                name,
+                                number: haveItemReferences.length,
+                                items: haveItemReferences
+                            });
                         }
                         confirmDialog(message, function accept() {
                             request({
@@ -128,7 +135,7 @@ define([
                         }, function cancel() {
                             reject({ cancel : true });
                         });
-                    })
+                    });
                 });
             });
         }

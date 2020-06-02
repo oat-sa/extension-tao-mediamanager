@@ -34,7 +34,10 @@ define([
     'taoQtiItem/qtiCreator/editor/ckEditor/htmlEditor'
 ], function(_, $, Promise, Loader, Container, Item, event, allQtiClasses, commonRenderer, xmlRenderer, simpleParser, creatorRenderer, xincludeRenderer, content, htmlEditor) {
 
-
+    // all files that use qtiCreator/helper/creatorRenderer should be copied from taoQtiItem
+    // because they should use proper locations that are binded in Renderer
+    // qtiCreator/helper/creatorRenderer use qtiCreator/renderers/Renderer
+    // qtiCreator/renderers/Renderer return Renderer with binded locations from qtiCreator/renderers/config
 
     const _ns = 'containereditor';
 

@@ -50,6 +50,7 @@ define([
                 !$bodyEltForm.length ||
                 !dom.contains($bodyEltForm)){
 
+                // Renderer with binded locations from taoMediaManager/qtiCreator/renderers/config.js
                 creatorRenderer = new Renderer({
                     lang : '',
                     uri : '',

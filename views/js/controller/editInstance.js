@@ -22,12 +22,11 @@
  */
 define([
     'jquery',
-    'i18n',
     'layout/actions/binder',
     'ui/previewer',
     'util/url',
     'core/dataProvider/request',
-], function($, __, binder, previewer, urlUtil, request) {
+], function($, binder, previewer, urlUtil, request) {
 
 
     const manageMediaController =  {
@@ -61,7 +60,7 @@ define([
             $('#edit-media').off()
                 .on('click', function() {
                     const action = {binding : "load", url: urlUtil.route('editMedia', 'MediaImport', 'taoMediaManager')};
-                    binder.exec(action, {classUri : $(this).data('classuri'), id : $(this).data('uri')} || this._resourceContext);
+                    binder.exec(action, {classUri : this.dataset.classuri , id : this.dataset.uri} || this._resourceContext);
                 });
         }
     };

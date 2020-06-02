@@ -29,7 +29,7 @@ define([
 
     CreatorTable.template = tpl;
 
-    CreatorTable.render = function(table, options){
+    CreatorTable.render = function render(table, options){
 
         Widget.build(
             table,

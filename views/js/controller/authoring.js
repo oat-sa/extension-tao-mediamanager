@@ -23,12 +23,11 @@
 define([
     'lodash',
     'jquery',
-    'i18n',
     'taoMediaManager/qtiCreator/component/sharedStimulusAuthoring',
     'ui/feedback',
     'util/url',
     'core/logger',
-], function(_, $, __, sharedStimulusAuthoringFactory, feedback, urlUtil, loggerFactory) {
+], function(_, $, sharedStimulusAuthoringFactory, feedback, urlUtil, loggerFactory) {
 
     const logger = loggerFactory('taoMediaManager/authoring');
 

@@ -26,7 +26,6 @@ use oat\oatbox\event\EventManager;
 use oat\oatbox\filesystem\File;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\sharedStimulus\parser\SharedStimulusMediaExtractor;
-use oat\taoMediaManager\model\sharedStimulus\parser\SharedStimulusMediaParser;
 use tao_helpers_File;
 
 class MediaSavedEventDispatcher extends ConfigurableService

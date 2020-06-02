@@ -162,26 +162,20 @@ class RdfMediaRelationRepositoryTest extends TestCase
         $expected = [
             [
                 'type' => 'media',
-                'id' => '1',
+                'id' => $itemId,
                 'label' => '',
             ],
             [
                 'type' => 'media',
-                'id' => '2',
+                'id' => $itemId,
                 'label' => '',
             ],
         ];
 
-        $result = [
+        $searchResult = [
             (object) ['subject' => '1'],
             (object) ['subject' => '2'],
         ];
-
-        $this->query
-            ->method('add')
-            ->with(self::ITEM_RELATION_PROPERTY)
-            ->method('equals')
-            ->with($itemId);
 
         $this->complexSearch
             ->method('query')
@@ -197,19 +191,26 @@ class RdfMediaRelationRepositoryTest extends TestCase
 
         $this->searchGateway
             ->method('search')
-            ->willReturn($result);
+            ->willReturn($searchResult);
 
         $this->query
+            ->expects($this->once())
             ->method('add')
-            ->willReturn($this->query);
+            ->with(self::MEDIA_RELATION_PROPERTY)
+            ->willReturn($this->query)
+        ;
 
         $this->query
+            ->expects($this->once())
             ->method('__call')
-            ->with('equals')
-            ->willReturn($this->query);
+            ->with('equals', [$itemId]);
 
         $result = $this->subject->findAllByTarget(new FindAllByTargetQuery($itemId, MediaRelation::MEDIA_TYPE));
 
-        $this->assertSame(json_encode($expected), json_encode(iterator_to_array($result->getIterator())));
+        $arrayResult = iterator_to_array($result->getIterator());
+        $this->assertSame(json_encode($expected), json_encode($arrayResult));
+
+        $this->assertSame('1', $arrayResult[0]->getSourceId());
+        $this->assertSame('2', $arrayResult[1]->getSourceId());
     }
 }

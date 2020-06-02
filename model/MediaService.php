@@ -34,8 +34,7 @@ use oat\tao\model\ClassServiceTrait;
 use oat\tao\model\GenerisServiceTrait;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\relation\event\MediaRemovedEvent;
-use oat\taoMediaManager\model\relation\event\MediaSavedEvent;
-use oat\taoMediaManager\model\sharedStimulus\parser\SharedStimulusMediaParser;
+use oat\taoMediaManager\model\relation\event\MediaSavedEventDispatcher;
 use oat\taoRevision\model\RepositoryInterface;
 use tao_helpers_File;
 
@@ -124,8 +123,7 @@ class MediaService extends ConfigurableService
         $instance = $clazz->createInstanceWithProperties($properties);
         $id = $instance->getUri();
 
-        $this->triggerMediaEvent($id, $mimeType, $content);
-
+        $this->getMediaSavedEventDispatcher()->dispatchFromContent($id, $mimeType, $content);
 
         // @todo: move taoRevision stuff under a listener of MediaSavedEvent
         if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
@@ -164,7 +162,7 @@ class MediaService extends ConfigurableService
                 $instance->editPropertyValues($this->getProperty(self::PROPERTY_LANGUAGE), $language);
             }
 
-            $this->triggerMediaEventFromFile($id, $fileSource);
+            $this->getMediaSavedEventDispatcher()->dispatchFromFile($id, $fileSource);
 
             // @todo: move taoRevision stuff under a listener of MediaSavedEvent
             if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
@@ -172,6 +170,7 @@ class MediaService extends ConfigurableService
                 $this->getRepositoryService()->commit($instance, __('Imported new file'), null, $userId);
             }
         }
+
         return $link !== false;
     }
 
@@ -189,39 +188,16 @@ class MediaService extends ConfigurableService
         return false;
     }
 
-    private function triggerMediaEvent(string $id, string $mimeType, string $content): void
-    {
-        $elementIds = $this->isSharedStimulus($mimeType)
-            ? $this->getSharedStimulusParser()->parse($content)
-            : [];
-
-        $this->getEventManager()->trigger(new MediaSavedEvent($id, $elementIds));
-    }
-
-    private function triggerMediaEventFromFile(string $id, string $fileSource): void
-    {
-        $mimeType = $fileSource instanceof File ? $fileSource->getMimeType() : tao_helpers_File::getMimeType($fileSource);
-
-        if ($this->isSharedStimulus($mimeType)) {
-            $content = $fileSource instanceof File ? $fileSource->read() : file_get_contents($fileSource);
-        } else {
-            $content = '';
-        }
-
-        $this->triggerMediaEvent($id, $mimeType, $content);
-    }
-
-    private function isSharedStimulus($mimeType)
-    {
-        return $mimeType == 'application/qti+xml';
-    }
-
-
     private function getLink(RdfResource $resource): string
     {
         $instance = $resource->getUniquePropertyValue($this->getProperty(self::PROPERTY_LINK));
 
         return $instance instanceof RdfResource ? $instance->getUri() : (string)$instance;
+    }
+
+    private function getMediaSavedEventDispatcher(): MediaSavedEventDispatcher
+    {
+        return $this->getServiceLocator()->get(MediaSavedEventDispatcher::class);
     }
 
     private function getFileManager(): FileManagement
@@ -237,10 +213,5 @@ class MediaService extends ConfigurableService
     private function getEventManager(): EventManager
     {
         return $this->getServiceLocator()->get(EventManager::SERVICE_ID);
-    }
-
-    private function getSharedStimulusParser(): SharedStimulusMediaParser
-    {
-        return $this->getServiceLocator()->get(SharedStimulusMediaParser::class);
     }
 }

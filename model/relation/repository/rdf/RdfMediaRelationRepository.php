@@ -132,7 +132,6 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
                 $rdfMediaRelations[self::MEDIA_RELATION_PROPERTY],
                 $mediaId
             )->getIterator()
-
         );
     }
 

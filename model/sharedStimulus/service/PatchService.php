@@ -32,6 +32,7 @@ use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\media\TaoMediaException;
 use oat\tao\model\media\TaoMediaResolver;
 use oat\taoMediaManager\model\MediaService;
+use oat\taoMediaManager\model\sharedStimulus\parser\SharedStimulusMediaExtractor;
 use oat\taoMediaManager\model\sharedStimulus\parser\SharedStimulusMediaParser;
 use oat\taoMediaManager\model\sharedStimulus\PatchCommand;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
@@ -110,11 +111,11 @@ class PatchService extends ConfigurableService
             throw new InvalidArgumentException('Invalid XML provided');
         }
 
-        $this->getMediaParser()->parseImageFileInfo($file->read());
+        $this->getMediaParser()->assertMediaFileExists($file->read());
     }
 
-    public function getMediaParser(): SharedStimulusMediaParser
+    public function getMediaParser(): SharedStimulusMediaExtractor
     {
-        return $this->getServiceLocator()->get(SharedStimulusMediaParser::class);
+        return $this->getServiceLocator()->get(SharedStimulusMediaExtractor::class);
     }
 }

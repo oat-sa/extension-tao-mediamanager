@@ -28,7 +28,7 @@ class FindAllQuery
     /** @var string */
     private $mediaId;
 
-    public function __construct(string $mediaId = null)
+    public function __construct(string $mediaId)
     {
         $this->mediaId = $mediaId;
     }

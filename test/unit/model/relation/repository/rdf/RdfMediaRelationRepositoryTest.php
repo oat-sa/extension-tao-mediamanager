@@ -31,13 +31,18 @@ use oat\search\base\SearchGateWayInterface;
 use oat\search\QueryBuilder;
 use oat\taoMediaManager\model\relation\MediaRelation;
 use oat\taoMediaManager\model\relation\MediaRelationCollection;
+use oat\taoMediaManager\model\relation\repository\query\FindAllByTargetQuery;
 use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
 use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRelationRepository;
 use core_kernel_classes_Resource as RdfResource;
+use core_kernel_classes_Property as RdfProperty;
 use PHPUnit\Framework\MockObject\MockObject;
 
 class RdfMediaRelationRepositoryTest extends TestCase
 {
+    private const ITEM_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem';
+    private const MEDIA_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedMedia';
+
     /** @var RdfMediaRelationRepository */
     private $subject;
 
@@ -80,10 +85,47 @@ class RdfMediaRelationRepositoryTest extends TestCase
     {
         $mediaId = 'fixture';
 
+        $itemRelationProperty = $this->createConfiguredMock(RdfProperty::class, []);
+        $mediaRelationProperty = $this->createConfiguredMock(RdfProperty::class, []);
+
+        $relatedItem1 = $this->createConfiguredMock(RdfResource::class, ['getUri' => '1', 'getLabel' => '']);
+        $relatedItem2 = $this->createConfiguredMock(RdfResource::class, ['getUri' => '2', 'getLabel' => 'item-2']);
+        $relatedMedia1 = $this->createConfiguredMock(RdfResource::class, ['getUri' => '1', 'getLabel' => '']);
+        $relatedMedia2 = $this->createConfiguredMock(RdfResource::class, ['getUri' => '2', 'getLabel' => 'media-2']);
+
+        $resource = $this->createMock(RdfResource::class);
+
+        $resource
+            ->method('getPropertiesValues')
+            ->with([
+                $itemRelationProperty, $mediaRelationProperty
+            ])
+            ->willReturn([
+                self::ITEM_RELATION_PROPERTY => [
+                    $relatedItem1,
+                    $relatedItem2,
+                ],
+                self::MEDIA_RELATION_PROPERTY => [
+                    $relatedMedia1,
+                    $relatedMedia2,
+                ]
+            ]);
+
         $this->ontology
             ->method('getResource')
             ->with($mediaId)
-            ->willReturn($this->createMock(RdfResource::class));
+            ->willReturn($resource);
+
+        $this->ontology
+            ->method('getProperty')
+            ->withConsecutive(
+                [$this->equalTo(self::ITEM_RELATION_PROPERTY)],
+                [$this->equalTo(self::MEDIA_RELATION_PROPERTY)]
+            )
+            ->willReturnOnConsecutiveCalls(
+                $itemRelationProperty,
+                $mediaRelationProperty
+            );
 
         $expected = [
             [
@@ -131,9 +173,15 @@ class RdfMediaRelationRepositoryTest extends TestCase
         ];
 
         $result = [
-            $this->createMock(RdfResource::class),
-            $this->createMock(RdfResource::class),
+            (object) ['subject' => '1'],
+            (object) ['subject' => '2'],
         ];
+
+        $this->query
+            ->method('add')
+            ->with(self::ITEM_RELATION_PROPERTY)
+            ->method('equals')
+            ->with($itemId);
 
         $this->complexSearch
             ->method('query')
@@ -160,16 +208,8 @@ class RdfMediaRelationRepositoryTest extends TestCase
             ->with('equals')
             ->willReturn($this->query);
 
-        $result = $this->subject->findAll(new FindAllQuery(null, $itemId));
+        $result = $this->subject->findAllByTarget(new FindAllByTargetQuery($itemId, MediaRelation::MEDIA_TYPE));
 
         $this->assertSame(json_encode($expected), json_encode(iterator_to_array($result->getIterator())));
-    }
-
-    public function testFindAllWithInvalidFilterWillThrowException(): void
-    {
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('Invalid query filter');
-
-        $this->subject->findAll(new FindAllQuery());
     }
 }

@@ -56,8 +56,8 @@ class ItemRelationUpdateServiceTest extends TestCase
 
         $collection = new MediaRelationCollection(
             ...[
-                (new MediaRelation(MediaRelation::ITEM_TYPE, 'remove_media_1' ))->withSourceId($itemId),
-                (new MediaRelation(MediaRelation::ITEM_TYPE, 'remove_media_2' ))->withSourceId($itemId),
+                (new MediaRelation(MediaRelation::ITEM_TYPE, $itemId))->withSourceId('remove_media_1'),
+                (new MediaRelation(MediaRelation::ITEM_TYPE, $itemId))->withSourceId('remove_media_2'),
             ]
         );
 
@@ -70,10 +70,10 @@ class ItemRelationUpdateServiceTest extends TestCase
             ->withConsecutive(
                 ...[
                     [
-                        (new MediaRelation(MediaRelation::ITEM_TYPE, 'new_media_1'))->withSourceId($itemId),
+                        (new MediaRelation(MediaRelation::ITEM_TYPE, $itemId))->withSourceId('new_media_1'),
                     ],
                     [
-                        (new MediaRelation(MediaRelation::ITEM_TYPE, 'new_media_2'))->withSourceId($itemId),
+                        (new MediaRelation(MediaRelation::ITEM_TYPE, $itemId))->withSourceId('new_media_2'),
                     ]
                 ]
             );
@@ -83,16 +83,16 @@ class ItemRelationUpdateServiceTest extends TestCase
             ->withConsecutive(
                 ...[
                     [
-                        (new MediaRelation(MediaRelation::ITEM_TYPE, 'remove_media_1'))->withSourceId($itemId),
+                        (new MediaRelation(MediaRelation::ITEM_TYPE, $itemId))->withSourceId('remove_media_1'),
                     ],
                     [
-                        (new MediaRelation(MediaRelation::ITEM_TYPE, 'remove_media_2'))->withSourceId($itemId),
+                        (new MediaRelation(MediaRelation::ITEM_TYPE, $itemId))->withSourceId('remove_media_2'),
                     ]
                 ]
             );
 
         $this->assertNull(
-            $this->subject->updateBySourceId(
+            $this->subject->updateByTargetId(
                 $itemId,
                 [
                     'new_media_1',

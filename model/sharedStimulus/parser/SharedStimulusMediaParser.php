@@ -49,6 +49,9 @@ class SharedStimulusMediaParser extends ConfigurableService
 {
     use OntologyAwareTrait;
 
+    /** @var TaoMediaResolver */
+    private $mediaResolver;
+
     /**
      * @throws TaoMediaException|LogicException
      */
@@ -69,6 +72,13 @@ class SharedStimulusMediaParser extends ConfigurableService
             $xml,
             [$this, 'extractImageFileInfo']
         );
+    }
+
+    public function withMediaResolver(TaoMediaResolver $resolver)
+    {
+        $this->mediaResolver = $resolver;
+
+        return $this;
     }
 
     /**
@@ -133,7 +143,7 @@ class SharedStimulusMediaParser extends ConfigurableService
     }
 
     /**
-     * @throws LogicException
+     * @throws InvalidMediaReferenceException
      */
     private function getMediaFileUri(MediaAsset $asset): string
     {
@@ -148,6 +158,10 @@ class SharedStimulusMediaParser extends ConfigurableService
 
     private function getMediaResolver(): TaoMediaResolver
     {
-        return new TaoMediaResolver();
+        if (!$this->mediaResolver) {
+            $this->mediaResolver = new TaoMediaResolver();
+        }
+
+        return $this->mediaResolver;
     }
 }

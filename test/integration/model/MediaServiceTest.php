@@ -26,6 +26,8 @@ use oat\oatbox\service\ServiceManager;
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\taoMediaManager\model\MediaService;
 use oat\generis\test\TestCase;
+use core_kernel_classes_Resource as RdfResource;
+use core_kernel_classes_Property as RdfProperty;
 
 include_once dirname(__FILE__) . '/../../../includes/raw_start.php';
 
@@ -104,10 +106,10 @@ class MediaServiceTest extends TestCase
         $mediaService = $this->initializeMockForCreateInstance($fileTmp);
         $uri = $mediaService->createMediaInstance($fileTmp, $classUri, $lang);
 
-        $instance = new \core_kernel_classes_Resource($uri);
-        $thing = $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LINK));
+        $instance = new RdfResource($uri);
+        $thing = $instance->getUniquePropertyValue(new RdfProperty(MediaService::PROPERTY_LINK));
 
-        $linkResult = $thing instanceof \core_kernel_classes_Resource ? $thing->getUri() : (string)$thing;
+        $linkResult = $thing instanceof RdfResource ? $thing->getUri() : (string)$thing;
         $this->assertInstanceOf(
             '\core_kernel_classes_Resource',
             $instance,
@@ -118,7 +120,7 @@ class MediaServiceTest extends TestCase
         $this->assertEquals($linkResult, 'MyGreatLink', 'The returned link is wrong');
         $this->assertEquals(
             $lang,
-            $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LANGUAGE)),
+            $instance->getUniquePropertyValue(new RdfProperty(MediaService::PROPERTY_LANGUAGE)),
             'The instance language is wrong'
         );
 
@@ -131,15 +133,15 @@ class MediaServiceTest extends TestCase
         $lang = 'EN-en';
 
         $instanceUri = 'http://myFancyDomain.com/myGreatInstanceUri';
-        $instance = new \core_kernel_classes_Resource($instanceUri);
-        $instance->setPropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LINK), 'MyLink');
+        $instance = new RdfResource($instanceUri);
+        $instance->setPropertyValue(new RdfProperty(MediaService::PROPERTY_LINK), 'MyLink');
 
         $mediaService = $this->initializeMockForEditInstance('MyLink');
         $mediaService->editMediaInstance($fileTmp, $instanceUri, $lang);
 
         $this->assertEquals(
             $lang,
-            $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LANGUAGE)),
+            $instance->getUniquePropertyValue(new RdfProperty(MediaService::PROPERTY_LANGUAGE)),
             'The instance language is wrong'
         );
 

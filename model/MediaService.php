@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model;
 
 use common_ext_ExtensionsManager;
+use core_kernel_classes_Literal;
 use core_kernel_classes_Resource as RdfResource;
 use oat\generis\model\OntologyRdfs;
 use oat\oatbox\event\EventManager;
@@ -162,7 +163,8 @@ class MediaService extends ConfigurableService
                 $instance->editPropertyValues($this->getProperty(self::PROPERTY_LANGUAGE), $language);
             }
 
-            $this->getMediaSavedEventDispatcher()->dispatchFromFile($id, $fileSource);
+            $this->getMediaSavedEventDispatcher()
+                ->dispatchFromFile($id, $fileSource, $this->getResourceMimeType($instance));
 
             // @todo: move taoRevision stuff under a listener of MediaSavedEvent
             if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
@@ -213,5 +215,18 @@ class MediaService extends ConfigurableService
     private function getEventManager(): EventManager
     {
         return $this->getServiceLocator()->get(EventManager::SERVICE_ID);
+    }
+
+    private function getResourceMimeType(RdfResource $resource): ?string
+    {
+        $container = $resource->getUniquePropertyValue($resource->getProperty(MediaService::PROPERTY_MIME_TYPE));
+
+        if ($container instanceof core_kernel_classes_Literal) {
+            $mimeType = (string)$container;
+
+            return  $mimeType === 'application/qti+xml' ? $mimeType : null;
+        }
+
+        return null;
     }
 }

@@ -42,9 +42,11 @@ class MediaSavedEventDispatcher extends ConfigurableService
     /**
      * @param string|File $fileSource
      */
-    public function dispatchFromFile(string $id, $fileSource): void
+    public function dispatchFromFile(string $id, $fileSource, string $mimeType = null): void
     {
-        $mimeType = $fileSource instanceof File ? $fileSource->getMimeType() : tao_helpers_File::getMimeType($fileSource);
+        if (!$mimeType) {
+            $mimeType = $fileSource instanceof File ? $fileSource->getMimeType() : tao_helpers_File::getMimeType($fileSource);
+        }
 
         if ($this->isSharedStimulus($mimeType)) {
             $content = $fileSource instanceof File ? $fileSource->read() : file_get_contents($fileSource);

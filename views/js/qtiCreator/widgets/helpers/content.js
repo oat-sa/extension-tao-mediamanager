@@ -52,8 +52,7 @@ define([
                     $widget,
                     widget;
 
-                for(serial in newElts){
-
+                newElts.forEach(function (serial) {
                     elt = newElts[serial];
                     $placeholder = $container.find(`.widget-box[data-new][data-qti-class=${elt.qtiClass}]`);
 
@@ -72,7 +71,7 @@ define([
                     if(_.isFunction(callback)){
                         callback(widget);
                     }
-                }
+                })
 
             }, this.getUsedClasses());
         });

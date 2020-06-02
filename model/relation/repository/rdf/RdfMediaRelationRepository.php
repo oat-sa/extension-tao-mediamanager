@@ -121,7 +121,6 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
         ]);
 
         return new MediaRelationCollection(
-
             ... $this->mapTargetRelations(
                 MediaRelation::ITEM_TYPE,
                 $rdfMediaRelations[self::ITEM_RELATION_PROPERTY],

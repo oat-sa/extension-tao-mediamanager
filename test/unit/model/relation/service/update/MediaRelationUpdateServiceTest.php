@@ -93,7 +93,7 @@ class MediaRelationUpdateServiceTest extends TestCase
             );
 
         $this->assertNull(
-            $this->subject->updateBySourceId(
+            $this->subject->updateByTargetId(
                 $sourceId,
                 [
                     'new_media_1',

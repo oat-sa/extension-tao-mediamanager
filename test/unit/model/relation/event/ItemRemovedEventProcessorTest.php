@@ -55,7 +55,7 @@ class ItemRemovedEventProcessorTest extends TestCase
     {
         $this->updateService
             ->expects($this->once())
-            ->method('updateBySourceId')
+            ->method('updateByTargetId')
             ->with('itemId');
 
         $this->subject->process(new ItemRemovedEvent('itemId'));

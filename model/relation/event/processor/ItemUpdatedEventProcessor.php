@@ -49,7 +49,7 @@ class ItemUpdatedEventProcessor extends ConfigurableService implements EventProc
             throw new InvalidEventException($event);
         }
 
-        $data = $event->getData();
+        $data = (array)$event->getData();
 
         if ($this->mustUpdateItemRelation($data)) {
             $this->getItemRelationUpdateService()

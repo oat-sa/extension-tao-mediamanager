@@ -24,6 +24,7 @@ define([
     'tpl!taoMediaManager/qtiCreator/tpl/forms/item',
     'taoQtiItem/qtiCreator/widgets/helpers/formElement'
 ], function(_, stateFactory, Active, formTpl, formElement){
+    'use strict';
 
     const ItemStateActive = stateFactory.create(Active, function enterActiveState() {
         const _widget = this.widget;

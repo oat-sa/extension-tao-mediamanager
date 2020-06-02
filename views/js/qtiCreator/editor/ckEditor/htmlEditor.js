@@ -36,6 +36,8 @@ define([
     contentHelper,
     deletingHelper
 ){
+    'use strict';
+
     const _defaults = {
         placeholder : __('some text ...'),
         shieldInnerContent : true,

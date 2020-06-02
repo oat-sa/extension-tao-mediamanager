@@ -25,6 +25,7 @@ define([
     'taoQtiItem/qtiCreator/widgets/static/helpers/widget',
     'tpl!taoQtiItem/qtiCreator/tpl/toolbars/table'
 ], function($, Widget, states, helper, toolbarTpl) {
+    'use strict';
 
     var TableWidget = Widget.clone();
 

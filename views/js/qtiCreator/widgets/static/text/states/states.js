@@ -4,5 +4,7 @@ define([
     'taoQtiItem/qtiCreator/widgets/static/text/states/Sleep',
     'taoMediaManager/qtiCreator/widgets/static/text/states/Active'
 ], function(factory, states, ...rest){
+    'use strict';
+
     return factory.createBundle(states, rest);
 });

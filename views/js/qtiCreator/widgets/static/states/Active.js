@@ -3,6 +3,7 @@ define([
     'taoQtiItem/qtiCreator/widgets/states/factory',
     'taoMediaManager/qtiCreator/widgets/states/Active'
 ], function($, stateFactory, Active){
+    'use strict';
 
     return stateFactory.extend(Active, function(){
 

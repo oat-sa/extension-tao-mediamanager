@@ -20,7 +20,7 @@
 define([
     'taoQtiItem/qtiCreator/helper/panel'
 ], function(panel) {
-
+    'use strict';
 
     /**
      * Set up the properties panel, including the style editor

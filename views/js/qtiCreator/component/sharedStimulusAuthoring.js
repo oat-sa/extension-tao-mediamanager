@@ -36,7 +36,7 @@ define([
     areaBrokerFactory,
     componentTpl
 ) {
-
+    'use strict';
 
     const defaultPlugins = [{
         module: 'taoQtiItem/qtiCreator/plugins/content/title',

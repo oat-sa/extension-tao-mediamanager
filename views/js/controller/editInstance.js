@@ -27,7 +27,7 @@ define([
     'util/url',
     'core/dataProvider/request',
 ], function($, binder, previewer, urlUtil, request) {
-
+    'use strict';
 
     const manageMediaController =  {
 

@@ -20,7 +20,7 @@
 
 //@see http://forge.taotesting.com/projects/tao/wiki/Front_js
 define(function(){
-
+    'use strict';
 
     return {
         'MediaManager': {

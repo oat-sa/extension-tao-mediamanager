@@ -19,7 +19,7 @@
  * @author Hanna Dzmitryieva <hanna@taotesting.com>
  */
 define(['lodash', 'ui/ckeditor/ckConfigurator', 'mathJax'], function(_, ckConfigurator, mathJax) {
-
+    'use strict';
 
     const _defaults = {
         qtiImage : true,

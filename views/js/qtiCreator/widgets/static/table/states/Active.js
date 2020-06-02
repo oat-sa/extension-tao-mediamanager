@@ -33,6 +33,7 @@ define([
     'taoQtiItem/qtiCreator/widgets/helpers/formElement',
     'tpl!taoQtiItem/qtiCreator/tpl/forms/static/table'
 ], function(_, $, __, ckEditor, tableModelFactory, stateFactory, Active, tableActionsFactory, htmlEditor, contentHelper, formElement, formTpl){
+    'use strict';
 
     var tableModel,
         colActions,

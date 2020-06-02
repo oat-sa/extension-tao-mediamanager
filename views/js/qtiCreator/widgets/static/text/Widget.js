@@ -4,6 +4,7 @@ define([
     'taoMediaManager/qtiCreator/widgets/static/text/states/states',
     'tpl!taoQtiItem/qtiCreator/tpl/toolbars/textBlock'
 ], function($, Widget, states, toolbarTpl){
+    'use strict';
 
     var TextWidget = Widget.clone();
 

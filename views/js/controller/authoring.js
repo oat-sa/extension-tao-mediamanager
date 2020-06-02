@@ -28,6 +28,7 @@ define([
     'util/url',
     'core/logger',
 ], function(_, $, sharedStimulusAuthoringFactory, feedback, urlUtil, loggerFactory) {
+    'use strict';
 
     const logger = loggerFactory('taoMediaManager/authoring');
 

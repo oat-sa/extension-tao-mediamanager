@@ -33,6 +33,7 @@ define([
     'ui/feedback',
     'css!taoMediaManagerCss/media.css',
 ], function(_, $, __, binder, uri, section, request, router, loggerFactory, feedback) {
+    'use strict';
 
     const logger = loggerFactory('taoMediaManager/manageMedia');
 

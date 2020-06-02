@@ -6,6 +6,7 @@ define([
     'taoQtiItem/qtiCreator/widgets/helpers/formElement',
     'tpl!taoQtiItem/qtiCreator/tpl/forms/static/text'
 ], function(stateFactory, Active, htmlEditor, content, formElement, formTpl){
+    'use strict';
 
     var wrapperCls = 'custom-text-box';
 

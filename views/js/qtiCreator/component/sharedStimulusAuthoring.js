@@ -45,15 +45,19 @@ define([
     }, {
         module: 'taoMediaManager/qtiCreator/plugins/navigation/back',
         bundle: 'taoMediaManager/loader/taoMediaManager.min',
-        category: 'panel'
+        category: 'menu'
     }, {
         module: 'taoMediaManager/qtiCreator/plugins/menu/save',
         bundle: 'taoMediaManager/loader/taoMediaManager.min',
-        category: 'panel'
+        category: 'menu'
     }, {
         module: 'taoMediaManager/qtiCreator/plugins/menu/preview',
         bundle: 'taoMediaManager/loader/taoMediaManager.min',
-        category: 'panel'
+        category: 'menu'
+    }, {
+        module: 'taoQtiItem/qtiCreator/plugins/content/changeTracker',
+        bundle: 'taoQtiItem/loader/taoQtiItem.min',
+        category: 'content'
     }];
     /**
      * Embeds the assets creator UI in a component
@@ -150,6 +154,10 @@ define([
                     .spread(this, 'error success ready')
                     .on('init', function () {
                         this.render();
+                    })
+                    .on('destroy', function () {
+                        sharedStimulusCreator = null;
+                        sharedStimulusAuthoring.destroy();
                     })
                     .init();
             })

@@ -37,11 +37,15 @@ define([
     'taoQtiItem/qtiCreator/helper/commonRenderer', //for read-only element : preview + xinclude
     'taoQtiItem/qtiCreator/helper/xincludeRenderer',
     'taoMediaManager/qtiCreator/editor/propertiesPanel',
-    'taoQtiItem/qtiCreator/model/helper/event'
+    'taoQtiItem/qtiCreator/model/helper/event',
+    'taoMediaManager/qtiCreator/helper/xmlRenderer',
+    'taoQtiItem/qtiItem/helper/xmlNsHandler',
+    'core/request',
+    'util/url',
 ], function($, _, __, eventifier, qtiCreatorContextFactory, sharedStimulusLoader,
     creatorRenderer, commonRenderer, xincludeRenderer,
-    propertiesPanel, eventHelper){
-    'use strict';
+    propertiesPanel, eventHelper, xmlRenderer, xmlNsHandler, request, urlUtil){
+
 
     /**
      * Load an item
@@ -148,32 +152,39 @@ define([
                  */
                 this.on('save', (silent) => {
                     const item = this.getItem();
-                    const itemWidget = item.data('widget');
 
-                    //do the save
-                    Promise.all([
-                        itemWidget.save()
-                    ]).then(() => {
+                    const xml = xmlNsHandler.restoreNs(xmlRenderer.render(item), item.getNamespaces());
+                    request({
+                        url: urlUtil.route('patch', 'SharedStimulus', 'taoMediaManager', {id : config.properties.id}),
+                        type : 'POST',
+                        contentType : 'application/json',
+                        dataType : 'json',
+                        data : JSON.stringify({body: xml}),
+                        method: 'PATCH'
+                    })
+                    .then(() => {
                         if (!silent) {
                             this.trigger('success', __('Your item has been saved'));
                         }
 
                         this.trigger('saved');
-                    }).catch(err => {
+                    })
+                    .catch((err) => {
                         this.trigger('error', err);
                     });
                 });
 
                 this.on('exit', function() {
                     $('.item-editor-item', areaBroker.getItemPanelArea()).empty();
+                    this.destroy();
                 });
 
-                loadSharedStimulus(config.properties.id, config.properties.uri, config.properties.assetDataUrl)
-                .then(item => {
+                loadSharedStimulus(config.properties.id, config.properties.uri, config.properties.assetDataUrl).then(item => {
                     if (! _.isObject(item)) {
                         this.trigger('error', new Error(`Unable to load the item ${  config.properties.label}`));
                         return;
                     }
+
                     this.item = item;
                     return true;
                 })

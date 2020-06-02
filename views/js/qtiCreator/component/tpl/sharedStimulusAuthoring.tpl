@@ -60,17 +60,6 @@
 
 
     </div>
-    <!-- preview: item may needed to be saved before -->
-    <div class="preview-modal-feedback modal">
-        <div class="modal-body clearfix">
-            <p>{{__ 'The item needs to be saved before it can be previewed'}}</p>
-
-            <div class="rgt">
-                <button class="btn-regular small cancel" type="button">{{__ 'Cancel'}}</button>
-                <button class="btn-info small save" type="button">{{__ 'Save'}}</button>
-            </div>
-        </div>
-    </div>
 
     <div id="mediaManager"></div>
     <div id="modal-container"></div>

@@ -69,13 +69,16 @@ define([
             });
     });
     binder.register('sharedStimulusAuthoring', function sharedStimulusAuthoring(actionContext) {
-        section.create({
+        section
+        .updateContentBlock("")
+        .create({
             id : 'authoring',
             name : __('Authoring'),
             url : this.url,
             content : ' ',
             visible : false
-        }).show();
+        })
+        .show();
         const $panel = $('#panel-authoring');
         $panel.attr('data-id', actionContext.id);
         $panel.attr('data-uri', actionContext.uri);

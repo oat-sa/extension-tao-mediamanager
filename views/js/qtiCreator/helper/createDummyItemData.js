@@ -41,6 +41,13 @@ define([
             itemData.body.body = emptySharedStimulusTpl();
         }
         itemData.qtiClass = 'assessmentItem';
+        itemData.responseProcessing = {
+            attributes: {},
+            qtiClass: "responseProcessing",
+            responseRules: [],
+            serial: `response_${sharedStimulusData.body.serial}`
+        };
+        itemData.response = {};
 
         return itemData;
     };

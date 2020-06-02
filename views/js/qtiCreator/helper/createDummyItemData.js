@@ -18,7 +18,8 @@
 
 define([
     'taoQtiItem/qtiCreator/model/Item',
-], function(Item){
+    'tpl!taoMediaManager/qtiCreator/helper/tpl/emptySharedStimulus'
+], function(Item, emptySharedStimulusTpl){
 
 
     const _generateIdentifier = function _generateIdentifier(uri) {
@@ -37,7 +38,7 @@ define([
 
         itemData.body = sharedStimulusData.body.body;
         if (itemData.body.body.match(/^\n$/)) { // place empty container if body is empty
-            itemData.body.body = '<div class="grid-row"><div class="col-12"><p>Lorem ipsum dolor sit amet, consectetur adipisicing ...</p></div></div>';
+            itemData.body.body = emptySharedStimulusTpl();
         }
         itemData.qtiClass = 'assessmentItem';
 

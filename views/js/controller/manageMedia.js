@@ -23,19 +23,14 @@
 define([
     'jquery',
     'i18n',
-    'module',
-    'helpers',
     'layout/actions/binder',
     'uri',
-    'ui/previewer',
-    'layout/section',
-    'taoMediaManager/qtiCreator/component/passageAuthoring',
     'core/request',
     'ui/feedback',
     'ui/dialog/confirm',
     'util/url',
     'tpl!taoMediaManager/controller/relatedItemsPopup'
-], function($, __, module, helpers, binder, uri, previewer, section, passageAuthoringFactory, request, feedback, confirmDialog, urlUtil, relatedItemsPopupTpl) {
+], function($, __, binder, uri, request, feedback, confirmDialog, urlUtil, relatedItemsPopupTpl) {
 
     const manageMediaController =  {
 
@@ -100,7 +95,7 @@ define([
                         const haveItemReferences = responseRelated.data;
                         const name = $('a.clicked', actionContext.tree).text().trim() ;
                         if (haveItemReferences.length === 0) {
-                            message = `${__('Are you sure you want to delete this')} "${name}"?`;
+                            message = `${__('Are you sure you want to delete this')} <b>${name}</b>?`;
                         } else {
                             message = relatedItemsPopupTpl({
                                 name,

@@ -3,7 +3,7 @@ define([
     'taoMediaManager/qtiCreator/helper/ckConfigurator',
     'ckeditor'
 ], function($, ckConfigurator, ckEditor) {
-
+    'use strict';
 
     const editor = ckEditor.replace('editor1');
     editor.config = ckConfigurator.getConfig(editor);

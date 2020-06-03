@@ -37,7 +37,7 @@ define(['lodash', 'tpl!taoMediaManager/qtiXmlRenderer/tpl/item'], function(_, tp
             });
             defaultData.schemaLocations = defaultData.schemaLocations.trim();
 
-            data = _.merge({}, data || {}, defaultData);
+            data = _.merge({}, data, defaultData);
             delete data.attributes.class;
             delete data.attributes.title;
             delete data.attributes.adaptive;

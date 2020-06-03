@@ -24,14 +24,21 @@ namespace oat\taoMediaManager\model\relation\event\processor;
 
 use oat\oatbox\event\Event;
 use oat\oatbox\service\ConfigurableService;
+use oat\tao\model\media\TaoMediaResolver;
 use oat\taoItems\model\event\ItemUpdatedEvent;
-use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
+use oat\taoItems\model\media\ItemMediaResolver;
+use oat\taoMediaManager\model\MediaSource;
+use oat\taoMediaManager\model\relation\service\update\ItemRelationUpdateService;
+use tao_helpers_Uri;
 
 class ItemUpdatedEventProcessor extends ConfigurableService implements EventProcessorInterface
 {
-    private const INCLUDE_ELEMENT_IDS_KEY = 'includeElementIds';
-    private const OBJECT_ELEMENT_IDS_KEY = 'objectElementIds';
-    private const IMG_ELEMENT_IDS_KEY = 'imgElementIds';
+    private const INCLUDE_ELEMENT_REFERENCES_KEY = 'includeElementReferences';
+    private const OBJECT_ELEMENT_REFERENCES_KEY = 'objectElementReferences';
+    private const IMG_ELEMENT_REFERENCES_KEY = 'imgElementReferences';
+
+    /** @var TaoMediaResolver */
+    private $mediaResolver;
 
     /**
      * @inheritDoc
@@ -42,28 +49,56 @@ class ItemUpdatedEventProcessor extends ConfigurableService implements EventProc
             throw new InvalidEventException($event);
         }
 
-        $data = $event->getData();
+        $data = (array)$event->getData();
 
         if ($this->mustUpdateItemRelation($data)) {
             $this->getItemRelationUpdateService()
-                ->updateByItem($event->getItemUri(), $this->getAggregatedMediaIds($data));
+                ->updateByTargetId($event->getItemUri(), $this->getAggregatedMediaIds($data));
         }
+    }
+
+    public function withMediaResolver(TaoMediaResolver $mediaResolver): self
+    {
+        $this->mediaResolver = $mediaResolver;
+
+        return $this;
     }
 
     private function mustUpdateItemRelation(array $data): bool
     {
-        return array_key_exists(self::INCLUDE_ELEMENT_IDS_KEY, $data)
-            || array_key_exists(self::OBJECT_ELEMENT_IDS_KEY, $data)
-            || array_key_exists(self::IMG_ELEMENT_IDS_KEY, $data);
+        return array_key_exists(self::INCLUDE_ELEMENT_REFERENCES_KEY, $data)
+            || array_key_exists(self::OBJECT_ELEMENT_REFERENCES_KEY, $data)
+            || array_key_exists(self::IMG_ELEMENT_REFERENCES_KEY, $data);
     }
 
     private function getAggregatedMediaIds(array $data): array
     {
-        return array_merge(
-            $data[self::INCLUDE_ELEMENT_IDS_KEY] ?? [],
-            $data[self::OBJECT_ELEMENT_IDS_KEY] ?? [],
-            $data[self::IMG_ELEMENT_IDS_KEY] ?? []
+        $references = array_merge(
+            $data[self::INCLUDE_ELEMENT_REFERENCES_KEY] ?? [],
+            $data[self::OBJECT_ELEMENT_REFERENCES_KEY] ?? [],
+            $data[self::IMG_ELEMENT_REFERENCES_KEY] ?? []
         );
+
+        $ids = [];
+
+        foreach ($references as $reference) {
+            $mediaAsset = $this->getMediaResolver()->resolve($reference);
+
+            if ($mediaAsset->getMediaSource() instanceof MediaSource) {
+                $ids[] = tao_helpers_Uri::decode($mediaAsset->getMediaIdentifier());
+            }
+        }
+
+        return $ids;
+    }
+
+    private function getMediaResolver(): TaoMediaResolver
+    {
+        if (!$this->mediaResolver) {
+            $this->mediaResolver = new ItemMediaResolver('', null);
+        }
+
+        return $this->mediaResolver;
     }
 
     private function getItemRelationUpdateService(): ItemRelationUpdateService

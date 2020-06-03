@@ -20,24 +20,24 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\relation\repository\rdf\map;
+namespace oat\taoMediaManager\model\sharedStimulus\parser;
 
-use oat\taoMediaManager\model\relation\MediaRelation;
-use core_kernel_classes_Resource as RdfResource;
+use common_exception_UserReadableException as UserReadableException;
+use LogicException;
 
-class RdfItemRelationMap extends AbstractRdfMediaRelationMap
+class InvalidMediaReferenceException extends LogicException implements UserReadableException
 {
     /** @var string */
-    public const ITEM_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem';
+    private $referencedMedia;
 
-    protected function getMediaRelationPropertyUri(): string
+    public function __construct($referencedMedia)
     {
-        return self::ITEM_RELATION_PROPERTY;
+        $this->referencedMedia = $referencedMedia;
+        $this->message = $this->getUserMessage();
     }
 
-    public function createMediaRelation(RdfResource $mediaResource, string $sourceId): MediaRelation
+    public function getUserMessage()
     {
-        return (new MediaRelation(MediaRelation::ITEM_TYPE, $mediaResource->getUri(), $mediaResource->getLabel()))
-            ->withSourceId($sourceId);
+        return sprintf('The referenced media "%s" does not exist', $this->referencedMedia);
     }
 }

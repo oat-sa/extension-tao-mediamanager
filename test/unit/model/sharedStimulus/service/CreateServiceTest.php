@@ -135,7 +135,10 @@ class CreateServiceTest extends TestCase
             new SharedStimulus(
                 self::URI,
                 self::NAME,
-                self::LANGUAGE_URI
+                self::LANGUAGE_URI,
+                '<?xml version="1.0" encoding="UTF-8"?>
+<div xmlns="http://www.imsglobal.org/xsd/imsqti_v2p2">
+</div>'
             ),
             $createdSharedStimulus
         );

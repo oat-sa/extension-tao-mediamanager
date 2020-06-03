@@ -25,7 +25,7 @@ namespace oat\taoMediaManager\model\relation\event\processor;
 use oat\oatbox\event\Event;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoItems\model\event\ItemRemovedEvent;
-use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
+use oat\taoMediaManager\model\relation\service\update\ItemRelationUpdateService;
 
 class ItemRemovedEventProcessor extends ConfigurableService implements EventProcessorInterface
 {
@@ -45,7 +45,7 @@ class ItemRemovedEventProcessor extends ConfigurableService implements EventProc
         }
 
         $this->getItemRelationUpdateService()
-            ->updateByItem((string)$id);
+            ->updateByTargetId((string)$id);
     }
 
     private function getItemRelationUpdateService(): ItemRelationUpdateService

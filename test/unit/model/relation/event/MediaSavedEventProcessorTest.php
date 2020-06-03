@@ -24,47 +24,45 @@ namespace oat\taoMediaManager\test\unit\model\relation\event;
 
 use oat\generis\test\TestCase;
 use oat\oatbox\event\Event;
-use oat\taoMediaManager\model\relation\event\MediaRemovedEvent;
+use oat\taoMediaManager\model\relation\event\MediaSavedEvent;
 use oat\taoMediaManager\model\relation\event\processor\InvalidEventException;
-use oat\taoMediaManager\model\relation\event\processor\MediaRemovedEventProcessor;
-use oat\taoMediaManager\model\relation\service\remove\MediaRelationRemoveService;
-use PHPUnit\Framework\MockObject\MockObject;
+use oat\taoMediaManager\model\relation\event\processor\MediaSavedEventProcessor;
+use oat\taoMediaManager\model\relation\service\update\MediaRelationUpdateService;
 
-class MediaRemovedEventProcessorTest extends TestCase
+class MediaSavedEventProcessorTest extends TestCase
 {
-    /** @var MediaRemovedEventProcessor */
+    /** @var MediaSavedEventProcessor */
     private $subject;
 
-    /** @var MediaRelationRemoveService|MockObject */
-    private $removeService;
+    /** @var MediaRelationUpdateService */
+    private $updateService;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
-        $this->removeService = $this->createMock(MediaRelationRemoveService::class);
-        $this->subject = new MediaRemovedEventProcessor();
-        $this->subject->setServiceLocator(
-            $this->getServiceLocatorMock(
-                [
-                    MediaRelationRemoveService::class => $this->removeService,
-                ]
-            )
-        );
+        $this->updateService = $this->createMock(MediaRelationUpdateService::class);
+        $this->subject = new MediaSavedEventProcessor();
+        $this->subject->setServiceLocator($this->getServiceLocatorMock([
+            MediaRelationUpdateService::class => $this->updateService
+        ]));
     }
 
-    public function testProcess(): void
+    public function testProcess()
     {
-        $this->removeService
+        $mediaId = 'fixture';
+        $referencedIds = ['fixture'];
+
+        $this->updateService
             ->expects($this->once())
-            ->method('removeMediaRelations')
-            ->with('mediaId');
+            ->method('updateByTargetId')
+            ->with($mediaId, $referencedIds);
 
-        $this->subject->process(new MediaRemovedEvent('mediaId'));
+        $event = new MediaSavedEvent($mediaId, $referencedIds);
+        $this->subject->process($event);
     }
 
-    public function testInvalidEventWillThrowException(): void
+    public function testProcessWithInvalidEvent(): void
     {
         $this->expectException(InvalidEventException::class);
-
         $this->subject->process($this->createMock(Event::class));
     }
 }

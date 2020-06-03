@@ -20,22 +20,14 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\relation\repository\rdf\map;
+namespace oat\taoMediaManager\model\relation\service\update;
 
 use oat\taoMediaManager\model\relation\MediaRelation;
-use oat\taoMediaManager\model\relation\MediaRelationCollection;
-use core_kernel_classes_Resource as RdfResource;
 
-interface RdfMediaRelationMapInterface
+class MediaRelationUpdateService extends AbstractRelationUpdateService
 {
-    /**
-     * Based on RdfMediaResource, hydrate MediaRelationCollection
-     *
-     * @param RdfResource $mediaResource
-     * @param MediaRelationCollection $mediaRelationCollection
-     * @return void
-     */
-    public function mapMediaRelations(RdfResource $mediaResource, MediaRelationCollection $mediaRelationCollection): void;
-
-    public function createMediaRelation(RdfResource $mediaResource, string $sourceId): MediaRelation;
+    protected function getRelationType(): string
+    {
+        return MediaRelation::MEDIA_TYPE;
+    }
 }

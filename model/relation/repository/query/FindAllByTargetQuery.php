@@ -16,28 +16,34 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
+ *
  */
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\relation\repository\rdf\map;
+namespace oat\taoMediaManager\model\relation\repository\query;
 
-use oat\taoMediaManager\model\relation\MediaRelation;
-use core_kernel_classes_Resource as RdfResource;
-
-class RdfMediaRelationMap extends AbstractRdfMediaRelationMap
+class FindAllByTargetQuery
 {
     /** @var string */
-    public const MEDIA_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedMedia';
+    private $targetId;
 
-    protected function getMediaRelationPropertyUri(): string
+    /** @var string */
+    private $type;
+
+    public function __construct(string $targetId, string $type)
     {
-        return self::MEDIA_RELATION_PROPERTY;
+        $this->targetId = $targetId;
+        $this->type = $type;
     }
 
-    public function createMediaRelation(RdfResource $mediaResource, string $sourceId): MediaRelation
+    public function getTargetId(): string
     {
-        return (new MediaRelation(MediaRelation::MEDIA_TYPE, $mediaResource->getUri(), $mediaResource->getLabel()))
-            ->withSourceId($sourceId);
+        return $this->targetId;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
     }
 }

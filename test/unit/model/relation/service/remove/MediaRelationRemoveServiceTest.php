@@ -20,18 +20,18 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\test\unit\model\relation\service;
+namespace oat\taoMediaManager\test\unit\model\relation\service\remove;
 
 use oat\generis\test\TestCase;
 use oat\taoMediaManager\model\relation\MediaRelation;
 use oat\taoMediaManager\model\relation\MediaRelationCollection;
 use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
-use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
+use oat\taoMediaManager\model\relation\service\remove\MediaRelationRemoveService;
 use PHPUnit\Framework\MockObject\MockObject;
 
-class ItemRelationUpdateServiceTest extends TestCase
+class MediaRelationRemoveServiceTest extends TestCase
 {
-    /** @var ItemRelationUpdateService */
+    /** @var MediaRelationRemoveService */
     private $subject;
 
     /** @var MediaRelationRepositoryInterface|MockObject */
@@ -40,7 +40,7 @@ class ItemRelationUpdateServiceTest extends TestCase
     public function setUp(): void
     {
         $this->repository = $this->createMock(MediaRelationRepositoryInterface::class);
-        $this->subject = new ItemRelationUpdateService();
+        $this->subject = new MediaRelationRemoveService();
         $this->subject->setServiceLocator(
             $this->getServiceLocatorMock(
                 [
@@ -50,59 +50,7 @@ class ItemRelationUpdateServiceTest extends TestCase
         );
     }
 
-    public function testUpdateByItem(): void
-    {
-        $itemId = 'itemId';
-
-        $collection = new MediaRelationCollection(
-            ...[
-                (new MediaRelation(MediaRelation::ITEM_TYPE, 'remove_media_1' ))->withSourceId($itemId),
-                (new MediaRelation(MediaRelation::ITEM_TYPE, 'remove_media_2' ))->withSourceId($itemId),
-            ]
-        );
-
-        $this->repository
-            ->method('findAll')
-            ->willReturn($collection);
-
-        $this->repository
-            ->method('save')
-            ->withConsecutive(
-                ...[
-                    [
-                        (new MediaRelation(MediaRelation::ITEM_TYPE, $itemId))->withSourceId('new_media_1'),
-                    ],
-                    [
-                        (new MediaRelation(MediaRelation::ITEM_TYPE, $itemId))->withSourceId('new_media_2'),
-                    ]
-                ]
-            );
-
-        $this->repository
-            ->method('remove')
-            ->withConsecutive(
-                ...[
-                    [
-                        (new MediaRelation(MediaRelation::ITEM_TYPE, $itemId))->withSourceId('remove_media_1'),
-                    ],
-                    [
-                        (new MediaRelation(MediaRelation::ITEM_TYPE, $itemId))->withSourceId('remove_media_2'),
-                    ]
-                ]
-            );
-
-        $this->assertNull(
-            $this->subject->updateByItem(
-                $itemId,
-                [
-                    'new_media_1',
-                    'new_media_2',
-                ]
-            )
-        );
-    }
-
-    public function testRemoveMedia(): void
+    public function testRemoveMediaRelations(): void
     {
         $sourceId = 'mediaId';
         $media1 = new MediaRelation(MediaRelation::MEDIA_TYPE, 'media1');
@@ -116,10 +64,12 @@ class ItemRelationUpdateServiceTest extends TestCase
         );
 
         $this->repository
-            ->method('findAll')
+            ->expects($this->once())
+            ->method('findAllByTarget')
             ->willReturn($collection);
 
         $this->repository
+            ->expects($this->exactly(2))
             ->method('remove')
             ->withConsecutive(
                 ...[
@@ -132,6 +82,6 @@ class ItemRelationUpdateServiceTest extends TestCase
                 ]
             );
 
-        $this->assertNull($this->subject->removeMedia($sourceId));
+        $this->assertNull($this->subject->removeMediaRelations($sourceId));
     }
 }

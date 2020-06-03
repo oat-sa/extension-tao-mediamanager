@@ -22,46 +22,39 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\repository\rdf;
 
-use common_exception_Error;
 use core_kernel_classes_Property;
-use core_kernel_classes_Resource;
 use LogicException;
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\ConfigurableService;
-use oat\search\base\exception\SearchGateWayExeption;
+use oat\search\base\QueryInterface;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\relation\MediaRelation;
 use oat\taoMediaManager\model\relation\MediaRelationCollection;
 use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
+use oat\taoMediaManager\model\relation\repository\query\FindAllByTargetQuery;
 use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
-use oat\taoMediaManager\model\relation\repository\rdf\map\RdfItemRelationMap;
-use oat\taoMediaManager\model\relation\repository\rdf\map\RdfMediaRelationMap;
-use oat\taoMediaManager\model\relation\repository\rdf\map\RdfMediaRelationMapInterface;
 
 class RdfMediaRelationRepository extends ConfigurableService implements MediaRelationRepositoryInterface
 {
     use OntologyAwareTrait;
 
-    /** @var string */
-    public const MAP_OPTION = 'map';
+    private const ITEM_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem';
+    private const MEDIA_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedMedia';
 
     public function findAll(FindAllQuery $findAllQuery): MediaRelationCollection
     {
-        if ($findAllQuery->getMediaId()) {
-            return $this->findAllByMedia($findAllQuery->getMediaId());
-        }
+        return $this->findAllByMedia($findAllQuery->getMediaId());
+    }
 
-        if ($findAllQuery->getItemId()) {
-            return $this->findAllByItem($findAllQuery->getItemId());
-        }
-
-        throw new LogicException('Invalid query filter');
+    public function findAllByTarget(FindAllByTargetQuery $findAllQuery): MediaRelationCollection
+    {
+        return $this->findAllMediaByTarget($findAllQuery->getTargetId(), $findAllQuery->getType());
     }
 
     public function save(MediaRelation $relation): void
     {
-        $mediaResource = $this->getModel()->getResource($relation->getSourceId());
+        $mediaResource = $this->getResource($relation->getSourceId());
 
         if (!$mediaResource->setPropertyValue($this->getPropertyByRelation($relation), $relation->getId())) {
             throw new LogicException(
@@ -73,11 +66,20 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
                 )
             );
         }
+
+        $this->getLogger()->info(
+            sprintf(
+                'Media relation saved, media "%s" is now part of %s "%s"',
+                $relation->getSourceId(),
+                $relation->getType(),
+                $relation->getId()
+            )
+        );
     }
 
     public function remove(MediaRelation $relation): void
     {
-        $mediaResource = $this->getModel()->getResource($relation->getSourceId());
+        $mediaResource = $this->getResource($relation->getSourceId());
 
         if (!$mediaResource->removePropertyValue($this->getPropertyByRelation($relation), $relation->getId())) {
             throw new LogicException(
@@ -89,83 +91,88 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
                 )
             );
         }
-    }
 
-    /**
-     * @return RdfMediaRelationMapInterface[]
-     */
-    private function getRdfRelationMediaMaps(): array
-    {
-        $rdfMaps = [];
-        $maps = $this->getOption(self::MAP_OPTION);
-
-        if (!is_array($maps)) {
-            throw new LogicException('Rdf map for media relation has to be array');
-        }
-
-        foreach ($maps as $map) {
-            if (!is_a($map, RdfMediaRelationMapInterface::class)) {
-                throw new LogicException(
-                    sprintf('Rdf map for media relation required to implement "%s"', RdfMediaRelationMapInterface::class)
-                );
-            }
-
-            $rdfMaps[] = $map;
-        }
-
-        return $rdfMaps;
+        $this->getLogger()->info(
+            sprintf(
+                'Media relation removed, media "%s" is not linked to %s "%s" anymore',
+                $relation->getSourceId(),
+                $relation->getType(),
+                $relation->getId()
+            )
+        );
     }
 
     private function getPropertyByRelation(MediaRelation $mediaRelation): core_kernel_classes_Property
     {
-        return $this->getProperty(
-            $mediaRelation->isMedia()
-                ? RdfMediaRelationMap::MEDIA_RELATION_PROPERTY
-                : RdfItemRelationMap::ITEM_RELATION_PROPERTY
+        $uri = $mediaRelation->isMedia()
+            ? self::MEDIA_RELATION_PROPERTY
+            : self::ITEM_RELATION_PROPERTY;
+
+        return $this->getProperty($uri);
+    }
+
+    private function findAllByMedia(string $mediaId): MediaRelationCollection
+    {
+        $mediaResource = $this->getResource($mediaId);
+
+        $rdfMediaRelations = $mediaResource->getPropertiesValues([
+            $this->getProperty(self::ITEM_RELATION_PROPERTY),
+            $this->getProperty(self::MEDIA_RELATION_PROPERTY),
+        ]);
+
+        return new MediaRelationCollection(
+            ... $this->mapTargetRelations(
+                MediaRelation::ITEM_TYPE,
+                $rdfMediaRelations[self::ITEM_RELATION_PROPERTY],
+                $mediaId
+            )->getIterator(),
+
+            ... $this->mapTargetRelations(
+                MediaRelation::MEDIA_TYPE,
+                $rdfMediaRelations[self::MEDIA_RELATION_PROPERTY],
+                $mediaId
+            )->getIterator()
         );
     }
 
-    /**
-     * @throws common_exception_Error
-     * @throws SearchGateWayExeption
-     */
-    private function findAllByItem(string $itemId): MediaRelationCollection
+    private function findAllMediaByTarget(string $targetId, string $type): MediaRelationCollection
     {
         $search = $this->getComplexSearchService();
 
         $queryBuilder = $search->query();
 
-        $query = $search->searchType($queryBuilder, MediaService::ROOT_CLASS_URI, true)
-            ->add(RdfItemRelationMap::ITEM_RELATION_PROPERTY)
-            ->equals($itemId);
+        $query = $search->searchType($queryBuilder, MediaService::ROOT_CLASS_URI, true);
+
+        $this->applyQueryTargetType($query, $targetId, $type);
 
         $queryBuilder->setCriteria($query);
 
         $result = $search->getGateway()
             ->search($queryBuilder);
 
-        $mapper = $this->getRdfMediaRelationMap();
-
-        $mediaRelationCollections = new MediaRelationCollection();
-
-        /** @var core_kernel_classes_Resource $resource */
-        foreach ($result as $resource) {
-            $mediaRelationCollections->add($mapper->createMediaRelation($resource, $itemId));
-        }
-
-        return $mediaRelationCollections;
+        return $this->mapSourceRelations($type, (array) $result, $targetId);
     }
 
-    private function findAllByMedia(string $mediaId): MediaRelationCollection
+    private function applyQueryTargetType(QueryInterface $query, $targetId, $type)
     {
-        $mediaRelationCollections = new MediaRelationCollection();
-        $mediaResource = $this->getResource($mediaId);
+        switch ($type) {
 
-        foreach ($this->getRdfRelationMediaMaps() as $relationMediaMap) {
-            $relationMediaMap->mapMediaRelations($mediaResource, $mediaRelationCollections);
+            case MediaRelation::ITEM_TYPE:
+                $query
+                    ->add(self::ITEM_RELATION_PROPERTY)
+                    ->equals($targetId);
+                break;
+
+            case MediaRelation::MEDIA_TYPE:
+                $query
+                    ->add(self::MEDIA_RELATION_PROPERTY)
+                    ->equals($targetId);
+                break;
+
+            default:
+                throw new LogicException('MediaRelation query type is unknown.');
+
         }
-
-        return $mediaRelationCollections;
     }
 
     private function getComplexSearchService(): ComplexSearchService
@@ -173,8 +180,35 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
         return $this->getServiceLocator()->get(ComplexSearchService::SERVICE_ID);
     }
 
-    private function getRdfMediaRelationMap(): RdfMediaRelationMapInterface
+    private function mapTargetRelations(string $type, array $rdfMediaRelations, string $sourceId): MediaRelationCollection
     {
-        return $this->getServiceLocator()->get(RdfMediaRelationMap::class);
+        $collection = new MediaRelationCollection();
+
+        foreach ($rdfMediaRelations as $target) {
+            $collection->add(
+                $this->createMediaRelation($type, $target->getUri(), $sourceId, $target->getLabel())
+            );
+        }
+
+        return $collection;
+    }
+
+    private function mapSourceRelations(string $type, array $rdfMediaRelations, string $targetId, string $targetLabel = ''): MediaRelationCollection
+    {
+        $collection = new MediaRelationCollection();
+
+        foreach ($rdfMediaRelations as $source) {
+            $collection->add(
+                $this->createMediaRelation($type, $targetId, $source->subject, $targetLabel)
+            );
+        }
+
+        return $collection;
+    }
+
+    private function createMediaRelation(string $type, string $targetId, string $mediaId, string $targetLabel = ''): MediaRelation
+    {
+        return (new MediaRelation($type, $targetId, $targetLabel))
+            ->withSourceId($mediaId);
     }
 }

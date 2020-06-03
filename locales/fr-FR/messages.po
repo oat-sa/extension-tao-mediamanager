@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TAO 3.4.0-sprint127\n"
-"PO-Revision-Date: 2020-05-07T11:22:19\n"
+"PO-Revision-Date: 2020-05-13T10:57:47\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: fr-FR\n"
@@ -16,6 +16,9 @@ msgstr ""
 msgid "Add a media file"
 msgstr "Ajouter un fichier média"
 
+msgid "Adding the new resource has failed"
+msgstr ""
+
 msgid "An error has occurred. Please contact your administrator."
 msgstr ""
 
@@ -26,6 +29,15 @@ msgstr "Actifs"
 #, tao-public
 msgid "Authoring"
 msgstr "Édition"
+
+msgid "Back to Manage Assets"
+msgstr "Retour à Gérer les actifs"
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Define asset language"
+msgstr "Définir la langue de l'actif"
 
 #, tao-public
 msgid "Delete"
@@ -78,6 +90,9 @@ msgstr "Import initial"
 msgid "Instance saved"
 msgstr "Instance enregistrée"
 
+msgid "Language"
+msgstr "Langue"
+
 #, tao-public
 msgid "Manage Assets"
 msgstr "Gérer les actifs"
@@ -118,8 +133,14 @@ msgstr "Nouveau passage"
 msgid "No file found for this media"
 msgstr "Pas de fichier trouvé pour ce média"
 
+msgid "Passage Properties"
+msgstr "Propriétés de passage"
+
 msgid "Preview"
 msgstr "Aperçu"
+
+msgid "Preview the asset"
+msgstr "Prévisualisation de l'actif"
 
 #, tao-public
 msgid "Properties"
@@ -127,6 +148,15 @@ msgstr "Propriétés"
 
 msgid "Replace Asset"
 msgstr "Remplacer l'actif"
+
+msgid "Save"
+msgstr "Sauvegarder"
+
+msgid "Save the asset"
+msgstr "Sauver l'actif"
+
+msgid "Set a CSS class name in order to customize the display style"
+msgstr "Définir un nom de classe CSS pour personnaliser le style d'affichage"
 
 msgid "Shared Stimulus"
 msgstr "Stimulus partagé"
@@ -136,6 +166,15 @@ msgstr "Stimulus partagé édité avec succès"
 
 msgid "Shared Stimulus imported successfully"
 msgstr "Stimulus partagé importé avec succès"
+
+msgid "Style Editor"
+msgstr ""
+
+msgid "Text Block CSS Class"
+msgstr "Classe CSS du bloc de texte"
+
+msgid "The item needs to be saved before it can be previewed"
+msgstr ""
 
 msgid "Unable to extract the archive"
 msgstr "Impossible d'extraire l'archive"

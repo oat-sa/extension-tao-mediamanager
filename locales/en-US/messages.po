@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TAO 3.4.0-sprint127\n"
-"PO-Revision-Date: 2020-05-07T11:22:19\n"
+"PO-Revision-Date: 2020-05-13T10:57:47\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: en-US\n"
@@ -16,6 +16,9 @@ msgstr ""
 msgid "Add a media file"
 msgstr ""
 
+msgid "Adding the new resource has failed"
+msgstr ""
+
 msgid "An error has occurred. Please contact your administrator."
 msgstr ""
 
@@ -25,6 +28,15 @@ msgstr ""
 
 #, tao-public
 msgid "Authoring"
+msgstr ""
+
+msgid "Back to Manage Assets"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Define asset language"
 msgstr ""
 
 #, tao-public
@@ -78,6 +90,9 @@ msgstr ""
 msgid "Instance saved"
 msgstr ""
 
+msgid "Language"
+msgstr ""
+
 #, tao-public
 msgid "Manage Assets"
 msgstr ""
@@ -118,7 +133,13 @@ msgstr ""
 msgid "No file found for this media"
 msgstr ""
 
+msgid "Passage Properties"
+msgstr ""
+
 msgid "Preview"
+msgstr ""
+
+msgid "Preview the asset"
 msgstr ""
 
 #, tao-public
@@ -128,6 +149,15 @@ msgstr ""
 msgid "Replace Asset"
 msgstr ""
 
+msgid "Save"
+msgstr ""
+
+msgid "Save the asset"
+msgstr ""
+
+msgid "Set a CSS class name in order to customize the display style"
+msgstr ""
+
 msgid "Shared Stimulus"
 msgstr ""
 
@@ -135,6 +165,15 @@ msgid "Shared Stimulus edited successfully"
 msgstr ""
 
 msgid "Shared Stimulus imported successfully"
+msgstr ""
+
+msgid "Style Editor"
+msgstr ""
+
+msgid "Text Block CSS Class"
+msgstr ""
+
+msgid "The item needs to be saved before it can be previewed"
 msgstr ""
 
 msgid "Unable to extract the archive"

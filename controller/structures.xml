@@ -28,7 +28,7 @@
                     <action id="media-properties" name="Properties"  url="/taoMediaManager/MediaManager/editInstance" group="content" context="instance">
                         <icon id="icon-edit"/>
                     </action>
-                    <action id="media-authoring" name="Authoring" url="/taoMediaManager/MediaManager/editInstance" group="content" context="instance" binding="passageAuthoring">
+                    <action id="media-authoring" name="Authoring" url="/taoMediaManager/MediaManager/authoring" group="content" context="instance" binding="sharedStimulusAuthoring">
                         <icon id="icon-edit"/>
                     </action>
                     <action id="media-class-new" name="New class" url="/taoMediaManager/MediaManager/addSubClass" context="resource" group="tree" binding="subClass">
@@ -51,7 +51,7 @@
                             context="resource">
                         <icon id="icon-export"/>
                     </action>
-                    <action id="create-shared-stimulus" name="New passage" url="/taoMediaManager/SharedStimulus/create" group="tree" context="resource" binding="newPassage">
+                    <action id="create-shared-stimulus" name="New passage" url="/taoMediaManager/SharedStimulus/create" group="tree" context="resource" binding="newSharedStimulus">
                         <icon id="icon-select-all"/>
                     </action>
                     <action id="get-shared-stimulus" name="Get Shared Stimulus" url="/taoMediaManager/SharedStimulus/get" group="none" context="none" binding="getSharedStimulus"></action>

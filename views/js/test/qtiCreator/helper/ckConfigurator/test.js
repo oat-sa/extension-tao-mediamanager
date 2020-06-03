@@ -25,7 +25,7 @@ define([
         assert.expect(1);
 
         assert.ok(true);
-        
+
         ready();
     });
 });

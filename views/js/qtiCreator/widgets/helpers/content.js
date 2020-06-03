@@ -46,23 +46,21 @@ define([
         containerHelper.createElements(container, gridContentHelper.getContent($dummy), function(newElts){
 
             creatorRenderer.get().load(function(){
-                let serial,
-                    elt,
-                    $placeholder,
-                    $widget,
-                    widget;
 
-                newElts.forEach(function (serial) {
-                    elt = newElts[serial];
-                    $placeholder = $container.find(`.widget-box[data-new][data-qti-class=${elt.qtiClass}]`);
+                _.each(newElts, function(serial) {
+                    let $placeholder,
+                        $widget,
+                        widget;
 
-                    elt.setRenderer(this);
-                    elt.render($placeholder);
+                    $placeholder = $container.find(`.widget-box[data-new][data-qti-class=${serial.qtiClass}]`);
+
+                    serial.setRenderer(this);
+                    serial.render($placeholder);
 
                     //render widget
-                    elt.postRender();
+                    serial.postRender();
 
-                    widget = elt.data('widget');
+                    widget = serial.data('widget');
                     $widget = widget.$original;
 
                     //inform height modification
@@ -71,7 +69,7 @@ define([
                     if(_.isFunction(callback)){
                         callback(widget);
                     }
-                })
+                }.bind(this));
 
             }, this.getUsedClasses());
         });

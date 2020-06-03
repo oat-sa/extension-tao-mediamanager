@@ -44,7 +44,7 @@ define([
         const self = this;
         const classUri = uri.decode(actionContext.id);
 
-        return request(self.url, { classId: classUri }, "POST")
+        return request(self.url, { classId: classUri }, 'POST')
             .then(function(data) {
                 //backward compat format for jstree
                 if(actionContext.tree){
@@ -91,7 +91,7 @@ define([
     });
     binder.register('deleteSharedStimulus', function remove(actionContext) {
         const self = this;
-        var data = {};
+        let data = {};
 
         data.uri        = uri.decode(actionContext.uri);
         data.classUri   = uri.decode(actionContext.classUri);
@@ -103,7 +103,7 @@ define([
                 data: {
                     sourceId: actionContext.id
                 },
-                method: "GET"
+                method: 'GET'
             })
                 .then(function(responseRelated) {
                     let message;
@@ -121,7 +121,7 @@ define([
                     confirmDialog(message, function accept() {
                         request({
                             url: self.url,
-                            method: "POST",
+                            method: 'POST',
                             data: data,
                             dataType: 'json',
                         })
@@ -139,7 +139,7 @@ define([
                                     });
 
                                 } else {
-                                    reject(response.msg || __("Unable to delete the selected resource"));
+                                    reject(response.msg || __('Unable to delete the selected resource'));
                                 }
                             });
                     }, function cancel() {

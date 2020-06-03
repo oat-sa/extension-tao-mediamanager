@@ -29,10 +29,8 @@ define([
      * Builds a test runner to preview test item
      * @param {jQuery|HTMLElement|String} container - The container in which renders the component
      * @param {Object} [config] - The testRunner options
-     * @param {String} [config.itemUri] - The URI of the item to load
-     * @param {Object} [config.itemState] - The state of the item when relevant
+     * @param {String} [config.itemUri] - The ID of the SharedStimulus (for consisten with other providers)
      * @param {Object[]} [config.plugins] - Additional plugins to load
-     * @param {Object[]} [config.pluginsOptions] - Options for the plugins
      * @param {String} [config.fullPage] - Force the previewer to occupy the full window.
      * @param {String} [config.readOnly] - Do not allow to modify the previewed item.
      * @param {Function} [template] - An optional template for the component

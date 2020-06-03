@@ -57,7 +57,7 @@ define([
             SharedStimulusCreator.on('preview', (id) => {
 
                 // TO DO should be created empty item with shared stimulus inside
-                previewerFactory.init(id, { }, {
+                previewerFactory.init(id, {
                     readOnly: false,
                     fullPage: true
                 });

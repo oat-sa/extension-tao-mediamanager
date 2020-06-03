@@ -63,9 +63,8 @@ define([
          * @param {String} [config.readOnly] - Do not allow to modify the previewed item.
          * @returns {Object}
          */
-        init(sharedStimulusId, state, config = {}) {
+        init(sharedStimulusId, config = {}) {
             config.itemUri = sharedStimulusId;
-            config.itemState = state;
             config.plugins = Array.isArray(config.plugins) ? [...defaultPlugins, ...config.plugins] : defaultPlugins;
             return qtiItemPreviewerFactory(window.document.body, config)
                 .on('error', function (err) {

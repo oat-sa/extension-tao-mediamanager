@@ -45,7 +45,7 @@ define([
 ], function($, _, __, eventifier, qtiCreatorContextFactory, sharedStimulusLoader,
     creatorRenderer, commonRenderer, xincludeRenderer,
     propertiesPanel, eventHelper, xmlRenderer, xmlNsHandler, request, urlUtil){
-
+    'use strict'
 
     /**
      * Load an item

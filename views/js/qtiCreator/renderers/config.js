@@ -23,6 +23,7 @@ define([
     'taoItems/assets/manager',
     'taoItems/assets/strategies'
 ], function(_,  context, commonRenderConfig, assetManagerFactory, assetStrategies) {
+    'use strict';
 
     //asset manager using base url
     const assetManager = assetManagerFactory([

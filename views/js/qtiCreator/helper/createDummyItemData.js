@@ -19,8 +19,8 @@
 define([
     'taoQtiItem/qtiCreator/model/Item',
     'tpl!taoMediaManager/qtiCreator/helper/tpl/emptySharedStimulus'
-], function(Item, emptySharedStimulusTpl){
-
+], function(Item, emptySharedStimulusTpl) {
+    'use strict';
 
     const _generateIdentifier = function _generateIdentifier(uri) {
         const pos = uri.lastIndexOf('#');

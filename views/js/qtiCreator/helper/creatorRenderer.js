@@ -24,6 +24,7 @@ define([
     'taoItems/assets/strategies',
     'util/dom'
 ], function($, _, Renderer, assetManagerFactory, assetStrategies, dom) {
+    'use strict';
 
     //configure and instanciate once only:
     let creatorRenderer = null;

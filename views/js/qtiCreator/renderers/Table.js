@@ -13,7 +13,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2017 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
  */
 /**
  * @author Christophe Noël <christophe@taotesting.com>
@@ -23,7 +23,8 @@ define([
     'taoQtiItem/qtiCommonRenderer/renderers/Table',
     'taoMediaManager/qtiCreator/widgets/static/table/Widget',
     'tpl!taoQtiItem/qtiCreator/tpl/table'
-], function(_, Renderer, Widget, tpl){
+], function(_, Renderer, Widget, tpl) {
+    'use strict';
 
     const CreatorTable = _.clone(Renderer);
 

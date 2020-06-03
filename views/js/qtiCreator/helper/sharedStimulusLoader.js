@@ -22,7 +22,8 @@ define([
     'taoQtiItem/qtiCreator/model/qtiClasses',
     'taoMediaManager/qtiCreator/helper/createDummyItemData',
     'core/dataProvider/request',
-], function($, Loader, qtiClasses, creatorDummyItemData, request){
+], function($, Loader, qtiClasses, creatorDummyItemData, request) {
+    'use strict';
 
     const qtiNamespace = 'http://www.imsglobal.org/xsd/imsqti_v2p2';
 

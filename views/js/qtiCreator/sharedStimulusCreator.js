@@ -41,7 +41,7 @@ define([
 ], function($, _, __, eventifier, qtiCreatorContextFactory, sharedStimulusLoader,
     creatorRenderer, commonRenderer, xincludeRenderer,
     propertiesPanel, eventHelper){
-
+    'use strict';
 
     /**
      * Load an item

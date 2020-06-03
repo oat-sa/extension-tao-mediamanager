@@ -32,8 +32,8 @@ define([
     'ui/hider',
     'taoItems/previewer/factory',
     'tpl!taoQtiItem/qtiCreator/plugins/button',
-], function($, __, pluginFactory, hider, previewerFactory, buttonTpl){
-
+], function($, __, pluginFactory, hider, previewerFactory, buttonTpl) {
+    'use strict';
 
     /**
      * Returns the configured plugin

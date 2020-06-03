@@ -29,8 +29,8 @@ define([
     'core/plugin',
     'ui/hider',
     'tpl!taoQtiItem/qtiCreator/plugins/button'
-], function($, __, pluginFactory, hider, buttonTpl){
-
+], function($, __, pluginFactory, hider, buttonTpl) {
+    'use strict';
 
     /**
      * Returns the configured plugin

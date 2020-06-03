@@ -24,7 +24,7 @@ define([
     'tpl!taoQtiItem/qtiCreator/tpl/item',
     'tpl!taoMediaManager/qtiCreator/renderers/tpl/wrap'
 ], function($, _, CommonRenderer, Widget, tpl, wrapTpl) {
-
+    'use strict';
 
     const CreatorItem = _.clone(CommonRenderer);
 

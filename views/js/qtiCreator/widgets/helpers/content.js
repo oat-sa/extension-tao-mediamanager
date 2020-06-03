@@ -22,7 +22,7 @@ define([
     'taoQtiItem/qtiCreator/model/helper/container',
     'taoQtiItem/qtiCreator/editor/gridEditor/content'
 ], function($, _, creatorRenderer, containerHelper, gridContentHelper){
-
+    'use strict';
     // all files that use qtiCreator/helper/creatorRenderer should be copied from taoQtiItem
     // because they should use proper locations that are binded in Renderer
     // qtiCreator/helper/creatorRenderer use qtiCreator/renderers/Renderer

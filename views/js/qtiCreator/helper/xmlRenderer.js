@@ -24,9 +24,7 @@ define([
 
     const logger = loggerFactory('taoMediaManager/qtiCreator/helper/xmlRenderer');
 
-    const _xmlRenderer = new XmlRenderer({
-        shuffleChoices : false
-    }).load();
+    const _xmlRenderer = new XmlRenderer().load();
 
     const _render = function(element){
         let xml = '';

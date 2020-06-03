@@ -39,6 +39,10 @@ define(['lodash', 'tpl!taoMediaManager/qtiXmlRenderer/tpl/item'], function(_, tp
 
             data = _.merge({}, data || {}, defaultData);
             delete data.attributes.class;
+            delete data.attributes.title;
+            delete data.attributes.adaptive;
+            delete data.attributes.timeDependent;
+            delete data.attributes.identifier;
 
             data.attributes = _.mapValues(data.attributes, function (val) {
                 return _.isString(val) ? _.escape(val) : val;

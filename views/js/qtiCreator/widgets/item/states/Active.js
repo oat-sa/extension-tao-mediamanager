@@ -30,14 +30,9 @@ define([
         const _widget = this.widget;
         const item = _widget.element;
         const $form = _widget.$form;
-        const areaBroker = this.widget.getAreaBroker();
 
         //build form:
         $form.html(formTpl({
-            // serial : item.getSerial(),
-            // identifier : item.id(),
-            // title : item.attr('title'),
-            // timeDependent : !!item.attr('timeDependent'),
             'xml:lang' : item.attr('xml:lang'),
             languagesList : item.data('languagesList')
         }));
@@ -47,12 +42,6 @@ define([
 
         //init data validation and binding
         formElement.setChangeCallbacks($form, item, {
-            identifier : formElement.getAttributeChangeCallback(),
-            title : function titleChange(i, title) {
-                item.attr('title', title);
-                areaBroker.getTitleArea().text(item.attr('title'));
-            },
-            timeDependent : formElement.getAttributeChangeCallback(),
             'xml:lang' : formElement.getAttributeChangeCallback()
         });
 

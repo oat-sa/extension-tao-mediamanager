@@ -39,7 +39,7 @@ define([
      * @param {String} data - corresponding HTML (?)
      * @param {function} callback - will be triggered for each new created element
      */
-    contentHelper.createElements = function(container, $container, data, callback){
+    contentHelper.createElements = function createElements(container, $container, data, callback) {
 
         const $dummy = $('<div>').html(data);
 

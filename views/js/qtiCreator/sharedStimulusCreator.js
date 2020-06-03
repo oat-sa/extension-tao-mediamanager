@@ -164,7 +164,7 @@ define([
                     })
                     .then(() => {
                         if (!silent) {
-                            this.trigger('success', __('Your item has been saved'));
+                            this.trigger('success');
                         }
 
                         this.trigger('saved');

@@ -41,6 +41,8 @@ class MediaServiceTest extends TestCase
     public function setUp(): void
     {
         $this->testClass = (MediaService::singleton())->getRootClass()->createSubClass('test class');
+
+        (MediaService::singleton())->deleteClass($this->testClass); //FIXME
     }
 
     public function tearDown(): void
@@ -132,9 +134,17 @@ class MediaServiceTest extends TestCase
         $fileTmp = dirname(__DIR__) . '/sample/Italy.png';
         $lang = 'EN-en';
 
+        $linkProperty = new RdfProperty(MediaService::PROPERTY_LINK);
+        $mimeTypeProperty = new RdfProperty(MediaService::PROPERTY_MIME_TYPE);
+
         $instanceUri = 'http://myFancyDomain.com/myGreatInstanceUri';
         $instance = new RdfResource($instanceUri);
-        $instance->setPropertyValue(new RdfProperty(MediaService::PROPERTY_LINK), 'MyLink');
+
+        $this->clearPropertyValues($instance, $linkProperty);
+        $this->clearPropertyValues($instance, $mimeTypeProperty);
+
+        $instance->setPropertyValue($linkProperty, 'MyLink');
+        $instance->setPropertyValue($mimeTypeProperty, 'application/qti-xml');
 
         $mediaService = $this->initializeMockForEditInstance('MyLink');
         $mediaService->editMediaInstance($fileTmp, $instanceUri, $lang);
@@ -145,7 +155,13 @@ class MediaServiceTest extends TestCase
             'The instance language is wrong'
         );
 
-        // remove what has been done
         $this->assertTrue($instance->delete());
+    }
+
+    private function clearPropertyValues(RdfResource $instance, RdfProperty $property): void
+    {
+        foreach ($instance->getPropertyValues($property) as $propertyValue) {
+            $instance->removePropertyValue($property, $propertyValue);
+        }
     }
 }

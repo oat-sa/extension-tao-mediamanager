@@ -31,6 +31,7 @@ use oat\taoMediaManager\model\relation\event\processor\ItemRemovedEventProcessor
 use oat\taoMediaManager\model\relation\event\processor\ItemUpdatedEventProcessor;
 use oat\taoMediaManager\model\relation\event\processor\MediaRemovedEventProcessor;
 use oat\taoMediaManager\model\relation\event\processor\EventProcessorInterface;
+use oat\taoMediaManager\model\relation\event\processor\MediaSavedEventProcessor;
 use PHPUnit\Framework\MockObject\MockObject;
 
 class MediaRelationListenerTest extends TestCase
@@ -60,6 +61,7 @@ class MediaRelationListenerTest extends TestCase
                     ItemUpdatedEventProcessor::class => $this->processor,
                     ItemRemovedEventProcessor::class => $this->processor,
                     MediaRemovedEventProcessor::class => $this->processor,
+                    MediaSavedEventProcessor::class => $this->processor,
                 ]
             )
         );
@@ -86,6 +88,13 @@ class MediaRelationListenerTest extends TestCase
         $this->assertNull($this->subject->whenMediaIsRemoved($this->event));
     }
 
+    public function testWhenMediaIsSaved(): void
+    {
+        $this->expectEventToBeProcessed();
+
+        $this->assertNull($this->subject->whenMediaIsSaved($this->event));
+    }
+
     public function testLogProcessException(): void
     {
         $this->processor
@@ -106,6 +115,7 @@ class MediaRelationListenerTest extends TestCase
     private function expectEventToBeProcessed(): void
     {
         $this->processor
+            ->expects($this->once())
             ->method('process')
             ->with($this->event);
 

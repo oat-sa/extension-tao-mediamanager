@@ -35,6 +35,7 @@ class MediaRelationTest extends TestCase
         $this->assertSame(MediaRelation::ITEM_TYPE, $mediaRelation->getType());
         $this->assertSame('uri-string', $mediaRelation->getId());
         $this->assertSame('label', $mediaRelation->getLabel());
+        $this->assertFalse($mediaRelation->isMedia());
     }
 
     public function testConstructWithDefaultLabel()
@@ -43,6 +44,7 @@ class MediaRelationTest extends TestCase
         $this->assertSame(MediaRelation::MEDIA_TYPE, $mediaRelation->getType());
         $this->assertSame('24', $mediaRelation->getId());
         $this->assertNull($mediaRelation->getLabel());
+        $this->assertTrue($mediaRelation->isMedia());
     }
 
     public function testJsonSerialized()

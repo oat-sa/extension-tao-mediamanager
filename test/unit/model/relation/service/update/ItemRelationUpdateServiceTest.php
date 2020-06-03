@@ -34,7 +34,7 @@ class ItemRelationUpdateServiceTest extends TestCase
     /** @var ItemRelationUpdateService */
     private $subject;
 
-    /** @var MediaRelationRepositoryInterface|MockObject */
+    /** @var MediaRelationRepositoryInterface */
     private $repository;
 
     public function setUp(): void
@@ -62,10 +62,12 @@ class ItemRelationUpdateServiceTest extends TestCase
         );
 
         $this->repository
-            ->method('findAll')
+            ->expects($this->once())
+            ->method('findAllByTarget')
             ->willReturn($collection);
 
         $this->repository
+            ->expects($this->exactly(2))
             ->method('save')
             ->withConsecutive(
                 ...[
@@ -79,6 +81,7 @@ class ItemRelationUpdateServiceTest extends TestCase
             );
 
         $this->repository
+            ->expects($this->exactly(2))
             ->method('remove')
             ->withConsecutive(
                 ...[

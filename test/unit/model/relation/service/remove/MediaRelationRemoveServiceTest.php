@@ -64,10 +64,12 @@ class MediaRelationRemoveServiceTest extends TestCase
         );
 
         $this->repository
-            ->method('findAll')
+            ->expects($this->once())
+            ->method('findAllByTarget')
             ->willReturn($collection);
 
         $this->repository
+            ->expects($this->exactly(2))
             ->method('remove')
             ->withConsecutive(
                 ...[

@@ -39,7 +39,7 @@ class SharedStimulusMediaExtractor extends SharedStimulusMediaParser
      */
     public function extractMediaIdentifiers(string $xml): array
     {
-        return $this->getParser()->extractMedia(
+        return $this->extractMedia(
             $xml,
             [$this, 'getMediaFileUri']
         );
@@ -50,7 +50,7 @@ class SharedStimulusMediaExtractor extends SharedStimulusMediaParser
      */
     public function assertMediaFileExists(string $xml): void
     {
-        $this->getParser()->extractMedia(
+        $this->extractMedia(
             $xml,
             [$this, 'extractImageFileInfo']
         );
@@ -76,10 +76,5 @@ class SharedStimulusMediaExtractor extends SharedStimulusMediaParser
         }
 
         return $assetIdentifier;
-    }
-
-    private function getParser(): SharedStimulusMediaParser
-    {
-        return $this->getServiceLocator()->get(SharedStimulusMediaParser::class);
     }
 }

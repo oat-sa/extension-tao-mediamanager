@@ -33,7 +33,6 @@ use oat\tao\model\media\TaoMediaException;
 use oat\tao\model\media\TaoMediaResolver;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\sharedStimulus\parser\SharedStimulusMediaExtractor;
-use oat\taoMediaManager\model\sharedStimulus\parser\SharedStimulusMediaParser;
 use oat\taoMediaManager\model\sharedStimulus\PatchCommand;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 use oat\taoMediaManager\model\SharedStimulusImporter;

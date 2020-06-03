@@ -13,9 +13,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
- * 
- * 
+ * Copyright (c) 2020 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ *
+ *
  */
 
 //@see http://forge.taotesting.com/projects/tao/wiki/Front_js
@@ -24,8 +24,10 @@ define(function(){
 
     return {
         'MediaManager': {
+            'deps': 'controller/actions',
             'actions': {
-                'editInstance' : 'controller/manageMedia'
+                'editInstance' : 'controller/editInstance',
+                'authoring': 'controller/authoring'
             }
         }
     };

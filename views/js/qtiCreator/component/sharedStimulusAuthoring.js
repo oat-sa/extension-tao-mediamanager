@@ -22,8 +22,9 @@ define([
     'lodash',
     'ui/component',
     'core/pluginLoader',
+    'taoMediaManager/qtiCreator/sharedStimulusCreator',
     'taoQtiItem/qtiCreator/editor/areaBroker',
-    'tpl!taoMediaManager/qtiCreator/component/tpl/passageAuthoring',
+    'tpl!taoMediaManager/qtiCreator/component/tpl/sharedStimulusAuthoring',
     'css!taoQtiItemCss/qti-runner.css',
     'css!taoQtiItemCss/themes/default.css',
     'css!taoQtiItemCss/item-creator.css'
@@ -31,11 +32,29 @@ define([
     _,
     componentFactory,
     pluginLoaderFactory,
+    sharedStimulusCreatorFactory,
     areaBrokerFactory,
     componentTpl
 ) {
     'use strict';
 
+    const defaultPlugins = [{
+        module: 'taoQtiItem/qtiCreator/plugins/content/title',
+        bundle: 'taoQtiItem/loader/taoQtiItem.min',
+        category: 'content'
+    }, {
+        module: 'taoMediaManager/qtiCreator/plugins/navigation/back',
+        bundle: 'taoMediaManager/loader/taoMediaManager.min',
+        category: 'panel'
+    }, {
+        module: 'taoMediaManager/qtiCreator/plugins/menu/save',
+        bundle: 'taoMediaManager/loader/taoMediaManager.min',
+        category: 'panel'
+    }, {
+        module: 'taoMediaManager/qtiCreator/plugins/menu/preview',
+        bundle: 'taoMediaManager/loader/taoMediaManager.min',
+        category: 'panel'
+    }];
     /**
      * Embeds the assets creator UI in a component
      *
@@ -45,42 +64,36 @@ define([
      *      plugins: [],
      *      properties: {
      *          uri: 'http://item#rdf-123',
-     *          label: 'Item',
      *          baseUrl: 'http://foo/bar/',
      *          // ...
      *      }
      *  };
-     *  const component = passageAuthoringFactory(container, config)
+     *  const component = sharedStimulusAuthoringFactory(container, config)
      *      .on('ready', function onComponentReady() {
      *          // ...
      *      });
      *
      * @param {HTMLElement|String} container
-     * @param {Object} config - The setup for the item creator
-     * @param {Object} config.properties - The list of properties expected by the item creator
-     * @param {Object} config.properties.uri - The URI of the item to author
-     * @param {Object} config.properties.label - The displayed label
+     * @param {Object} config - The setup for the sharedStimulus creator
+     * @param {Object} config.properties - The list of properties expected by the sharedStimulus creator
+     * @param {Object} config.properties.uri - The URI of the sharedStimulus to author
+     * @param {Object} config.properties.id - The ID of the sharedStimulus to author
      * @param {Object} config.properties.baseUrl - The base URL to retrieve the assets
-     * @param {String} config.properties.itemDataUrl - URL for getting item data (passed through to itemCreator)
+     * @param {String} config.properties.sharedStimulusDataUrl - URL for getting sharedStimulus data (passed through to sharedStimulusCreator)
      * @param {Object[]} [config.plugins] - Additional plugins to load
      * @returns {component}
      * @fires ready - When the component is ready to work
      */
-    function passageAuthoringFactory(container, config) {
+    function sharedStimulusAuthoringFactory(container, config = {}) {
         let areaBroker;
-        let itemCreator;
+        let sharedStimulusCreator;
+
+        const plugins = Array.isArray(config.plugins) ? config.plugins : [];
+        config.plugins = [...defaultPlugins, ...plugins];
 
         const pluginLoader = pluginLoaderFactory();
 
         const api = {
-            /**
-             * Gets access to the item creator
-             * @returns {itemCreator}
-             */
-            getItemCreator() {
-                return itemCreator;
-            },
-
             /**
              * Gets access to the area broker
              * @returns {areaBroker}
@@ -90,7 +103,7 @@ define([
             }
         };
 
-        const passageAuthoring = componentFactory(api)
+        const sharedStimulusAuthoring = componentFactory(api)
             // set the component's layout
             .setTemplate(componentTpl)
 
@@ -107,7 +120,7 @@ define([
                     }
                 });
 
-                // load the plugins, then render the item creator
+                // load the plugins, then render the sharedStimulus creator
                 pluginLoader.load()
                     .then(() => this.render(container))
                     .catch(err => this.trigger('error', err));
@@ -133,21 +146,28 @@ define([
                     'elementPropertyPanel': $container.find('#item-editor-body-element-property-bar .panel')
                 });
 
+                sharedStimulusCreator = sharedStimulusCreatorFactory(this.getConfig(), areaBroker, pluginLoader.getPlugins())
+                    .spread(this, 'error success ready')
+                    .on('init', function () {
+                        this.render();
+                    })
+                    .init();
             })
+
             .on('destroy', function () {
-                if (itemCreator) {
-                    itemCreator.destroy();
+                if (sharedStimulusCreator) {
+                    sharedStimulusCreator.destroy();
                 }
-                itemCreator = null;
+                sharedStimulusCreator = null;
                 areaBroker = null;
             });
 
         // initialize the component with the provided config
         // defer the call to allow to listen to the init event
-        _.defer(() => passageAuthoring.init(config));
+        _.defer(() => sharedStimulusAuthoring.init(config));
 
-        return passageAuthoring;
+        return sharedStimulusAuthoring;
     }
 
-    return passageAuthoringFactory;
+    return sharedStimulusAuthoringFactory;
 });

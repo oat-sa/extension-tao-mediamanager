@@ -18,6 +18,7 @@
 
 /**
  * configure the extension bundles
+ * @param {Object} grunt
  * @author Bertrand Chevrier <bertrand@taotesting.com>
  */
 module.exports = function(grunt) {
@@ -28,10 +29,13 @@ module.exports = function(grunt) {
             taomediamanager : {
                 options : {
                     extension : 'taoMediaManager',
+                    dependencies : ['taoItems', 'taoQtiItem'],
                     outputDir : 'loader',
+                    paths: require('./paths.json'),
                     bundles : [{
                         name : 'taoMediaManager',
-                        default : true
+                        default : true,
+                        babel: true
                     }]
                 }
             }

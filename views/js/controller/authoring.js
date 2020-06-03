@@ -23,11 +23,13 @@
 define([
     'lodash',
     'jquery',
+    'i18n',
+    'uri',
     'taoMediaManager/qtiCreator/component/sharedStimulusAuthoring',
     'ui/feedback',
     'util/url',
     'core/logger',
-], function(_, $, sharedStimulusAuthoringFactory, feedback, urlUtil, loggerFactory) {
+], function(_, $, __, uri, sharedStimulusAuthoringFactory, feedback, urlUtil, loggerFactory) {
     'use strict';
 
     const logger = loggerFactory('taoMediaManager/authoring');
@@ -42,11 +44,20 @@ define([
             const assetDataUrl = urlUtil.route('get', 'SharedStimulus', 'taoMediaManager');
             sharedStimulusAuthoringFactory($panel, { properties: {
                 uri: $panel.attr('data-uri'),
-                id: $panel.attr('data-id'),
+                id: uri.decode($panel.attr('data-id')),
                 assetDataUrl,
-                // TO DO will be filled later
+                itemDataUrl: urlUtil.route('getItemData', 'QtiCreator', 'taoQtiItem'),
+                fileUploadUrl : urlUtil.route('upload', 'ItemContent', 'taoItems'),
+                fileDeleteUrl : urlUtil.route('delete', 'ItemContent', 'taoItems'),
+                fileDownloadUrl : urlUtil.route('download', 'ItemContent', 'taoItems'),
+                fileExistsUrl : urlUtil.route('fileExists', 'ItemContent', 'taoItems'),
+                getFilesUrl: urlUtil.route('files', 'ItemContent', 'taoItems'),
+                mediaSourcesUrl: urlUtil.route('getMediaSources', 'QtiCreator', 'taoQtiItem'),
+                previewRenderUrl: urlUtil.route('render', 'QtiPreview', 'taoQtiItem'),
+                previewSubmitUrl: urlUtil.route('submitResponses', 'QtiPreview', 'taoQtiItem'),
+                previewUrl: urlUtil.route('index', 'QtiPreview', 'taoQtiItem'),
                 baseUrl: assetDataUrl,
-                lang: "en-US"
+                lang: 'en-US'
             }})
             .on('error', err => {
                 if (!_.isUndefined(err.message)) {

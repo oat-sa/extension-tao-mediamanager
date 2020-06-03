@@ -13,7 +13,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2015 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
  *
  */
 
@@ -23,8 +23,8 @@ define(['lodash', 'tpl!taoMediaManager/qtiXmlRenderer/tpl/item'], function(_, tp
     return {
         qtiClass : 'assessmentItem',
         template : tpl,
-        getData : function(item, data){
-            var defaultData = {
+        getData : function getData(item, data){
+            const defaultData = {
                 'class' : data.attributes.class || '',
                 namespaces : item.getNamespaces(),
                 schemaLocations : '',
@@ -32,7 +32,7 @@ define(['lodash', 'tpl!taoMediaManager/qtiXmlRenderer/tpl/item'], function(_, tp
                 empty : item.isEmpty(),
             };
 
-            _.forIn(item.getSchemaLocations(), function(url, uri){
+            _.forIn(item.getSchemaLocations(), (url, uri) => {
                 defaultData.schemaLocations += `${uri} ${url} `;
             });
             defaultData.schemaLocations = defaultData.schemaLocations.trim();

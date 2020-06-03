@@ -13,7 +13,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2015-2017 (original work) Open Assessment Technologies SA ;
+ * Copyright (c) 2020 (original work) Open Assessment Technologies SA ;
  */
 define([
     'core/logger',
@@ -22,14 +22,14 @@ define([
 ], function(loggerFactory, XmlRenderer, Element){
     'use strict';
 
-    var logger = loggerFactory('taoMediaManager/qtiCreator/helper/xmlRenderer');
+    const logger = loggerFactory('taoMediaManager/qtiCreator/helper/xmlRenderer');
 
-    var _xmlRenderer = new XmlRenderer({
+    const _xmlRenderer = new XmlRenderer({
         shuffleChoices : false
     }).load();
 
-    var _render = function(element){
-        var xml = '';
+    const _render = function(element){
+        let xml = '';
         try{
             if(element instanceof Element) {
                 xml = element.render(_xmlRenderer);

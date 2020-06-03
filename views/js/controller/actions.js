@@ -70,7 +70,7 @@ define([
     });
     binder.register('sharedStimulusAuthoring', function sharedStimulusAuthoring(actionContext) {
         section
-        .updateContentBlock("")
+        .updateContentBlock('')
         .create({
             id : 'authoring',
             name : __('Authoring'),

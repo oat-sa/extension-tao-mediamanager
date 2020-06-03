@@ -94,56 +94,6 @@ define([
         this.$container = this.$original;
     };
 
-    /**
-     * Save the item by sending the XML in a POST request to the server
-     * @TODO saving mechanism should be independent, ie. moved into the itemCreator, in order to configure endpoint, etc.
-     *
-     * @returns {Promise} that wraps the request
-     */
-    ItemWidget.save = function() {
-        const self = this;
-        return new Promise(function(resolve, reject) {
-            let xml;
-
-            // transform application errors into object Error in order to make them displayable
-            function rejectError(err) {
-                if (err.type === 'Error') {
-                    err = new Error(__('The item has not been saved!') + (err.message ? `\n${err.message}` : ''));
-                }
-                reject(err);
-            }
-
-            xml = xmlNsHandler.restoreNs(xmlRenderer.render(self.element), self.element.getNamespaces());
-
-            //@todo : remove this hotfix : prevent unsupported custom interaction to be saved
-            if (hasUnsupportedInteraction(xml)) {
-                return reject(new Error(__('The item cannot be saved because it contains an unsupported custom interaction.')));
-            }
-
-            // TO DO
-            // Shared stimulus save
-            // should be moved in save plugin
-            // should be created xmlRenderer for item
-            // send it to the server
-
-            $.ajax({
-                url : urlUtil.build(self.saveItemUrl, {uri: self.itemUri}),
-                type : 'POST',
-                contentType : 'text/xml',
-                dataType : 'json',
-                data : xml
-            })
-            .done(function(data) {
-                if (!data || data.success) {
-                    resolve(data);
-                } else {
-                    rejectError(data);
-                }
-            })
-            .fail(rejectError);
-        });
-    };
-
     ItemWidget.initUiComponents = function() {
 
         const element = this.element,

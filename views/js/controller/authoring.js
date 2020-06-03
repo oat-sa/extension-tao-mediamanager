@@ -21,13 +21,14 @@
  * @author Juan Luis Gutierrez Dos Santos <juanluis.gutierrezdossantos@taotesting.com>
  */
 define([
+    'i18n',
     'lodash',
     'jquery',
     'taoMediaManager/qtiCreator/component/sharedStimulusAuthoring',
     'ui/feedback',
     'util/url',
     'core/logger',
-], function(_, $, sharedStimulusAuthoringFactory, feedback, urlUtil, loggerFactory) {
+], function(__, _, $, sharedStimulusAuthoringFactory, feedback, urlUtil, loggerFactory) {
     'use strict';
 
     const logger = loggerFactory('taoMediaManager/authoring');
@@ -48,6 +49,9 @@ define([
                 baseUrl: assetDataUrl,
                 lang: "en-US"
             }})
+            .on('success', () => {
+                feedback().success(__('Your passage is saved'));
+            })
             .on('error', err => {
                 if (!_.isUndefined(err.message)) {
                     feedback().error(err.message);

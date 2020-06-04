@@ -25,6 +25,7 @@ namespace oat\taoMediaManager\model;
 use common_ext_ExtensionsManager;
 use core_kernel_classes_Literal;
 use core_kernel_classes_Resource as RdfResource;
+use League\Flysystem\FilesystemNotFoundException;
 use oat\generis\model\OntologyRdfs;
 use oat\oatbox\event\EventManager;
 use oat\oatbox\filesystem\File;
@@ -33,11 +34,13 @@ use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\ServiceManager;
 use oat\tao\model\ClassServiceTrait;
 use oat\tao\model\GenerisServiceTrait;
+use oat\tao\model\media\TaoMediaException;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\relation\event\MediaRemovedEvent;
 use oat\taoMediaManager\model\relation\event\MediaSavedEventDispatcher;
 use oat\taoRevision\model\RepositoryInterface;
 use tao_helpers_File;
+use Throwable;
 
 /**
  * Service methods to manage the Media
@@ -121,10 +124,25 @@ class MediaService extends ConfigurableService
             self::PROPERTY_ALT_TEXT => $label
         ];
 
-        $instance = $clazz->createInstanceWithProperties($properties);
-        $id = $instance->getUri();
+        try {
+            $instance = $clazz->createInstanceWithProperties($properties);
+            $id = $instance->getUri();
 
-        $this->getMediaSavedEventDispatcher()->dispatchFromContent($id, $mimeType, $content);
+            $this->getMediaSavedEventDispatcher()->dispatchFromContent($id, $mimeType, $content);
+
+        } catch (Throwable $exception) {
+
+            if ($instance) {
+                $instance->delete(true);
+            }
+
+            try {
+                $this->getFileManager()->deleteFile($link);
+            } catch (FilesystemNotFoundException $e) {
+            }
+
+            throw $exception;
+        }
 
         // @todo: move taoRevision stuff under a listener of MediaSavedEvent
         if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {

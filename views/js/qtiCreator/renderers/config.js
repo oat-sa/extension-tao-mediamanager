@@ -18,11 +18,10 @@
 
 define([
     'lodash',
-    'context',
     'taoQtiItem/qtiCommonRenderer/renderers/config',
     'taoItems/assets/manager',
     'taoItems/assets/strategies'
-], function(_,  context, commonRenderConfig, assetManagerFactory, assetStrategies) {
+], function(_, commonRenderConfig, assetManagerFactory, assetStrategies) {
     'use strict';
 
     //asset manager using base url
@@ -37,9 +36,9 @@ define([
         '_container' : 'taoQtiItem/qtiCreator/renderers/Container',
         '_tooltip' : 'taoQtiItem/qtiCreator/renderers/Tooltip',
         'assessmentItem' : 'taoMediaManager/qtiCreator/renderers/Item',
-        'img' : 'taoQtiItem/qtiCreator/renderers/Img',
+        'img' : 'taoMediaManager/qtiCreator/renderers/Img',
         'math' : 'taoQtiItem/qtiCreator/renderers/Math',
-        'object' : 'taoQtiItem/qtiCreator/renderers/Object',
+        'object' : 'taoMediaManager/qtiCreator/renderers/Object',
         'table' : 'taoMediaManager/qtiCreator/renderers/Table'
     }, commonRenderConfig.locations);
 

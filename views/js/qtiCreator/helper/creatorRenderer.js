@@ -66,7 +66,8 @@ define([
                         deleteUrl : config.properties.fileDeleteUrl,
                         downloadUrl : config.properties.fileDownloadUrl,
                         fileExistsUrl : config.properties.fileExistsUrl,
-                        mediaSourcesUrl : config.properties.mediaSourcesUrl
+                        path: 'taomedia://mediamanager/',
+                        root: 'mediamanager'
                     },
                     qtiCreatorContext : config.qtiCreatorContext,
                     locations: config.properties.locations

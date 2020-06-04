@@ -20,13 +20,12 @@ define([
     'lodash',
     'taoQtiItem/qtiCommonRenderer/renderers/Object',
     'taoMediaManager/qtiCreator/widgets/static/object/Widget'
-], function(_, Renderer, Widget){
+], function (_, Renderer, Widget) {
     'use strict';
 
     const CreatorObject = _.clone(Renderer);
 
-    CreatorObject.render = function render(object, options){
-
+    CreatorObject.render = function render(object, options) {
         //initial rendering:
         Renderer.render(object);
 
@@ -37,12 +36,7 @@ define([
         options.mediaManager = this.getOption('mediaManager');
         options.assetManager = this.getAssetManager();
 
-        Widget.build(
-            object,
-            Renderer.getContainer(object),
-            this.getOption('bodyElementOptionForm'),
-            options
-        );
+        Widget.build(object, Renderer.getContainer(object), this.getOption('bodyElementOptionForm'), options);
     };
 
     return CreatorObject;

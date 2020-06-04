@@ -22,13 +22,12 @@ define([
     'taoQtiItem/qtiCreator/widgets/static/helpers/widget',
     'tpl!taoQtiItem/qtiCreator/tpl/toolbars/media',
     'taoQtiItem/qtiCreator/widgets/static/helpers/inline'
-], function(Widget, states, helper, toolbarTpl, inlineHelper) {
+], function (Widget, states, helper, toolbarTpl, inlineHelper) {
     'use strict';
 
     const ObjectWidget = Widget.clone();
 
     ObjectWidget.initCreator = function initCreator() {
-
         this.registerStates(states);
 
         Widget.initCreator.call(this);
@@ -36,19 +35,17 @@ define([
         inlineHelper.togglePlaceholder(this);
     };
 
-    ObjectWidget.getRequiredOptions = function getRequiredOptions(){
+    ObjectWidget.getRequiredOptions = function getRequiredOptions() {
         return ['baseUrl', 'uri', 'lang', 'mediaManager'];
     };
 
-    ObjectWidget.buildContainer = function buildContainer(){
-
+    ObjectWidget.buildContainer = function buildContainer() {
         helper.buildBlockContainer(this);
 
         return this;
     };
 
     ObjectWidget.createToolbar = function createToolbar() {
-
         helper.createToolbar(this, toolbarTpl);
 
         return this;

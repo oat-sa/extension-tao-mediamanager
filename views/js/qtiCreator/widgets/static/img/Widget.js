@@ -23,13 +23,12 @@ define([
     'taoQtiItem/qtiCreator/widgets/static/helpers/widget',
     'tpl!taoQtiItem/qtiCreator/tpl/toolbars/media',
     'taoQtiItem/qtiCreator/widgets/static/helpers/inline'
-], function($, Widget, states, helper, toolbarTpl, inlineHelper){
+], function ($, Widget, states, helper, toolbarTpl, inlineHelper) {
     'use strict';
 
     const ImgWidget = Widget.clone();
 
-    ImgWidget.initCreator = function initCreator(options){
-
+    ImgWidget.initCreator = function initCreator(options) {
         const img = this.element;
 
         this.registerStates(states);
@@ -41,23 +40,22 @@ define([
         //check file exists:
         inlineHelper.checkFileExists(this, 'src', options.baseUrl);
         $('#item-editor-scope').on(`filedelete.resourcemgr.${this.element.serial}`, (e, src) => {
-            if (self.getAssetManager().resolve(img.attr('src')) === this.getAssetManager().resolve(src)) {
+            if (this.getAssetManager().resolve(img.attr('src')) === this.getAssetManager().resolve(src)) {
                 img.attr('src', '');
                 inlineHelper.togglePlaceholder(self);
             }
         });
     };
 
-    ImgWidget.destroy = function destroy(){
+    ImgWidget.destroy = function destroy() {
         $('#item-editor-scope').off(`.${this.element.serial}`);
     };
 
-    ImgWidget.getRequiredOptions = function getRequiredOptions(){
+    ImgWidget.getRequiredOptions = function getRequiredOptions() {
         return ['baseUrl', 'uri', 'lang', 'mediaManager', 'assetManager'];
     };
 
-    ImgWidget.buildContainer = function buildContainer(){
-
+    ImgWidget.buildContainer = function buildContainer() {
         helper.buildInlineContainer(this);
 
         this.$container.css({
@@ -72,8 +70,7 @@ define([
         return this;
     };
 
-    ImgWidget.createToolbar = function createToolbar(){
-
+    ImgWidget.createToolbar = function createToolbar() {
         helper.createToolbar(this, toolbarTpl);
 
         return this;

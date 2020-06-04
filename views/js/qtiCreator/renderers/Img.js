@@ -20,13 +20,12 @@ define([
     'lodash',
     'taoQtiItem/qtiCommonRenderer/renderers/Img',
     'taoMediaManager/qtiCreator/widgets/static/img/Widget'
-], function(_, Renderer, Widget){
+], function (_, Renderer, Widget) {
     'use strict';
 
     const CreatorImg = _.clone(Renderer);
 
-    CreatorImg.render = function render(img, options){
-
+    CreatorImg.render = function render(img, options) {
         options = options || {};
         options.baseUrl = this.getOption('baseUrl');
         options.uri = this.getOption('uri');
@@ -34,12 +33,7 @@ define([
         options.mediaManager = this.getOption('mediaManager');
         options.assetManager = this.getAssetManager();
 
-        Widget.build(
-            img,
-            Renderer.getContainer(img),
-            this.getOption('bodyElementOptionForm'),
-            options
-        );
+        Widget.build(img, Renderer.getContainer(img), this.getOption('bodyElementOptionForm'), options);
     };
 
     return CreatorImg;

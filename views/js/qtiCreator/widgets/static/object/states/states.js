@@ -21,7 +21,7 @@ define([
     'taoQtiItem/qtiCreator/widgets/static/states/states',
     'taoQtiItem/qtiCreator/widgets/static/object/states/Sleep',
     'taoMediaManager/qtiCreator/widgets/static/object/states/Active'
-], function(factory, states){
+], function (factory, states) {
     'use strict';
 
     return factory.createBundle(states, arguments);

@@ -28,80 +28,86 @@ define([
     'ui/previewer',
     'ui/resourcemgr',
     'ui/tooltip'
-], function(_, $, __, stateFactory, Active, formTpl, formElement, inlineHelper){
+], function (_, $, __, stateFactory, Active, formTpl, formElement, inlineHelper) {
     'use strict';
 
     const _config = {
-        renderingThrottle : 1000,
-        fileFilters : 'image/jpeg,image/png,image/gif,image/svg+xml,video/mp4,video/avi,video/ogv,video/mpeg,video/ogg,video/quicktime,video/webm,video/x-ms-wmv,video/x-flv,audio/mp3,audio/vnd.wav,audio/ogg,audio/vorbis,audio/webm,audio/mpeg,application/ogg,audio/aac,application/pdf'
+        renderingThrottle: 1000,
+        fileFilters:
+            'image/jpeg,image/png,image/gif,image/svg+xml,video/mp4,video/avi,video/ogv,video/mpeg,video/ogg,video/quicktime,video/webm,video/x-ms-wmv,video/x-flv,audio/mp3,audio/vnd.wav,audio/ogg,audio/vorbis,audio/webm,audio/mpeg,application/ogg,audio/aac,application/pdf'
     };
 
-    const ObjectStateActive = stateFactory.extend(Active, function(){
-        this.initForm();
-    }, function(){
-        this.widget.$form.empty();
-    });
+    const ObjectStateActive = stateFactory.extend(
+        Active,
+        function () {
+            this.initForm();
+        },
+        function () {
+            this.widget.$form.empty();
+        }
+    );
 
-    const refreshRendering = _.throttle(function refreshRendering(widget){
+    const refreshRendering = _.throttle(function refreshRendering(widget) {
         const obj = widget.element;
         const $container = widget.$original;
         const previewOptions = {
-            url : obj.renderer.resolveUrl(obj.attr('data')),
-            mime : obj.attr('type')
+            url: obj.renderer.resolveUrl(obj.attr('data')),
+            mime: obj.attr('type')
         };
-        if(obj.attr('height')){
+        if (obj.attr('height')) {
             previewOptions.height = obj.attr('height');
         }
-        if(obj.attr('width')){
+        if (obj.attr('width')) {
             previewOptions.width = obj.attr('width');
         }
-        if(previewOptions.url && previewOptions.mime){
+        if (previewOptions.url && previewOptions.mime) {
             $container.previewer(previewOptions);
         }
     }, _config.renderingThrottle);
 
-    const _initUpload = function(widget){
-
+    const _initUpload = function (widget) {
         const $form = widget.$form,
             options = widget.options,
             qtiObject = widget.element,
             $uploadTrigger = $form.find('[data-role="upload-trigger"]'),
             $src = $form.find('input[name=src]');
 
-        const _openResourceMgr = function _openResourceMgr(){
+        const _openResourceMgr = function _openResourceMgr() {
             $uploadTrigger.resourcemgr({
-                title : __('Please select a media file from the resource manager. You can add files from your computer with the button "Add file(s)".'),
-                appendContainer : options.mediaManager.appendContainer,
-                mediaSourcesUrl : options.mediaManager.mediaSourcesUrl,
-                browseUrl : options.mediaManager.browseUrl,
-                uploadUrl : options.mediaManager.uploadUrl,
-                deleteUrl : options.mediaManager.deleteUrl,
-                downloadUrl : options.mediaManager.downloadUrl,
-                fileExistsUrl : options.mediaManager.fileExistsUrl,
-                params : {
-                    uri : options.uri,
-                    lang : options.lang,
-                    filters : _config.fileFilters
+                title: __(
+                    'Please select a media file from the resource manager. You can add files from your computer with the button "Add file(s)".'
+                ),
+                appendContainer: options.mediaManager.appendContainer,
+                mediaSourcesUrl: options.mediaManager.mediaSourcesUrl,
+                browseUrl: options.mediaManager.browseUrl,
+                uploadUrl: options.mediaManager.uploadUrl,
+                deleteUrl: options.mediaManager.deleteUrl,
+                downloadUrl: options.mediaManager.downloadUrl,
+                fileExistsUrl: options.mediaManager.fileExistsUrl,
+                params: {
+                    uri: options.uri,
+                    lang: options.lang,
+                    filters: _config.fileFilters
                 },
-                pathParam : 'path',
+                pathParam: 'path',
                 path: options.mediaManager.path,
                 root: options.mediaManager.root,
-                select : function(e, files){
+                select: function (e, files) {
                     let file, type;
-                    if(files && files.length){
+                    if (files && files.length) {
                         file = files[0].file;
                         type = files[0].mime;
                         qtiObject.attr('type', type);
                         $src.val(file).trigger('change');
                     }
                 },
-                open : function(){
+                open: function () {
                     //hide tooltip if displayed
-                    if($src.data('$tooltip')){
+                    if ($src.data('$tooltip')) {
                         $src.blur().data('$tooltip').hide();
                     }
                 },
-                close : function(){
+                close: function () {
                     //triggers validation :
                     $src.blur();
                 }
@@ -111,25 +117,26 @@ define([
         $uploadTrigger.on('click', _openResourceMgr);
 
         //if empty, open file manager immediately
-        if(!$src.val()){
+        if (!$src.val()) {
             _openResourceMgr();
         }
     };
 
-    ObjectStateActive.prototype.initForm = function initForm(){
-
+    ObjectStateActive.prototype.initForm = function initForm() {
         const _widget = this.widget,
             $form = _widget.$form,
             qtiObject = _widget.element,
             baseUrl = _widget.options.baseUrl;
 
-        $form.html(formTpl({
-            baseUrl : baseUrl || '',
-            src : qtiObject.attr('data'),
-            alt : qtiObject.attr('alt'),
-            height : qtiObject.attr('height'),
-            width : qtiObject.attr('width')
-        }));
+        $form.html(
+            formTpl({
+                baseUrl: baseUrl || '',
+                src: qtiObject.attr('data'),
+                alt: qtiObject.attr('alt'),
+                height: qtiObject.attr('height'),
+                width: qtiObject.attr('width')
+            })
+        );
 
         //init resource manager
         _initUpload(_widget);
@@ -139,37 +146,36 @@ define([
 
         //init data change callbacks
         formElement.setChangeCallbacks($form, qtiObject, {
-            src : function(object, value){
+            src: function (object, value) {
                 qtiObject.attr('data', value);
                 inlineHelper.togglePlaceholder(_widget);
                 refreshRendering(_widget);
             },
-            width : function(object, value){
+            width: function (object, value) {
                 const val = parseInt(value, 10);
-                if(_.isNaN(val)){
+                if (_.isNaN(val)) {
                     qtiObject.removeAttr('width');
-                }else{
+                } else {
                     qtiObject.attr('width', val);
                 }
                 refreshRendering(_widget);
             },
-            height : function(object, value){
+            height: function (object, value) {
                 const val = parseInt(value, 10);
-                if(_.isNaN(val)){
+                if (_.isNaN(val)) {
                     qtiObject.removeAttr('height');
-                }else{
+                } else {
                     qtiObject.attr('height', val);
                 }
                 refreshRendering(_widget);
             },
-            alt : function(qtiObjectAlt, value){
+            alt: function (qtiObjectAlt, value) {
                 qtiObjectAlt.attr('alt', value);
             },
-            align : function(qtiObjectAlign, value){
+            align: function (qtiObjectAlign, value) {
                 inlineHelper.positionFloat(_widget, value);
             }
         });
-
     };
 
     return ObjectStateActive;

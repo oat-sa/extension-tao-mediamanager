@@ -111,47 +111,47 @@ define([
                 },
                 method: 'GET'
             })
-                .then(function(responseRelated) {
-                    let message;
-                    const haveItemReferences = responseRelated.data;
-                    const name = $('a.clicked', actionContext.tree).text().trim() ;
-                    if (haveItemReferences.length === 0) {
-                        message = `${__('Are you sure you want to delete this')} <b>${name}</b>?`;
-                    } else {
-                        message = relatedItemsPopupTpl({
-                            name,
-                            number: haveItemReferences.length,
-                            items: haveItemReferences
-                        });
-                    }
-                    confirmDialog(message, function accept() {
-                        request({
-                            url: self.url,
-                            method: 'POST',
-                            data: data,
-                            dataType: 'json',
-                        })
-                            .then(function(response) {
-                                if (response.success && response.deleted) {
-                                    feedback().success(response.message || __('Resource deleted'));
-
-                                    if (actionContext.tree){
-                                        $(actionContext.tree).trigger('removenode.taotree', [{
-                                            id : actionContext.uri || actionContext.classUri
-                                        }]);
-                                    }
-                                    return resolve({
-                                        uri : actionContext.uri || actionContext.classUri
-                                    });
-
-                                } else {
-                                    reject(response.msg || __('Unable to delete the selected resource'));
-                                }
-                            });
-                    }, function cancel() {
-                        reject({ cancel : true });
+            .then(function(responseRelated) {
+                let message;
+                const haveItemReferences = responseRelated.data;
+                const name = $('a.clicked', actionContext.tree).text().trim() ;
+                if (haveItemReferences.length === 0) {
+                    message = `${__('Are you sure you want to delete this')} <b>${name}</b>?`;
+                } else {
+                    message = relatedItemsPopupTpl({
+                        name,
+                        number: haveItemReferences.length,
+                        items: haveItemReferences
                     });
+                }
+                confirmDialog(message, function accept() {
+                    request({
+                        url: self.url,
+                        method: 'POST',
+                        data: data,
+                        dataType: 'json',
+                    })
+                    .then(function(response) {
+                        if (response.success && response.deleted) {
+                            feedback().success(response.message || __('Resource deleted'));
+
+                            if (actionContext.tree){
+                                $(actionContext.tree).trigger('removenode.taotree', [{
+                                    id : actionContext.uri || actionContext.classUri
+                                }]);
+                            }
+                            return resolve({
+                                uri : actionContext.uri || actionContext.classUri
+                            });
+
+                        } else {
+                            reject(response.msg || __('Unable to delete the selected resource'));
+                        }
+                    });
+                }, function cancel() {
+                    reject({ cancel : true });
                 });
+            });
         });
     });
 });

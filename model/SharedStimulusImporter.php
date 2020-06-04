@@ -27,6 +27,9 @@ use common_report_Report as Report;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\log\TaoLoggerAwareInterface;
 use oat\oatbox\service\ConfigurableService;
+use oat\oatbox\service\ServiceManager;
+use oat\taoMediaManager\model\sharedStimulus\parser\InvalidMediaReferenceException;
+use oat\taoMediaManager\model\sharedStimulus\parser\SharedStimulusMediaExtractor;
 use tao_helpers_form_Form as Form;
 use oat\tao\model\import\ImportHandlerHelperTrait;
 use oat\tao\model\import\TaskParameterProviderInterface;
@@ -199,9 +202,11 @@ class SharedStimulusImporter extends ConfigurableService implements
 
         // don't validate because of APIP
         if ($file instanceof File) {
-            $xmlDocument->loadFromString($file->read(), false);
+            $xml = $file->read();
+            $xmlDocument->loadFromString($xml, false);
         } elseif (is_file($file) && is_readable($file)) {
             $xmlDocument->load($file, false);
+            $xml = file_get_contents($file);
         }
 
 
@@ -216,6 +221,9 @@ class SharedStimulusImporter extends ConfigurableService implements
         if (self::hasTemplate($xmlDocument->getDocumentComponent())) {
             throw new XmlStorageException("The shared stimulus contains template QTI components.");
         }
+
+        ServiceManager::getServiceManager()->get(SharedStimulusMediaExtractor::class)
+            ->assertMediaFileExists($xml);
 
         return $xmlDocument;
     }

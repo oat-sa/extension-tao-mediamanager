@@ -109,8 +109,6 @@ class PatchService extends ConfigurableService
             $this->logAlert(sprintf('Incorrect shared stimulus xml, %s', $e->getMessage()));
             throw new InvalidArgumentException('Invalid XML provided');
         }
-
-        $this->getMediaParser()->assertMediaFileExists($file->read());
     }
 
     public function getMediaParser(): SharedStimulusMediaExtractor

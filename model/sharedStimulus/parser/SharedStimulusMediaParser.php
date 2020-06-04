@@ -86,10 +86,13 @@ class SharedStimulusMediaParser extends ConfigurableService
     private function processMediaSource(string $uri, callable $processor, array &$matches): void
     {
         if (false === strpos($uri, 'data:image')) {
-            $asset = $this->getMediaResolver()->resolve($uri);
 
-            if ($asset->getMediaSource() instanceof MediaSource) {
-                $matches[] = $processor($asset);
+            if (isset(parse_url($uri)['scheme'])) {
+                $asset = $this->getMediaResolver()->resolve($uri);
+
+                if ($asset->getMediaSource() instanceof MediaSource) {
+                    $matches[] = $processor($asset);
+                }
             }
         }
     }

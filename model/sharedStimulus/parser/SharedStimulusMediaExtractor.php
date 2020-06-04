@@ -57,11 +57,17 @@ class SharedStimulusMediaExtractor extends SharedStimulusMediaParser
     }
 
     /**
-     * @throws FileNotFoundException
+     * @throws InvalidMediaReferenceException
      */
     protected function extractImageFileInfo(MediaAsset $asset): void
     {
-        $asset->getMediaSource()->getFileInfo($asset->getMediaIdentifier());
+        $assetIdentifier = tao_helpers_Uri::decode($asset->getMediaIdentifier());
+
+        try {
+            $asset->getMediaSource()->getFileInfo($assetIdentifier);
+        } catch (FileNotFoundException $exception) {
+            throw new InvalidMediaReferenceException($assetIdentifier);
+        }
     }
 
     /**

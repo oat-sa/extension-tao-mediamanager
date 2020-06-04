@@ -34,9 +34,6 @@ class SharedStimulusMediaParser extends ConfigurableService
     /** @var TaoMediaResolver */
     private $mediaResolver;
 
-    /**
-     * @throws TaoMediaException
-     */
     public function extractMedia(string $xml, callable $processImageIdentifier): array
     {
         try {

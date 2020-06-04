@@ -56,8 +56,8 @@ class SharedStimulusMediaExtractorTest extends TestCase
 
     public function testExtractMediaIdentifiers(): void
     {
-        $imagePath = 'image-path.png';
-        $videoPath = 'video-path.png';
+        $imagePath = 'taomedia://taomediamanager/image-path.png';
+        $videoPath = 'taomedia://taomediamanager/video-path.png';
 
         $xml = '<?xml version="1.0" encoding="UTF-8"?>';
         $xml .= '<div xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" >';
@@ -93,8 +93,8 @@ class SharedStimulusMediaExtractorTest extends TestCase
 
     public function testExtractNonExistingMediaIdentifiers(): void
     {
-        $imagePath = 'image-path.png';
-        $videoPath = 'video-path.png';
+        $imagePath = 'http://image-path.png';
+        $videoPath = 'taomedia://mediamanager/video-path.png';
 
         $xml = '<?xml version="1.0" encoding="UTF-8"?>';
         $xml .= '<div xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" >';
@@ -119,8 +119,8 @@ class SharedStimulusMediaExtractorTest extends TestCase
 
     public function testAssertMediaFileNotExists()
     {
-        $imagePath = 'image-path.png';
-        $videoPath = 'video-path.png';
+        $imagePath = 'http://image-path.png';
+        $videoPath = 'taomedia://mediamanager/video-path.png';
 
         $xml = '<?xml version="1.0" encoding="UTF-8"?>';
         $xml .= '<div xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" >';

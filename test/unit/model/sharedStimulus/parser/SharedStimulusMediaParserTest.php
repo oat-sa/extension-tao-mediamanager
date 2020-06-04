@@ -47,9 +47,9 @@ class SharedStimulusMediaParserTest extends TestCase
 
     public function testExtractMedia()
     {
-        $imagePath = 'image-path.png';
+        $imagePath = 'taomedia://taomediamanager/image-path.png';
         $imageDataUri = 'data:image/png;' . base64_encode('base64-content');
-        $objectPath = 'video-path.mp4';
+        $objectPath = 'taomedia://taomediamanager/video-path.mp4';
         $objectHttp = 'http://video.tao';
 
         $xml = '<?xml version="1.0" encoding="UTF-8"?>';

@@ -44,32 +44,38 @@ define([
         const self = this;
         const classUri = uri.decode(actionContext.id);
 
-        return request(self.url, { classId: classUri }, 'POST')
-            .then(function(data) {
-                //backward compat format for jstree
-                if(actionContext.tree){
-                    $(actionContext.tree).trigger('addnode.taotree', [{
-                        uri       : uri.decode(data.id),
-                        label     : data.name,
-                        parent    : uri.decode(actionContext.classUri),
-                        cssClass  : 'node-instance'
-                    }]);
-                }
-
-                //return format (resourceSelector)
-                return {
+        return request({
+            url: self.url,
+            data: {
+                classId: classUri
+            },
+            method: 'POST'
+        })
+        .then(function(data) {
+            //backward compat format for jstree
+            if(actionContext.tree){
+                $(actionContext.tree).trigger('addnode.taotree', [{
                     uri       : uri.decode(data.id),
                     label     : data.name,
-                    classUri  : uri.decode(actionContext.classUri),
-                    type      : 'instance'
-                };
-            })
-            .catch(err => {
-                if (!_.isUndefined(err.message)) {
-                    feedback().error(err.message);
-                }
-                logger.error(err);
-            });
+                    parent    : uri.decode(actionContext.classUri),
+                    cssClass  : 'node-instance'
+                }]);
+            }
+
+            //return format (resourceSelector)
+            return {
+                uri       : uri.decode(data.id),
+                label     : data.name,
+                classUri  : uri.decode(actionContext.classUri),
+                type      : 'instance'
+            };
+        })
+        .catch(err => {
+            if (!_.isUndefined(err.message)) {
+                feedback().error(err.message);
+            }
+            logger.error(err);
+        });
     });
     binder.register('sharedStimulusAuthoring', function sharedStimulusAuthoring(actionContext) {
         section

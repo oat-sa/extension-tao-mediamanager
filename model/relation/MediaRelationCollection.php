@@ -71,7 +71,7 @@ class MediaRelationCollection implements IteratorAggregate, JsonSerializable
         $mediaIds = [];
 
         foreach ($this->mediaRelations as $relation) {
-            $mediaIds[] = $relation->getId();
+            $mediaIds[] = $relation->getSourceId();
         }
 
         return $mediaIds;

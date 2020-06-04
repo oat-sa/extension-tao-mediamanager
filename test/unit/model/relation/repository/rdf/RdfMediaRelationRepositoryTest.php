@@ -26,31 +26,29 @@ use LogicException;
 use oat\generis\model\data\Ontology;
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\generis\test\TestCase;
+use oat\oatbox\log\LoggerService;
 use oat\search\Query;
 use oat\search\base\SearchGateWayInterface;
 use oat\search\QueryBuilder;
 use oat\taoMediaManager\model\relation\MediaRelation;
 use oat\taoMediaManager\model\relation\MediaRelationCollection;
+use oat\taoMediaManager\model\relation\repository\query\FindAllByTargetQuery;
 use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
-use oat\taoMediaManager\model\relation\repository\rdf\map\RdfMediaRelationMap;
-use oat\taoMediaManager\model\relation\repository\rdf\map\RdfMediaRelationMapInterface;
 use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRelationRepository;
 use core_kernel_classes_Resource as RdfResource;
+use core_kernel_classes_Property as RdfProperty;
 use PHPUnit\Framework\MockObject\MockObject;
 
 class RdfMediaRelationRepositoryTest extends TestCase
 {
+    private const ITEM_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem';
+    private const MEDIA_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedMedia';
+
     /** @var RdfMediaRelationRepository */
     private $subject;
 
     /** @var Ontology|MockObject */
     private $ontology;
-
-    /** @var RdfMediaRelationMapInterface|MockObject */
-    private $itemMapper;
-
-    /** @var RdfMediaRelationMapInterface|MockObject */
-    private $mediaMapper;
 
     /** @var ComplexSearchService|MockObject */
     private $complexSearch;
@@ -64,6 +62,9 @@ class RdfMediaRelationRepositoryTest extends TestCase
     /** @var SearchGateWayInterface|MockObject */
     private $searchGateway;
 
+    /** @var LoggerService */
+    private $logger;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -73,22 +74,14 @@ class RdfMediaRelationRepositoryTest extends TestCase
         $this->queryBuilder = $this->createMock(QueryBuilder::class);
         $this->searchGateway = $this->createMock(SearchGateWayInterface::class);
         $this->ontology = $this->createMock(Ontology::class);
-        $this->itemMapper = $this->createMock(RdfMediaRelationMapInterface::class);
-        $this->mediaMapper = $this->createMock(RdfMediaRelationMapInterface::class);
-        $this->subject = new RdfMediaRelationRepository(
-            [
-                RdfMediaRelationRepository::MAP_OPTION => [
-                    $this->itemMapper,
-                    $this->mediaMapper,
-                ]
-            ]
-        );
+        $this->logger = $this->createMock(LoggerService::class);
+        $this->subject = new RdfMediaRelationRepository();
         $this->subject->setServiceLocator(
             $this->getServiceLocatorMock(
                 [
                     Ontology::SERVICE_ID => $this->ontology,
                     ComplexSearchService::SERVICE_ID => $this->complexSearch,
-                    RdfMediaRelationMap::class => $this->mediaMapper,
+                    LoggerService::SERVICE_ID => $this->logger,
                 ]
             )
         );
@@ -98,27 +91,46 @@ class RdfMediaRelationRepositoryTest extends TestCase
     {
         $mediaId = 'fixture';
 
+        $itemRelationProperty = $this->createConfiguredMock(RdfProperty::class, []);
+        $mediaRelationProperty = $this->createConfiguredMock(RdfProperty::class, []);
+
+        $relatedItem1 = $this->createConfiguredMock(RdfResource::class, ['getUri' => '1', 'getLabel' => '']);
+        $relatedItem2 = $this->createConfiguredMock(RdfResource::class, ['getUri' => '2', 'getLabel' => 'item-2']);
+        $relatedMedia1 = $this->createConfiguredMock(RdfResource::class, ['getUri' => '1', 'getLabel' => '']);
+        $relatedMedia2 = $this->createConfiguredMock(RdfResource::class, ['getUri' => '2', 'getLabel' => 'media-2']);
+
+        $resource = $this->createMock(RdfResource::class);
+
+        $resource
+            ->method('getPropertiesValues')
+            ->with([
+                $itemRelationProperty, $mediaRelationProperty
+            ])
+            ->willReturn([
+                self::ITEM_RELATION_PROPERTY => [
+                    $relatedItem1,
+                    $relatedItem2,
+                ],
+                self::MEDIA_RELATION_PROPERTY => [
+                    $relatedMedia1,
+                    $relatedMedia2,
+                ]
+            ]);
+
         $this->ontology
             ->method('getResource')
             ->with($mediaId)
-            ->willReturn($this->createMock(RdfResource::class));
+            ->willReturn($resource);
 
-        $this->mediaMapper
-            ->method('mapMediaRelations')
-            ->willReturnCallback(
-                function (RdfResource $mediaResource, MediaRelationCollection $mediaRelationCollection) {
-                    $mediaRelationCollection->add(new MediaRelation('media', '1'));
-                    $mediaRelationCollection->add(new MediaRelation('media', '2', 'media-2'));
-                }
-            );
-
-        $this->itemMapper
-            ->method('mapMediaRelations')
-            ->willReturnCallback(
-                function (RdfResource $mediaResource, MediaRelationCollection $mediaRelationCollection) {
-                    $mediaRelationCollection->add(new MediaRelation('item', '1'));
-                    $mediaRelationCollection->add(new MediaRelation('item', '2', 'item-2'));
-                }
+        $this->ontology
+            ->method('getProperty')
+            ->withConsecutive(
+                [$this->equalTo(self::ITEM_RELATION_PROPERTY)],
+                [$this->equalTo(self::MEDIA_RELATION_PROPERTY)]
+            )
+            ->willReturnOnConsecutiveCalls(
+                $itemRelationProperty,
+                $mediaRelationProperty
             );
 
         $expected = [
@@ -149,36 +161,174 @@ class RdfMediaRelationRepositoryTest extends TestCase
         $this->assertSame(json_encode($expected), json_encode(iterator_to_array($result->getIterator())));
     }
 
+    public function testSave(): void
+    {
+        $mediaId = 'fixture-id';
+        $sourceId = 'fixture-source';
+
+        $mediaRelation = (new MediaRelation(MediaRelation::ITEM_TYPE, $mediaId))
+            ->withSourceId($sourceId);
+
+        $itemRelationProperty = $this->createConfiguredMock(RdfProperty::class, []);
+
+        $resource = $this->createMock(RdfResource::class);
+
+        $resource
+            ->expects($this->once())
+            ->method('setPropertyValue')
+            ->with(
+                $itemRelationProperty,
+                $mediaId
+            )
+            ->willReturn(true);
+
+        $this->ontology
+            ->expects($this->once())
+            ->method('getResource')
+            ->with($sourceId)
+            ->willReturn($resource);
+
+        $this->ontology
+            ->expects($this->once())
+            ->method('getProperty')
+            ->with(self::ITEM_RELATION_PROPERTY)
+            ->willReturn($itemRelationProperty);
+
+        $this->logger
+            ->expects($this->once())
+            ->method('info');
+
+        $this->subject->save($mediaRelation);
+    }
+
+    public function testSaveWithException(): void
+    {
+        $mediaId = 'fixture-id';
+        $sourceId = 'fixture-source';
+
+        $mediaRelation = (new MediaRelation(MediaRelation::MEDIA_TYPE, $mediaId))
+            ->withSourceId($sourceId);
+
+        $mediaRelationProperty = $this->createConfiguredMock(RdfProperty::class, []);
+
+        $resource = $this->createMock(RdfResource::class);
+
+        $resource
+            ->expects($this->once())
+            ->method('setPropertyValue')
+            ->willReturn(false);
+
+        $this->ontology
+            ->expects($this->once())
+            ->method('getResource')
+            ->with($sourceId)
+            ->willReturn($resource);
+
+        $this->ontology
+            ->expects($this->once())
+            ->method('getProperty')
+            ->with(self::MEDIA_RELATION_PROPERTY)
+            ->willReturn($mediaRelationProperty);
+
+        $this->expectException(LogicException::class);
+
+        $this->subject->save($mediaRelation);
+    }
+
+    public function testRemove(): void
+    {
+        $mediaId = 'fixture-id';
+        $sourceId = 'fixture-source';
+
+        $mediaRelation = (new MediaRelation(MediaRelation::ITEM_TYPE, $mediaId))
+            ->withSourceId($sourceId);
+
+        $itemRelationProperty = $this->createConfiguredMock(RdfProperty::class, []);
+
+        $resource = $this->createMock(RdfResource::class);
+
+        $resource
+            ->expects($this->once())
+            ->method('removePropertyValue')
+            ->with(
+                $itemRelationProperty,
+                $mediaId
+            )
+            ->willReturn(true);
+
+        $this->ontology
+            ->expects($this->once())
+            ->method('getResource')
+            ->with($sourceId)
+            ->willReturn($resource);
+
+        $this->ontology
+            ->expects($this->once())
+            ->method('getProperty')
+            ->with(self::ITEM_RELATION_PROPERTY)
+            ->willReturn($itemRelationProperty);
+
+        $this->logger
+            ->expects($this->once())
+            ->method('info');
+
+        $this->subject->remove($mediaRelation);
+    }
+
+    public function testRemoveWithException(): void
+    {
+        $mediaId = 'fixture-id';
+        $sourceId = 'fixture-source';
+
+        $mediaRelation = (new MediaRelation(MediaRelation::MEDIA_TYPE, $mediaId))
+            ->withSourceId($sourceId);
+
+        $mediaRelationProperty = $this->createConfiguredMock(RdfProperty::class, []);
+
+        $resource = $this->createMock(RdfResource::class);
+
+        $resource
+            ->expects($this->once())
+            ->method('removePropertyValue')
+            ->willReturn(false);
+
+        $this->ontology
+            ->expects($this->once())
+            ->method('getResource')
+            ->with($sourceId)
+            ->willReturn($resource);
+
+        $this->ontology
+            ->expects($this->once())
+            ->method('getProperty')
+            ->with(self::MEDIA_RELATION_PROPERTY)
+            ->willReturn($mediaRelationProperty);
+
+        $this->expectException(LogicException::class);
+
+        $this->subject->remove($mediaRelation);
+    }
+
     public function testFindAllByItemId(): void
     {
         $itemId = 'itemId';
 
-        $this->mediaMapper
-            ->method('createMediaRelation')
-            ->willReturnOnConsecutiveCalls(
-                ...[
-                    (new MediaRelation('media', '1'))->withSourceId('item1'),
-                    (new MediaRelation('media', '2'))->withSourceId('item1'),
-
-                ]
-            );
-
         $expected = [
             [
                 'type' => 'media',
-                'id' => '1',
+                'id' => $itemId,
                 'label' => '',
             ],
             [
                 'type' => 'media',
-                'id' => '2',
+                'id' => $itemId,
                 'label' => '',
             ],
         ];
 
-        $result = [
-            $this->createMock(RdfResource::class),
-            $this->createMock(RdfResource::class),
+        $searchResult = [
+            (object) ['subject' => '1'],
+            (object) ['subject' => '2'],
         ];
 
         $this->complexSearch
@@ -195,27 +345,26 @@ class RdfMediaRelationRepositoryTest extends TestCase
 
         $this->searchGateway
             ->method('search')
-            ->willReturn($result);
+            ->willReturn($searchResult);
 
         $this->query
+            ->expects($this->once())
             ->method('add')
-            ->willReturn($this->query);
+            ->with(self::MEDIA_RELATION_PROPERTY)
+            ->willReturn($this->query)
+        ;
 
         $this->query
+            ->expects($this->once())
             ->method('__call')
-            ->with('equals')
-            ->willReturn($this->query);
+            ->with('equals', [$itemId]);
 
-        $result = $this->subject->findAll(new FindAllQuery(null, $itemId));
+        $result = $this->subject->findAllByTarget(new FindAllByTargetQuery($itemId, MediaRelation::MEDIA_TYPE));
 
-        $this->assertSame(json_encode($expected), json_encode(iterator_to_array($result->getIterator())));
-    }
+        $arrayResult = iterator_to_array($result->getIterator());
+        $this->assertSame(json_encode($expected), json_encode($arrayResult));
 
-    public function testFindAllWithInvalidFilterWillThrowException(): void
-    {
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('Invalid query filter');
-
-        $this->subject->findAll(new FindAllQuery());
+        $this->assertSame('1', $arrayResult[0]->getSourceId());
+        $this->assertSame('2', $arrayResult[1]->getSourceId());
     }
 }

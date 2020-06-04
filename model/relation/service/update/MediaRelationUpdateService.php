@@ -20,24 +20,14 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\relation\repository\rdf\map;
+namespace oat\taoMediaManager\model\relation\service\update;
 
 use oat\taoMediaManager\model\relation\MediaRelation;
-use core_kernel_classes_Resource as RdfResource;
 
-class RdfMediaRelationMap extends AbstractRdfMediaRelationMap
+class MediaRelationUpdateService extends AbstractRelationUpdateService
 {
-    /** @var string */
-    public const MEDIA_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedMedia';
-
-    protected function getMediaRelationPropertyUri(): string
+    protected function getRelationType(): string
     {
-        return self::MEDIA_RELATION_PROPERTY;
-    }
-
-    public function createMediaRelation(RdfResource $mediaResource, string $sourceId): MediaRelation
-    {
-        return (new MediaRelation(MediaRelation::MEDIA_TYPE, $mediaResource->getUri(), $mediaResource->getLabel()))
-            ->withSourceId($sourceId);
+        return MediaRelation::MEDIA_TYPE;
     }
 }

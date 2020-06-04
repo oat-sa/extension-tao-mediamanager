@@ -22,13 +22,12 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\test\unit\model\relation\event;
 
-use LogicException;
 use oat\generis\test\TestCase;
+use oat\oatbox\event\Event;
 use oat\taoMediaManager\model\relation\event\MediaRemovedEvent;
-use oat\taoMediaManager\model\relation\event\MediaSavedEvent;
 use oat\taoMediaManager\model\relation\event\processor\InvalidEventException;
 use oat\taoMediaManager\model\relation\event\processor\MediaRemovedEventProcessor;
-use oat\taoMediaManager\model\relation\service\ItemRelationUpdateService;
+use oat\taoMediaManager\model\relation\service\remove\MediaRelationRemoveService;
 use PHPUnit\Framework\MockObject\MockObject;
 
 class MediaRemovedEventProcessorTest extends TestCase
@@ -36,17 +35,17 @@ class MediaRemovedEventProcessorTest extends TestCase
     /** @var MediaRemovedEventProcessor */
     private $subject;
 
-    /** @var ItemRelationUpdateService|MockObject */
-    private $updateService;
+    /** @var MediaRelationRemoveService|MockObject */
+    private $removeService;
 
     public function setUp(): void
     {
-        $this->updateService = $this->createMock(ItemRelationUpdateService::class);
+        $this->removeService = $this->createMock(MediaRelationRemoveService::class);
         $this->subject = new MediaRemovedEventProcessor();
         $this->subject->setServiceLocator(
             $this->getServiceLocatorMock(
                 [
-                    ItemRelationUpdateService::class => $this->updateService,
+                    MediaRelationRemoveService::class => $this->removeService,
                 ]
             )
         );
@@ -54,9 +53,9 @@ class MediaRemovedEventProcessorTest extends TestCase
 
     public function testProcess(): void
     {
-        $this->updateService
+        $this->removeService
             ->expects($this->once())
-            ->method('removeMedia')
+            ->method('removeMediaRelations')
             ->with('mediaId');
 
         $this->subject->process(new MediaRemovedEvent('mediaId'));
@@ -66,6 +65,6 @@ class MediaRemovedEventProcessorTest extends TestCase
     {
         $this->expectException(InvalidEventException::class);
 
-        $this->subject->process(new MediaSavedEvent());
+        $this->subject->process($this->createMock(Event::class));
     }
 }

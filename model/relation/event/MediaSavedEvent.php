@@ -26,6 +26,28 @@ use oat\oatbox\event\Event;
 
 class MediaSavedEvent implements Event
 {
+    /** @var string */
+    private $mediaId;
+
+    /** @var array */
+    private $referencedMediaIds;
+
+    public function __construct(string $mediaId, array $referencedMediaIds)
+    {
+        $this->mediaId = $mediaId;
+        $this->referencedMediaIds = $referencedMediaIds;
+    }
+
+    public function getMediaId(): string
+    {
+        return $this->mediaId;
+    }
+
+    public function getReferencedMediaIds(): array
+    {
+        return $this->referencedMediaIds;
+    }
+
     /**
      * @inheritDoc
      */

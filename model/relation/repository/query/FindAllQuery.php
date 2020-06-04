@@ -23,31 +23,18 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\repository\query;
 
-/**
- * Representation of query to find all media relations.
- * Can be extended for more advanced criteria
- */
 class FindAllQuery
 {
     /** @var string */
     private $mediaId;
 
-    /** @var string */
-    private $itemId;
-
-    public function __construct(string $mediaId = null, string $itemId = null)
+    public function __construct(string $mediaId)
     {
         $this->mediaId = $mediaId;
-        $this->itemId = $itemId;
     }
 
-    public function getMediaId(): ?string
+    public function getMediaId(): string
     {
         return $this->mediaId;
-    }
-
-    public function getItemId(): ?string
-    {
-        return $this->itemId;
     }
 }

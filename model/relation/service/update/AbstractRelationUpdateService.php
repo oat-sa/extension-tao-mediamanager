@@ -20,47 +20,38 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\relation\service;
+namespace oat\taoMediaManager\model\relation\service\update;
 
-use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\relation\MediaRelation;
 use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
-use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
+use oat\taoMediaManager\model\relation\repository\query\FindAllByTargetQuery;
 
-class ItemRelationUpdateService extends ConfigurableService
+abstract class AbstractRelationUpdateService extends ConfigurableService
 {
-    use OntologyAwareTrait;
-
-    public function updateByItem(string $itemId, array $currentMediaIds = []): void
+    public function updateByTargetId(string $targetId, array $currentMediaIds = []): void
     {
         $repository = $this->getMediaRelationRepository();
 
-        $collection = $repository->findAll(new FindAllQuery(null, $itemId));
+        $collection = $repository->findAllByTarget(
+            new FindAllByTargetQuery($targetId, $this->getRelationType())
+        );
 
         foreach ($collection->filterNewMediaIds($currentMediaIds) as $mediaId) {
-            $repository->save($this->createMediaRelation(MediaRelation::ITEM_TYPE, $itemId, $mediaId));
+            $repository->save($this->createMediaRelation($targetId, $mediaId));
         }
 
         foreach ($collection->filterRemovedMediaIds($currentMediaIds) as $mediaId) {
-            $repository->remove($this->createMediaRelation(MediaRelation::ITEM_TYPE, $itemId, $mediaId));
+            $repository->remove($this->createMediaRelation($targetId, $mediaId));
         }
     }
 
-    public function removeMedia(string $mediaId): void
-    {
-        $repository = $this->getMediaRelationRepository();
-        $medias = $repository->findAll(new FindAllQuery($mediaId))->getIterator();
+    abstract protected function getRelationType(): string;
 
-        /** @var MediaRelation $media */
-        foreach ($medias as $media) {
-            $repository->remove($media->withSourceId($mediaId));
-        }
-    }
-
-    private function createMediaRelation(string $type, string $targetId, string $sourceId): MediaRelation
+    private function createMediaRelation(string $targetId, string $mediaId): MediaRelation
     {
-        return (new MediaRelation($type, $targetId))->withSourceId($sourceId);
+        return (new MediaRelation($this->getRelationType(), $targetId))
+            ->withSourceId($mediaId);
     }
 
     private function getMediaRelationRepository(): MediaRelationRepositoryInterface

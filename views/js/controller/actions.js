@@ -32,9 +32,9 @@ define([
     'core/logger',
     'ui/feedback',
     'ui/dialog/confirm',
-    'css!taoMediaManagerCss/media.css',
     'util/url',
-    'tpl!taoMediaManager/qtiCreator/tpl/relatedItemsPopup'
+    'tpl!taoMediaManager/qtiCreator/tpl/relatedItemsPopup',
+    'css!taoMediaManagerCss/media.css'
 ], function(_, $, __, binder, uri, section, request, router, loggerFactory, feedback, confirmDialog, urlUtil, relatedItemsPopupTpl) {
     'use strict';
 

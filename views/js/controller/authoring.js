@@ -46,17 +46,12 @@ define([
                 uri: $panel.attr('data-uri'),
                 id: uri.decode($panel.attr('data-id')),
                 assetDataUrl,
-                itemDataUrl: urlUtil.route('getItemData', 'QtiCreator', 'taoQtiItem'),
                 fileUploadUrl : urlUtil.route('upload', 'ItemContent', 'taoItems'),
                 fileDeleteUrl : urlUtil.route('delete', 'ItemContent', 'taoItems'),
                 fileDownloadUrl : urlUtil.route('download', 'ItemContent', 'taoItems'),
                 fileExistsUrl : urlUtil.route('fileExists', 'ItemContent', 'taoItems'),
                 getFilesUrl: urlUtil.route('files', 'ItemContent', 'taoItems'),
-                mediaSourcesUrl: urlUtil.route('getMediaSources', 'QtiCreator', 'taoQtiItem'),
-                previewRenderUrl: urlUtil.route('render', 'QtiPreview', 'taoQtiItem'),
-                previewSubmitUrl: urlUtil.route('submitResponses', 'QtiPreview', 'taoQtiItem'),
-                previewUrl: urlUtil.route('index', 'QtiPreview', 'taoQtiItem'),
-                baseUrl: assetDataUrl,
+                baseUrl: urlUtil.route('getFile', 'MediaManager', 'taoMediaManager', {uri: ''}),
                 lang: 'en-US'
             }})
             .on('success', () => {

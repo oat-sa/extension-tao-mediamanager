@@ -85,7 +85,7 @@ define([
             return request(urlUtil.route('get', serviceController, serviceExtension), {id: identifier}, 'GET')
                 .then(function(data) {
                     const itemData = creatorDummyItemData(data);
-                    data.baseUrl = '/';
+                    data.baseUrl = urlUtil.route('getFile', 'MediaManager', 'taoMediaManager', {uri: ''});
                     data.content = {
                         type: 'qti',
                         data: itemData

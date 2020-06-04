@@ -34,13 +34,14 @@ class MediaSource extends Configurable implements MediaManagement
     use LoggerAwareTrait;
     use OntologyAwareTrait;
   
-    const SCHEME_NAME = 'taomedia://mediamanager/';
+    public const SCHEME_NAME = 'taomedia://mediamanager/';
 
+    /** @var MediaService */
     protected $mediaService;
 
+    /** @var FileManagement */
     protected $fileManagementService;
 
-  
     /**
      * Returns the lanuage URI to be used
      * @return string
@@ -139,7 +140,7 @@ class MediaSource extends Configurable implements MediaManagement
     public function getFileInfo($link)
     {
         // get the media link from the resource
-        $resource = $this->getResource(\tao_helpers_Uri::decode($link));
+        $resource = $this->getResource(\tao_helpers_Uri::decode($this->removeSchemaFromUriOrLink($link)));
         if (!$resource->exists()) {
             throw new \tao_models_classes_FileNotFoundException($link);
         }
@@ -324,5 +325,10 @@ class MediaSource extends Configurable implements MediaManagement
             $this->fileManagementService = $this->getServiceLocator()->get(FileManagement::SERVICE_ID);
         }
         return $this->fileManagementService;
+    }
+
+    private function removeSchemaFromUriOrLink(string $uriOrLink): string
+    {
+        return str_replace(self::SCHEME_NAME, '', $uriOrLink);
     }
 }

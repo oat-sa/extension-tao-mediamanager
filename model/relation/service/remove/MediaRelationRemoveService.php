@@ -20,31 +20,31 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\relation\repository\rdf\map;
+namespace oat\taoMediaManager\model\relation\service\remove;
 
-use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\ConfigurableService;
-use oat\taoMediaManager\model\relation\MediaRelationCollection;
-use core_kernel_classes_Resource as RdfResource;
+use oat\taoMediaManager\model\relation\MediaRelation;
+use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
+use oat\taoMediaManager\model\relation\repository\query\FindAllByTargetQuery;
 
-abstract class AbstractRdfMediaRelationMap extends ConfigurableService implements RdfMediaRelationMapInterface
+class MediaRelationRemoveService extends ConfigurableService
 {
-    use OntologyAwareTrait;
-
-    abstract protected function getMediaRelationPropertyUri(): string;
-
-    public function mapMediaRelations(
-        RdfResource $mediaResource,
-        MediaRelationCollection $mediaRelationCollection
-    ): void
+    public function removeMediaRelations(string $mediaId): void
     {
-        $mediaRelations = $mediaResource->getPropertyValues($this->getProperty($this->getMediaRelationPropertyUri()));
+        $repository = $this->getMediaRelationRepository();
 
+        $mediaRelations = $repository
+            ->findAllByTarget(new FindAllByTargetQuery($mediaId, MediaRelation::MEDIA_TYPE))
+            ->getIterator();
+
+        /** @var MediaRelation $media */
         foreach ($mediaRelations as $mediaRelation) {
-            $mediaRelationResource = $this->getResource($mediaRelation);
-            $mediaRelationCollection->add(
-                $this->createMediaRelation($mediaRelationResource, $mediaResource->getUri())
-            );
+            $repository->remove($mediaRelation);
         }
+    }
+
+    private function getMediaRelationRepository(): MediaRelationRepositoryInterface
+    {
+        return $this->getServiceLocator()->get(MediaRelationRepositoryInterface::SERVICE_ID);
     }
 }

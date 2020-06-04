@@ -47,7 +47,7 @@ class MediaSourceTest extends TestCase
         $size = '123456';
         $link = 'link-fixture';
 
-        $createdResourceUri = 'uri-created-fixture';
+        $createdResourceUri = MediaSource::SCHEME_NAME . 'uri-created-fixture';
 
         $filePath = dirname(__DIR__) . '/sample/Italy.png';
 

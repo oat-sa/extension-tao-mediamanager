@@ -16,25 +16,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
- *
  */
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\relation\repository\query;
+namespace oat\taoMediaManager\model\relation\service\update;
 
-class FindAllQuery
+use oat\taoMediaManager\model\relation\MediaRelation;
+
+class ItemRelationUpdateService extends AbstractRelationUpdateService
 {
-    /** @var string */
-    private $mediaId;
-
-    public function __construct(string $mediaId)
+    protected function getRelationType(): string
     {
-        $this->mediaId = $mediaId;
-    }
-
-    public function getMediaId(): string
-    {
-        return $this->mediaId;
+        return MediaRelation::ITEM_TYPE;
     }
 }

@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model;
 
 use common_ext_ExtensionsManager;
+use core_kernel_classes_Literal;
 use core_kernel_classes_Resource as RdfResource;
 use oat\generis\model\OntologyRdfs;
 use oat\oatbox\event\EventManager;
@@ -34,8 +35,9 @@ use oat\tao\model\ClassServiceTrait;
 use oat\tao\model\GenerisServiceTrait;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\relation\event\MediaRemovedEvent;
-use oat\taoMediaManager\model\relation\event\MediaSavedEvent;
+use oat\taoMediaManager\model\relation\event\MediaSavedEventDispatcher;
 use oat\taoRevision\model\RepositoryInterface;
+use tao_helpers_File;
 
 /**
  * Service methods to manage the Media
@@ -90,6 +92,12 @@ class MediaService extends ConfigurableService
      */
     public function createMediaInstance($fileSource, $classUri, $language, $label = null, $mimeType = null, $userId = null)
     {
+        $link = $this->getFileManager()->storeFile($fileSource, $label);
+
+        if ($link === false) {
+            return false;
+        }
+
         $clazz = $this->getClass($classUri);
 
         //create media instance
@@ -97,38 +105,34 @@ class MediaService extends ConfigurableService
             $label = $fileSource instanceof File ? $fileSource->getBasename() : basename($fileSource);
         }
 
-        $md5 = $fileSource instanceof File ? md5($fileSource->read()) : md5_file($fileSource);
+        $content = $fileSource instanceof File ? $fileSource->read() : file_get_contents($fileSource);
+        $md5 = md5($content);
 
-        $link = $this->getFileManager()->storeFile($fileSource, $label);
-
-        if ($link !== false) {
-            if (is_null($mimeType)) {
-                $mimeType = $fileSource instanceof File ? $fileSource->getMimeType() : \tao_helpers_File::getMimeType($fileSource);
-            }
-
-            $properties = [
-                OntologyRdfs::RDFS_LABEL => $label,
-                self::PROPERTY_LINK => $link,
-                self::PROPERTY_LANGUAGE => $language,
-                self::PROPERTY_MD5 => $md5,
-                self::PROPERTY_MIME_TYPE => $mimeType,
-                self::PROPERTY_ALT_TEXT => $label
-            ];
-
-            $instance = $clazz->createInstanceWithProperties($properties);
-            $id = $instance->getUri();
-
-            $this->getEventManager()->trigger(new MediaSavedEvent());
-
-            // @todo: move taoRevision stuff under a listener of MediaSavedEvent
-            if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
-                $this->logInfo('Auto generating initial revision');
-                $this->getRepositoryService()->commit($instance, __('Initial import'), null, $userId);
-            }
-
-            return $id;
+        if (is_null($mimeType)) {
+            $mimeType = $fileSource instanceof File ? $fileSource->getMimeType() : tao_helpers_File::getMimeType($fileSource);
         }
-        return false;
+
+        $properties = [
+            OntologyRdfs::RDFS_LABEL => $label,
+            self::PROPERTY_LINK => $link,
+            self::PROPERTY_LANGUAGE => $language,
+            self::PROPERTY_MD5 => $md5,
+            self::PROPERTY_MIME_TYPE => $mimeType,
+            self::PROPERTY_ALT_TEXT => $label
+        ];
+
+        $instance = $clazz->createInstanceWithProperties($properties);
+        $id = $instance->getUri();
+
+        $this->getMediaSavedEventDispatcher()->dispatchFromContent($id, $mimeType, $content);
+
+        // @todo: move taoRevision stuff under a listener of MediaSavedEvent
+        if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
+            $this->logInfo('Auto generating initial revision');
+            $this->getRepositoryService()->commit($instance, __('Initial import'), null, $userId);
+        }
+
+        return $id;
     }
 
     /**
@@ -159,7 +163,8 @@ class MediaService extends ConfigurableService
                 $instance->editPropertyValues($this->getProperty(self::PROPERTY_LANGUAGE), $language);
             }
 
-            $this->getEventManager()->trigger(new MediaSavedEvent());
+            $this->getMediaSavedEventDispatcher()
+                ->dispatchFromFile($id, $fileSource, $this->getResourceMimeType($instance));
 
             // @todo: move taoRevision stuff under a listener of MediaSavedEvent
             if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
@@ -167,6 +172,7 @@ class MediaService extends ConfigurableService
                 $this->getRepositoryService()->commit($instance, __('Imported new file'), null, $userId);
             }
         }
+
         return $link !== false;
     }
 
@@ -187,7 +193,13 @@ class MediaService extends ConfigurableService
     private function getLink(RdfResource $resource): string
     {
         $instance = $resource->getUniquePropertyValue($this->getProperty(self::PROPERTY_LINK));
+
         return $instance instanceof RdfResource ? $instance->getUri() : (string)$instance;
+    }
+
+    private function getMediaSavedEventDispatcher(): MediaSavedEventDispatcher
+    {
+        return $this->getServiceLocator()->get(MediaSavedEventDispatcher::class);
     }
 
     private function getFileManager(): FileManagement
@@ -203,5 +215,18 @@ class MediaService extends ConfigurableService
     private function getEventManager(): EventManager
     {
         return $this->getServiceLocator()->get(EventManager::SERVICE_ID);
+    }
+
+    private function getResourceMimeType(RdfResource $resource): ?string
+    {
+        $container = $resource->getUniquePropertyValue($resource->getProperty(MediaService::PROPERTY_MIME_TYPE));
+
+        if ($container instanceof core_kernel_classes_Literal) {
+            $mimeType = (string)$container;
+
+            return  $mimeType === 'application/qti+xml' ? $mimeType : null;
+        }
+
+        return null;
     }
 }

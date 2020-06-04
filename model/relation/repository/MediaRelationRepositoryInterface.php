@@ -24,42 +24,18 @@ namespace oat\taoMediaManager\model\relation\repository;
 
 use oat\taoMediaManager\model\relation\MediaRelation;
 use oat\taoMediaManager\model\relation\MediaRelationCollection;
+use oat\taoMediaManager\model\relation\repository\query\FindAllByTargetQuery;
 use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
 
-/**
- * Interface to abstract media relation.
- *
- * Once implemented, the service is configured based on self::SERVICE_ID
- *
- * @package oat\taoMediaManager\model\relation\repository
- */
 interface MediaRelationRepositoryInterface
 {
     public const SERVICE_ID = 'taoMediaManager/MediaRelationRepository';
 
-    /**
-     * Find all RelationMedia based on query object
-     *
-     * In case of no relation found, return empty array
-     *
-     * @param FindAllQuery $query
-     * @return MediaRelationCollection
-     */
     public function findAll(FindAllQuery $query): MediaRelationCollection;
 
-    /**
-     * Persist MediaRelation
-     *
-     * @param MediaRelation $relation
-     * @return void
-     */
+    public function findAllByTarget(FindAllByTargetQuery $query): MediaRelationCollection;
+
     public function save(MediaRelation $relation): void;
 
-    /**
-     * Remove MediaRelation
-     *
-     * @param MediaRelation $relation
-     * @return void
-     */
     public function remove(MediaRelation $relation): void;
 }

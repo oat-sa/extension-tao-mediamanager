@@ -20,39 +20,30 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\relation\event;
+namespace oat\taoMediaManager\model\relation\event\processor;
 
 use oat\oatbox\event\Event;
+use oat\oatbox\service\ConfigurableService;
+use oat\taoMediaManager\model\relation\event\MediaSavedEvent;
+use oat\taoMediaManager\model\relation\service\update\MediaRelationUpdateService;
 
-class MediaSavedEvent implements Event
+class MediaSavedEventProcessor extends ConfigurableService implements EventProcessorInterface
 {
-    /** @var string */
-    private $mediaId;
-
-    /** @var array */
-    private $referencedMediaIds;
-
-    public function __construct(string $mediaId, array $referencedMediaIds)
-    {
-        $this->mediaId = $mediaId;
-        $this->referencedMediaIds = $referencedMediaIds;
-    }
-
-    public function getMediaId(): string
-    {
-        return $this->mediaId;
-    }
-
-    public function getReferencedMediaIds(): array
-    {
-        return $this->referencedMediaIds;
-    }
-
     /**
      * @inheritDoc
      */
-    public function getName()
+    public function process(Event $event): void
     {
-        return __CLASS__;
+        if (!$event instanceof MediaSavedEvent) {
+            throw new InvalidEventException($event);
+        }
+
+        $this->getMediaRelationUpdateService()
+            ->updateByTargetId($event->getMediaId(), $event->getReferencedMediaIds());
+    }
+
+    private function getMediaRelationUpdateService(): MediaRelationUpdateService
+    {
+        return $this->getServiceLocator()->get(MediaRelationUpdateService::class);
     }
 }

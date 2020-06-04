@@ -33,8 +33,6 @@ use oat\taoMediaManager\model\relation\event\MediaRelationListener;
 use oat\taoMediaManager\model\relation\event\MediaRemovedEvent;
 use oat\taoMediaManager\model\relation\event\MediaSavedEvent;
 use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
-use oat\taoMediaManager\model\relation\repository\rdf\map\RdfItemRelationMap;
-use oat\taoMediaManager\model\relation\repository\rdf\map\RdfMediaRelationMap;
 use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRelationRepository;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
 
@@ -64,13 +62,7 @@ class Updater extends \common_ext_ExtensionUpdater
         if ($this->isVersion('9.6.0')) {
             OntologyUpdater::syncModels();
             $this->getServiceManager()->register(
-                MediaRelationRepositoryInterface::SERVICE_ID,
-                new RdfMediaRelationRepository([
-                    RdfMediaRelationRepository::MAP_OPTION => [
-                        new RdfItemRelationMap(),
-                        new RdfMediaRelationMap()
-                    ]
-                ])
+                MediaRelationRepositoryInterface::SERVICE_ID, new RdfMediaRelationRepository()
             );
             $this->setVersion('9.7.0');
         }

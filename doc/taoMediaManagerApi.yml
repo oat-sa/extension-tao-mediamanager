@@ -98,9 +98,8 @@ components:
           type: array
           items:
             type: object
-          example: [
-            label: 'My Item'
-          ]
+          example:
+            - label: 'My Item'
       required:
         - classId
     MediaRelations:

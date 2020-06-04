@@ -34,7 +34,7 @@
                     <action id="media-class-new" name="New class" url="/taoMediaManager/MediaManager/addSubClass" context="resource" group="tree" binding="subClass">
                         <icon id="icon-folder-open"/>
                     </action>
-                    <action id="media-delete" name="Delete" binding="removeNode" url="/taoMediaManager/MediaManager/delete" context="resource" group="tree">
+                    <action id="media-delete" name="Delete" binding="deleteSharedStimulus" url="/taoMediaManager/MediaManager/delete" context="resource" group="tree">
                         <icon id="icon-bin"/>
                     </action>
                     <action id="media-delete-all" name="Delete" binding="removeNodes" multiple="true" url="/taoMediaManager/MediaManager/deleteAll" context="resource" group="tree">

@@ -123,7 +123,8 @@ define([
                 data: {
                     sourceId: actionContext.id
                 },
-                method: 'GET'
+                method: 'GET',
+                noToken: true
             }).then(function (responseRelated) {
                 let message;
                 const haveItemReferences = responseRelated.data;

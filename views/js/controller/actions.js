@@ -27,7 +27,7 @@ define([
     'layout/actions/binder',
     'uri',
     'layout/section',
-    'core/dataProvider/request',
+    'core/request',
     'core/router',
     'core/logger',
     'ui/feedback',
@@ -58,14 +58,18 @@ define([
         const self = this;
         const classUri = uri.decode(actionContext.classUri);
 
-        return request(self.url, JSON.stringify({ classId: classUri }), 'POST')
-            .then(function (data) {
+        return request({
+            url: self.url,
+            data: JSON.stringify({ classId: classUri }),
+            method: 'POST'
+        })
+            .then(function (response) {
                 //backward compat format for jstree
                 if (actionContext.tree) {
                     $(actionContext.tree).trigger('addnode.taotree', [
                         {
-                            uri: uri.decode(data.id),
-                            label: data.name,
+                            uri: uri.decode(response.data.id),
+                            label: response.data.name,
                             parent: uri.decode(actionContext.classUri),
                             cssClass: 'node-instance'
                         }
@@ -74,8 +78,8 @@ define([
 
                 //return format (resourceSelector)
                 return {
-                    uri: uri.decode(data.id),
-                    label: data.name,
+                    uri: uri.decode(response.data.id),
+                    label: response.data.name,
                     classUri: uri.decode(actionContext.classUri),
                     type: 'instance'
                 };

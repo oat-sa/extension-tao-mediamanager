@@ -23,7 +23,7 @@ define([
     'taoItems/assets/manager',
     'taoItems/assets/strategies',
     'util/dom'
-], function($, _, Renderer, assetManagerFactory, assetStrategies, dom) {
+], function ($, _, Renderer, assetManagerFactory, assetStrategies, dom) {
     'use strict';
 
     //configure and instanciate once only:
@@ -37,43 +37,39 @@ define([
      * @param {Object} areaBroker - the QtiCreator area broker
      * @returns {Object} - a configured instance of creatorRenderer
      */
-    const get = function(reset, config, areaBroker) {
+    const get = function (reset, config, areaBroker) {
         let $bodyEltForm;
 
         config = config || {};
         config.properties = config.properties || {};
 
         if (!creatorRenderer || reset) {
-
             $bodyEltForm = creatorRenderer ? creatorRenderer.getOption('bodyElementOptionForm') : null;
-            if (reset ||
-                !$bodyEltForm ||
-                !$bodyEltForm.length ||
-                !dom.contains($bodyEltForm)){
-
+            if (reset || !$bodyEltForm || !$bodyEltForm.length || !dom.contains($bodyEltForm)) {
                 // Renderer with binded locations from taoMediaManager/qtiCreator/renderers/config.js
                 creatorRenderer = new Renderer({
-                    lang : '',
-                    uri : '',
-                    shuffleChoices : false,
-                    itemOptionForm : $('#item-editor-item-property-bar .panel'),
-                    bodyElementOptionForm : areaBroker.getElementPropertyPanelArea(),
-                    textOptionForm : $('#item-editor-text-property-bar .panel'),
-                    mediaManager : {
-                        appendContainer : '#mediaManager',
-                        browseUrl : config.properties.getFilesUrl,
-                        uploadUrl : config.properties.fileUploadUrl,
-                        deleteUrl : config.properties.fileDeleteUrl,
-                        downloadUrl : config.properties.fileDownloadUrl,
-                        fileExistsUrl : config.properties.fileExistsUrl,
-                        mediaSourcesUrl : config.properties.mediaSourcesUrl
+                    lang: '',
+                    uri: '',
+                    shuffleChoices: false,
+                    itemOptionForm: $('#item-editor-item-property-bar .panel'),
+                    bodyElementOptionForm: areaBroker.getElementPropertyPanelArea(),
+                    textOptionForm: $('#item-editor-text-property-bar .panel'),
+                    mediaManager: {
+                        appendContainer: '#mediaManager',
+                        browseUrl: config.properties.getFilesUrl,
+                        uploadUrl: config.properties.fileUploadUrl,
+                        deleteUrl: config.properties.fileDeleteUrl,
+                        downloadUrl: config.properties.fileDownloadUrl,
+                        fileExistsUrl: config.properties.fileExistsUrl,
+                        path: config.properties.path,
+                        root: config.properties.root
                     },
-                    qtiCreatorContext : config.qtiCreatorContext,
+                    qtiCreatorContext: config.qtiCreatorContext,
                     locations: config.properties.locations
                 });
 
                 //update the resolver baseUrl
-                creatorRenderer.getAssetManager().setData({baseUrl : config.properties.baseUrl || '' });
+                creatorRenderer.getAssetManager().setData({ baseUrl: config.properties.baseUrl || '' });
 
                 creatorRenderer.setAreaBroker(areaBroker);
 
@@ -89,23 +85,21 @@ define([
         return creatorRenderer;
     };
 
-
     return {
-        get : get,
+        get: get,
 
-        setOption : function(name, value) {
+        setOption: function (name, value) {
             return get().setOption(name, value);
         },
-        setOptions : function(options) {
+        setOptions: function (options) {
             return get().setOptions(options);
         },
-        load : function(qtiClasses, done){
-            return get().load(function(...rest){
-                if(_.isFunction(done)){
+        load: function (qtiClasses, done) {
+            return get().load(function (...rest) {
+                if (_.isFunction(done)) {
                     done.apply(this, rest);
                 }
             }, qtiClasses);
         }
     };
-
 });

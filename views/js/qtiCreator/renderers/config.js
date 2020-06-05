@@ -18,36 +18,36 @@
 
 define([
     'lodash',
-    'context',
     'taoQtiItem/qtiCommonRenderer/renderers/config',
     'taoItems/assets/manager',
     'taoItems/assets/strategies'
-], function(_,  context, commonRenderConfig, assetManagerFactory, assetStrategies) {
+], function (_, commonRenderConfig, assetManagerFactory, assetStrategies) {
     'use strict';
 
     //asset manager using base url
-    const assetManager = assetManagerFactory([
-        assetStrategies.taomedia,
-        assetStrategies.external,
-        assetStrategies.base64,
-        assetStrategies.baseUrl
-    ], {baseUrl : ''});
+    const assetManager = assetManagerFactory(
+        [assetStrategies.taomedia, assetStrategies.external, assetStrategies.base64, assetStrategies.baseUrl],
+        { baseUrl: '' }
+    );
 
-    const locations = _.defaults({
-        '_container' : 'taoQtiItem/qtiCreator/renderers/Container',
-        '_tooltip' : 'taoQtiItem/qtiCreator/renderers/Tooltip',
-        'assessmentItem' : 'taoMediaManager/qtiCreator/renderers/Item',
-        'img' : 'taoQtiItem/qtiCreator/renderers/Img',
-        'math' : 'taoQtiItem/qtiCreator/renderers/Math',
-        'object' : 'taoQtiItem/qtiCreator/renderers/Object',
-        'table' : 'taoMediaManager/qtiCreator/renderers/Table'
-    }, commonRenderConfig.locations);
+    const locations = _.defaults(
+        {
+            _container: 'taoQtiItem/qtiCreator/renderers/Container',
+            _tooltip: 'taoQtiItem/qtiCreator/renderers/Tooltip',
+            assessmentItem: 'taoMediaManager/qtiCreator/renderers/Item',
+            img: 'taoMediaManager/qtiCreator/renderers/Img',
+            math: 'taoQtiItem/qtiCreator/renderers/Math',
+            object: 'taoMediaManager/qtiCreator/renderers/Object',
+            table: 'taoMediaManager/qtiCreator/renderers/Table'
+        },
+        commonRenderConfig.locations
+    );
 
     return {
-        name : 'creatorRenderer',
-        locations : locations,
-        options : {
-            assetManager : assetManager
+        name: 'creatorRenderer',
+        locations: locations,
+        options: {
+            assetManager: assetManager
         }
     };
 });

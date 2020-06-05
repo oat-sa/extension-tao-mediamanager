@@ -1,4 +1,3 @@
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,40 +23,48 @@ define([
     'i18n',
     'lodash',
     'jquery',
+    'uri',
     'taoMediaManager/qtiCreator/component/sharedStimulusAuthoring',
     'ui/feedback',
     'util/url',
-    'core/logger',
-], function(__, _, $, sharedStimulusAuthoringFactory, feedback, urlUtil, loggerFactory) {
+    'core/logger'
+], function (__, _, $, uri, sharedStimulusAuthoringFactory, feedback, urlUtil, loggerFactory) {
     'use strict';
 
     const logger = loggerFactory('taoMediaManager/authoring');
 
-    const manageMediaController =  {
-
+    const manageMediaController = {
         /**
          * Controller entry point
          */
         start() {
             const $panel = $('#panel-authoring');
             const assetDataUrl = urlUtil.route('get', 'SharedStimulus', 'taoMediaManager');
-            sharedStimulusAuthoringFactory($panel, { properties: {
-                uri: $panel.attr('data-uri'),
-                id: $panel.attr('data-id'),
-                assetDataUrl,
-                // TO DO will be filled later
-                baseUrl: assetDataUrl,
-                lang: "en-US"
-            }})
-            .on('success', () => {
-                feedback().success(__('Your passage is saved'));
-            })
-            .on('error', err => {
-                if (!_.isUndefined(err.message)) {
-                    feedback().error(err.message);
+            sharedStimulusAuthoringFactory($panel, {
+                properties: {
+                    uri: $panel.attr('data-uri'),
+                    id: uri.decode($panel.attr('data-id')),
+                    assetDataUrl,
+                    fileUploadUrl: urlUtil.route('upload', 'ItemContent', 'taoItems'),
+                    fileDeleteUrl: urlUtil.route('delete', 'ItemContent', 'taoItems'),
+                    fileDownloadUrl: urlUtil.route('download', 'ItemContent', 'taoItems'),
+                    fileExistsUrl: urlUtil.route('fileExists', 'ItemContent', 'taoItems'),
+                    getFilesUrl: urlUtil.route('files', 'ItemContent', 'taoItems'),
+                    baseUrl: urlUtil.route('getFile', 'MediaManager', 'taoMediaManager', { uri: '' }),
+                    path: 'taomedia://mediamanager/',
+                    root: 'mediamanager',
+                    lang: 'en-US'
                 }
-                logger.error(err);
-            });
+            })
+                .on('success', () => {
+                    feedback().success(__('Your passage is saved'));
+                })
+                .on('error', err => {
+                    if (!_.isUndefined(err.message)) {
+                        feedback().error(err.message);
+                    }
+                    logger.error(err);
+                });
         }
     };
 

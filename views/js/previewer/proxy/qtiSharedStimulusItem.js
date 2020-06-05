@@ -29,24 +29,23 @@ define([
     'core/dataProvider/request',
     'util/url',
     'taoMediaManager/qtiCreator/helper/createDummyItemData'
-], function($, _, __, promiseQueue,  request, urlUtil, creatorDummyItemData) {
+], function ($, _, __, promiseQueue, request, urlUtil, creatorDummyItemData) {
     'use strict';
 
     const serviceController = 'SharedStimulus';
-    const serviceExtension  = 'taoMediaManager';
+    const serviceExtension = 'taoMediaManager';
     /**
      * QTI proxy definition
      * Related to remote services calls
      * @type {Object}
      */
     return {
-
-        name : 'qtiSharedStimulusItemProxy',
+        name: 'qtiSharedStimulusItemProxy',
 
         /**
          * Installs the proxy
          */
-        install : function install(){
+        install: function install() {
             /**
              * A promise queue to ensure requests run sequentially
              */
@@ -82,16 +81,17 @@ define([
          *                      Any error will be provided if rejected.
          */
         getItem: function getItem(identifier) {
-            return request(urlUtil.route('get', serviceController, serviceExtension), {id: identifier}, 'GET')
-                .then(function(data) {
+            return request(urlUtil.route('get', serviceController, serviceExtension), { id: identifier }, 'GET').then(
+                function (data) {
                     const itemData = creatorDummyItemData(data);
-                    data.baseUrl = '/';
+                    data.baseUrl = urlUtil.route('getFile', 'MediaManager', 'taoMediaManager', { uri: '' });
                     data.content = {
                         type: 'qti',
                         data: itemData
                     };
                     return data;
-                });
-        },
+                }
+            );
+        }
     };
 });

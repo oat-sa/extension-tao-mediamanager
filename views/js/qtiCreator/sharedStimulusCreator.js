@@ -41,10 +41,24 @@ define([
     'taoMediaManager/qtiCreator/helper/xmlRenderer',
     'taoQtiItem/qtiItem/helper/xmlNsHandler',
     'core/request',
-    'util/url',
-], function($, _, __, eventifier, qtiCreatorContextFactory, sharedStimulusLoader,
-    creatorRenderer, commonRenderer, xincludeRenderer,
-    propertiesPanel, eventHelper, xmlRenderer, xmlNsHandler, request, urlUtil){
+    'util/url'
+], function (
+    $,
+    _,
+    __,
+    eventifier,
+    qtiCreatorContextFactory,
+    sharedStimulusLoader,
+    creatorRenderer,
+    commonRenderer,
+    xincludeRenderer,
+    propertiesPanel,
+    eventHelper,
+    xmlRenderer,
+    xmlNsHandler,
+    request,
+    urlUtil
+) {
     'use strict';
 
     /**
@@ -56,8 +70,8 @@ define([
      * @returns {Promise} that resolve with the loaded item model
      */
     const loadSharedStimulus = function loadSharedStimulus(id, uri, assetDataUrl) {
-        return new Promise(function(resolve, reject) {
-            sharedStimulusLoader.loadSharedStimulus({id, uri, assetDataUrl}, function(item) {
+        return new Promise(function (resolve, reject) {
+            sharedStimulusLoader.loadSharedStimulus({ id, uri, assetDataUrl }, function (item) {
                 if (!item) {
                     reject(new Error('Unable to load the Shared Stimulus'));
                 }
@@ -83,7 +97,6 @@ define([
      * @throws {TypeError}
      */
     const sharedStimulusCreatorFactory = function sharedStimulusCreatorFactory(config, areaBroker, pluginFactories) {
-
         let itemCreator;
         const qtiCreatorContext = qtiCreatorContextFactory();
         const plugins = {};
@@ -94,11 +107,11 @@ define([
          * @param {String} method - the method to run
          * @returns {Promise} once that resolve when all plugins are done
          */
-        const pluginRun =  function pluginRun(method) {
+        const pluginRun = function pluginRun(method) {
             const execStack = [];
 
-            _.forEach(plugins, function (plugin){
-                if(_.isFunction(plugin[method])){
+            _.forEach(plugins, function (plugin) {
+                if (_.isFunction(plugin[method])) {
                     execStack.push(plugin[method]());
                 }
             });
@@ -110,8 +123,10 @@ define([
         if (!_.isPlainObject(config)) {
             throw new TypeError('The item creator configuration is required');
         }
-        if (!config.properties || _.isEmpty(config.properties.uri) ||  _.isEmpty(config.properties.baseUrl)) {
-            throw new TypeError('The creator configuration must contains the required properties triples: uri, label and baseUrl');
+        if (!config.properties || _.isEmpty(config.properties.uri) || _.isEmpty(config.properties.baseUrl)) {
+            throw new TypeError(
+                'The creator configuration must contains the required properties triples: uri, label and baseUrl'
+            );
         }
         if (!areaBroker) {
             throw new TypeError('Without an areaBroker there are no chance to see something you know');
@@ -119,7 +134,6 @@ define([
 
         //factor the new itemCreator
         itemCreator = eventifier({
-
             //lifecycle
 
             /**
@@ -150,61 +164,64 @@ define([
                  * @fires itemCreator#saved once the save is done
                  * @fires itemCreator#error
                  */
-                this.on('save', (silent) => {
+                this.on('save', silent => {
                     const item = this.getItem();
 
                     const xml = xmlNsHandler.restoreNs(xmlRenderer.render(item), item.getNamespaces());
                     request({
-                        url: urlUtil.route('patch', 'SharedStimulus', 'taoMediaManager', {id : config.properties.id}),
-                        type : 'POST',
-                        contentType : 'application/json',
-                        dataType : 'json',
-                        data : JSON.stringify({body: xml}),
-                        method: 'PATCH'
+                        url: urlUtil.route('patch', 'SharedStimulus', 'taoMediaManager', { id: config.properties.id }),
+                        type: 'POST',
+                        contentType: 'application/json',
+                        dataType: 'json',
+                        data: JSON.stringify({ body: xml }),
+                        method: 'PATCH',
+                        noToken: true
                     })
-                    .then(() => {
-                        if (!silent) {
-                            this.trigger('success');
-                        }
+                        .then(() => {
+                            if (!silent) {
+                                this.trigger('success');
+                            }
 
-                        this.trigger('saved');
-                    })
-                    .catch((err) => {
-                        this.trigger('error', err);
-                    });
+                            this.trigger('saved');
+                        })
+                        .catch(err => {
+                            this.trigger('error', err);
+                        });
                 });
 
-                this.on('exit', function() {
+                this.on('exit', function () {
                     $('.item-editor-item', areaBroker.getItemPanelArea()).empty();
                     this.destroy();
                 });
 
-                loadSharedStimulus(config.properties.id, config.properties.uri, config.properties.assetDataUrl).then(item => {
-                    if (! _.isObject(item)) {
-                        this.trigger('error', new Error(`Unable to load the item ${  config.properties.label}`));
-                        return;
-                    }
+                loadSharedStimulus(config.properties.id, config.properties.uri, config.properties.assetDataUrl)
+                    .then(item => {
+                        if (!_.isObject(item)) {
+                            this.trigger('error', new Error(`Unable to load the item ${config.properties.label}`));
+                            return;
+                        }
 
-                    this.item = item;
-                    return true;
-                })
-                .then(() => pluginRun('init'))
-                .then(() => {
-                    /**
-                     * @event itemCreator#init the initialization is done
-                     * @param {Object} item - the loaded item
-                     */
-                    this.trigger('init', this.item);
-                })
-                .then(() => {
-                    // forward context error
-                    qtiCreatorContext.on('error', err => {
+                        this.item = item;
+                        return true;
+                    })
+                    .then(() => pluginRun('init'))
+                    .then(() => {
+                        /**
+                         * @event itemCreator#init the initialization is done
+                         * @param {Object} item - the loaded item
+                         */
+                        this.trigger('init', this.item);
+                    })
+                    .then(() => {
+                        // forward context error
+                        qtiCreatorContext.on('error', err => {
+                            this.trigger('error', err);
+                        });
+                        return qtiCreatorContext.init();
+                    })
+                    .catch(err => {
                         this.trigger('error', err);
                     });
-                    return qtiCreatorContext.init();
-                }).catch(err => {
-                    this.trigger('error', err);
-                });
 
                 return this;
             },
@@ -228,9 +245,7 @@ define([
 
                 //configure commonRenderer for the preview and initial qti element rendering
                 commonRenderer.setContext(areaBroker.getItemPanelArea());
-                commonRenderer
-                    .get(true, config)
-                    .setOption('baseUrl', config.properties.baseUrl);
+                commonRenderer.get(true, config).setOption('baseUrl', config.properties.baseUrl);
 
                 //the renderers' widgets do not handle async yet, so we rely on this event
                 //TODO ready should be triggered once every renderer's widget is done (ie. promisify everything)
@@ -246,7 +261,7 @@ define([
                 creatorRenderer
                     .get(true, config, areaBroker)
                     .setOptions(config.properties)
-                    .load(function() {
+                    .load(function () {
                         let widget;
 
                         //set renderer
@@ -256,33 +271,30 @@ define([
                         areaBroker.getItemPanelArea().append(item.render());
 
                         //"post-render it" to initialize the widget
-                        Promise
-                         .all(item.postRender(_.clone(config.properties)))
-                         .then(function(){
+                        Promise.all(item.postRender(_.clone(config.properties)))
+                            .then(function () {
+                                //set reference to item widget object
+                                areaBroker.getContainer().data('widget', item);
 
-                             //set reference to item widget object
-                             areaBroker.getContainer().data('widget', item);
+                                widget = item.data('widget');
+                                _.each(item.getComposingElements(), function (element) {
+                                    if (element.qtiClass === 'include') {
+                                        xincludeRenderer.render(element.data('widget'), config.properties.baseUrl);
+                                    }
+                                });
 
-                             widget = item.data('widget');
-                             _.each(item.getComposingElements(), function(element) {
-                                 if (element.qtiClass === 'include') {
-                                     xincludeRenderer.render(element.data('widget'), config.properties.baseUrl);
-                                 }
-                             });
+                                propertiesPanel(areaBroker.getPropertyPanelArea(), widget, config.properties);
 
-                             propertiesPanel(areaBroker.getPropertyPanelArea(), widget, config.properties);
+                                //init event listeners:
+                                eventHelper.initElementToWidgetListeners();
 
-                             //init event listeners:
-                             eventHelper.initElementToWidgetListeners();
-
-                             return pluginRun('render').then(function() {
-                                 self.trigger('render');
-                             });
-                         })
-                         .catch(function(err) {
-                             self.trigger('error', err);
-                         });
-
+                                return pluginRun('render').then(function () {
+                                    self.trigger('render');
+                                });
+                            })
+                            .catch(function (err) {
+                                self.trigger('error', err);
+                            });
                     }, item.getUsedClasses());
 
                 return this;
@@ -296,12 +308,14 @@ define([
             destroy() {
                 $(document).off('.qti-widget');
 
-                pluginRun('destroy').then(() => qtiCreatorContext.destroy())
-                .then(() => {
-                    this.trigger('destroy');
-                }).catch(err => {
-                    this.trigger('error', err);
-                });
+                pluginRun('destroy')
+                    .then(() => qtiCreatorContext.destroy())
+                    .then(() => {
+                        this.trigger('destroy');
+                    })
+                    .catch(err => {
+                        this.trigger('error', err);
+                    });
                 return this;
             },
 

@@ -34,9 +34,6 @@ class SharedStimulusMediaParser extends ConfigurableService
     /** @var TaoMediaResolver */
     private $mediaResolver;
 
-    /**
-     * @throws TaoMediaException
-     */
     public function extractMedia(string $xml, callable $processImageIdentifier): array
     {
         try {
@@ -86,10 +83,13 @@ class SharedStimulusMediaParser extends ConfigurableService
     private function processMediaSource(string $uri, callable $processor, array &$matches): void
     {
         if (false === strpos($uri, 'data:image')) {
-            $asset = $this->getMediaResolver()->resolve($uri);
 
-            if ($asset->getMediaSource() instanceof MediaSource) {
-                $matches[] = $processor($asset);
+            if (isset(parse_url($uri)['scheme'])) {
+                $asset = $this->getMediaResolver()->resolve($uri);
+
+                if ($asset->getMediaSource() instanceof MediaSource) {
+                    $matches[] = $processor($asset);
+                }
             }
         }
     }

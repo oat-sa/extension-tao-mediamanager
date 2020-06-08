@@ -24,7 +24,6 @@ namespace oat\taoMediaManager\model\sharedStimulus\parser;
 
 use oat\generis\model\OntologyAwareTrait;
 use oat\tao\model\media\MediaAsset;
-use oat\tao\model\media\TaoMediaException;
 use tao_helpers_Uri;
 use tao_models_classes_FileNotFoundException as FileNotFoundException;
 
@@ -35,7 +34,7 @@ class SharedStimulusMediaExtractor extends SharedStimulusMediaParser
     /**
      * @return string[]
      *
-     * @throws TaoMediaException|InvalidMediaReferenceException
+     * @throws InvalidMediaReferenceException
      */
     public function extractMediaIdentifiers(string $xml): array
     {
@@ -46,7 +45,7 @@ class SharedStimulusMediaExtractor extends SharedStimulusMediaParser
     }
 
     /**
-     * @throws FileNotFoundException|TaoMediaException
+     * @throws InvalidMediaReferenceException
      */
     public function assertMediaFileExists(string $xml): void
     {
@@ -57,11 +56,17 @@ class SharedStimulusMediaExtractor extends SharedStimulusMediaParser
     }
 
     /**
-     * @throws FileNotFoundException
+     * @throws InvalidMediaReferenceException
      */
     protected function extractImageFileInfo(MediaAsset $asset): void
     {
-        $asset->getMediaSource()->getFileInfo($asset->getMediaIdentifier());
+        $assetIdentifier = tao_helpers_Uri::decode($asset->getMediaIdentifier());
+
+        try {
+            $asset->getMediaSource()->getFileInfo($assetIdentifier);
+        } catch (FileNotFoundException $exception) {
+            throw new InvalidMediaReferenceException($assetIdentifier);
+        }
     }
 
     /**

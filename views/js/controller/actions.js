@@ -119,7 +119,7 @@ define([
         data.signature = actionContext.signature;
         return new Promise(function (resolve, reject) {
             request({
-                url: urlUtil.route('relations', 'mediaRelations', 'taoMediaManager'),
+                url: urlUtil.route('relations', 'MediaRelations', 'taoMediaManager'),
                 data: {
                     sourceId: actionContext.id
                 },

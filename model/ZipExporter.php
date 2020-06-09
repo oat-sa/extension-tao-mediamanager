@@ -26,12 +26,13 @@ use core_kernel_classes_Class;
 use core_kernel_classes_Container;
 use core_kernel_classes_EmptyProperty;
 use core_kernel_classes_Literal;
+use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
-use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\ServiceManager;
 use oat\taoMediaManager\model\export\service\MediaResourcePreparer;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use tao_helpers_Export;
+use tao_models_classes_export_ExportHandler;
 use ZipArchive;
 
 /**
@@ -41,10 +42,8 @@ use ZipArchive;
  * @author  Antoine Robin, <antoine.robin@vesperiagroup.com>
  * @package taoMediaManager
  */
-class ZipExporter implements \tao_models_classes_export_ExportHandler
+class ZipExporter implements tao_models_classes_export_ExportHandler
 {
-    use OntologyAwareTrait;
-
     /**
      * @inheritDoc
      */
@@ -195,7 +194,7 @@ class ZipExporter implements \tao_models_classes_export_ExportHandler
      */
     private function getResourceLink(core_kernel_classes_Resource $resource)
     {
-        $link = $resource->getUniquePropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LINK));
+        $link = $resource->getUniquePropertyValue(new core_kernel_classes_Property(MediaService::PROPERTY_LINK));
 
         return $link instanceof core_kernel_classes_Literal ? $link->literal : $link;
     }

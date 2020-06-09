@@ -122,7 +122,7 @@ class SharedStimulusImporter extends ConfigurableService implements
                             $classUri,
                             \tao_helpers_Uri::decode($form instanceof Form ? $form->getValue('lang') : $form['lang']),
                             $fileInfo['name'],
-                            'application/qti+xml',
+                            MediaService::SHARED_STIMULUS_MIME_TYPE,
                             $userId
                         );
 

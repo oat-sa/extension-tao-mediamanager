@@ -29,6 +29,7 @@ use ErrorException;
 use oat\generis\model\data\Ontology;
 use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\upload\UploadService;
+use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\sharedStimulus\CreateCommand;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 use oat\taoMediaManager\model\SharedStimulusImporter;
@@ -74,7 +75,7 @@ class CreateService extends ConfigurableService
                     'lang' => $command->getLanguageId(),
                     'source' => [
                         'name' => $sharedStimulusName,
-                        'type' => 'application/qti+xml',
+                        'type' => MediaService::SHARED_STIMULUS_MIME_TYPE,
                     ],
                     'uploaded_file' => DIRECTORY_SEPARATOR
                         . $uploadService->getUserDirectoryHash()

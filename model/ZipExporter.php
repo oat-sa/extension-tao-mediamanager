@@ -15,9 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
- *
- *
+ * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
  */
 
 namespace oat\taoMediaManager\model;
@@ -30,16 +28,10 @@ use core_kernel_classes_EmptyProperty;
 use core_kernel_classes_Literal;
 use core_kernel_classes_Resource;
 use oat\generis\model\OntologyAwareTrait;
-use oat\oatbox\log\LoggerService;
 use oat\oatbox\service\ServiceManager;
-use oat\tao\model\media\TaoMediaException;
-use oat\tao\model\media\TaoMediaResolver;
+use oat\taoMediaManager\model\export\service\MediaResourcePreparer;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
-use oat\taoQtiItem\model\qti\Parser;
-use qtism\data\content\xhtml\Img;
-use qtism\data\storage\xml\XmlDocument;
 use tao_helpers_Export;
-use tao_helpers_form_Form;
 use ZipArchive;
 
 /**
@@ -54,9 +46,7 @@ class ZipExporter implements \tao_models_classes_export_ExportHandler
     use OntologyAwareTrait;
 
     /**
-     * Returns a textual description of the import format
-     *
-     * @return string
+     * @inheritDoc
      */
     public function getLabel()
     {
@@ -64,10 +54,7 @@ class ZipExporter implements \tao_models_classes_export_ExportHandler
     }
 
     /**
-     * Returns a form in order to prepare the
-     *
-     * @param core_kernel_classes_Resource $resource the users selected resource or class
-     * @return tao_helpers_form_Form
+     * @inheritDoc
      */
     public function getExportForm(core_kernel_classes_Resource $resource)
     {
@@ -76,11 +63,7 @@ class ZipExporter implements \tao_models_classes_export_ExportHandler
     }
 
     /**
-     * @param array  $formValues
-     * @param string $destPath
-     * @return \common_report_Report|null|string
-     * @throws common_Exception
-     * @throws \common_exception_Error
+     * @inheritDoc
      */
     public function export($formValues, $destPath)
     {
@@ -129,21 +112,19 @@ class ZipExporter implements \tao_models_classes_export_ExportHandler
         return $report;
     }
 
-    /**
-     * @param $unsafePath
-     * @return string safe path
-     */
-    private function getSavePath($unsafePath)
+    private function getSavePath(string $unsafePath): string
     {
         $pathInfo = pathinfo($unsafePath);
         $safePath = $pathInfo['filename'];
+
         if (array_key_exists('extension', $pathInfo)) {
             $safePath .= '.' . $pathInfo['extension'];
         }
+
         return $safePath;
     }
 
-    protected function createZipFile($filename, array $exportClasses = [], array $exportFiles = [])
+    protected function createZipFile($filename, array $exportClasses = [], array $exportFiles = []): string
     {
         $zip = new ZipArchive();
         $baseDir = tao_helpers_Export::getExportPath();
@@ -155,6 +136,7 @@ class ZipExporter implements \tao_models_classes_export_ExportHandler
 
         if ($zip->numFiles === 0) {
             $nbFiles = 0;
+
             foreach ($exportFiles as $label => $files) {
                 $archivePath = '';
 
@@ -170,21 +152,17 @@ class ZipExporter implements \tao_models_classes_export_ExportHandler
                 $nbFiles += count($files);
                 //create the directory
 
-                /** @var core_kernel_classes_Resource $file */
-                foreach ($files as $file) {
-                    $link = $this->getResourceLink($file);
+                /** @var core_kernel_classes_Resource $fileResource */
+                foreach ($files as $fileResource) {
+                    $link = $this->getResourceLink($fileResource);
 
-                    $fileContents = $this->getFileManagement()
+                    $fileContent = $this->getFileManagement()
                         ->getFileStream($link)
                         ->getContents();
 
-                    //FIXME
-                    //FIXME
-                    $this->parseImages($fileContents);
-                    //FIXME
-                    //FIXME
+                    $preparedFileContent = $this->getMediaResourcePreparer()->prepare($fileResource, $fileContent);
 
-                    $zip->addFromString($archivePath . $file->getLabel(), $fileContents);
+                    $zip->addFromString($archivePath . $fileResource->getLabel(), $preparedFileContent);
                 }
             }
         }
@@ -199,63 +177,14 @@ class ZipExporter implements \tao_models_classes_export_ExportHandler
         return ServiceManager::getServiceManager();
     }
 
-    private function parseImages(string $fileContents)
-    {
-        $mediaResolver = new TaoMediaResolver();
-
-        /** @var LoggerService $logger */
-        $logger = $this->getServiceManager()->get(LoggerService::SERVICE_ID);
-
-        $logger->logCritical('================> EXPORTING ' . $fileContents);
-
-        $xmlDocument = new XmlDocument();
-        $xmlDocument->loadFromString($fileContents);
-
-        $images = $xmlDocument->getDocumentComponent()->getComponentsByClassName('img');
-
-        /** @var Img $image */
-        foreach ($images as $image) {
-            try {
-                $mediaAsset = $mediaResolver->resolve($image->getSrc());
-
-                if ($mediaAsset->getMediaSource() instanceof MediaSource) {
-                    $logger->logCritical('================>> IMAGE ' . $image->getSrc());
-
-                    $mediaResource = $this->getResource($mediaAsset->getMediaIdentifier());
-
-                    $link = $this->getResourceLink($mediaResource);
-
-                    $stream = $this->getFileManagement()->getFileStream($link);
-                }
-            } catch (TaoMediaException $exception) {
-            }
-        }
-    }
-
-    private function secureEncode($basedir, $source): string
-    {
-        $components = parse_url($source);
-        if (!isset($components['scheme'])) {
-            // relative path
-            if (\tao_helpers_File::securityCheck($source, false)) {
-                if (file_exists($basedir . $source)) {
-                    return 'data:' . \tao_helpers_File::getMimeType($basedir . $source) . ';'
-                        . 'base64,' . base64_encode(file_get_contents($basedir . $source));
-                } else {
-                    throw new \tao_models_classes_FileNotFoundException($source);
-                }
-            } else {
-                throw new \common_exception_Error('Invalid source path "' . $source . '"');
-            }
-        } else {
-            // url, just return it as is
-            return $source;
-        }
-    }
-
     private function getFileManagement(): FileManagement
     {
         return $this->getServiceManager()->get(FileManagement::SERVICE_ID);
+    }
+
+    private function getMediaResourcePreparer(): MediaResourcePreparer
+    {
+        return $this->getServiceManager()->get(MediaResourcePreparer::class);
     }
 
     /**

@@ -222,7 +222,7 @@ class SharedStimulusPackageImporter extends ZipImporter
             $class->getUri(),
             $lang,
             basename($xmlFile),
-            'application/qti+xml',
+            MediaService::SHARED_STIMULUS_MIME_TYPE,
             $userId
         );
 

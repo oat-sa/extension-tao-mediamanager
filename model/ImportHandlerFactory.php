@@ -52,7 +52,7 @@ class ImportHandlerFactory extends ConfigurableService
 
             $mimeType = $class->getProperty('http://www.tao.lu/Ontologies/TAOMedia.rdf#mimeType');
 
-            return (string)$class->getOnePropertyValue($mimeType) === 'application/qti+xml';
+            return (string)$class->getOnePropertyValue($mimeType) === MediaService::SHARED_STIMULUS_MIME_TYPE;
         } catch (Throwable $exception) {
             return false;
         }

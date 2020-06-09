@@ -90,7 +90,7 @@ class MediaResourcePreparer extends ConfigurableService
 
         $contents = $stream->getContents();
 
-        $base64Content = $this->base64Encode($fileInfo['mime'], $contents);
+        $base64Content = $this->getEncodedSource($fileInfo['mime'], $contents);
 
         $this->setComponentSource($component, $base64Content);
     }
@@ -173,7 +173,7 @@ class MediaResourcePreparer extends ConfigurableService
         }
     }
 
-    private function base64Encode(string $mimeType, string $content): string
+    private function getEncodedSource(string $mimeType, string $content): string
     {
         return 'data:' . $mimeType . ';base64,' . base64_encode($content);
     }

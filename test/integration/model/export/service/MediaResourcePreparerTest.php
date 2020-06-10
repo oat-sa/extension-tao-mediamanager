@@ -79,7 +79,7 @@ class MediaResourcePreparerTest extends TestCase
         );
     }
 
-    public function testPrepare()
+    public function testPrepare(): void
     {
         $this->sharedStimulusResourceSpecification
             ->method('isSatisfiedBy')
@@ -131,6 +131,31 @@ class MediaResourcePreparerTest extends TestCase
 
         $this->assertXmlStringEqualsXmlString(
             $expectedFileContent,
+            $this->subject->prepare($resource, $fileContent)
+        );
+    }
+
+    public function testWillNotPrepareIfResourceIsNotASharedStimulus(): void
+    {
+        $this->sharedStimulusResourceSpecification
+            ->method('isSatisfiedBy')
+            ->willReturn(false);
+
+
+        $resource = $this->createMock(core_kernel_classes_Resource::class);
+
+        $fileContent = sprintf(
+            $this->getFileContent(),
+            self::REMOTE_IMAGE,
+            self::WEB_IMAGE,
+            self::IMAGE_BASE_64,
+            self::REMOTE_OBJECT,
+            self::WEB_OBJECT,
+            self::OBJECT_BASE_64
+        );
+
+        $this->assertXmlStringEqualsXmlString(
+            $fileContent,
             $this->subject->prepare($resource, $fileContent)
         );
     }

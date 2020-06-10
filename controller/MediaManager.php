@@ -98,7 +98,7 @@ class MediaManager extends \tao_actions_SaSModule
 
         $fileManagement = $this->getServiceLocator()->get(FileManagement::SERVICE_ID);
         $stream = $fileManagement->getFileStream($fileInfo['link']);
-        if ($fileInfo['mime'] === 'application/qti+xml') {
+        if ($fileInfo['mime'] === MediaService::SHARED_STIMULUS_MIME_TYPE) {
             $this->response = $this->getPsrResponse()->withBody($stream);
         } elseif ($this->hasGetParameter('xml')) {
             $this->returnJson(htmlentities((string)$stream));

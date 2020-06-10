@@ -62,6 +62,8 @@ class MediaService extends ConfigurableService
 
     public const PROPERTY_MIME_TYPE = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#mimeType';
 
+    public const SHARED_STIMULUS_MIME_TYPE = 'application/qti+xml';
+
     /**
      * @deprecated 
      */
@@ -224,7 +226,7 @@ class MediaService extends ConfigurableService
         if ($container instanceof core_kernel_classes_Literal) {
             $mimeType = (string)$container;
 
-            return  $mimeType === 'application/qti+xml' ? $mimeType : null;
+            return  $mimeType === MediaService::SHARED_STIMULUS_MIME_TYPE ? $mimeType : null;
         }
 
         return null;

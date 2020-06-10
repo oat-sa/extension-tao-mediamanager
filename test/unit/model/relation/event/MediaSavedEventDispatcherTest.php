@@ -25,6 +25,7 @@ namespace oat\taoMediaManager\test\unit\model\relation\event;
 use oat\generis\test\TestCase;
 use oat\oatbox\event\EventManager;
 use oat\oatbox\filesystem\File;
+use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\relation\event\MediaSavedEvent;
 use oat\taoMediaManager\model\relation\event\MediaSavedEventDispatcher;
 use oat\taoMediaManager\model\sharedStimulus\parser\SharedStimulusMediaExtractor;
@@ -67,7 +68,7 @@ class MediaSavedEventDispatcherTest extends TestCase
     public function testDispatchFromContent(): void
     {
         $id = 'fixture-id';
-        $mimeType = 'application/qti+xml';
+        $mimeType = MediaService::SHARED_STIMULUS_MIME_TYPE;
         $content = 'fixture-content';
 
         $fixtureIds = ['media-1', 'media-2'];
@@ -121,7 +122,7 @@ class MediaSavedEventDispatcherTest extends TestCase
         $fileSource = $this->createMock(File::class);
         $fileSource->expects($this->once())
             ->method('getMimeType')
-            ->willReturn('application/qti+xml');
+            ->willReturn(MediaService::SHARED_STIMULUS_MIME_TYPE);
 
         $fileSource->expects($this->once())
             ->method('read')

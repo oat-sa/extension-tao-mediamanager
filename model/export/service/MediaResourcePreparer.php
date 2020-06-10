@@ -26,7 +26,6 @@ use core_kernel_classes_Resource;
 use Exception;
 use LogicException;
 use oat\generis\model\OntologyAwareTrait;
-use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\media\MediaAsset;
 use oat\tao\model\media\TaoMediaException;
@@ -42,7 +41,6 @@ use qtism\data\storage\xml\XmlDocument;
 class MediaResourcePreparer extends ConfigurableService
 {
     use OntologyAwareTrait;
-    use LoggerAwareTrait;
 
     private const PROCESS_XML_ELEMENTS = [
         'img',
@@ -58,25 +56,15 @@ class MediaResourcePreparer extends ConfigurableService
             return $contents;
         }
 
-        //@FIXME @TODO Logger will be removed from here
-        $this->logDebug('================> EXPORTING ' . $contents);
-        //@FIXME @TODO Logger will be removed from here
-
         $xmlDocument = new XmlDocument();
         $xmlDocument->loadFromString($contents);
 
         foreach ($this->getComponents($xmlDocument) as $component) {
             $mediaAsset = $this->getMediaAsset($component);
 
-            if (!$mediaAsset) {
-                continue;
+            if ($mediaAsset) {
+                $this->replaceComponentPath($component, $mediaAsset);
             }
-
-            //@FIXME @TODO Logger will be removed from here
-            $this->logDebug('================>> ELEMENT SOURCE: ' . $mediaAsset->getMediaIdentifier());
-            //@FIXME @TODO Logger will be removed from here
-
-            $this->replaceComponentPath($component, $mediaAsset);
         }
 
         return $xmlDocument->saveToString();
@@ -182,7 +170,7 @@ class MediaResourcePreparer extends ConfigurableService
 
     private function getFileManagement(): FileManagement
     {
-        return $this->getServiceManager()->get(FileManagement::SERVICE_ID);
+        return $this->getServiceLocator()->get(FileManagement::SERVICE_ID);
     }
 
     private function getSharedStimulusResourceSpecification(): SharedStimulusResourceSpecification

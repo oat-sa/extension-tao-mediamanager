@@ -29,10 +29,10 @@ use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
 
 class MediaRelationService extends ConfigurableService
 {
-    public function getMediaRelations(string $id): MediaRelationCollection
+    public function getMediaRelations(array $parameters): MediaRelationCollection
     {
         return $this->getMediaRelationRepository()->findAll(
-            new FindAllQuery($id)
+            new FindAllQuery($parameters)
         );
     }
 

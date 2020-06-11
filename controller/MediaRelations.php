@@ -37,11 +37,14 @@ class MediaRelations extends tao_actions_CommonModule
 {
     use LoggerAwareTrait;
 
+    public const SOURCE_ID = 'sourceId';
+    public const CLASS_ID = 'classId';
+
     public function relations(): void
     {
         try {
             $collection = $this->getMediaRelationService()
-                ->getMediaRelations($this->getSourceIdParameter())
+                ->getMediaRelations($this->getParameters())
                 ->jsonSerialize();
 
             $this->setResponse($this->formatResponse(new SuccessJsonResponse($collection), 200));
@@ -52,15 +55,18 @@ class MediaRelations extends tao_actions_CommonModule
         }
     }
 
-    private function getSourceIdParameter(): string
+    private function getParameters(): array
     {
-        $sourceId = $this->getPsrRequest()->getQueryParams()['sourceId'] ?? null;
+        $parameters = [
+            self::SOURCE_ID => $this->getPsrRequest()->getQueryParams()['sourceId'] ?? null,
+            self::CLASS_ID => $this->getPsrRequest()->getQueryParams()['classId'] ?? null
+        ];
 
-        if (empty($sourceId)) {
-            throw new InvalidArgumentException(sprintf('Parameter sourceId must be provided'));
+        if ($parameters[self::SOURCE_ID] === null && $parameters[self::CLASS_ID] === null) {
+            throw new InvalidArgumentException(sprintf('Parameter sourceId or classId must be provided'));
         }
 
-        return (string)$sourceId;
+        return $parameters;
     }
 
     private function formatResponse(JsonResponseInterface $jsonResponse, int $statusCode): ResponseInterface

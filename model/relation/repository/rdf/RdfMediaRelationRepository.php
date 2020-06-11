@@ -46,10 +46,8 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
 
     public function findAll(FindAllQuery $findAllQuery): MediaRelationCollection
     {
-        $resource = $this->getResource($findAllQuery->getMediaId());
-
-        if ($resource->isClass()) {
-            return $this->findMediaWithRelations($resource);
+        if ($findAllQuery->getClassId()) {
+            return $this->findMediaWithRelations($this->getResource($findAllQuery->getClassId()));
         }
 
         return $this->findAllByMedia($findAllQuery->getMediaId());

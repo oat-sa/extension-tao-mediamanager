@@ -34,6 +34,8 @@ use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourceSpecification;
 use Psr\Http\Message\StreamInterface;
 
+use function GuzzleHttp\Psr7\stream_for;
+
 class MediaResourcePreparerTest extends TestCase
 {
     private const REMOTE_IMAGE = 'taomedia://mediamanager/http_2_test_0_org_1_tao_0_rdf_3_i5ed8fb7fdec668fa42f651de12e1d1';
@@ -131,7 +133,7 @@ class MediaResourcePreparerTest extends TestCase
 
         $this->assertXmlStringEqualsXmlString(
             $expectedFileContent,
-            $this->subject->prepare($resource, $fileContent)
+            $this->subject->prepare($resource, stream_for($fileContent))
         );
     }
 
@@ -156,7 +158,7 @@ class MediaResourcePreparerTest extends TestCase
 
         $this->assertXmlStringEqualsXmlString(
             $fileContent,
-            $this->subject->prepare($resource, $fileContent)
+            $this->subject->prepare($resource, stream_for($fileContent))
         );
     }
 

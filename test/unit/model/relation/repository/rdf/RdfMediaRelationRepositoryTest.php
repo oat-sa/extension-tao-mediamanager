@@ -139,7 +139,6 @@ class RdfMediaRelationRepositoryTest extends TestCase
         $this->complexSearch->method('getGateway')->willReturn($this->searchGateway);
         $this->searchGateway->method('search')->willReturn($queryResult);
 
-
         $result = $this->subject->findAll($findAllQueryMock);
         $resultJson = $result->jsonSerialize();
         $this->assertCount(2, $result);

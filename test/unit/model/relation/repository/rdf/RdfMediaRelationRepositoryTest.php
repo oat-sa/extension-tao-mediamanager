@@ -129,7 +129,6 @@ class RdfMediaRelationRepositoryTest extends TestCase
                     RdfMediaRelationRepository::MEDIA_RELATION_PROPERTY,
                     SupportedOperatorHelper::IS_NOT_NULL,
                     '',
-
                 ]
             )
             ->willReturn($this->query);
@@ -140,7 +139,6 @@ class RdfMediaRelationRepositoryTest extends TestCase
         $this->searchGateway->method('search')->willReturn($queryResult);
 
         $result = $this->subject->findAll($findAllQueryMock);
-        $resultJson = $result->jsonSerialize();
         $this->assertCount(2, $result);
     }
 

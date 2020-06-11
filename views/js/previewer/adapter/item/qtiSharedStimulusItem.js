@@ -18,12 +18,12 @@
 /**
  * @author Jean-Sébastien Conan <jean-sebastien@taotesting.com>
  */
-define([
-    'lodash',
-    'core/logger',
-    'taoMediaManager/previewer/component/qtiSharedStimulusItem',
-    'ui/feedback'
-], function (_, loggerFactory, qtiItemPreviewerFactory, feedback) {
+define(['lodash', 'core/logger', 'taoMediaManager/previewer/component/qtiSharedStimulusItem', 'ui/feedback'], function (
+    _,
+    loggerFactory,
+    qtiItemPreviewerFactory,
+    feedback
+) {
     'use strict';
 
     const logger = loggerFactory('taoMediaManager/previewer');
@@ -32,19 +32,23 @@ define([
      * List of required plugins that should be loaded in order to make the previewer work properly
      * @type {Object[]}
      */
-    const defaultPlugins = [{
-        module: 'taoQtiTestPreviewer/previewer/plugins/controls/close',
-        bundle: 'taoQtiTestPreviewer/loader/qtiPreviewer.min',
-        category: 'controls'
-    }, {
-        module: 'taoQtiTestPreviewer/previewer/plugins/tools/scale/scale',
-        bundle: 'taoQtiTestPreviewer/loader/qtiPreviewer.min',
-        category: 'tools'
-    }, {
-        module: 'taoColorContrast/runner/plugins/tools/itemThemeSwitcher',
-        bundle: 'taoColorContrast/loader/testPlugins.min',
-        category: 'tools'
-    }];
+    const defaultPlugins = [
+        {
+            module: 'taoQtiTestPreviewer/previewer/plugins/controls/close',
+            bundle: 'taoQtiTestPreviewer/loader/qtiPreviewer.min',
+            category: 'controls'
+        },
+        {
+            module: 'taoQtiTestPreviewer/previewer/plugins/tools/scale/scale',
+            bundle: 'taoQtiTestPreviewer/loader/qtiPreviewer.min',
+            category: 'tools'
+        },
+        {
+            module: 'taoQtiTest/runner/plugins/tools/itemThemeSwitcher/itemThemeSwitcher',
+            bundle: 'taoQtiTest/loader/testPlugins.min',
+            category: 'tools'
+        }
+    ];
 
     /**
      * Wraps the legacy item previewer in order to be loaded by the taoItems previewer factory
@@ -66,13 +70,12 @@ define([
         init(sharedStimulusId, config = {}) {
             config.itemUri = sharedStimulusId;
             config.plugins = Array.isArray(config.plugins) ? [...defaultPlugins, ...config.plugins] : defaultPlugins;
-            return qtiItemPreviewerFactory(window.document.body, config)
-                .on('error', function (err) {
-                    if (!_.isUndefined(err.message)) {
-                        feedback().error(err.message);
-                    }
-                    logger.error(err);
-                });
+            return qtiItemPreviewerFactory(window.document.body, config).on('error', function (err) {
+                if (!_.isUndefined(err.message)) {
+                    feedback().error(err.message);
+                }
+                logger.error(err);
+            });
         }
     };
 });

@@ -34,7 +34,7 @@ return [
         'tao' => '>=42.13.0',
         'generis' => '>=12.17.0',
         'taoItems' => '>=6.0.0',
-        'taoQtiItem' => '>=24.2.0',
+        'taoQtiItem' => '>=24.4.0',
         'taoColorContrast' => '>=1.0.0'
     ],
     'models' => [

@@ -25,8 +25,11 @@ namespace oat\taoMediaManager\test\unit\model\relation\repository\rdf;
 use LogicException;
 use oat\generis\model\data\Ontology;
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
+use oat\generis\test\OntologyMockTrait;
 use oat\generis\test\TestCase;
 use oat\oatbox\log\LoggerService;
+use oat\search\base\ResultSetInterface;
+use oat\search\helper\SupportedOperatorHelper;
 use oat\search\Query;
 use oat\search\base\SearchGateWayInterface;
 use oat\search\QueryBuilder;
@@ -41,8 +44,12 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 class RdfMediaRelationRepositoryTest extends TestCase
 {
+    use OntologyMockTrait;
+
     private const ITEM_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem';
     private const MEDIA_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedMedia';
+
+    private const TEST_CLASS_URI = 'http://exaple.uri';
 
     /** @var RdfMediaRelationRepository */
     private $subject;
@@ -87,6 +94,57 @@ class RdfMediaRelationRepositoryTest extends TestCase
         );
     }
 
+    public function testFindAllForClassResource()
+    {
+        $findAllQueryMock = $this->createMock(FindAllQuery::class);
+        $findAllQueryMock->method('getMediaId')->willReturn(self::TEST_CLASS_URI);
+
+        $resource = $this->createMock(RdfResource::class);
+        $queryResult = [$resource, $resource];
+
+        $resource->method('getUri')->willReturn('http://resource/example');
+        $resource->method('getLabel')->willReturnOnConsecutiveCalls(
+            'label 1', 'label 2'
+        );
+
+        $this->ontology
+            ->method('getResource')
+            ->with(self::TEST_CLASS_URI)
+            ->willReturn($resource);
+
+        $resource->method('isClass')->willReturn(true);
+
+        $this->complexSearch->method('query')->willReturn($this->queryBuilder);
+        $this->complexSearch->method('searchType')->willReturn($this->query);
+
+        $this->query
+            ->method('addCriterion')
+            ->withConsecutive(
+                [
+                    RdfMediaRelationRepository::ITEM_RELATION_PROPERTY,
+                    SupportedOperatorHelper::IS_NOT_NULL,
+                    '',
+                ],
+                [
+                    RdfMediaRelationRepository::MEDIA_RELATION_PROPERTY,
+                    SupportedOperatorHelper::IS_NOT_NULL,
+                    '',
+
+                ]
+            )
+            ->willReturn($this->query);
+
+        $this->queryBuilder->expects($this->once())->method('setCriteria');
+        $this->queryBuilder->expects($this->once())->method('setOr');
+        $this->complexSearch->method('getGateway')->willReturn($this->searchGateway);
+        $this->searchGateway->method('search')->willReturn($queryResult);
+
+
+        $result = $this->subject->findAll($findAllQueryMock);
+        $resultJson = $result->jsonSerialize();
+        $this->assertCount(2, $result);
+    }
+
     public function testFindAllByMediaId(): void
     {
         $mediaId = 'fixture';
@@ -104,7 +162,7 @@ class RdfMediaRelationRepositoryTest extends TestCase
         $resource
             ->method('getPropertiesValues')
             ->with([
-                $itemRelationProperty, $mediaRelationProperty
+                $itemRelationProperty, $mediaRelationProperty,
             ])
             ->willReturn([
                 self::ITEM_RELATION_PROPERTY => [
@@ -114,7 +172,7 @@ class RdfMediaRelationRepositoryTest extends TestCase
                 self::MEDIA_RELATION_PROPERTY => [
                     $relatedMedia1,
                     $relatedMedia2,
-                ]
+                ],
             ]);
 
         $this->ontology
@@ -327,8 +385,8 @@ class RdfMediaRelationRepositoryTest extends TestCase
         ];
 
         $searchResult = [
-            (object) ['subject' => '1'],
-            (object) ['subject' => '2'],
+            (object)['subject' => '1'],
+            (object)['subject' => '2'],
         ];
 
         $this->complexSearch
@@ -351,8 +409,7 @@ class RdfMediaRelationRepositoryTest extends TestCase
             ->expects($this->once())
             ->method('add')
             ->with(self::MEDIA_RELATION_PROPERTY)
-            ->willReturn($this->query)
-        ;
+            ->willReturn($this->query);
 
         $this->query
             ->expects($this->once())

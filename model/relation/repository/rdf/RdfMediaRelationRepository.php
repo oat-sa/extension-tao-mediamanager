@@ -23,11 +23,13 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\relation\repository\rdf;
 
 use core_kernel_classes_Property;
+use core_kernel_classes_Resource as Resource;
 use LogicException;
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 use oat\search\base\QueryInterface;
+use oat\search\helper\SupportedOperatorHelper;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\relation\MediaRelation;
 use oat\taoMediaManager\model\relation\MediaRelationCollection;
@@ -39,12 +41,44 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
 {
     use OntologyAwareTrait;
 
-    private const ITEM_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem';
-    private const MEDIA_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedMedia';
+    public const ITEM_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem';
+    public const MEDIA_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedMedia';
 
     public function findAll(FindAllQuery $findAllQuery): MediaRelationCollection
     {
+        $resource = $this->getResource($findAllQuery->getMediaId());
+
+        if ($resource->isClass()) {
+            return $this->findMediaWithRelations($resource);
+        }
+
         return $this->findAllByMedia($findAllQuery->getMediaId());
+    }
+
+    private function findMediaWithRelations(Resource $class): MediaRelationCollection
+    {
+        $queryBuilder = $this->getComplexSearchService()->query();
+
+        $relatedMediaQuery = $this->getComplexSearchService()->searchType($queryBuilder, $class->getUri(), true);
+        $relatedMediaQuery->addCriterion(self::ITEM_RELATION_PROPERTY, SupportedOperatorHelper::IS_NOT_NULL, '');
+        $queryBuilder->setCriteria($relatedMediaQuery);
+
+        $orQuery = $this->getComplexSearchService()->searchType($queryBuilder, $class->getUri(), true);
+        $orQuery->addCriterion(self::MEDIA_RELATION_PROPERTY, SupportedOperatorHelper::IS_NOT_NULL, '');
+        $queryBuilder->setOr($orQuery);
+
+        $mediaResult = $this->getComplexSearchService()->getGateway()->search($queryBuilder);
+
+        $mediaRelationCollection = new MediaRelationCollection();
+
+        /** @var Resource $media */
+        foreach ($mediaResult as $media) {
+            $mediaRelationCollection->add(
+                new MediaRelation(MediaRelation::MEDIA_TYPE, $media->getUri(), $media->getLabel())
+            );
+        }
+
+        return $mediaRelationCollection;
     }
 
     public function findAllByTarget(FindAllByTargetQuery $findAllQuery): MediaRelationCollection
@@ -180,6 +214,11 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
         return $this->getServiceLocator()->get(ComplexSearchService::SERVICE_ID);
     }
 
+    /**
+     * @param string $type
+     * @param Resource[]
+     * @param string $sourceId
+     */
     private function mapTargetRelations(string $type, array $rdfMediaRelations, string $sourceId): MediaRelationCollection
     {
         $collection = new MediaRelationCollection();

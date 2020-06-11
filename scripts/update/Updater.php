@@ -103,7 +103,7 @@ class Updater extends \common_ext_ExtensionUpdater
         if ($this->isVersion('9.9.2')) {
             $mediaService = $this->getServiceManager()->get(MediaService::SERVICE_ID);
             $mediaService->addMediaSource(new MediaSource());
-            $mediaService->setOption(MediaService::OPTION_PREPARAR, new MediaResourcePreparer());
+            $mediaService->setOption(MediaService::OPTION_PREPARER, new MediaResourcePreparer());
             $this->getServiceManager()->register(MediaService::SERVICE_ID, $mediaService);
 
             $this->setVersion('9.10.0');

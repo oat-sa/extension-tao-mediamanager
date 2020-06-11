@@ -69,7 +69,7 @@ class SetMediaManager extends InstallAction
         /** @var MediaService $mediaService */
         $mediaService = $this->getServiceManager()->get(MediaService::SERVICE_ID);
         $mediaService->addMediaSource(new MediaSource());
-        $mediaService->setOption(MediaService::OPTION_PREPARAR, new MediaResourcePreparer());
+        $mediaService->setOption(MediaService::OPTION_PREPARER, new MediaResourcePreparer());
         $this->getServiceManager()->register(MediaService::SERVICE_ID, $mediaService);
 
         if ($fsService->hasDirectory('memory')) {

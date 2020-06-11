@@ -41,8 +41,8 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
 {
     use OntologyAwareTrait;
 
-    public const ITEM_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem';
-    public const MEDIA_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedMedia';
+    private const ITEM_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem';
+    private const MEDIA_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedMedia';
 
     public function findAll(FindAllQuery $findAllQuery): MediaRelationCollection
     {

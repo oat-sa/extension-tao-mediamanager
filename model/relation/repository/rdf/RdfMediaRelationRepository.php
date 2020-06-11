@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\relation\repository\rdf;
 
 use core_kernel_classes_Property;
-use core_kernel_classes_Resource as Resource;
+use core_kernel_classes_Resource as RdsResource;
 use LogicException;
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\generis\model\OntologyAwareTrait;
@@ -55,7 +55,7 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
         return $this->findAllByMedia($findAllQuery->getMediaId());
     }
 
-    private function findMediaWithRelations(Resource $class): MediaRelationCollection
+    private function findMediaWithRelations(RdsResource $class): MediaRelationCollection
     {
         $queryBuilder = $this->getComplexSearchService()->query();
 

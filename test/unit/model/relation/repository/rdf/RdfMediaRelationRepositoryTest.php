@@ -28,13 +28,11 @@ use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\generis\test\OntologyMockTrait;
 use oat\generis\test\TestCase;
 use oat\oatbox\log\LoggerService;
-use oat\search\base\ResultSetInterface;
 use oat\search\helper\SupportedOperatorHelper;
 use oat\search\Query;
 use oat\search\base\SearchGateWayInterface;
 use oat\search\QueryBuilder;
 use oat\taoMediaManager\model\relation\MediaRelation;
-use oat\taoMediaManager\model\relation\MediaRelationCollection;
 use oat\taoMediaManager\model\relation\repository\query\FindAllByTargetQuery;
 use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
 use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRelationRepository;
@@ -121,12 +119,12 @@ class RdfMediaRelationRepositoryTest extends TestCase
             ->method('addCriterion')
             ->withConsecutive(
                 [
-                    RdfMediaRelationRepository::ITEM_RELATION_PROPERTY,
+                    self::ITEM_RELATION_PROPERTY,
                     SupportedOperatorHelper::IS_NOT_NULL,
                     '',
                 ],
                 [
-                    RdfMediaRelationRepository::MEDIA_RELATION_PROPERTY,
+                    self::MEDIA_RELATION_PROPERTY,
                     SupportedOperatorHelper::IS_NOT_NULL,
                     '',
                 ]

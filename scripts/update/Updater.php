@@ -53,24 +53,14 @@ class Updater extends \common_ext_ExtensionUpdater
             throw new common_exception_NotImplemented('Updates from versions prior to Tao 3.1 are not longer supported, please update to Tao 3.1 first');
         }
 
-        $this->skip('0.3.0', '9.3.0');
+        $this->skip('0.3.0', '9.4.0');
 
-        if ($this->isVersion('9.3.0')) {
-            OntologyUpdater::syncModels();
-            $this->setVersion('9.4.0');
-        }
-
-        $this->skip('9.4.0', '9.6.0');
-
-        if ($this->isVersion('9.6.0')) {
+        if ($this->isVersion('9.4.0')) {
             OntologyUpdater::syncModels();
             $this->getServiceManager()->register(
                 MediaRelationRepositoryInterface::SERVICE_ID, new RdfMediaRelationRepository()
             );
-            $this->setVersion('9.7.0');
-        }
 
-        if ($this->isVersion('9.7.0')) {
             $eventManager = $this->getServiceManager()->get(EventManager::SERVICE_ID);
             $eventManager->attach(ItemUpdatedEvent::class, [MediaRelationListener::class, 'whenItemIsUpdated']);
             $eventManager->attach(ItemRemovedEvent::class, [MediaRelationListener::class, 'whenItemIsRemoved']);
@@ -79,10 +69,6 @@ class Updater extends \common_ext_ExtensionUpdater
 
             $this->getServiceManager()->register(EventManager::SERVICE_ID, $eventManager);
 
-            $this->setVersion('9.8.0');
-        }
-
-        if ($this->isVersion('9.8.0')) {
             /** @var FileSystemService $filesystemService */
             $filesystemService = $this->getServiceManager()->get(FileSystemService::SERVICE_ID);
             /** @var  $adapters */
@@ -95,18 +81,13 @@ class Updater extends \common_ext_ExtensionUpdater
             }
 
             $this->getServiceManager()->register(FileSystemService::SERVICE_ID, $filesystemService);
-            $this->setVersion('9.9.0');
-        }
 
-        $this->skip('9.9.0', '9.9.2');
-
-        if ($this->isVersion('9.9.2')) {
             $mediaService = $this->getServiceManager()->get(MediaService::SERVICE_ID);
             $mediaService->addMediaSource(new MediaSource());
             $mediaService->setOption(MediaService::OPTION_PREPARER, new MediaResourcePreparer());
             $this->getServiceManager()->register(MediaService::SERVICE_ID, $mediaService);
 
-            $this->setVersion('9.10.0');
+            $this->setVersion('10.0.0');
         }
     }
 }

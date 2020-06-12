@@ -22,12 +22,12 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\controller;
 
-use InvalidArgumentException;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\tao\model\http\formatter\ResponseFormatter;
 use oat\tao\model\http\response\ErrorJsonResponse;
 use oat\tao\model\http\response\JsonResponseInterface;
 use oat\tao\model\http\response\SuccessJsonResponse;
+use oat\taoMediaManager\model\relation\factory\QueryFactory;
 use oat\taoMediaManager\model\relation\MediaRelationService;
 use Psr\Http\Message\ResponseInterface;
 use tao_actions_CommonModule;
@@ -37,14 +37,14 @@ class MediaRelations extends tao_actions_CommonModule
 {
     use LoggerAwareTrait;
 
-    public const SOURCE_ID = 'sourceId';
-    public const CLASS_ID = 'classId';
-
     public function relations(): void
     {
         try {
+            $query = $this->getQueryFactory()
+                ->createFindAllQueryByRequest($this->getPsrRequest());
+
             $collection = $this->getMediaRelationService()
-                ->getMediaRelations($this->getParameters())
+                ->getMediaRelations($query)
                 ->jsonSerialize();
 
             $this->setResponse($this->formatResponse(new SuccessJsonResponse($collection), 200));
@@ -53,20 +53,6 @@ class MediaRelations extends tao_actions_CommonModule
 
             $this->setResponse($this->formatResponse(new ErrorJsonResponse(400, $exception->getMessage()), 400));
         }
-    }
-
-    private function getParameters(): array
-    {
-        $parameters = [
-            self::SOURCE_ID => $this->getPsrRequest()->getQueryParams()['sourceId'] ?? null,
-            self::CLASS_ID => $this->getPsrRequest()->getQueryParams()['classId'] ?? null
-        ];
-
-        if ($parameters[self::SOURCE_ID] === null && $parameters[self::CLASS_ID] === null) {
-            throw new InvalidArgumentException(sprintf('Parameter sourceId or classId must be provided'));
-        }
-
-        return $parameters;
     }
 
     private function formatResponse(JsonResponseInterface $jsonResponse, int $statusCode): ResponseInterface
@@ -86,5 +72,10 @@ class MediaRelations extends tao_actions_CommonModule
     private function getMediaRelationService(): MediaRelationService
     {
         return $this->getServiceLocator()->get(MediaRelationService::class);
+    }
+
+    private function getQueryFactory(): QueryFactory
+    {
+        return $this->getServiceLocator()->get(QueryFactory::class);
     }
 }

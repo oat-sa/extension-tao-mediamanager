@@ -23,8 +23,6 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\repository\query;
 
-use oat\taoMediaManager\controller\MediaRelations;
-
 class FindAllQuery
 {
     /** @var string */
@@ -33,18 +31,18 @@ class FindAllQuery
     /** @var string */
     private $classId;
 
-    public function __construct(array $parameters)
+    public function __construct(string $mediaId = null, string $classId = null)
     {
-        $this->mediaId = $parameters[MediaRelations::SOURCE_ID];
-        $this->classId = $parameters[MediaRelations::CLASS_ID];
+        $this->mediaId = $mediaId;
+        $this->classId = $classId;
     }
 
-    public function getMediaId(): string
+    public function getMediaId(): ?string
     {
         return $this->mediaId;
     }
 
-    public function getClassId()
+    public function getClassId(): ?string
     {
         return $this->classId;
     }

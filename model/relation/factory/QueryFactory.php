@@ -20,17 +20,29 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\relation;
+namespace oat\taoMediaManager\model\relation\factory;
 
+use InvalidArgumentException;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
 use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
+use Psr\Http\Message\ServerRequestInterface;
 
-class MediaRelationService extends ConfigurableService
+class QueryFactory extends ConfigurableService
 {
-    public function getMediaRelations(FindAllQuery $query): MediaRelationCollection
+    private const SOURCE_ID = 'sourceId';
+    private const CLASS_ID = 'classId';
+
+    public function createFindAllQueryByRequest(ServerRequestInterface $request): FindAllQuery
     {
-        return $this->getMediaRelationRepository()->findAll($query);
+        $sourceId = $request->getQueryParams()[self::SOURCE_ID] ?? null;
+        $classId = $request->getQueryParams()[self::CLASS_ID] ?? null;
+
+        if ($sourceId === null && $classId === null) {
+            throw new InvalidArgumentException(sprintf('Parameter sourceId or classId must be provided'));
+        }
+
+        return new FindAllQuery($sourceId, $classId);
     }
 
     private function getMediaRelationRepository(): MediaRelationRepositoryInterface

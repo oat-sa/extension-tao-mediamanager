@@ -4,5 +4,6 @@
     "taoQtiItem/qtiCommonRenderer": "../../../taoQtiItem/views/node_modules/@oat-sa/tao-item-runner-qti/dist/qtiCommonRenderer",
     "taoItems/assets"             : "../../../taoItems/views/node_modules/@oat-sa/tao-item-runner/dist/assets",
     "taoItemsCss"                 : "../../../taoItems/views/css",
-    "taoMediaManagerCss"          : "../../../taoMediaManager/views/css"
+    "taoMediaManagerCss"          : "../../../taoMediaManager/views/css",
+    "taoTests/runner"             : "../../../taoTests/views/node_modules/@oat-sa/tao-test-runner/dist"
 }

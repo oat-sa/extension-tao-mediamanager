@@ -15,43 +15,62 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
- *
- *
+ * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
  */
+
+declare(strict_types=1);
 
 namespace oat\taoMediaManager\model;
 
-use oat\generis\model\OntologyAwareTrait;
-use oat\generis\model\OntologyRdfs;
-use oat\oatbox\filesystem\File;
 use common_ext_ExtensionsManager;
+use core_kernel_classes_Literal;
+use core_kernel_classes_Resource as RdfResource;
+use oat\generis\model\OntologyRdfs;
+use oat\oatbox\event\EventManager;
+use oat\oatbox\filesystem\File;
+use oat\oatbox\log\LoggerAwareTrait;
+use oat\oatbox\service\ConfigurableService;
+use oat\oatbox\service\ServiceManager;
+use oat\tao\model\ClassServiceTrait;
+use oat\tao\model\GenerisServiceTrait;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
+use oat\taoMediaManager\model\relation\event\MediaRemovedEvent;
+use oat\taoMediaManager\model\relation\event\MediaSavedEventDispatcher;
 use oat\taoRevision\model\RepositoryInterface;
+use tao_helpers_File;
 
 /**
  * Service methods to manage the Media
  *
- * @access public
  * @author Antoine Robin, <antoine.robin@vesperiagroup.com>
- * @package taoMediaManager
  */
-class MediaService extends \tao_models_classes_ClassService
+class MediaService extends ConfigurableService
 {
-    const ROOT_CLASS_URI = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Media';
+    use ClassServiceTrait;
+    use GenerisServiceTrait;
+    use LoggerAwareTrait;
 
-    const PROPERTY_LINK = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Link';
-    const PROPERTY_LANGUAGE = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Language';
-    const PROPERTY_ALT_TEXT = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AltText';
-    const PROPERTY_MD5 =  'http://www.tao.lu/Ontologies/TAOMedia.rdf#md5';
-    const PROPERTY_MIME_TYPE = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#mimeType';
+    public const ROOT_CLASS_URI = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Media';
 
-    use OntologyAwareTrait;
+    public const PROPERTY_LINK = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Link';
+
+    public const PROPERTY_LANGUAGE = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Language';
+
+    public const PROPERTY_ALT_TEXT = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AltText';
+
+    public const PROPERTY_MD5 = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#md5';
+
+    public const PROPERTY_MIME_TYPE = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#mimeType';
+
+    public const SHARED_STIMULUS_MIME_TYPE = 'application/qti+xml';
 
     /**
-     * @var FileManagement
+     * @deprecated 
      */
-    protected $fileManager;
+    static public function singleton()
+    {
+        return ServiceManager::getServiceManager()->get(self::class);
+    }
 
     /**
      * (non-PHPdoc)
@@ -75,50 +94,61 @@ class MediaService extends \tao_models_classes_ClassService
      */
     public function createMediaInstance($fileSource, $classUri, $language, $label = null, $mimeType = null, $userId = null)
     {
+        $link = $this->getFileManager()->storeFile($fileSource, $label);
+
+        if ($link === false) {
+            return false;
+        }
+
         $clazz = $this->getClass($classUri);
 
         //create media instance
         if (is_null($label)) {
             $label = $fileSource instanceof File ? $fileSource->getBasename() : basename($fileSource);
         }
-        $md5 = $fileSource instanceof File ? md5($fileSource->read()) : md5_file($fileSource);
 
-        $link = $this->getFileManager()->storeFile($fileSource, $label);
+        $content = $fileSource instanceof File ? $fileSource->read() : file_get_contents($fileSource);
+        $md5 = md5($content);
 
-        if ($link !== false) {
-            if (is_null($mimeType)) {
-                $mimeType = $fileSource instanceof File ? $fileSource->getMimeType() : \tao_helpers_File::getMimeType($fileSource);
-            }
-            $instance = $clazz->createInstanceWithProperties([
-                OntologyRdfs::RDFS_LABEL => $label,
-                self::PROPERTY_LINK => $link,
-                self::PROPERTY_LANGUAGE => $language,
-                self::PROPERTY_MD5 => $md5,
-                self::PROPERTY_MIME_TYPE => $mimeType,
-                self::PROPERTY_ALT_TEXT => $label
-            ]);
-
-            if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
-                \common_Logger::i('Auto generating initial revision');
-                $this->getServiceLocator()->get(RepositoryInterface::SERVICE_ID)->commit($instance, __('Initial import'), null, $userId);
-            }
-            return $instance->getUri();
+        if (is_null($mimeType)) {
+            $mimeType = $fileSource instanceof File ? $fileSource->getMimeType() : tao_helpers_File::getMimeType($fileSource);
         }
-        return false;
+
+        $properties = [
+            OntologyRdfs::RDFS_LABEL => $label,
+            self::PROPERTY_LINK => $link,
+            self::PROPERTY_LANGUAGE => $language,
+            self::PROPERTY_MD5 => $md5,
+            self::PROPERTY_MIME_TYPE => $mimeType,
+            self::PROPERTY_ALT_TEXT => $label
+        ];
+
+        $instance = $clazz->createInstanceWithProperties($properties);
+        $id = $instance->getUri();
+
+        $this->getMediaSavedEventDispatcher()->dispatchFromContent($id, $mimeType, $content);
+
+        // @todo: move taoRevision stuff under a listener of MediaSavedEvent
+        if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
+            $this->logInfo('Auto generating initial revision');
+            $this->getRepositoryService()->commit($instance, __('Initial import'), null, $userId);
+        }
+
+        return $id;
     }
 
     /**
      * Edit a media instance with a new file and/or a new language
      *
      * @param string|File $fileSource
-     * @param string $instanceUri
-     * @param string $language
-     * @param null $userId
-     * @return bool $instanceUri or false on error
      */
-    public function editMediaInstance($fileSource, $instanceUri, $language, $userId = null)
-    {
-        $instance = $this->getResource($instanceUri);
+    public function editMediaInstance(
+        $fileSource,
+        string $id,
+        string $language = null,
+        string $userId = null
+    ): bool {
+        $instance = $this->getResource($id);
         $link = $this->getLink($instance);
 
         $fileManager = $this->getFileManager();
@@ -127,51 +157,78 @@ class MediaService extends \tao_models_classes_ClassService
 
         if ($link !== false) {
             $md5 = $fileSource instanceof File ? md5($fileSource->read()) : md5_file($fileSource);
-            /** @var $instance  \core_kernel_classes_Resource */
-            if (!is_null($instance) && $instance instanceof \core_kernel_classes_Resource) {
-                $instance->editPropertyValues($this->getProperty(self::PROPERTY_LINK), $link);
+
+            $instance->editPropertyValues($this->getProperty(self::PROPERTY_LINK), $link);
+            $instance->editPropertyValues($this->getProperty(self::PROPERTY_MD5), $md5);
+
+            if ($language) {
                 $instance->editPropertyValues($this->getProperty(self::PROPERTY_LANGUAGE), $language);
-                $instance->editPropertyValues($this->getProperty(self::PROPERTY_MD5), $md5);
             }
 
+            $this->getMediaSavedEventDispatcher()
+                ->dispatchFromFile($id, $fileSource, $this->getResourceMimeType($instance));
+
+            // @todo: move taoRevision stuff under a listener of MediaSavedEvent
             if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
-                \common_Logger::i('Auto generating revision');
-                $this->getServiceLocator()->get(RepositoryInterface::SERVICE_ID)->commit($instance, __('Imported new file'), null, $userId);
+                $this->logInfo('Auto generating revision');
+                $this->getRepositoryService()->commit($instance, __('Imported new file'), null, $userId);
             }
         }
-        return ($link !== false) ? true : false;
+
+        return $link !== false;
     }
 
-    /**
-     * (non-PHPdoc)
-     * @see \tao_models_classes_ClassService::deleteResource()
-     */
-    public function deleteResource(\core_kernel_classes_Resource $resource)
+    public function deleteResource(RdfResource $resource)
     {
         $link = $this->getLink($resource);
-        return parent::deleteResource($resource) && $this->getFileManager()->deleteFile($link);
+
+        if ($this->getFileManager()->deleteFile($link) && $resource->delete()) {
+            $this->getEventManager()
+                ->trigger(new MediaRemovedEvent($resource->getUri()));
+
+            return true;
+        }
+
+        return false;
     }
 
-    /**
-     * Returns the link of a media resource
-     *
-     * @param \core_kernel_classes_Resource $resource
-     * @return string
-     */
-    protected function getLink(\core_kernel_classes_Resource $resource)
+    private function getLink(RdfResource $resource): string
     {
         $instance = $resource->getUniquePropertyValue($this->getProperty(self::PROPERTY_LINK));
-        return $instance instanceof \core_kernel_classes_Resource ? $instance->getUri() : (string)$instance;
+
+        return $instance instanceof RdfResource ? $instance->getUri() : (string)$instance;
     }
 
-    /**
-     * @return FileManagement
-     */
-    protected function getFileManager()
+    private function getMediaSavedEventDispatcher(): MediaSavedEventDispatcher
     {
-        if (!$this->fileManager) {
-            $this->fileManager = $this->getServiceLocator()->get(FileManagement::SERVICE_ID);
+        return $this->getServiceLocator()->get(MediaSavedEventDispatcher::class);
+    }
+
+    private function getFileManager(): FileManagement
+    {
+        return $this->getServiceLocator()->get(FileManagement::SERVICE_ID);
+    }
+
+    private function getRepositoryService(): RepositoryInterface
+    {
+        return $this->getServiceLocator()->get(RepositoryInterface::SERVICE_ID);
+    }
+
+    private function getEventManager(): EventManager
+    {
+        return $this->getServiceLocator()->get(EventManager::SERVICE_ID);
+    }
+
+    private function getResourceMimeType(RdfResource $resource): ?string
+    {
+        $container = $resource->getUniquePropertyValue($resource->getProperty(MediaService::PROPERTY_MIME_TYPE));
+
+        if ($container instanceof core_kernel_classes_Literal) {
+            $mimeType = (string)$container;
+
+            return  $mimeType === MediaService::SHARED_STIMULUS_MIME_TYPE ? $mimeType : null;
         }
-        return $this->fileManager;
+
+        return null;
     }
 }

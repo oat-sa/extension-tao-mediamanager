@@ -15,15 +15,19 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2018 (original work) Open Assessment Technologies SA;
- *
+ * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
  */
+
+declare(strict_types=1);
 
 namespace oat\taoMediaManager\test\integration\model;
 
+use oat\oatbox\service\ServiceManager;
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\taoMediaManager\model\MediaService;
 use oat\generis\test\TestCase;
+use core_kernel_classes_Resource as RdfResource;
+use core_kernel_classes_Property as RdfProperty;
 
 include_once dirname(__FILE__) . '/../../../includes/raw_start.php';
 
@@ -37,6 +41,8 @@ class MediaServiceTest extends TestCase
     public function setUp(): void
     {
         $this->testClass = (MediaService::singleton())->getRootClass()->createSubClass('test class');
+
+        (MediaService::singleton())->deleteClass($this->testClass); //FIXME
     }
 
     public function tearDown(): void
@@ -61,14 +67,14 @@ class MediaServiceTest extends TestCase
 
         $fileManagerMock->expects($this->once())
             ->method('storeFile')
-            ->with($fileTmp, basename($fileTmp))
+            ->with($fileTmp)
             ->willReturn('MyGreatLink');
 
-        $mediaService = MediaService::singleton();
+        $serviceManager = ServiceManager::getServiceManager();
+        $serviceManager->overload(FlySystemManagement::SERVICE_ID, $fileManagerMock);
 
-        $ref = new \ReflectionProperty(MediaService::class, 'fileManager');
-        $ref->setAccessible(true);
-        $ref->setValue($mediaService, $fileManagerMock);
+        $mediaService = new MediaService();
+        $mediaService->setServiceLocator($serviceManager);
 
         return $mediaService;
     }
@@ -84,11 +90,11 @@ class MediaServiceTest extends TestCase
             ->with($fileTmp)
             ->willReturn(true);
 
-        $mediaService = MediaService::singleton();
+        $serviceManager = ServiceManager::getServiceManager();
+        $serviceManager->overload(FlySystemManagement::SERVICE_ID, $fileManagerMock);
 
-        $ref = new \ReflectionProperty(MediaService::class, 'fileManager');
-        $ref->setAccessible(true);
-        $ref->setValue($mediaService, $fileManagerMock);
+        $mediaService = new MediaService();
+        $mediaService->setServiceLocator($serviceManager);
 
         return $mediaService;
     }
@@ -102,9 +108,10 @@ class MediaServiceTest extends TestCase
         $mediaService = $this->initializeMockForCreateInstance($fileTmp);
         $uri = $mediaService->createMediaInstance($fileTmp, $classUri, $lang);
 
-        $instance = new \core_kernel_classes_Resource($uri);
-        $thing = $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LINK));
-        $linkResult = $thing instanceof \core_kernel_classes_Resource ? $thing->getUri() : (string)$thing;
+        $instance = new RdfResource($uri);
+        $thing = $instance->getUniquePropertyValue(new RdfProperty(MediaService::PROPERTY_LINK));
+
+        $linkResult = $thing instanceof RdfResource ? $thing->getUri() : (string)$thing;
         $this->assertInstanceOf(
             '\core_kernel_classes_Resource',
             $instance,
@@ -115,7 +122,7 @@ class MediaServiceTest extends TestCase
         $this->assertEquals($linkResult, 'MyGreatLink', 'The returned link is wrong');
         $this->assertEquals(
             $lang,
-            $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LANGUAGE)),
+            $instance->getUniquePropertyValue(new RdfProperty(MediaService::PROPERTY_LANGUAGE)),
             'The instance language is wrong'
         );
 
@@ -127,21 +134,34 @@ class MediaServiceTest extends TestCase
         $fileTmp = dirname(__DIR__) . '/sample/Italy.png';
         $lang = 'EN-en';
 
+        $linkProperty = new RdfProperty(MediaService::PROPERTY_LINK);
+        $mimeTypeProperty = new RdfProperty(MediaService::PROPERTY_MIME_TYPE);
+
         $instanceUri = 'http://myFancyDomain.com/myGreatInstanceUri';
-        $instance = new \core_kernel_classes_Class($instanceUri);
-        $instance->setPropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LINK), 'MyLink');
+        $instance = new RdfResource($instanceUri);
+
+        $this->clearPropertyValues($instance, $linkProperty);
+        $this->clearPropertyValues($instance, $mimeTypeProperty);
+
+        $instance->setPropertyValue($linkProperty, 'MyLink');
+        $instance->setPropertyValue($mimeTypeProperty, 'application/qti-xml');
 
         $mediaService = $this->initializeMockForEditInstance('MyLink');
         $mediaService->editMediaInstance($fileTmp, $instanceUri, $lang);
 
         $this->assertEquals(
             $lang,
-            $instance->getUniquePropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LANGUAGE)),
+            $instance->getUniquePropertyValue(new RdfProperty(MediaService::PROPERTY_LANGUAGE)),
             'The instance language is wrong'
         );
 
-        // remove what has been done
-        $inst = new \core_kernel_classes_Resource($instanceUri);
-        $this->assertTrue($inst->delete());
+        $this->assertTrue($instance->delete());
+    }
+
+    private function clearPropertyValues(RdfResource $instance, RdfProperty $property): void
+    {
+        foreach ($instance->getPropertyValues($property) as $propertyValue) {
+            $instance->removePropertyValue($property, $propertyValue);
+        }
     }
 }

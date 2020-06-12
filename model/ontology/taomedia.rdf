@@ -9,8 +9,8 @@
 	xmlns:tao="http://www.tao.lu/Ontologies/TAO.rdf#"
 >
   <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOMedia.rdf#Media">
-    <rdfs:label xml:lang="en-US"><![CDATA[Media]]></rdfs:label>
-    <rdfs:comment xml:lang="en-US"><![CDATA[Media]]></rdfs:comment>
+    <rdfs:label xml:lang="en-US"><![CDATA[Assets]]></rdfs:label>
+    <rdfs:comment xml:lang="en-US"><![CDATA[Assets]]></rdfs:comment>
     <rdfs:subClassOf rdf:resource="http://www.tao.lu/Ontologies/TAO.rdf#TAOObject"/>
   </rdf:Description>
 
@@ -23,15 +23,16 @@
     <generis:is_language_dependent rdf:resource="http://www.tao.lu/Ontologies/generis.rdf#True"/>
   </rdf:Description>
 
-    <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOMedia.rdf#Language">
-      <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
-      <rdfs:label xml:lang="en-US"><![CDATA[Language]]></rdfs:label>
-      <rdfs:comment xml:lang="en-US"><![CDATA[Language]]></rdfs:comment>
-      <rdfs:domain rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#Media"/>
-      <rdfs:range rdf:resource="http://www.tao.lu/Ontologies/TAO.rdf#Languages"/>
-      <widget:widget rdf:resource="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#ComboBox"/>
-      <generis:is_language_dependent rdf:resource="http://www.tao.lu/Ontologies/generis.rdf#True"/>
-    </rdf:Description>
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOMedia.rdf#Language">
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <rdfs:label xml:lang="en-US"><![CDATA[Language]]></rdfs:label>
+    <rdfs:comment xml:lang="en-US"><![CDATA[Language]]></rdfs:comment>
+    <rdfs:domain rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#Media"/>
+    <rdfs:range rdf:resource="http://www.tao.lu/Ontologies/TAO.rdf#Languages"/>
+    <widget:widget rdf:resource="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#ComboBox"/>
+    <generis:is_language_dependent rdf:resource="http://www.tao.lu/Ontologies/generis.rdf#True"/>
+  </rdf:Description>
+
   <!-- Management Role -->
   <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole">
   	<rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAO.rdf#ManagementRole"/>
@@ -39,4 +40,27 @@
   	<rdfs:label xml:lang="en-US"><![CDATA[Media Manager]]></rdfs:label>
     <rdfs:comment xml:lang="en-US"><![CDATA[The Media Manager Role]]></rdfs:comment>
   </rdf:Description>
+
+  <!-- Related used asset -->
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedMedia">
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <rdfs:label xml:lang="en-US"><![CDATA[Related media]]></rdfs:label>
+    <rdfs:comment xml:lang="en-US"><![CDATA[It describes Media where this media is used]]></rdfs:comment>
+    <rdfs:domain rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#Media"/>
+    <rdfs:range rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#Media"/>
+    <generis:is_language_dependent rdf:resource="http://www.tao.lu/Ontologies/generis.rdf#False"/>
+    <generis:Multiple rdf:resource="http://www.tao.lu/Ontologies/generis.rdf#True"/>
+  </rdf:Description>
+
+  <!-- Related used item -->
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem">
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+    <rdfs:label xml:lang="en-US"><![CDATA[Related item]]></rdfs:label>
+    <rdfs:comment xml:lang="en-US"><![CDATA[It describes Item where this media is used]]></rdfs:comment>
+    <rdfs:domain rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#Media"/>
+    <rdfs:range rdf:resource="http://www.tao.lu/Ontologies/TAOItem.rdf#Item"/>
+    <generis:is_language_dependent rdf:resource="http://www.tao.lu/Ontologies/generis.rdf#False"/>
+    <generis:Multiple rdf:resource="http://www.tao.lu/Ontologies/generis.rdf#True"/>
+  </rdf:Description>
+
 </rdf:RDF>

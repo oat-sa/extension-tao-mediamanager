@@ -18,21 +18,27 @@
 
 /**
  * configure the extension bundles
+ * @param {Object} grunt
  * @author Bertrand Chevrier <bertrand@taotesting.com>
  */
-module.exports = function(grunt) {
+module.exports = function (grunt) {
     'use strict';
 
     grunt.config.merge({
-        bundle : {
-            taomediamanager : {
-                options : {
-                    extension : 'taoMediaManager',
-                    outputDir : 'loader',
-                    bundles : [{
-                        name : 'taoMediaManager',
-                        default : true
-                    }]
+        bundle: {
+            taomediamanager: {
+                options: {
+                    extension: 'taoMediaManager',
+                    dependencies: ['taoItems', 'taoQtiItem', 'taoQtiTestPreviewer', 'taoTests'],
+                    outputDir: 'loader',
+                    paths: require('./paths.json'),
+                    bundles: [
+                        {
+                            name: 'taoMediaManager',
+                            default: true,
+                            babel: true
+                        }
+                    ]
                 }
             }
         }

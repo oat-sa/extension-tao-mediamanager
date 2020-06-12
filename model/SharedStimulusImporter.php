@@ -15,33 +15,42 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2018 (original work) Open Assessment Technologies SA;
- *
+ * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
  */
+
+declare(strict_types=1);
 
 namespace oat\taoMediaManager\model;
 
+use common_exception_Error;
+use common_exception_UserReadableException;
+use core_kernel_classes_Class;
+use core_kernel_classes_Resource;
+use Exception;
+use helpers_File;
 use oat\oatbox\filesystem\File;
 use common_report_Report as Report;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\log\TaoLoggerAwareInterface;
+use oat\oatbox\service\ConfigurableService;
+use oat\oatbox\service\ServiceManager;
+use oat\taoMediaManager\model\sharedStimulus\parser\SharedStimulusMediaExtractor;
+use tao_helpers_File;
 use tao_helpers_form_Form as Form;
 use oat\tao\model\import\ImportHandlerHelperTrait;
 use oat\tao\model\import\TaskParameterProviderInterface;
 use qtism\data\QtiComponent;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use tao_helpers_Uri;
+use tao_models_classes_import_ImportHandler;
 
 /**
- * Service methods to manage the Media
- *
  * @access  public
  * @package taoMediaManager
  */
-class SharedStimulusImporter implements
-    \tao_models_classes_import_ImportHandler,
-    ServiceLocatorAwareInterface,
+class SharedStimulusImporter extends ConfigurableService implements
+    tao_models_classes_import_ImportHandler,
     TaskParameterProviderInterface,
     TaoLoggerAwareInterface
 {
@@ -50,15 +59,17 @@ class SharedStimulusImporter implements
     }
     use LoggerAwareTrait;
 
-    /**
-     * @var SharedStimulusPackageImporter
-     */
+    /** @var SharedStimulusPackageImporter */
     private $zipImporter = null;
+
+    /** @var string */
     private $instanceUri;
 
-    public function __construct($instanceUri = null)
+    public function setInstanceUri(string $instanceUri): self
     {
         $this->instanceUri = $instanceUri;
+
+        return $this;
     }
 
     /**
@@ -86,18 +97,20 @@ class SharedStimulusImporter implements
     /**
      * Starts the import based on the form
      *
-     * @param \core_kernel_classes_Class $class
+     * @param core_kernel_classes_Class $class
      * @param Form|array $form
      * @param string|null $userId owner of the resource
+     *
      * @return Report $report
-     * @throws \common_exception_Error
+     *
+     * @throws common_exception_Error
      */
     public function import($class, $form, $userId = null)
     {
         $uploadedFile = $this->fetchUploadedFile($form);
 
         try {
-            $service = MediaService::singleton();
+            $service = $this->getMediaService();
             $classUri = $class->getUri();
 
             $instanceUri = $form instanceof Form
@@ -109,16 +122,16 @@ class SharedStimulusImporter implements
             // importing new media
             if (!$instanceUri || $instanceUri === $classUri) {
                 //if the file is a zip do a zip import
-                if (!\helpers_File::isZipMimeType($fileInfo['type'])) {
+                if (!helpers_File::isZipMimeType($fileInfo['type'])) {
                     try {
                         self::isValidSharedStimulus($uploadedFile);
 
                         $mediaResourceUri = $service->createMediaInstance(
                             $uploadedFile,
                             $classUri,
-                            \tao_helpers_Uri::decode($form instanceof Form ? $form->getValue('lang') : $form['lang']),
+                            tao_helpers_Uri::decode($form instanceof Form ? $form->getValue('lang') : $form['lang']),
                             $fileInfo['name'],
-                            'application/qti+xml',
+                            MediaService::SHARED_STIMULUS_MIME_TYPE,
                             $userId
                         );
 
@@ -141,12 +154,13 @@ class SharedStimulusImporter implements
                     $report = $this->getZipImporter()->import($class, $form, $userId);
                 }
             } else {
-                if (!\helpers_File::isZipMimeType($fileInfo['type'])) {
+                if (!helpers_File::isZipMimeType($fileInfo['type'])) {
                     self::isValidSharedStimulus($uploadedFile);
+
                     if (in_array($fileInfo['type'], ['application/xml', 'text/xml'])) {
                         $name = basename($fileInfo['name'], 'xml');
                         $name .= 'xhtml';
-                        $filepath = \tao_helpers_File::concat([dirname($fileInfo['name']), $name]);
+                        $filepath = tao_helpers_File::concat([dirname($fileInfo['name']), $name]);
                         $fileResource = fopen($filepath, 'w');
                         $uploadedFileResource = $uploadedFile->readStream();
                         stream_copy_to_stream($uploadedFileResource, $fileResource);
@@ -154,26 +168,34 @@ class SharedStimulusImporter implements
                         fclose($uploadedFileResource);
                     }
 
-                    if (
-                        !$service->editMediaInstance(
-                            isset($filepath) ? $filepath : $uploadedFile,
-                            $instanceUri,
-                            \tao_helpers_Uri::decode($form instanceof Form ? $form->getValue('lang') : $form['lang']),
-                            $userId
-                        )
-                    ) {
+                    $instanceEdited = $service->editMediaInstance(
+                        isset($filepath) ? $filepath : $uploadedFile,
+                        $instanceUri,
+                        tao_helpers_Uri::decode($form instanceof Form ? $form->getValue('lang') : $form['lang']),
+                        $userId
+                    );
+
+                    if (!$instanceEdited) {
                         $report = Report::createFailure(__('Fail to edit shared stimulus'));
                     } else {
                         $report = Report::createSuccess(__('Shared Stimulus edited successfully'));
+                        $report->add(
+                            Report::createSuccess(
+                                __('Edited %s', $fileInfo['name']),
+                                [
+                                    'uriResource' => $instanceUri
+                                ]
+                            )
+                        );
                     }
 
                     $report->setData(['uriResource' => $instanceUri]);
                 } else {
-                    $report = $this->getZipImporter()->edit(new \core_kernel_classes_Resource($instanceUri), $form, $userId);
+                    $report = $this->getZipImporter()->edit(new core_kernel_classes_Resource($instanceUri), $form, $userId);
                 }
             }
-        } catch (\Exception $e) {
-            $message = $e instanceof \common_exception_UserReadableException
+        } catch (Exception $e) {
+            $message = $e instanceof common_exception_UserReadableException
                 ? $e->getUserMessage()
                 : __('An error has occurred. Please contact your administrator.');
             $report = Report::createFailure($message);
@@ -188,8 +210,10 @@ class SharedStimulusImporter implements
 
     /**
      * @param string|File $file
+     *
      * @return XmlDocument
-     * @throws \qtism\data\storage\xml\XmlStorageException
+     *
+     * @throws XmlStorageException
      */
     public static function isValidSharedStimulus($file)
     {
@@ -198,11 +222,12 @@ class SharedStimulusImporter implements
 
         // don't validate because of APIP
         if ($file instanceof File) {
-            $xmlDocument->loadFromString($file->read(), false);
+            $xml = $file->read();
+            $xmlDocument->loadFromString($xml, false);
         } elseif (is_file($file) && is_readable($file)) {
             $xmlDocument->load($file, false);
+            $xml = file_get_contents($file);
         }
-
 
         // The shared stimulus is qti compliant, see if it is not an interaction, feedback or template
         if (self::hasInteraction($xmlDocument->getDocumentComponent())) {
@@ -216,16 +241,13 @@ class SharedStimulusImporter implements
             throw new XmlStorageException("The shared stimulus contains template QTI components.");
         }
 
+        ServiceManager::getServiceManager()->get(SharedStimulusMediaExtractor::class)
+            ->assertMediaFileExists($xml);
+
         return $xmlDocument;
     }
 
-    /**
-     * Check if the document contains interactions element
-     *
-     * @param QtiComponent $domDocument
-     * @return bool
-     */
-    private static function hasInteraction(QtiComponent $domDocument)
+    private static function hasInteraction(QtiComponent $domDocument): bool
     {
         $interactions = [
             'endAttemptInteraction',
@@ -255,13 +277,7 @@ class SharedStimulusImporter implements
         return self::hasComponents($domDocument, $interactions);
     }
 
-    /**
-     * Check if the document contains feedback element
-     *
-     * @param QtiComponent $domDocument
-     * @return bool
-     */
-    private static function hasFeedback(QtiComponent $domDocument)
+    private static function hasFeedback(QtiComponent $domDocument): bool
     {
         $feedback = [
             'feedbackBlock',
@@ -271,23 +287,15 @@ class SharedStimulusImporter implements
         return self::hasComponents($domDocument, $feedback);
     }
 
-    /**
-     * Check if the document contains feedback element
-     *
-     * @param QtiComponent $domDocument
-     * @return bool
-     */
-    private static function hasTemplate(QtiComponent $domDocument)
+    private static function hasTemplate(QtiComponent $domDocument): bool
     {
         return self::hasComponents($domDocument, 'templateDeclaration');
     }
 
     /**
-     * @param QtiComponent $domDocument
      * @param string|string[] $className
-     * @return bool
      */
-    private static function hasComponents(QtiComponent $domDocument, $className)
+    private static function hasComponents(QtiComponent $domDocument, $className): bool
     {
         return $domDocument->getComponentsByClassName($className)->count() > 0;
     }
@@ -314,6 +322,7 @@ class SharedStimulusImporter implements
             $this->zipImporter = new SharedStimulusPackageImporter();
             $this->zipImporter->setServiceLocator($this->getServiceLocator());
         }
+
         return $this->zipImporter;
     }
 
@@ -329,5 +338,10 @@ class SharedStimulusImporter implements
             $form->getValues(),
             $this->getDefaultTaskParameters($form)
         );
+    }
+
+    private function getMediaService(): MediaService
+    {
+        return $this->getServiceLocator()->get(MediaService::class);
     }
 }

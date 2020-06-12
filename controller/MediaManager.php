@@ -15,9 +15,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2019 (original work) Open Assessment Technologies SA;
- *
+ * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
  */
+
+declare(strict_types=1);
 
 namespace oat\taoMediaManager\controller;
 
@@ -97,7 +98,7 @@ class MediaManager extends \tao_actions_SaSModule
 
         $fileManagement = $this->getServiceLocator()->get(FileManagement::SERVICE_ID);
         $stream = $fileManagement->getFileStream($fileInfo['link']);
-        if ($fileInfo['mime'] === 'application/qti+xml') {
+        if ($fileInfo['mime'] === MediaService::SHARED_STIMULUS_MIME_TYPE) {
             $this->response = $this->getPsrResponse()->withBody($stream);
         } elseif ($this->hasGetParameter('xml')) {
             $this->returnJson(htmlentities((string)$stream));
@@ -109,6 +110,6 @@ class MediaManager extends \tao_actions_SaSModule
 
     protected function getClassService()
     {
-        return MediaService::singleton();
+        return $this->getServiceLocator()->get(MediaService::class);
     }
 }

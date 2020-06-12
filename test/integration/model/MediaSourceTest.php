@@ -114,6 +114,78 @@ class MediaSourceTest extends TestCase
         $this->assertEquals($createdResourceUri, $resourceUri);
     }
 
+    /**
+     * @dataProvider mediaIdsProvider
+     */
+    public function testGetFileInfo(string $resourceId, string $searchId)
+    {
+        $parent = 'class-uri-fixture';
+        $label = 'label-fixture';
+        $mime = 'mime-fixture';
+        $size = '123456';
+        $link = 'link-fixture';
+
+        $mediaSource = new MediaSource([
+            'rootClass' => $parent,
+            'lang' => 'lang-fixture',
+        ]);
+
+        $fileManagementProphecy = $this->prophesize(FileManagement::class);
+        $fileManagementProphecy->getFileSize($link)->willReturn($size);
+
+        $ref = new \ReflectionProperty(MediaSource::class, 'fileManagementService');
+        $ref->setAccessible(true);
+        $ref->setValue($mediaSource, $fileManagementProphecy->reveal());
+
+        $classMock = $this->prophesize(\core_kernel_classes_Class::class);
+        $classMock->getUri()->willReturn('uri-fixture');
+
+        $resourceProphecy = $this->prophesize(\core_kernel_classes_Resource::class);
+        $resourceProphecy->exists()->willReturn(true);
+        $resourceProphecy->getUniquePropertyValue(Argument::any())->willReturn($link, $mime);
+        $resourceProphecy->getPropertyValues(Argument::any())->willReturn([]);
+        $resourceProphecy->getLabel()->willReturn($label);
+
+        $linkPropertyProphecy = $this->prophesize(\core_kernel_classes_Property::class);
+        $mimePropertyProphecy = $this->prophesize(\core_kernel_classes_Property::class);
+        $altTextPropertyProphecy = $this->prophesize(\core_kernel_classes_Property::class);
+
+        $modelMock = $this->prophesize(\core_kernel_persistence_smoothsql_SmoothModel::class);
+        $modelMock->getClass('class-uri-fixture')->willReturn($classMock->reveal());
+        $modelMock->getResource($resourceId)->willReturn($resourceProphecy->reveal());
+        $modelMock->getProperty(MediaService::PROPERTY_LINK)->willReturn($linkPropertyProphecy->reveal());
+        $modelMock->getProperty(MediaService::PROPERTY_MIME_TYPE)->willReturn($mimePropertyProphecy->reveal());
+        $modelMock->getProperty(MediaService::PROPERTY_ALT_TEXT)->willReturn($altTextPropertyProphecy->reveal());
+
+        $mediaSource->setModel($modelMock->reveal());
+
+        $success = $mediaSource->getFileInfo($searchId);
+
+        $this->assertEquals($label, $success['name']);
+        $this->assertArrayHasKey('uri', $success);
+        $this->assertEquals($mime, $success['mime']);
+        $this->assertEquals($size, $success['size']);
+        $this->assertEquals($link, $success['link']);
+    }
+
+    public function mediaIdsProvider(): array
+    {
+        return [
+            [
+                'https://test-tao-deploy.docker.localhost/ontologies/tao.rdf#i5',
+                'taomedia://mediamanager/https_2_test-tao-deploy_0_docker_0_localhost_1_ontologies_1_tao_0_rdf_3_i5'
+            ],
+            [
+                'https://test-tao-deploy.docker.localhost/ontologies/tao.rdf#i5',
+                'https_2_test-tao-deploy_0_docker_0_localhost_1_ontologies_1_tao_0_rdf_3_i5'
+            ],
+            [
+                'https://test-tao-deploy.docker.localhost/ontologies/tao.rdf#i5',
+                'https://test-tao-deploy.docker.localhost/ontologies/tao.rdf#i5'
+            ],
+        ];
+    }
+
     public function testUploadFail()
     {
         $this->expectException(tao_models_classes_FileNotFoundException::class);

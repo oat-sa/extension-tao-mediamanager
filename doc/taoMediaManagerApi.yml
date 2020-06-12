@@ -1,0 +1,224 @@
+openapi: 3.0.1
+info:
+  title: Media Manager API
+  description: 'TAO Media Manager API'
+  version: v1
+
+paths:
+  /taoMediaManager/SharedStimulus/create:
+    post:
+      summary: Create a default shared stimulus
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SharedStimulus'
+      responses:
+        204:
+          $ref: '#/components/responses/SharedStimulusCreatedResponse'
+        400:
+          $ref: '#/components/responses/BadRequestResponse'
+        500:
+          $ref: '#/components/responses/InternalServerErrorResponse'
+  /taoMediaManager/SharedStimulus/get:
+    get:
+      summary: Get a shared stimulus
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The shared stimulus id
+      responses:
+        200:
+          $ref: '#/components/responses/SharedStimulusCreatedResponse'
+        400:
+          $ref: '#/components/responses/BadRequestResponse'
+        500:
+          $ref: '#/components/responses/InternalServerErrorResponse'
+  /taoMediaManager/SharedStimulus/patch:
+    patch:
+      summary: Updates a shared stimulus body
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The shared stimulus id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SharedStimulusPatch'
+      responses:
+        200:
+          $ref: '#/components/responses/SharedStimulusPatchResponse'
+        400:
+          $ref: '#/components/responses/BadRequestResponse'
+        500:
+          $ref: '#/components/responses/InternalServerErrorResponse'
+  /taoMediaManager/Media/relations:
+    get:
+      summary: Get the relations between media and other resources
+      parameters:
+        - in: query
+          name: sourceId
+          required: true
+          schema:
+            type: string
+          description: The sourceId of the relation. In case of RDF id, this parameter must be urlencoded.
+      responses:
+        200:
+          $ref: '#/components/responses/MediaRelationsResponse'
+        400:
+          $ref: '#/components/responses/BadRequestResponse'
+        500:
+          $ref: '#/components/responses/InternalServerErrorResponse'
+components:
+  schemas:
+    MediaRelationResource:
+      description: 'A resource related to a media'
+      type: object
+      properties:
+        id:
+          type: string
+          example: 'http://www.tao.lu/tao.rdf#i5e89a2063326711164b1a816b433b1ec'
+        type:
+          type: string
+          enum:
+            - item
+            - media
+            - sharedStimulus
+        data:
+          description: specific payload according to type
+          type: array
+          items:
+            type: object
+          example:
+            - label: 'My Item'
+      required:
+        - classId
+    MediaRelations:
+      description: 'A relationship between two resources'
+      type: object
+      properties:
+        source:
+          $ref: '#/components/schemas/MediaRelationResource'
+        relations:
+          type: array
+          items:
+            $ref: '#/components/schemas/MediaRelationResource'
+    SharedStimulus:
+      type: object
+      properties:
+        classId:
+          type: string
+          example: 'http://tao.docker.localhost/tao.rdf#i5e89a2063326711164b1a816b433b1ec'
+        languageId:
+          type: string
+          example: 'http://www.tao.lu/Ontologies/TAO.rdf#Langen-US'
+        name:
+          type: string
+          example: 'New Passage'
+      required:
+        - classId
+    SharedStimulusCreated:
+      allOf:
+        - $ref: '#/components/schemas/SharedStimulus'
+        - type: object
+          properties:
+            id:
+              type: string
+              example: "http://tao.docker.localhost/tao.rdf#i5e89a2063326711164b1a816b433b1ec"
+            body:
+              type: string
+              example: '{
+                "success": true,
+                "data": {
+                  "serial": "i5ec3f09d28d19",
+                  "qtiClass": "include",
+                  "attributes": {},
+                  "body": {
+                    "serial": "i5ec3f09d28ef1",
+                    "body": "\n",
+                    "elements": {}
+                  }
+                }
+              }'
+    SharedStimulusPatch:
+      type: object
+      properties:
+        body:
+          type: string
+          example: '<?xml version="1.0" encoding="UTF-8"?> <div xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="stimulus_content" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/qti/qtiv2p1/imsqti_v2p1.xsd">
+                    <div class="stimulus-container">
+                        <div class="stimulus-container-inner">
+                            <img src="https://www.wikipedia.org/portal/wikipedia.org/assets/img/Wikipedia-logo-v2.png" id="cde_p2837_269"/>
+                            <ol id="cde_p2837_259">
+                                <li id="cde_p2837_260">el 1</li>
+                                <li id="cde_p2837_261">el 2</li>
+                                <li id="cde_p2837_262">el 3</li>
+                            </ol>
+                    </div>
+                </div>'
+      required:
+        - body
+    SharedStimulusCreatedResponse:
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          $ref: '#/components/schemas/SharedStimulusCreated'
+    SharedStimulusPatchResponse:
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: array
+    ErrorResponse:
+      properties:
+        success:
+          type: boolean
+          example: false
+        code:
+          type: integer
+          example: 400
+        message:
+          type: string
+  responses:
+    MediaRelationsResponse:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MediaRelations'
+    SharedStimulusCreatedResponse:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SharedStimulusCreatedResponse'
+    BadRequestResponse:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalServerErrorResponse:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    SharedStimulusPatchResponse:
+      description: Response for the patched SharedStimulus
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SharedStimulusPatchResponse'

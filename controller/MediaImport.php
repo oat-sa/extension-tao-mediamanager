@@ -15,58 +15,51 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2019 (original work) Open Assessment Technologies SA;
- *
+ * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
  */
 
 namespace oat\taoMediaManager\controller;
 
-use oat\taoMediaManager\model\FileImporter;
-use oat\taoMediaManager\model\SharedStimulusImporter;
+use oat\taoMediaManager\model\ImportHandlerFactory;
+use tao_actions_Import;
+use tao_models_classes_import_ImportHandler;
 
 /**
  * This controller provide the actions to import medias
  */
-class MediaImport extends \tao_actions_Import
+class MediaImport extends tao_actions_Import
 {
+    /** @var tao_models_classes_import_ImportHandler[] */
     private $importHandlers;
 
     /**
-     * Overwrites the parent index to add the import handlers
-     *
-     * @see tao_actions_Import::index()
+     * @inheritDoc
      */
     public function index()
     {
-        $this->setAvailableImportHandlers();
+        $this->importHandlers = $this->getImportHandlerFactory()->createAvailable();
+
         parent::index();
-    }
-
-    protected function setAvailableImportHandlers($id = null)
-    {
-        $this->importHandlers = [
-            new FileImporter($id),
-            new SharedStimulusImporter($id)
-        ];
-
-        return $this;
     }
 
     public function editMedia()
     {
-        $id = null;
-        if ($this->hasRequestParameter('instanceUri')) {
-            $id = $this->getRequestParameter('instanceUri');
-        } else {
-            $id = $this->getRequestParameter('id');
-        }
+        $id = $this->hasRequestParameter('instanceUri')
+            ? $this->getRequestParameter('instanceUri')
+            : $this->getRequestParameter('id');
 
-        $this->setAvailableImportHandlers($id);
+        $this->importHandlers = [$this->getImportHandlerFactory()->createByMediaId($id)];
+
         parent::index();
     }
 
     protected function getAvailableImportHandlers()
     {
         return $this->importHandlers;
+    }
+
+    private function getImportHandlerFactory(): ImportHandlerFactory
+    {
+        return $this->getServiceLocator()->get(ImportHandlerFactory::class);
     }
 }

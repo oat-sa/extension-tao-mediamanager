@@ -67,10 +67,16 @@ paths:
       parameters:
         - in: query
           name: sourceId
-          required: true
+          required: false
           schema:
             type: string
           description: The sourceId of the relation. In case of RDF id, this parameter must be urlencoded.
+        - in: query
+          name: classId
+          required: false
+          schema:
+            type: string
+          description: The classId will deterimine to make recursive search in order to find media that is .
       responses:
         200:
           $ref: '#/components/responses/MediaRelationsResponse'

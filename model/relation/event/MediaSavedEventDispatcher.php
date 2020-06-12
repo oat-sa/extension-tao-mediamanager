@@ -25,6 +25,7 @@ namespace oat\taoMediaManager\model\relation\event;
 use oat\oatbox\event\EventManager;
 use oat\oatbox\filesystem\File;
 use oat\oatbox\service\ConfigurableService;
+use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\sharedStimulus\parser\SharedStimulusMediaExtractor;
 use tao_helpers_File;
 
@@ -59,7 +60,7 @@ class MediaSavedEventDispatcher extends ConfigurableService
 
     private function isSharedStimulus($mimeType): bool
     {
-        return $mimeType === 'application/qti+xml';
+        return $mimeType === MediaService::SHARED_STIMULUS_MIME_TYPE;
     }
 
     private function getEventManager(): EventManager

@@ -37,7 +37,6 @@ define([
      * @returns {previewer}
      */
     return function qtiItemPreviewerFactory(container, config = {}, template = null) {
-
         const testRunnerConfig = {
             testDefinition: 'test-container',
             serviceCallId: 'previewer',
@@ -51,7 +50,7 @@ define([
                 proxy: {
                     id: 'qtiSharedStimulusItemProxy',
                     module: 'taoMediaManager/previewer/proxy/qtiSharedStimulusItem',
-                    bundle: 'taoMediaManager/loader/qtiPreviewer.min',
+                    bundle: 'taoMediaManager/loader/taoMediaManager.min',
                     category: 'proxy'
                 },
                 communicator: {
@@ -67,7 +66,7 @@ define([
                 readOnly: config.readOnly,
                 fullPage: config.fullPage,
                 plugins: config.pluginsOptions,
-                hideActionBars: config.hideActionBars,
+                hideActionBars: config.hideActionBars
             },
             proxyProvider: 'qtiSharedStimulusItemProxy'
         };
@@ -75,14 +74,13 @@ define([
         //extra context config
         testRunnerConfig.loadFromBundle = !!context.bundle;
 
-        return previewerFactory(container, testRunnerConfig, template)
-            .on('ready', runner => {
-                if (config.itemState) {
-                    runner.on('renderitem', () => runner.itemRunner.setState(config.itemState));
-                }
-                if (config.itemUri) {
-                    return runner.loadItem(config.itemUri);
-                }
-            });
+        return previewerFactory(container, testRunnerConfig, template).on('ready', runner => {
+            if (config.itemState) {
+                runner.on('renderitem', () => runner.itemRunner.setState(config.itemState));
+            }
+            if (config.itemUri) {
+                return runner.loadItem(config.itemUri);
+            }
+        });
     };
 });

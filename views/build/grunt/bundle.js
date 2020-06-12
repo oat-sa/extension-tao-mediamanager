@@ -36,7 +36,13 @@ module.exports = function (grunt) {
                         {
                             name: 'taoMediaManager',
                             default: true,
-                            babel: true
+                            babel: true,
+                            dependencies: [
+                                'taoItems/loader/taoItemsRunner.min',
+                                'taoTests/loader/taoTestsRunner.min',
+                                'taoQtiItem/loader/taoQtiItemRunner.min',
+                                'taoQtiTestPreviewer/loader/qtiPreviewer.min'
+                            ]
                         }
                     ]
                 }

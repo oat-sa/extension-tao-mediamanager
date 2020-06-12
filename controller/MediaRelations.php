@@ -24,6 +24,7 @@ namespace oat\taoMediaManager\controller;
 
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\tao\model\http\formatter\ResponseFormatter;
+use oat\tao\model\http\HttpJsonResponseTrait;
 use oat\tao\model\http\response\ErrorJsonResponse;
 use oat\tao\model\http\response\JsonResponseInterface;
 use oat\tao\model\http\response\SuccessJsonResponse;
@@ -36,6 +37,7 @@ use Throwable;
 class MediaRelations extends tao_actions_CommonModule
 {
     use LoggerAwareTrait;
+    use HttpJsonResponseTrait;
 
     public function relations(): void
     {
@@ -47,11 +49,11 @@ class MediaRelations extends tao_actions_CommonModule
                 ->getMediaRelations($query)
                 ->jsonSerialize();
 
-            $this->setResponse($this->formatResponse(new SuccessJsonResponse($collection), 200));
+            $this->setSuccessJsonResponse($collection);
         } catch (Throwable $exception) {
             $this->logError(sprintf('Error getting media relation: %s, ', $exception->getMessage()));
 
-            $this->setResponse($this->formatResponse(new ErrorJsonResponse(400, $exception->getMessage()), 400));
+            $this->setErrorJsonResponse($exception->getMessage());
         }
     }
 

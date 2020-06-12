@@ -121,7 +121,7 @@ define([
             request({
                 url: urlUtil.route('relations', 'MediaRelations', 'taoMediaManager'),
                 data: {
-                    sourceId: actionContext.id
+                    classId: actionContext.classUri
                 },
                 method: 'GET',
                 noToken: true

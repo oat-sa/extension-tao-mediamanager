@@ -26,9 +26,12 @@ use common_Exception;
 use common_exception_NotImplemented;
 use oat\oatbox\event\EventManager;
 use oat\oatbox\filesystem\FileSystemService;
+use oat\tao\model\media\MediaService;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\taoItems\model\event\ItemRemovedEvent;
 use oat\taoItems\model\event\ItemUpdatedEvent;
+use oat\taoMediaManager\model\export\service\MediaResourcePreparer;
+use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\relation\event\MediaRelationListener;
 use oat\taoMediaManager\model\relation\event\MediaRemovedEvent;
 use oat\taoMediaManager\model\relation\event\MediaSavedEvent;
@@ -96,5 +99,14 @@ class Updater extends \common_ext_ExtensionUpdater
         }
 
         $this->skip('9.9.0', '9.9.2');
+
+        if ($this->isVersion('9.9.2')) {
+            $mediaService = $this->getServiceManager()->get(MediaService::SERVICE_ID);
+            $mediaService->addMediaSource(new MediaSource());
+            $mediaService->setOption(MediaService::OPTION_PREPARER, new MediaResourcePreparer());
+            $this->getServiceManager()->register(MediaService::SERVICE_ID, $mediaService);
+
+            $this->setVersion('9.10.0');
+        }
     }
 }

@@ -33,6 +33,7 @@ use oat\tao\model\media\TaoMediaResolver;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourceSpecification;
+use Psr\Http\Message\StreamInterface;
 use qtism\data\content\BodyElement;
 use qtism\data\content\xhtml\Img;
 use qtism\data\content\xhtml\QtiObject;
@@ -50,14 +51,14 @@ class MediaResourcePreparer extends ConfigurableService
     /** @var TaoMediaResolver */
     private $mediaResolver;
 
-    public function prepare(core_kernel_classes_Resource $mediaResource, string $contents): string
+    public function prepare(core_kernel_classes_Resource $mediaResource, StreamInterface $contents): string
     {
         if (!$this->getSharedStimulusResourceSpecification()->isSatisfiedBy($mediaResource)) {
-            return $contents;
+            return (string)$contents;
         }
 
         $xmlDocument = new XmlDocument();
-        $xmlDocument->loadFromString($contents);
+        $xmlDocument->loadFromString((string)$contents);
 
         foreach ($this->getComponents($xmlDocument) as $component) {
             $mediaAsset = $this->getMediaAsset($component);

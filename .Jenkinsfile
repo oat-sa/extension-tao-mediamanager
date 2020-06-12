@@ -46,6 +46,10 @@ tao/dependency-resolver oat:dependencies:resolve --main-branch ${TEST_BRANCH} --
             steps {
                 dir('build') {
                     sh(
+                        label: 'Set dev stability level for dependencies',
+                        script: 'composer config minimum-stability dev'
+                    )
+                    sh(
                         label: 'Install/Update sources from Composer',
                         script: 'COMPOSER_DISCARD_CHANGES=true composer update --prefer-source --no-interaction --no-ansi --no-progress --no-scripts'
                     )

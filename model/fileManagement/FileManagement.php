@@ -22,6 +22,7 @@
 
 namespace oat\taoMediaManager\model\fileManagement;
 
+use oat\oatbox\filesystem\File;
 use Psr\Http\Message\StreamInterface;
 
 /**
@@ -32,7 +33,7 @@ interface FileManagement
     const SERVICE_ID = 'taoMediaManager/fileManager';
     
     /**
-     * @param string $filePath the relative path to the file
+     * @param string|File $filePath the relative path to the file
      * @return string a link to the file in order to retrieve it later
      */
     public function storeFile($filePath, $label);

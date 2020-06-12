@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint124\n"
-"PO-Revision-Date: 2020-03-20T11:16:55\n"
+"Project-Id-Version: TAO 3.4.0-sprint127\n"
+"PO-Revision-Date: 2020-05-13T10:57:47\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: nl-NL\n"
@@ -16,7 +16,27 @@ msgstr ""
 msgid "Add a media file"
 msgstr "Voeg een media bestand toe"
 
+msgid "Adding the new resource has failed"
+msgstr ""
+
 msgid "An error has occurred. Please contact your administrator."
+msgstr ""
+
+#, tao-public
+msgid "Assets"
+msgstr ""
+
+#, tao-public
+msgid "Authoring"
+msgstr ""
+
+msgid "Back to Manage Assets"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Define asset language"
 msgstr ""
 
 #, tao-public
@@ -70,17 +90,16 @@ msgstr "Initiële import"
 msgid "Instance saved"
 msgstr "Instantie opgeslagen"
 
+msgid "Language"
+msgstr ""
+
 #, tao-public
-msgid "Manage Media"
-msgstr "Beheer media"
+msgid "Manage Assets"
+msgstr ""
 
 #, tao-public
 msgid "Manage Schema"
 msgstr "Schema beheren"
-
-#, tao-public
-msgid "Media"
-msgstr "Media"
 
 msgid "Media imported successfully"
 msgstr "Media succesvol geïmporteerd"
@@ -107,15 +126,37 @@ msgstr "Verplaatsen"
 msgid "New class"
 msgstr "Nieuwe klasse"
 
+#, tao-public
+msgid "New passage"
+msgstr ""
+
 msgid "No file found for this media"
 msgstr "Geen bestand gevonden voor deze media"
+
+msgid "Passage Properties"
+msgstr ""
 
 msgid "Preview"
 msgstr "Voorbeeld"
 
+msgid "Preview the asset"
+msgstr ""
+
 #, tao-public
 msgid "Properties"
 msgstr "Eigenschappen"
+
+msgid "Replace Asset"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Save the asset"
+msgstr ""
+
+msgid "Set a CSS class name in order to customize the display style"
+msgstr ""
 
 msgid "Shared Stimulus"
 msgstr "Gedeelde stimulus"
@@ -126,14 +167,20 @@ msgstr "Gedeelde stimulus succesvol aangepast"
 msgid "Shared Stimulus imported successfully"
 msgstr "Gedeelde stimulus succesvol geïmporteerd"
 
+msgid "Style Editor"
+msgstr ""
+
+msgid "Text Block CSS Class"
+msgstr ""
+
+msgid "The item needs to be saved before it can be previewed"
+msgstr ""
+
 msgid "Unable to extract the archive"
 msgstr "Kon archief niet uitpakken"
 
 msgid "Upload Media"
 msgstr "Media uploaden"
-
-msgid "Upload new media"
-msgstr "Nieuwe media uploaden"
 
 msgid "You can\'t upload a zip file as a media"
 msgstr ""

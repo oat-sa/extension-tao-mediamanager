@@ -92,7 +92,7 @@ class RdfMediaRelationRepositoryTest extends TestCase
         );
     }
 
-    public function testFindAllForClassResource()
+    public function testFindAllForClassResource(): void
     {
         $findAllQueryMock = $this->createMock(FindAllQuery::class);
         $findAllQueryMock->method('getMediaId')->willReturn(self::TEST_CLASS_URI);

@@ -54,7 +54,6 @@ class Updater extends \common_ext_ExtensionUpdater
         }
 
         $this->skip('0.3.0', '9.4.0');
-
         if ($this->isVersion('9.4.0')) {
             OntologyUpdater::syncModels();
             $this->getServiceManager()->register(

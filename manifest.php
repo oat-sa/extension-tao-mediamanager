@@ -34,7 +34,9 @@ return [
         'tao' => '>=42.14.0',
         'generis' => '>=12.23.0',
         'taoItems' => '>=10.6.2',
-        'taoQtiItem' => '>=24.4.0'
+        'taoQtiItem' => '>=24.4.0',
+        'taoQtiTestPreviewer' => '>=2.13.0',
+        'taoTests' => '>=14.0.0'
     ],
     'models' => [
         'http://www.tao.lu/Ontologies/TAOMedia.rdf'

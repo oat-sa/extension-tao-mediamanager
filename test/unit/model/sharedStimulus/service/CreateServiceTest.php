@@ -28,6 +28,7 @@ use ErrorException;
 use oat\generis\model\data\Ontology;
 use oat\generis\test\TestCase;
 use oat\tao\model\upload\UploadService;
+use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\sharedStimulus\CreateCommand;
 use oat\taoMediaManager\model\sharedStimulus\service\CreateService;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
@@ -113,7 +114,7 @@ class CreateServiceTest extends TestCase
                     'lang' => self::LANGUAGE_URI,
                     'source' => [
                         'name' => self::NAME,
-                        'type' => 'application/qti+xml',
+                        'type' => MediaService::SHARED_STIMULUS_MIME_TYPE,
                     ],
                     'uploaded_file' => DIRECTORY_SEPARATOR
                         . self::USER_DIRECTORY_HASH

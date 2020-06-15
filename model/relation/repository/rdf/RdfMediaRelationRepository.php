@@ -55,14 +55,23 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
 
     private function findMediaWithRelations(ClassResource $class): MediaRelationCollection
     {
-        $queryBuilder = $this->getComplexSearchService()->query();
+        $includedMedia = [];
+        $includedMediaQueryBuilder = $this->getComplexSearchService()->query();
+        $includedMediaQuery = $this->getComplexSearchService()->searchType($includedMediaQueryBuilder, $class->getUri(), true);
+        $includedMediaQueryBuilder->setCriteria($includedMediaQuery);
+        $includedMediaResult = $this->getComplexSearchService()->getGateway()->search($includedMediaQueryBuilder);
 
-        $relatedMediaQuery = $this->getComplexSearchService()->searchType($queryBuilder, $class->getUri(), true);
-        $relatedMediaQuery->addCriterion(self::ITEM_RELATION_PROPERTY, SupportedOperatorHelper::IS_NOT_NULL, '');
-        $queryBuilder->setCriteria($relatedMediaQuery);
+        foreach ($includedMediaResult as $media) {
+            $includedMedia[] = $media->getUri();
+        }
+
+        $queryBuilder = $this->getComplexSearchService()->query();
+        $includedMediaQuery->addCriterion(self::ITEM_RELATION_PROPERTY, SupportedOperatorHelper::IS_NOT_NULL, '');
+        $queryBuilder->setCriteria($includedMediaQuery);
 
         $orQuery = $this->getComplexSearchService()->searchType($queryBuilder, $class->getUri(), true);
         $orQuery->addCriterion(self::MEDIA_RELATION_PROPERTY, SupportedOperatorHelper::IS_NOT_NULL, '');
+        $orQuery->addCriterion(self::MEDIA_RELATION_PROPERTY, SupportedOperatorHelper::NOT_IN, $includedMedia);
         $queryBuilder->setOr($orQuery);
 
         $mediaResult = $this->getComplexSearchService()->getGateway()->search($queryBuilder);

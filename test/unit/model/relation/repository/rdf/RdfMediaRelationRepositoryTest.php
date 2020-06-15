@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\test\unit\model\relation\repository\rdf;
 
+use core_kernel_classes_Class as ClassResource;
 use LogicException;
 use oat\generis\model\data\Ontology;
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
@@ -97,20 +98,20 @@ class RdfMediaRelationRepositoryTest extends TestCase
         $findAllQueryMock = $this->createMock(FindAllQuery::class);
         $findAllQueryMock->method('getClassId')->willReturn(self::TEST_CLASS_URI);
 
-        $resource = $this->createMock(RdfResource::class);
-        $queryResult = [$resource, $resource];
+        $class = $this->createMock(ClassResource::class);
+        $queryResult = [$class, $class];
 
-        $resource->method('getUri')->willReturn('http://resource/example');
-        $resource->method('getLabel')->willReturnOnConsecutiveCalls(
+        $class->method('getUri')->willReturn('http://resource/example');
+        $class->method('getLabel')->willReturnOnConsecutiveCalls(
             'label 1', 'label 2'
         );
 
         $this->ontology
-            ->method('getResource')
+            ->method('getClass')
             ->with(self::TEST_CLASS_URI)
-            ->willReturn($resource);
+            ->willReturn($class);
 
-        $resource->method('isClass')->willReturn(true);
+        $class->method('isClass')->willReturn(true);
 
         $this->complexSearch->method('query')->willReturn($this->queryBuilder);
         $this->complexSearch->method('searchType')->willReturn($this->query);

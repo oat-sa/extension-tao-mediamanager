@@ -22,9 +22,8 @@ define([
     'taoQtiItem/qtiCreator/model/qtiClasses',
     'taoMediaManager/qtiCreator/helper/createDummyItemData',
     'core/dataProvider/request',
-    'core/request',
     'util/url'
-], function($, Loader, qtiClasses, creatorDummyItemData, request, request2, urlUtil) {
+], function($, Loader, qtiClasses, creatorDummyItemData, request, urlUtil) {
     'use strict';
 
     const qtiNamespace = 'http://www.imsglobal.org/xsd/imsqti_v2p2';
@@ -39,38 +38,12 @@ define([
         loadSharedStimulus(config, callback) {
 
             if (config.id) {
-                request2({
-                    url: languagesUrl,
-                    method: 'GET'
-                })
-                .then(function(languages){
+                request(languagesUrl)
+                .then(function(languagesList) {
                     request(config.assetDataUrl, { id : config.id })
                         .then(function(data){
 
                             let loader, itemData;
-                            const languagesList = {
-                                'da-DK': 'Danish',
-                                'de-DE': 'German',
-                                'el-GR': 'Greek',
-                                'en-GB': 'British English',
-                                'en-US': 'English',
-                                'es-ES': 'Spanish',
-                                'es-MX': 'Mexican Spanish',
-                                'fr-CA': 'French Canadian',
-                                'fr-FR': 'French',
-                                'is-IS': 'Icelandic',
-                                'it-IT': 'Italian',
-                                'ja-JP': 'Japanese',
-                                'lt-LT': 'Lithuanian',
-                                'nl-BE': 'Flemish',
-                                'nl-NL': 'Dutch',
-                                'pt-PT': 'Portuguese',
-                                'ru-RU': 'Russian',
-                                'sv-SE': 'Swedish',
-                                'uk-UA': 'Ukrainian',
-                                'zh-CN': 'Simplified Chinese from China',
-                                'zh-TW': 'Traditional Chinese from Taiwan'
-                            };
 
                             itemData = creatorDummyItemData(data);
 
@@ -86,7 +59,7 @@ define([
 
                                 //add languages list to the item
                                 if (languagesList) {
-                                    loadedItem.data('languagesList', languagesList);
+                                    loadedItem.data('languagesList', languagesList.data);
                                 }
 
                                 callback(loadedItem, this.getLoadedClasses());

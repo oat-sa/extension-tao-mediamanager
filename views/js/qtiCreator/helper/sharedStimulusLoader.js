@@ -39,7 +39,7 @@ define([
 
             if (config.id) {
                 const languagesList = request(languagesUrl);
-                const assetData = request(config.assetDataUrl, { id : config.id })
+                const assetData = request(config.assetDataUrl, { id : config.id });
                 Promise.all([languagesList, assetData]).then((values) => {
                     let loader, itemData;
 

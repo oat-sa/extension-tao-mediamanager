@@ -184,9 +184,9 @@ class RdfMediaRelationRepositoryTest extends TestCase
 
         $this->complexSearch->method('query')->willReturn($this->queryBuilder);
         $this->complexSearch->method('searchType')->willReturn($this->query);
-        $this->queryBuilder->expects($this->once())->method('setCriteria');
+        $this->queryBuilder->expects($this->never())->method('setCriteria');
         $this->complexSearch->method('getGateway')->willReturn($this->searchGateway);
-        $this->searchGateway->expects($this->once())->method('search')->willReturn([]);
+        $this->searchGateway->expects($this->never())->method('search')->willReturn([]);
         $class = $this->createMock(ClassResource::class);
         $class->method('getSubClasses')->willReturn($this->getArrayWithLenght(11));
         $this->ontology

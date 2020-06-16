@@ -38,33 +38,30 @@ define([
         loadSharedStimulus(config, callback) {
 
             if (config.id) {
-                request(languagesUrl)
-                .then(function(languagesList) {
-                    request(config.assetDataUrl, { id : config.id })
-                        .then(function(data){
+                const languagesList = request(languagesUrl)
+                const assetData = request(config.assetDataUrl, { id : config.id })
+                Promise.all([languagesList, assetData]).then((values) => {
+                    let loader, itemData;
 
-                            let loader, itemData;
+                    itemData = creatorDummyItemData(values[1]);
 
-                            itemData = creatorDummyItemData(data);
+                    loader = new Loader().setClassesLocation(qtiClasses);
+                    loader.loadItemData(itemData, function(loadedItem) {
+                        let namespaces;
 
-                            loader = new Loader().setClassesLocation(qtiClasses);
-                            loader.loadItemData(itemData, function(loadedItem) {
-                                let namespaces;
+                        // convert item to current QTI version
+                        namespaces = loadedItem.getNamespaces();
+                        namespaces[''] = qtiNamespace;
+                        loadedItem.setNamespaces(namespaces);
+                        loadedItem.setSchemaLocations(qtiSchemaLocation);
 
-                                // convert item to current QTI version
-                                namespaces = loadedItem.getNamespaces();
-                                namespaces[''] = qtiNamespace;
-                                loadedItem.setNamespaces(namespaces);
-                                loadedItem.setSchemaLocations(qtiSchemaLocation);
+                        //add languages list to the item
+                        if (languagesList) {
+                            loadedItem.data('languagesList', values[0].data);
+                        }
 
-                                //add languages list to the item
-                                if (languagesList) {
-                                    loadedItem.data('languagesList', languagesList.data);
-                                }
-
-                                callback(loadedItem, this.getLoadedClasses());
-                            });
-                        });
+                        callback(loadedItem, this.getLoadedClasses());
+                    });
                 });
             }
         }

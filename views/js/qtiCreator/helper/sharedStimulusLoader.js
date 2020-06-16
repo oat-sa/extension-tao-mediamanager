@@ -57,7 +57,7 @@ define([
 
                         //add languages list to the item
                         if (languagesList) {
-                            loadedItem.data('languagesList', values[0].data);
+                            loadedItem.data('languagesList', values[0]);
                         }
 
                         callback(loadedItem, this.getLoadedClasses());

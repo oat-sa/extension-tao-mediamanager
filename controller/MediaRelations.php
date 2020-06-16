@@ -51,7 +51,7 @@ class MediaRelations extends tao_actions_CommonModule
         } catch (Throwable $exception) {
             $this->logError(sprintf('Error getting media relation: %s, ', $exception->getMessage()));
 
-            $this->setErrorJsonResponse($exception->getMessage());
+            $this->setErrorJsonResponse($exception->getMessage(), $exception->getCode());
         }
     }
 

@@ -111,8 +111,6 @@ class RdfMediaRelationRepositoryTest extends TestCase
             ->with(self::TEST_CLASS_URI)
             ->willReturn($class);
 
-        $class->method('isClass')->willReturn(true);
-
         $this->complexSearch->method('query')->willReturn($this->queryBuilder);
         $this->complexSearch->method('searchType')->willReturn($this->query);
 
@@ -132,13 +130,33 @@ class RdfMediaRelationRepositoryTest extends TestCase
             )
             ->willReturn($this->query);
 
-        $this->queryBuilder->expects($this->once())->method('setCriteria');
+        $this->queryBuilder->expects($this->exactly(2))->method('setCriteria');
         $this->queryBuilder->expects($this->once())->method('setOr');
         $this->complexSearch->method('getGateway')->willReturn($this->searchGateway);
         $this->searchGateway->method('search')->willReturn($queryResult);
 
         $result = $this->subject->findAll($findAllQueryMock);
         $this->assertCount(2, $result);
+    }
+
+    public function testFindAllForEmptyClassResource(): void
+    {
+        $findAllQueryMock = $this->createMock(FindAllQuery::class);
+        $findAllQueryMock->method('getClassId')->willReturn(self::TEST_CLASS_URI);
+
+        $this->complexSearch->method('query')->willReturn($this->queryBuilder);
+        $this->complexSearch->method('searchType')->willReturn($this->query);
+        $this->queryBuilder->expects($this->once())->method('setCriteria');
+        $this->complexSearch->method('getGateway')->willReturn($this->searchGateway);
+        $this->searchGateway->expects($this->once())->method('search')->willReturn([]);
+        $class = $this->createMock(ClassResource::class);
+        $this->ontology
+            ->method('getClass')
+            ->with(self::TEST_CLASS_URI)
+            ->willReturn($class);
+
+        $result = $this->subject->findAll($findAllQueryMock);
+        $this->assertCount(0, $result);
     }
 
     public function testFindAllByMediaId(): void

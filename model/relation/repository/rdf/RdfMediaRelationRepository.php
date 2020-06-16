@@ -55,11 +55,17 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
 
     private function findMediaWithRelations(ClassResource $class): MediaRelationCollection
     {
+        $mediaRelationCollection = new MediaRelationCollection();
+
         $includedMedia = [];
         $includedMediaQueryBuilder = $this->getComplexSearchService()->query();
         $includedMediaQuery = $this->getComplexSearchService()->searchType($includedMediaQueryBuilder, $class->getUri(), true);
         $includedMediaQueryBuilder->setCriteria($includedMediaQuery);
         $includedMediaResult = $this->getComplexSearchService()->getGateway()->search($includedMediaQueryBuilder);
+
+        if (count($includedMediaResult) < 1) {
+            return $mediaRelationCollection;
+        }
 
         foreach ($includedMediaResult as $media) {
             $includedMedia[] = $media->getUri();
@@ -76,7 +82,6 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
 
         $mediaResult = $this->getComplexSearchService()->getGateway()->search($queryBuilder);
 
-        $mediaRelationCollection = new MediaRelationCollection();
 
         /** @var Resource $media */
         foreach ($mediaResult as $media) {
@@ -163,16 +168,16 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
 
         return new MediaRelationCollection(
             ... $this->mapTargetRelations(
-                MediaRelation::ITEM_TYPE,
-                $rdfMediaRelations[self::ITEM_RELATION_PROPERTY],
-                $mediaId
-            )->getIterator(),
+            MediaRelation::ITEM_TYPE,
+            $rdfMediaRelations[self::ITEM_RELATION_PROPERTY],
+            $mediaId
+        )->getIterator(),
 
             ... $this->mapTargetRelations(
-                MediaRelation::MEDIA_TYPE,
-                $rdfMediaRelations[self::MEDIA_RELATION_PROPERTY],
-                $mediaId
-            )->getIterator()
+            MediaRelation::MEDIA_TYPE,
+            $rdfMediaRelations[self::MEDIA_RELATION_PROPERTY],
+            $mediaId
+        )->getIterator()
         );
     }
 
@@ -191,7 +196,7 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
         $result = $search->getGateway()
             ->search($queryBuilder);
 
-        return $this->mapSourceRelations($type, (array) $result, $targetId);
+        return $this->mapSourceRelations($type, (array)$result, $targetId);
     }
 
     private function applyQueryTargetType(QueryInterface $query, $targetId, $type)

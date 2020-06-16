@@ -27,7 +27,6 @@ use oat\oatbox\filesystem\FileSystemService;
 use oat\tao\model\media\MediaService;
 use oat\taoItems\model\event\ItemRemovedEvent;
 use oat\taoItems\model\event\ItemUpdatedEvent;
-use oat\taoMediaManager\model\export\service\MediaResourcePreparer;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\taoMediaManager\model\MediaSource;
@@ -69,8 +68,6 @@ class SetMediaManager extends InstallAction
         /** @var MediaService $mediaService */
         $mediaService = $this->getServiceManager()->get(MediaService::SERVICE_ID);
         $mediaService->addMediaSource(new MediaSource());
-        $mediaService->setOption(MediaService::OPTION_PREPARER, new MediaResourcePreparer());
-        $this->getServiceManager()->register(MediaService::SERVICE_ID, $mediaService);
 
         if ($fsService->hasDirectory('memory')) {
             $dirs = $fsService->getOption(FileSystemService::OPTION_DIRECTORIES);

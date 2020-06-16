@@ -70,6 +70,10 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
      */
     private function findMediaWithRelations(ClassResource $class): MediaRelationCollection
     {
+        if (count($class->getSubClasses(true)) > self::NESTED_CLASS_LIMIT) {
+            throw new ComplexSearchLimitException('Maximum nested classes exceeded maximum amount');
+        }
+
         $mediaRelationCollection = new MediaRelationCollection();
 
         $includedMedia = [];
@@ -77,10 +81,6 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
         $includedMediaQuery = $this->getComplexSearchService()->searchType($includedMediaQueryBuilder, $class->getUri(), true);
         $includedMediaQueryBuilder->setCriteria($includedMediaQuery);
         $includedMediaResult = $this->getComplexSearchService()->getGateway()->search($includedMediaQueryBuilder);
-
-        if (count($class->getSubClasses(true)) > self::NESTED_CLASS_LIMIT) {
-            throw new ComplexSearchLimitException('Maximum nested classes exceeded maximum amount');
-        }
 
         if (count($includedMediaResult) < 1) {
             return $mediaRelationCollection;

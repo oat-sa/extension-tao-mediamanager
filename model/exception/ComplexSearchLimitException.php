@@ -20,21 +20,16 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\relation;
+namespace oat\taoMediaManager\model\exception;
 
-use oat\oatbox\service\ConfigurableService;
-use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
-use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
+use Exception;
 
-class MediaRelationService extends ConfigurableService
+class ComplexSearchLimitException extends Exception
 {
-    public function getMediaRelations(FindAllQuery $query): MediaRelationCollection
-    {
-        return $this->getMediaRelationRepository()->findAll($query);
-    }
+    private const ERROR_CODE = 999;
 
-    private function getMediaRelationRepository(): MediaRelationRepositoryInterface
+    public function __construct(string $message = '')
     {
-        return $this->getServiceLocator()->get(MediaRelationRepositoryInterface::SERVICE_ID);
+        parent::__construct($message, self::ERROR_CODE);
     }
 }

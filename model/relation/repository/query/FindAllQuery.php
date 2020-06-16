@@ -28,13 +28,22 @@ class FindAllQuery
     /** @var string */
     private $mediaId;
 
-    public function __construct(string $mediaId)
+    /** @var string */
+    private $classId;
+
+    public function __construct(string $mediaId = null, string $classId = null)
     {
         $this->mediaId = $mediaId;
+        $this->classId = $classId;
     }
 
-    public function getMediaId(): string
+    public function getMediaId(): ?string
     {
         return $this->mediaId;
+    }
+
+    public function getClassId(): ?string
+    {
+        return $this->classId;
     }
 }

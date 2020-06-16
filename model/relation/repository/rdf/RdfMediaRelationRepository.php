@@ -22,14 +22,17 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\repository\rdf;
 
+use common_exception_Error;
 use core_kernel_classes_Class as ClassResource;
 use core_kernel_classes_Property;
 use LogicException;
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\ConfigurableService;
+use oat\search\base\exception\SearchGateWayExeption;
 use oat\search\base\QueryInterface;
 use oat\search\helper\SupportedOperatorHelper;
+use oat\taoMediaManager\model\exception\ComplexSearchLimitException;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\relation\MediaRelation;
 use oat\taoMediaManager\model\relation\MediaRelationCollection;
@@ -40,10 +43,17 @@ use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
 class RdfMediaRelationRepository extends ConfigurableService implements MediaRelationRepositoryInterface
 {
     use OntologyAwareTrait;
+    private const CLASS_MEDIA_LIMIT = 20;
+    private const NESTED_CLASS_LIMIT = 10;
 
     private const ITEM_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem';
     private const MEDIA_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedMedia';
 
+    /**
+     * @throws common_exception_Error
+     * @throws SearchGateWayExeption
+     * @throws ComplexSearchLimitException
+     */
     public function findAll(FindAllQuery $findAllQuery): MediaRelationCollection
     {
         if ($findAllQuery->getClassId()) {
@@ -53,6 +63,11 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
         return $this->findAllByMedia($findAllQuery->getMediaId());
     }
 
+    /**
+     * @throws common_exception_Error
+     * @throws SearchGateWayExeption
+     * @throws ComplexSearchLimitException
+     */
     private function findMediaWithRelations(ClassResource $class): MediaRelationCollection
     {
         $mediaRelationCollection = new MediaRelationCollection();
@@ -62,6 +77,10 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
         $includedMediaQuery = $this->getComplexSearchService()->searchType($includedMediaQueryBuilder, $class->getUri(), true);
         $includedMediaQueryBuilder->setCriteria($includedMediaQuery);
         $includedMediaResult = $this->getComplexSearchService()->getGateway()->search($includedMediaQueryBuilder);
+
+        if (count($class->getSubClasses(true)) > self::NESTED_CLASS_LIMIT) {
+            throw new ComplexSearchLimitException('Maximum nested classes exceeded maximum amount');
+        }
 
         if (count($includedMediaResult) < 1) {
             return $mediaRelationCollection;
@@ -80,6 +99,7 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
         $orQuery->addCriterion(self::MEDIA_RELATION_PROPERTY, SupportedOperatorHelper::NOT_IN, $includedMedia);
         $queryBuilder->setOr($orQuery);
 
+        $queryBuilder->setLimit(self::CLASS_MEDIA_LIMIT);
         $mediaResult = $this->getComplexSearchService()->getGateway()->search($queryBuilder);
 
 

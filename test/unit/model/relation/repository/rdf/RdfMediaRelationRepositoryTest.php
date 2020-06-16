@@ -33,6 +33,7 @@ use oat\search\helper\SupportedOperatorHelper;
 use oat\search\Query;
 use oat\search\base\SearchGateWayInterface;
 use oat\search\QueryBuilder;
+use oat\taoMediaManager\model\exception\ComplexSearchLimitException;
 use oat\taoMediaManager\model\relation\MediaRelation;
 use oat\taoMediaManager\model\relation\repository\query\FindAllByTargetQuery;
 use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
@@ -99,6 +100,8 @@ class RdfMediaRelationRepositoryTest extends TestCase
         $findAllQueryMock->method('getClassId')->willReturn(self::TEST_CLASS_URI);
 
         $class = $this->createMock(ClassResource::class);
+        $class->method('getSubClasses')->willReturn(['subclass_uri']);
+
         $queryResult = [$class, $class];
 
         $class->method('getUri')->willReturn('http://resource/example');
@@ -150,6 +153,42 @@ class RdfMediaRelationRepositoryTest extends TestCase
         $this->complexSearch->method('getGateway')->willReturn($this->searchGateway);
         $this->searchGateway->expects($this->once())->method('search')->willReturn([]);
         $class = $this->createMock(ClassResource::class);
+        $class->method('getSubClasses')->willReturn(['subclass_uri']);
+
+        $this->ontology
+            ->method('getClass')
+            ->with(self::TEST_CLASS_URI)
+            ->willReturn($class);
+
+        $result = $this->subject->findAll($findAllQueryMock);
+        $this->assertCount(0, $result);
+    }
+
+    /**
+     * @return string[]
+     */
+    private function getArrayWithLenght(int $lenght): array
+    {
+        $arrayMock = [];
+        for ($i = 1; $i <= $lenght; $i++){
+            $arrayMock[] = sprintf('sublcass_%d', $i);
+        }
+        return $arrayMock;
+    }
+
+    public function testFindAllForNestedClassResource(): void
+    {
+        $this->expectException(ComplexSearchLimitException::class);
+        $findAllQueryMock = $this->createMock(FindAllQuery::class);
+        $findAllQueryMock->method('getClassId')->willReturn(self::TEST_CLASS_URI);
+
+        $this->complexSearch->method('query')->willReturn($this->queryBuilder);
+        $this->complexSearch->method('searchType')->willReturn($this->query);
+        $this->queryBuilder->expects($this->once())->method('setCriteria');
+        $this->complexSearch->method('getGateway')->willReturn($this->searchGateway);
+        $this->searchGateway->expects($this->once())->method('search')->willReturn([]);
+        $class = $this->createMock(ClassResource::class);
+        $class->method('getSubClasses')->willReturn($this->getArrayWithLenght(11));
         $this->ontology
             ->method('getClass')
             ->with(self::TEST_CLASS_URI)

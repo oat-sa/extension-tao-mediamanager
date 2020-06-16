@@ -26,4 +26,10 @@ use Exception;
 
 class ComplexSearchLimitException extends Exception
 {
+    private const ERROR_CODE = 999;
+
+    public function __construct(string $message = '')
+    {
+        parent::__construct($message, self::ERROR_CODE);
+    }
 }

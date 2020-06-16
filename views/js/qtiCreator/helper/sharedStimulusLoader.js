@@ -22,7 +22,8 @@ define([
     'taoQtiItem/qtiCreator/model/qtiClasses',
     'taoMediaManager/qtiCreator/helper/createDummyItemData',
     'core/dataProvider/request',
-], function($, Loader, qtiClasses, creatorDummyItemData, request) {
+    'util/url'
+], function($, Loader, qtiClasses, creatorDummyItemData, request, urlUtil) {
     'use strict';
 
     const qtiNamespace = 'http://www.imsglobal.org/xsd/imsqti_v2p2';
@@ -31,58 +32,37 @@ define([
         'http://www.imsglobal.org/xsd/imsqti_v2p2' : 'http://www.imsglobal.org/xsd/qti/qtiv2p2/imsqti_v2p2.xsd'
     };
 
+    const languagesUrl = urlUtil.route('index', 'Languages', 'tao');
+
     const creatorLoader = {
         loadSharedStimulus(config, callback) {
 
             if (config.id) {
-                request(config.assetDataUrl, { id : config.id })
-                    .then(function(data){
+                const languagesList = request(languagesUrl);
+                const assetData = request(config.assetDataUrl, { id : config.id });
+                Promise.all([languagesList, assetData]).then((values) => {
+                    let loader, itemData;
 
-                        let loader, itemData;
-                        const languagesList = {
-                            'da-DK': 'Danish',
-                            'de-DE': 'German',
-                            'el-GR': 'Greek',
-                            'en-GB': 'British English',
-                            'en-US': 'English',
-                            'es-ES': 'Spanish',
-                            'es-MX': 'Mexican Spanish',
-                            'fr-CA': 'French Canadian',
-                            'fr-FR': 'French',
-                            'is-IS': 'Icelandic',
-                            'it-IT': 'Italian',
-                            'ja-JP': 'Japanese',
-                            'lt-LT': 'Lithuanian',
-                            'nl-BE': 'Flemish',
-                            'nl-NL': 'Dutch',
-                            'pt-PT': 'Portuguese',
-                            'ru-RU': 'Russian',
-                            'sv-SE': 'Swedish',
-                            'uk-UA': 'Ukrainian',
-                            'zh-CN': 'Simplified Chinese from China',
-                            'zh-TW': 'Traditional Chinese from Taiwan'
-                        };
+                    itemData = creatorDummyItemData(values[1]);
 
-                        itemData = creatorDummyItemData(data);
+                    loader = new Loader().setClassesLocation(qtiClasses);
+                    loader.loadItemData(itemData, function(loadedItem) {
+                        let namespaces;
 
-                        loader = new Loader().setClassesLocation(qtiClasses);
-                        loader.loadItemData(itemData, function(loadedItem) {
-                            let namespaces;
+                        // convert item to current QTI version
+                        namespaces = loadedItem.getNamespaces();
+                        namespaces[''] = qtiNamespace;
+                        loadedItem.setNamespaces(namespaces);
+                        loadedItem.setSchemaLocations(qtiSchemaLocation);
 
-                            // convert item to current QTI version
-                            namespaces = loadedItem.getNamespaces();
-                            namespaces[''] = qtiNamespace;
-                            loadedItem.setNamespaces(namespaces);
-                            loadedItem.setSchemaLocations(qtiSchemaLocation);
+                        //add languages list to the item
+                        if (languagesList) {
+                            loadedItem.data('languagesList', values[0]);
+                        }
 
-                            //add languages list to the item
-                            if (languagesList) {
-                                loadedItem.data('languagesList', languagesList);
-                            }
-
-                            callback(loadedItem, this.getLoadedClasses());
-                        });
+                        callback(loadedItem, this.getLoadedClasses());
                     });
+                });
             }
         }
     };

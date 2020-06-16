@@ -90,8 +90,7 @@ class Updater extends \common_ext_ExtensionUpdater
 
         if ($this->isVersion('10.0.2')) {
             $originalMediaService = $this->getServiceManager()->get(MediaService::SERVICE_ID);
-            /** @var MediaService $cleanedMediaService */
-            $cleanedMediaService = new (get_class($originalMediaService))(
+            $cleanedMediaService = new MediaService(
                 [
                     MediaService::OPTION_SOURCE => $originalMediaService->getOption(MediaService::OPTION_SOURCE),
                 ]

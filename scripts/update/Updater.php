@@ -99,7 +99,7 @@ class Updater extends \common_ext_ExtensionUpdater
 
             $this->getServiceManager()->register(MediaService::SERVICE_ID, $cleanedMediaService);
 
-            $this->setVersion('10.1.0');
+            $this->setVersion('11.0.0');
         }
     }
 }

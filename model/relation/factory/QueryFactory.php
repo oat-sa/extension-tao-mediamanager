@@ -39,7 +39,7 @@ class QueryFactory extends ConfigurableService
         $classId = $request->getQueryParams()[self::CLASS_ID] ?? null;
 
         if ($sourceId === null && $classId === null) {
-            throw new InvalidArgumentException(sprintf('Parameter sourceId or classId must be provided'));
+            throw new InvalidArgumentException('Parameter sourceId or classId must be provided');
         }
 
         return new FindAllQuery($sourceId, $classId);

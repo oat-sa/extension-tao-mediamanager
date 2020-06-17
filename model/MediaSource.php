@@ -25,6 +25,7 @@ use oat\oatbox\Configurable;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ServiceManager;
 use oat\tao\model\media\MediaManagement;
+use oat\tao\model\media\ProcessedFileStreamAware;
 use oat\taoMediaManager\model\export\service\MediaResourcePreparer;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use Psr\Http\Message\StreamInterface;
@@ -32,7 +33,7 @@ use tao_helpers_Uri;
 
 use function GuzzleHttp\Psr7\stream_for;
 
-class MediaSource extends Configurable implements MediaManagement
+class MediaSource extends Configurable implements MediaManagement, ProcessedFileStreamAware
 {
     use LoggerAwareTrait;
     use OntologyAwareTrait;

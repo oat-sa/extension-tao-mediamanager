@@ -86,9 +86,9 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->setVersion('10.0.0');
         }
 
-        $this->skip('10.0.0', '10.0.2');
+        $this->skip('10.0.0', '10.2.0');
 
-        if ($this->isVersion('10.0.2')) {
+        if ($this->isVersion('10.2.0')) {
             $originalMediaService = $this->getServiceManager()->get(MediaService::SERVICE_ID);
             $cleanedMediaService = new MediaService(
                 [

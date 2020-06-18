@@ -154,7 +154,10 @@ define([
                                 if (actionContext.tree) {
                                     $(actionContext.tree).trigger('removenode.taotree', [
                                         {
-                                            id: actionContext.uri || actionContext.classUri
+                                            uri: actionContext.uri,
+                                            classUri: actionContext.classUri,
+                                            id: actionContext.id,
+                                            signature: actionContext.signature
                                         }
                                     ]);
                                 }

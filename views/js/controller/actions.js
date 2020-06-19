@@ -119,7 +119,10 @@ define([
         } else {
             mediaRelationsData.classId = actionContext.id
         }
-        data.id = actionContext.id;
+        data.uri        = uri.decode(actionContext.uri);
+        data.classUri   = uri.decode(actionContext.classUri);
+        data.id         = actionContext.id;
+        data.signature  = actionContext.signature;
         return new Promise(function (resolve, reject) {
             request({
                 url: urlUtil.route('relations', 'MediaRelations', 'taoMediaManager'),
@@ -154,10 +157,7 @@ define([
                                 if (actionContext.tree) {
                                     $(actionContext.tree).trigger('removenode.taotree', [
                                         {
-                                            uri: actionContext.uri,
-                                            classUri: actionContext.classUri,
-                                            id: actionContext.id,
-                                            signature: actionContext.signature
+                                            id : actionContext.uri || actionContext.classUri
                                         }
                                     ]);
                                 }

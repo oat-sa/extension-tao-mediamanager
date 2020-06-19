@@ -100,7 +100,8 @@ class CreateService extends ConfigurableService
 
         $totalInstances = count($kernelClass->getInstances());
 
-        return $totalInstances === 0 ? self::DEFAULT_NAME : (self::DEFAULT_NAME . ' ' . $totalInstances);
+        $name = $totalInstances === 0 ? self::DEFAULT_NAME : (self::DEFAULT_NAME . ' ' . $totalInstances);
+        return $name . '.xml';
     }
 
     private function getTempFileName(): string

@@ -53,6 +53,6 @@ class MediaRelationServiceTest extends TestCase
             MediaRelationRepositoryInterface::SERVICE_ID => $repositoryProphecy->reveal()
         ]));
 
-        $this->assertSame($mediaRelationCollection, $service->getMediaRelations($id));
+        $this->assertSame($mediaRelationCollection, $service->getMediaRelations(new FindAllQuery($id)));
     }
 }

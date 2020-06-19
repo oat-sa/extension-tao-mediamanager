@@ -112,17 +112,21 @@ define([
     binder.register('deleteSharedStimulus', function remove(actionContext) {
         const self = this;
         let data = {};
+        let mediaRelationsData = {};
 
-        data.uri = uri.decode(actionContext.uri);
-        data.classUri = uri.decode(actionContext.classUri);
-        data.id = actionContext.id;
-        data.signature = actionContext.signature;
+        if (actionContext.context[0] === 'instance') {
+            mediaRelationsData.sourceId = actionContext.id
+        } else {
+            mediaRelationsData.classId = actionContext.id
+        }
+        data.uri        = uri.decode(actionContext.uri);
+        data.classUri   = uri.decode(actionContext.classUri);
+        data.id         = actionContext.id;
+        data.signature  = actionContext.signature;
         return new Promise(function (resolve, reject) {
             request({
                 url: urlUtil.route('relations', 'MediaRelations', 'taoMediaManager'),
-                data: {
-                    sourceId: actionContext.id
-                },
+                data: mediaRelationsData,
                 method: 'GET',
                 noToken: true
             }).then(function (responseRelated) {
@@ -153,7 +157,7 @@ define([
                                 if (actionContext.tree) {
                                     $(actionContext.tree).trigger('removenode.taotree', [
                                         {
-                                            id: actionContext.uri || actionContext.classUri
+                                            id : actionContext.uri || actionContext.classUri
                                         }
                                     ]);
                                 }

@@ -22,16 +22,19 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\test\unit\model\relation\repository\rdf;
 
+use core_kernel_classes_Class as ClassResource;
 use LogicException;
 use oat\generis\model\data\Ontology;
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
+use oat\generis\test\OntologyMockTrait;
 use oat\generis\test\TestCase;
 use oat\oatbox\log\LoggerService;
+use oat\search\helper\SupportedOperatorHelper;
 use oat\search\Query;
 use oat\search\base\SearchGateWayInterface;
 use oat\search\QueryBuilder;
+use oat\taoMediaManager\model\exception\ComplexSearchLimitException;
 use oat\taoMediaManager\model\relation\MediaRelation;
-use oat\taoMediaManager\model\relation\MediaRelationCollection;
 use oat\taoMediaManager\model\relation\repository\query\FindAllByTargetQuery;
 use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
 use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRelationRepository;
@@ -41,8 +44,12 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 class RdfMediaRelationRepositoryTest extends TestCase
 {
+    use OntologyMockTrait;
+
     private const ITEM_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem';
     private const MEDIA_RELATION_PROPERTY = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedMedia';
+
+    private const TEST_CLASS_URI = 'http://exaple.uri';
 
     /** @var RdfMediaRelationRepository */
     private $subject;
@@ -87,6 +94,110 @@ class RdfMediaRelationRepositoryTest extends TestCase
         );
     }
 
+    public function testFindAllForClassResource(): void
+    {
+        $findAllQueryMock = $this->createMock(FindAllQuery::class);
+        $findAllQueryMock->method('getClassId')->willReturn(self::TEST_CLASS_URI);
+
+        $class = $this->createMock(ClassResource::class);
+        $class->method('getSubClasses')->willReturn(['subclass_uri']);
+
+        $queryResult = [$class, $class];
+
+        $class->method('getUri')->willReturn('http://resource/example');
+        $class->method('getLabel')->willReturnOnConsecutiveCalls(
+            'label 1', 'label 2'
+        );
+
+        $this->ontology
+            ->method('getClass')
+            ->with(self::TEST_CLASS_URI)
+            ->willReturn($class);
+
+        $this->complexSearch->method('query')->willReturn($this->queryBuilder);
+        $this->complexSearch->method('searchType')->willReturn($this->query);
+
+        $this->query
+            ->method('addCriterion')
+            ->withConsecutive(
+                [
+                    self::ITEM_RELATION_PROPERTY,
+                    SupportedOperatorHelper::IS_NOT_NULL,
+                    '',
+                ],
+                [
+                    self::MEDIA_RELATION_PROPERTY,
+                    SupportedOperatorHelper::IS_NOT_NULL,
+                    '',
+                ]
+            )
+            ->willReturn($this->query);
+
+        $this->queryBuilder->expects($this->exactly(2))->method('setCriteria');
+        $this->queryBuilder->expects($this->once())->method('setOr');
+        $this->complexSearch->method('getGateway')->willReturn($this->searchGateway);
+        $this->searchGateway->method('search')->willReturn($queryResult);
+
+        $result = $this->subject->findAll($findAllQueryMock);
+        $this->assertCount(2, $result);
+    }
+
+    public function testFindAllForEmptyClassResource(): void
+    {
+        $findAllQueryMock = $this->createMock(FindAllQuery::class);
+        $findAllQueryMock->method('getClassId')->willReturn(self::TEST_CLASS_URI);
+
+        $this->complexSearch->method('query')->willReturn($this->queryBuilder);
+        $this->complexSearch->method('searchType')->willReturn($this->query);
+        $this->queryBuilder->expects($this->once())->method('setCriteria');
+        $this->complexSearch->method('getGateway')->willReturn($this->searchGateway);
+        $this->searchGateway->expects($this->once())->method('search')->willReturn([]);
+        $class = $this->createMock(ClassResource::class);
+        $class->method('getSubClasses')->willReturn(['subclass_uri']);
+
+        $this->ontology
+            ->method('getClass')
+            ->with(self::TEST_CLASS_URI)
+            ->willReturn($class);
+
+        $result = $this->subject->findAll($findAllQueryMock);
+        $this->assertCount(0, $result);
+    }
+
+    /**
+     * @return string[]
+     */
+    private function getArrayWithLenght(int $lenght): array
+    {
+        $arrayMock = [];
+        for ($i = 1; $i <= $lenght; $i++){
+            $arrayMock[] = sprintf('sublcass_%d', $i);
+        }
+        return $arrayMock;
+    }
+
+    public function testFindAllForNestedClassResource(): void
+    {
+        $this->expectException(ComplexSearchLimitException::class);
+        $findAllQueryMock = $this->createMock(FindAllQuery::class);
+        $findAllQueryMock->method('getClassId')->willReturn(self::TEST_CLASS_URI);
+
+        $this->complexSearch->method('query')->willReturn($this->queryBuilder);
+        $this->complexSearch->method('searchType')->willReturn($this->query);
+        $this->queryBuilder->expects($this->never())->method('setCriteria');
+        $this->complexSearch->method('getGateway')->willReturn($this->searchGateway);
+        $this->searchGateway->expects($this->never())->method('search')->willReturn([]);
+        $class = $this->createMock(ClassResource::class);
+        $class->method('getSubClasses')->willReturn($this->getArrayWithLenght(11));
+        $this->ontology
+            ->method('getClass')
+            ->with(self::TEST_CLASS_URI)
+            ->willReturn($class);
+
+        $result = $this->subject->findAll($findAllQueryMock);
+        $this->assertCount(0, $result);
+    }
+
     public function testFindAllByMediaId(): void
     {
         $mediaId = 'fixture';
@@ -104,7 +215,7 @@ class RdfMediaRelationRepositoryTest extends TestCase
         $resource
             ->method('getPropertiesValues')
             ->with([
-                $itemRelationProperty, $mediaRelationProperty
+                $itemRelationProperty, $mediaRelationProperty,
             ])
             ->willReturn([
                 self::ITEM_RELATION_PROPERTY => [
@@ -114,7 +225,7 @@ class RdfMediaRelationRepositoryTest extends TestCase
                 self::MEDIA_RELATION_PROPERTY => [
                     $relatedMedia1,
                     $relatedMedia2,
-                ]
+                ],
             ]);
 
         $this->ontology
@@ -327,8 +438,8 @@ class RdfMediaRelationRepositoryTest extends TestCase
         ];
 
         $searchResult = [
-            (object) ['subject' => '1'],
-            (object) ['subject' => '2'],
+            (object)['subject' => '1'],
+            (object)['subject' => '2'],
         ];
 
         $this->complexSearch
@@ -351,8 +462,7 @@ class RdfMediaRelationRepositoryTest extends TestCase
             ->expects($this->once())
             ->method('add')
             ->with(self::MEDIA_RELATION_PROPERTY)
-            ->willReturn($this->query)
-        ;
+            ->willReturn($this->query);
 
         $this->query
             ->expects($this->once())

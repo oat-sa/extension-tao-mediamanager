@@ -1,0 +1,2 @@
+{{__ 'You are about to delete the class'}} <b>{{name}}</b>, {{__ 'which contains assets that are in use elsewhere. Deleting this class will break the items and the tests that are currently using them.'}}<br>
+{{__ 'Are you sure you want to delete this class and all of its content?'}}

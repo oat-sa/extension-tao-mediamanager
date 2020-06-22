@@ -34,6 +34,8 @@ define([
     'ui/dialog/confirm',
     'util/url',
     'tpl!taoMediaManager/qtiCreator/tpl/relatedItemsPopup',
+    'tpl!taoMediaManager/qtiCreator/tpl/relatedItemsClassPopup',
+    'tpl!taoMediaManager/qtiCreator/tpl/forbiddenClassAction',
     'css!taoMediaManagerCss/media.css'
 ], function (
     _,
@@ -48,7 +50,9 @@ define([
     feedback,
     confirmDialog,
     urlUtil,
-    relatedItemsPopupTpl
+    relatedItemsPopupTpl,
+    relatedItemsClassPopupTpl,
+    forbiddenClassActionTpl
 ) {
     'use strict';
 
@@ -133,14 +137,28 @@ define([
                 let message;
                 const haveItemReferences = responseRelated.data;
                 const name = $('a.clicked', actionContext.tree).text().trim();
-                if (haveItemReferences.length === 0) {
-                    message = `${__('Are you sure you want to delete this')} <b>${name}</b>?`;
-                } else {
-                    message = relatedItemsPopupTpl({
-                        name,
-                        number: haveItemReferences.length,
-                        items: haveItemReferences
-                    });
+                if (actionContext.context[0] === 'instance') {
+                    if (haveItemReferences.length === 0) {
+                        message = `${__('Are you sure you want to delete this')} <b>${name}</b>?`;
+                    } else {
+                        message = relatedItemsPopupTpl({
+                            name,
+                            number: haveItemReferences.length,
+                            items: haveItemReferences
+                        });
+                    }
+                } else if (actionContext.context[0] !== 'instance') {
+                    if (responseRelated.code === '999') {
+                        message = forbiddenClassActionTpl();
+                    } else if (haveItemReferences.length === 0) {
+                        message = `${__('Are you sure you want to delete this class and all of its content?')}`;
+                    } else if (haveItemReferences.length !== 0) {
+                        message = relatedItemsClassPopupTpl({
+                            name,
+                            number: haveItemReferences.length,
+                            items: haveItemReferences
+                        });
+                    }
                 }
                 confirmDialog(
                     message,

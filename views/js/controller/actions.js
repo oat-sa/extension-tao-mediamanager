@@ -148,9 +148,7 @@ define([
                         });
                     }
                 } else if (actionContext.context[0] !== 'instance') {
-                    if (responseRelated.code === '999') {
-                        message = forbiddenClassActionTpl();
-                    } else if (haveItemReferences.length === 0) {
+                    if (haveItemReferences.length === 0) {
                         message = `${__('Are you sure you want to delete this class and all of its content?')}`;
                     } else if (haveItemReferences.length !== 0) {
                         message = relatedItemsClassPopupTpl({
@@ -160,38 +158,50 @@ define([
                         });
                     }
                 }
-                confirmDialog(
-                    message,
-                    function accept() {
-                        request({
-                            url: self.url,
-                            method: 'POST',
-                            data: data,
-                            dataType: 'json'
-                        }).then(function (response) {
-                            if (response.success && response.deleted) {
-                                feedback().success(response.message || __('Resource deleted'));
-
-                                if (actionContext.tree) {
-                                    $(actionContext.tree).trigger('removenode.taotree', [
-                                        {
-                                            id : actionContext.uri || actionContext.classUri
-                                        }
-                                    ]);
-                                }
-                                return resolve({
-                                    uri: actionContext.uri || actionContext.classUri
-                                });
-                            } else {
-                                reject(response.msg || __('Unable to delete the selected resource'));
-                            }
-                        });
-                    },
-                    function cancel() {
-                        reject({ cancel: true });
-                    }
-                );
+                return callConfirmModal(actionContext, message)
+            }).catch(errorObject => {
+                let message;
+                if (actionContext.context[0] !== 'instance' && errorObject.code === '999') {
+                    message = forbiddenClassActionTpl();
+                }
+                return callConfirmModal(actionContext, message)
             });
         });
     });
+
+    function callConfirmModal(actionContext, message) {
+        return new Promise(function (resolve, reject) {
+            confirmDialog(
+                message,
+                function accept() {
+                    request({
+                        url: self.url,
+                        method: 'POST',
+                        data: data,
+                        dataType: 'json'
+                    }).then(function (response) {
+                        if (response.success && response.deleted) {
+                            feedback().success(response.message || __('Resource deleted'));
+
+                            if (actionContext.tree) {
+                                $(actionContext.tree).trigger('removenode.taotree', [
+                                    {
+                                        id: actionContext.uri || actionContext.classUri
+                                    }
+                                ]);
+                            }
+                            return resolve({
+                                uri: actionContext.uri || actionContext.classUri
+                            });
+                        } else {
+                            reject(response.msg || __('Unable to delete the selected resource'));
+                        }
+                    });
+                },
+                function cancel() {
+                    reject({cancel: true});
+                }
+            );
+        });
+    }
 });

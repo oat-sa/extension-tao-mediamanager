@@ -161,7 +161,7 @@ define([
                 return callConfirmModal(actionContext, message)
             }).catch(errorObject => {
                 let message;
-                if (actionContext.context[0] !== 'instance' && errorObject.code === '999') {
+                if (actionContext.context[0] === 'class' && errorObject.response.code === 999) {
                     message = forbiddenClassActionTpl();
                 }
                 return callConfirmModal(actionContext, message)

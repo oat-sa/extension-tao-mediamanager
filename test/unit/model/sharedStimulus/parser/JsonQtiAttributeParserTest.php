@@ -69,6 +69,4 @@ class JsonQtiAttributeParserTest extends TestCase
         $result = $this->subject->parse($sharedStimulus);
         $this->assertSame('PL-pl', $result['attributes']['xml:lang']);
     }
-
-
 }

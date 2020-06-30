@@ -32,6 +32,7 @@ define([
     'core/logger',
     'ui/feedback',
     'ui/dialog/confirm',
+    'ui/dialog/alert',
     'util/url',
     'tpl!taoMediaManager/qtiCreator/tpl/relatedItemsPopup',
     'tpl!taoMediaManager/qtiCreator/tpl/relatedItemsClassPopup',
@@ -49,6 +50,7 @@ define([
     loggerFactory,
     feedback,
     confirmDialog,
+    alertDialog,
     urlUtil,
     relatedItemsPopupTpl,
     relatedItemsClassPopupTpl,
@@ -164,7 +166,7 @@ define([
                 if (actionContext.context[0] === 'class' && errorObject.response.code === 999) {
                     message = forbiddenClassActionTpl();
                 }
-                return callConfirmModal(actionContext, message)
+                return callAlertModal(actionContext, message)
             });
         });
     });
@@ -172,6 +174,42 @@ define([
     function callConfirmModal(actionContext, message) {
         return new Promise(function (resolve, reject) {
             confirmDialog(
+                message,
+                function accept() {
+                    request({
+                        url: self.url,
+                        method: 'POST',
+                        data: data,
+                        dataType: 'json'
+                    }).then(function (response) {
+                        if (response.success && response.deleted) {
+                            feedback().success(response.message || __('Resource deleted'));
+
+                            if (actionContext.tree) {
+                                $(actionContext.tree).trigger('removenode.taotree', [
+                                    {
+                                        id: actionContext.uri || actionContext.classUri
+                                    }
+                                ]);
+                            }
+                            return resolve({
+                                uri: actionContext.uri || actionContext.classUri
+                            });
+                        } else {
+                            reject(response.msg || __('Unable to delete the selected resource'));
+                        }
+                    });
+                },
+                function cancel() {
+                    reject({cancel: true});
+                }
+            );
+        });
+    }
+
+    function callAlertModal(actionContext, message) {
+        return new Promise(function (resolve, reject) {
+            alertDialog(
                 message,
                 function accept() {
                     request({

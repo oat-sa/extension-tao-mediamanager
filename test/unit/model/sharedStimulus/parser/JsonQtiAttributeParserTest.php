@@ -42,7 +42,6 @@ class JsonQtiAttributeParserTest extends TestCase
 
     public function setUp(): void
     {
-
         $this->sessionMock = $this->createMock(common_session_Session::class);
         $this->sessionServiceMock = $this->createMock(SessionService::class);
         $this->subject = new JsonQtiAttributeParser();

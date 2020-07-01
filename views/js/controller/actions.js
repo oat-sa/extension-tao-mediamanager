@@ -160,7 +160,7 @@ define([
                         });
                     }
                 }
-                return callConfirmModal(actionContext, message)
+                return callConfirmModal(actionContext, message, self.url, data)
             }).catch(errorObject => {
                 let message;
                 if (actionContext.context[0] === 'class' && errorObject.response.code === 999) {
@@ -171,75 +171,54 @@ define([
         });
     });
 
-    function callConfirmModal(actionContext, message) {
-        return new Promise(function (resolve, reject) {
-            confirmDialog(
-                message,
-                function accept() {
-                    request({
-                        url: self.url,
-                        method: 'POST',
-                        data: data,
-                        dataType: 'json'
-                    }).then(function (response) {
-                        if (response.success && response.deleted) {
-                            feedback().success(response.message || __('Resource deleted'));
-
-                            if (actionContext.tree) {
-                                $(actionContext.tree).trigger('removenode.taotree', [
-                                    {
-                                        id: actionContext.uri || actionContext.classUri
-                                    }
-                                ]);
-                            }
-                            return resolve({
-                                uri: actionContext.uri || actionContext.classUri
-                            });
-                        } else {
-                            reject(response.msg || __('Unable to delete the selected resource'));
-                        }
-                    });
-                },
-                function cancel() {
-                    reject({cancel: true});
-                }
-            );
-        });
+    function callConfirmModal(actionContext, message, url, data) {
+        return confirmDialog(
+            message,
+            () => accept(actionContext, url, data),
+            () => cancel
+        );
     }
 
     function callAlertModal(actionContext, message) {
         return new Promise(function (resolve, reject) {
             alertDialog(
                 message,
-                function accept() {
-                    request({
-                        url: self.url,
-                        method: 'POST',
-                        data: data,
-                        dataType: 'json'
-                    }).then(function (response) {
-                        if (response.success && response.deleted) {
-                            feedback().success(response.message || __('Resource deleted'));
-
-                            if (actionContext.tree) {
-                                $(actionContext.tree).trigger('removenode.taotree', [
-                                    {
-                                        id: actionContext.uri || actionContext.classUri
-                                    }
-                                ]);
-                            }
-                            return resolve({
-                                uri: actionContext.uri || actionContext.classUri
-                            });
-                        } else {
-                            reject(response.msg || __('Unable to delete the selected resource'));
-                        }
-                    });
-                },
-                function cancel() {
-                    reject({cancel: true});
-                }
+                () => cancel
             );
+        });
+    }
+
+    function accept(actionContext, url, data) {
+        return new Promise(function (resolve, reject) {
+            return request({
+                url: url,
+                method: 'POST',
+                data: data,
+                dataType: 'json'
+            }).then(function (response) {
+                if (response.success && response.deleted) {
+                    feedback().success(response.message || __('Resource deleted'));
+
+                    if (actionContext.tree) {
+                        $(actionContext.tree).trigger('removenode.taotree', [
+                            {
+                                id: actionContext.uri || actionContext.classUri
+                            }
+                        ]);
+                    }
+                    return resolve({
+                        uri: actionContext.uri || actionContext.classUri
+                    });
+                } else {
+                    reject(response.msg || __('Unable to delete the selected resource'));
+                }
+            });
+        });
+    }
+
+    function cancel() {
+        return new Promise(function (resolve, reject) {
+            reject({ cancel: true });
         });
     }
 });

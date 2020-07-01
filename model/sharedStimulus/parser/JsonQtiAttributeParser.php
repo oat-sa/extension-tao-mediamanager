@@ -40,10 +40,7 @@ class JsonQtiAttributeParser extends ConfigurableService
     {
         $document = $this->createDomDocument($sharedStimulus);
         $xinclude = $this->createXInclude($document);
-        $xinclude->setAttribute(
-            'xml:lang',
-            $document->getElementsByTagName('div')->item(0)->attributes['lang']->nodeValue ?? ''
-        );
+        $this->addLanguageAttribute($document, $xinclude);
 
         return $xinclude->toArray();
     }
@@ -72,5 +69,18 @@ class JsonQtiAttributeParser extends ConfigurableService
         $parser->loadContainerStatic($document->firstChild, $xinclude->getBody());
 
         return $xinclude;
+    }
+
+    /**
+     * @throws QtiModelException
+     */
+    private function addLanguageAttribute(DOMDocument $document, XInclude $xinclude): void
+    {
+        if (isset($document->getElementsByTagName('div')->item(0)->attributes['lang']->nodeValue)) {
+            $xinclude->setAttribute(
+                'xml:lang',
+                $document->getElementsByTagName('div')->item(0)->attributes['lang']->nodeValue
+            );
+        }
     }
 }

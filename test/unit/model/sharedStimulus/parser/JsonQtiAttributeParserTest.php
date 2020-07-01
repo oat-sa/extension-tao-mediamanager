@@ -50,6 +50,6 @@ class JsonQtiAttributeParserTest extends TestCase
         $body = '<?xml version="1.0" encoding="UTF-8"?><div xmlns="http://www.imsglobal.org/xsd/imsqti_v2p2"></div>';
         $sharedStimulus = new SharedStimulus('id', '', '', $body);
         $result = $this->subject->parse($sharedStimulus);
-        $this->assertSame('', $result['attributes']['xml:lang']);
+        $this->assertArrayNotHasKey('xml:lang', (array) $result['attributes']);
     }
 }

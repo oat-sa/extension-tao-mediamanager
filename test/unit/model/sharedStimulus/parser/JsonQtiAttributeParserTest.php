@@ -22,33 +22,18 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\test\unit\model\sharedStimulus\parser;
 
-use common_session_Session;
 use oat\generis\test\TestCase;
-use oat\oatbox\session\SessionService;
 use oat\taoMediaManager\model\sharedStimulus\parser\JsonQtiAttributeParser;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
-use PHPUnit\Framework\MockObject\MockObject;
 
 class JsonQtiAttributeParserTest extends TestCase
 {
     /** @var JsonQtiAttributeParser */
     private $subject;
 
-    /** @var SessionService|MockObject */
-    private $sessionServiceMock;
-
-    /** @var common_session_Session|MockObject */
-    private $sessionMock;
-
     public function setUp(): void
     {
-
-        $this->sessionMock = $this->createMock(common_session_Session::class);
-        $this->sessionServiceMock = $this->createMock(SessionService::class);
         $this->subject = new JsonQtiAttributeParser();
-        $this->subject->setServiceLocator($this->getServiceLocatorMock([
-            SessionService::class => $this->sessionServiceMock,
-        ]));
     }
 
     public function testParseWithLanguage(): void
@@ -62,11 +47,9 @@ class JsonQtiAttributeParserTest extends TestCase
 
     public function testParseWithoutLanguage(): void
     {
-        $this->sessionServiceMock->method('getCurrentSession')->willReturn($this->sessionMock);
-        $this->sessionMock->method('getDataLanguage')->willReturn('PL-pl');
         $body = '<?xml version="1.0" encoding="UTF-8"?><div xmlns="http://www.imsglobal.org/xsd/imsqti_v2p2"></div>';
         $sharedStimulus = new SharedStimulus('id', '', '', $body);
         $result = $this->subject->parse($sharedStimulus);
-        $this->assertSame('PL-pl', $result['attributes']['xml:lang']);
+        $this->assertSame('', $result['attributes']['xml:lang']);
     }
 }

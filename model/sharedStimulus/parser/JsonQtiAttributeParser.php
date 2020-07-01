@@ -26,7 +26,6 @@ namespace oat\taoMediaManager\model\sharedStimulus\parser;
 use DOMDocument;
 use LogicException;
 use oat\oatbox\service\ConfigurableService;
-use oat\oatbox\session\SessionService;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 use oat\taoQtiItem\model\qti\exception\QtiModelException;
 use oat\taoQtiItem\model\qti\ParserFactory;
@@ -41,7 +40,10 @@ class JsonQtiAttributeParser extends ConfigurableService
     {
         $document = $this->createDomDocument($sharedStimulus);
         $xinclude = $this->createXInclude($document);
-        $xinclude->setAttribute('xml:lang', $this->getLanguage($sharedStimulus->getBody()));
+        $xinclude->setAttribute(
+            'xml:lang',
+            $document->getElementsByTagName('div')->item(0)->attributes['lang']->nodeValue ?? ''
+        );
 
         return $xinclude->toArray();
     }
@@ -70,20 +72,5 @@ class JsonQtiAttributeParser extends ConfigurableService
         $parser->loadContainerStatic($document->firstChild, $xinclude->getBody());
 
         return $xinclude;
-    }
-
-    private function getLanguage(string $content): ?string
-    {
-        $langPosition = strpos($content, 'xml:lang=');
-        if ($langPosition) {
-            return substr($content, $langPosition + 10, 5);
-        }
-
-        return $this->getSessionService()->getCurrentSession()->getDataLanguage();
-    }
-
-    private function getSessionService(): SessionService
-    {
-        return $this->getServiceLocator()->get(SessionService::class);
     }
 }

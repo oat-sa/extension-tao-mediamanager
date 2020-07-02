@@ -129,45 +129,43 @@ define([
         data.classUri   = uri.decode(actionContext.classUri);
         data.id         = actionContext.id;
         data.signature  = actionContext.signature;
-        return new Promise(function (resolve, reject) {
-            request({
-                url: urlUtil.route('relations', 'MediaRelations', 'taoMediaManager'),
-                data: mediaRelationsData,
-                method: 'GET',
-                noToken: true
-            }).then(function (responseRelated) {
-                let message;
-                const haveItemReferences = responseRelated.data;
-                const name = $('a.clicked', actionContext.tree).text().trim();
-                if (actionContext.context[0] === 'instance') {
-                    if (haveItemReferences.length === 0) {
-                        message = `${__('Are you sure you want to delete this')} <b>${name}</b>?`;
-                    } else {
-                        message = relatedItemsPopupTpl({
-                            name,
-                            number: haveItemReferences.length,
-                            items: haveItemReferences
-                        });
-                    }
-                } else if (actionContext.context[0] !== 'instance') {
-                    if (haveItemReferences.length === 0) {
-                        message = `${__('Are you sure you want to delete this class and all of its content?')}`;
-                    } else if (haveItemReferences.length !== 0) {
-                        message = relatedItemsClassPopupTpl({
-                            name,
-                            number: haveItemReferences.length,
-                            items: haveItemReferences
-                        });
-                    }
+        return request({
+            url: urlUtil.route('relations', 'MediaRelations', 'taoMediaManager'),
+            data: mediaRelationsData,
+            method: 'GET',
+            noToken: true
+        }).then(function (responseRelated) {
+            let message;
+            const haveItemReferences = responseRelated.data;
+            const name = $('a.clicked', actionContext.tree).text().trim();
+            if (actionContext.context[0] === 'instance') {
+                if (haveItemReferences.length === 0) {
+                    message = `${__('Are you sure you want to delete this')} <b>${name}</b>?`;
+                } else {
+                    message = relatedItemsPopupTpl({
+                        name,
+                        number: haveItemReferences.length,
+                        items: haveItemReferences
+                    });
                 }
-                return callConfirmModal(actionContext, message, self.url, data)
-            }).catch(errorObject => {
-                let message;
-                if (actionContext.context[0] === 'class' && errorObject.response.code === 999) {
-                    message = forbiddenClassActionTpl();
+            } else if (actionContext.context[0] !== 'instance') {
+                if (haveItemReferences.length === 0) {
+                    message = `${__('Are you sure you want to delete this class and all of its content?')}`;
+                } else if (haveItemReferences.length !== 0) {
+                    message = relatedItemsClassPopupTpl({
+                        name,
+                        number: haveItemReferences.length,
+                        items: haveItemReferences
+                    });
                 }
-                return callAlertModal(actionContext, message)
-            });
+            }
+            return callConfirmModal(actionContext, message, self.url, data)
+        }).catch(errorObject => {
+            let message;
+            if (actionContext.context[0] === 'class' && errorObject.response.code === 999) {
+                message = forbiddenClassActionTpl();
+            }
+            return callAlertModal(actionContext, message)
         });
     });
 

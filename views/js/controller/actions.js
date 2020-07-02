@@ -130,7 +130,7 @@ define([
         data.id         = actionContext.id;
         data.signature  = actionContext.signature;
         return new Promise(function (resolve, reject) {
-            return request({
+            request({
                 url: urlUtil.route('relations', 'MediaRelations', 'taoMediaManager'),
                 data: mediaRelationsData,
                 method: 'GET',
@@ -160,27 +160,27 @@ define([
                         });
                     }
                 }
-                return callConfirmModal(actionContext, message, self.url, data, resolve, reject)
+                callConfirmModal(actionContext, message, self.url, data, resolve, reject)
             }).catch(errorObject => {
                 let message;
                 if (actionContext.context[0] === 'class' && errorObject.response.code === 999) {
                     message = forbiddenClassActionTpl();
                 }
-                return callAlertModal(actionContext, message)
+                callAlertModal(actionContext, message)
             });
         });
     });
 
     function callConfirmModal(actionContext, message, url, data, resolve, reject) {
-        return confirmDialog(
+        confirmDialog(
             message,
             () => accept(actionContext, url, data, resolve, reject),
             () => cancel(reject)
         );
     }
 
-    function callAlertModal(actionContext, message) {
-        return alertDialog(
+    function callAlertModal(actionContext, message, reject) {
+        alertDialog(
             message,
             () => cancel(reject)
         );
@@ -213,6 +213,6 @@ define([
     }
 
     function cancel(reject) {
-        return reject({ cancel: true });
+        reject({ cancel: true });
     }
 });

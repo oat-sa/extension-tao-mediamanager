@@ -166,7 +166,7 @@ define([
                 if (actionContext.context[0] === 'class' && errorObject.response.code === 999) {
                     message = forbiddenClassActionTpl();
                 }
-                callAlertModal(actionContext, message)
+                callAlertModal(actionContext, message, reject)
             });
         });
     });

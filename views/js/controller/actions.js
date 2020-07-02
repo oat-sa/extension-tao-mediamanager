@@ -180,12 +180,10 @@ define([
     }
 
     function callAlertModal(actionContext, message) {
-        return new Promise(function (resolve, reject) {
-            alertDialog(
-                message,
-                () => cancel
-            );
-        });
+        return alertDialog(
+            message,
+            () => cancel
+        );
     }
 
     function accept(actionContext, url, data) {

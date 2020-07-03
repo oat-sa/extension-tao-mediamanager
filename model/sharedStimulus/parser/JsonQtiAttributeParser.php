@@ -27,20 +27,25 @@ use DOMDocument;
 use LogicException;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
+use oat\taoQtiItem\model\qti\exception\QtiModelException;
 use oat\taoQtiItem\model\qti\ParserFactory;
 use oat\taoQtiItem\model\qti\XInclude;
 
 class JsonQtiAttributeParser extends ConfigurableService
 {
+    /**
+     * @throws QtiModelException
+     */
     public function parse(SharedStimulus $sharedStimulus): array
     {
         $document = $this->createDomDocument($sharedStimulus);
         $xinclude = $this->createXInclude($document);
+        $this->addLanguageAttribute($document, $xinclude);
 
         return $xinclude->toArray();
     }
 
-    private function createDomDocument(SharedStimulus $sharedStimulus) : DOMDocument
+    private function createDomDocument(SharedStimulus $sharedStimulus): DOMDocument
     {
         $content = $sharedStimulus->getBody();
         if (empty($content)) {
@@ -64,5 +69,18 @@ class JsonQtiAttributeParser extends ConfigurableService
         $parser->loadContainerStatic($document->firstChild, $xinclude->getBody());
 
         return $xinclude;
+    }
+
+    /**
+     * @throws QtiModelException
+     */
+    private function addLanguageAttribute(DOMDocument $document, XInclude $xinclude): void
+    {
+        if (isset($document->getElementsByTagName('div')->item(0)->attributes['lang']->nodeValue)) {
+            $xinclude->setAttribute(
+                'xml:lang',
+                $document->getElementsByTagName('div')->item(0)->attributes['lang']->nodeValue
+            );
+        }
     }
 }

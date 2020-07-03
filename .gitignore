@@ -1,1 +1,4 @@
 /media/
+vendor/
+composer.lock
+.idea/

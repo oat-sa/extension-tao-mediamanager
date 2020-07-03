@@ -48,6 +48,9 @@ define([
             serial: `response_${sharedStimulusData.body.serial}`
         };
         itemData.response = {};
+        if (sharedStimulusData.body.attributes['xml:lang']) {
+            itemData.attributes['xml:lang'] = sharedStimulusData.body.attributes['xml:lang'];
+        }
 
         return itemData;
     };

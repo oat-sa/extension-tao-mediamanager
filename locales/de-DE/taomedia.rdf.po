@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint127\n"
-"PO-Revision-Date: 2020-05-13T10:57:46\n"
+"Project-Id-Version: TAO 3.4.0-sprint132\n"
+"PO-Revision-Date: 2020-07-03T09:31:49\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: de-DE\n"
@@ -48,6 +48,26 @@ msgstr ""
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "The Media Manager Role"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedMedia
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Related media"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedMedia
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "It describes Media where this media is used"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Related item"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "It describes Item where this media is used"
 msgstr ""
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#Media

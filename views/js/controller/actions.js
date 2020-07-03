@@ -32,8 +32,11 @@ define([
     'core/logger',
     'ui/feedback',
     'ui/dialog/confirm',
+    'ui/dialog/alert',
     'util/url',
     'tpl!taoMediaManager/qtiCreator/tpl/relatedItemsPopup',
+    'tpl!taoMediaManager/qtiCreator/tpl/relatedItemsClassPopup',
+    'tpl!taoMediaManager/qtiCreator/tpl/forbiddenClassAction',
     'css!taoMediaManagerCss/media.css'
 ], function (
     _,
@@ -47,8 +50,11 @@ define([
     loggerFactory,
     feedback,
     confirmDialog,
+    alertDialog,
     urlUtil,
-    relatedItemsPopupTpl
+    relatedItemsPopupTpl,
+    relatedItemsClassPopupTpl,
+    forbiddenClassActionTpl
 ) {
     'use strict';
 
@@ -133,47 +139,80 @@ define([
                 let message;
                 const haveItemReferences = responseRelated.data;
                 const name = $('a.clicked', actionContext.tree).text().trim();
-                if (haveItemReferences.length === 0) {
-                    message = `${__('Are you sure you want to delete this')} <b>${name}</b>?`;
-                } else {
-                    message = relatedItemsPopupTpl({
-                        name,
-                        number: haveItemReferences.length,
-                        items: haveItemReferences
-                    });
-                }
-                confirmDialog(
-                    message,
-                    function accept() {
-                        request({
-                            url: self.url,
-                            method: 'POST',
-                            data: data,
-                            dataType: 'json'
-                        }).then(function (response) {
-                            if (response.success && response.deleted) {
-                                feedback().success(response.message || __('Resource deleted'));
-
-                                if (actionContext.tree) {
-                                    $(actionContext.tree).trigger('removenode.taotree', [
-                                        {
-                                            id : actionContext.uri || actionContext.classUri
-                                        }
-                                    ]);
-                                }
-                                return resolve({
-                                    uri: actionContext.uri || actionContext.classUri
-                                });
-                            } else {
-                                reject(response.msg || __('Unable to delete the selected resource'));
-                            }
+                if (actionContext.context[0] === 'instance') {
+                    if (haveItemReferences.length === 0) {
+                        message = `${__('Are you sure you want to delete this')} <b>${name}</b>?`;
+                    } else {
+                        message = relatedItemsPopupTpl({
+                            name,
+                            number: haveItemReferences.length,
+                            items: haveItemReferences
                         });
-                    },
-                    function cancel() {
-                        reject({ cancel: true });
                     }
-                );
+                } else if (actionContext.context[0] !== 'instance') {
+                    if (haveItemReferences.length === 0) {
+                        message = `${__('Are you sure you want to delete this class and all of its content?')}`;
+                    } else if (haveItemReferences.length !== 0) {
+                        message = relatedItemsClassPopupTpl({
+                            name,
+                            number: haveItemReferences.length,
+                            items: haveItemReferences
+                        });
+                    }
+                }
+                callConfirmModal(actionContext, message, self.url, data, resolve, reject)
+            }).catch(errorObject => {
+                let message;
+                if (actionContext.context[0] === 'class' && errorObject.response.code === 999) {
+                    message = forbiddenClassActionTpl();
+                }
+                callAlertModal(actionContext, message, reject)
             });
         });
     });
+
+    function callConfirmModal(actionContext, message, url, data, resolve, reject) {
+        confirmDialog(
+            message,
+            () => accept(actionContext, url, data, resolve, reject),
+            () => cancel(reject)
+        );
+    }
+
+    function callAlertModal(actionContext, message, reject) {
+        alertDialog(
+            message,
+            () => cancel(reject)
+        );
+    }
+
+    function accept(actionContext, url, data, resolve, reject) {
+        return request({
+            url: url,
+            method: 'POST',
+            data: data,
+            dataType: 'json'
+        }).then(function (response) {
+            if (response.success && response.deleted) {
+                feedback().success(response.message || __('Resource deleted'));
+
+                if (actionContext.tree) {
+                    $(actionContext.tree).trigger('removenode.taotree', [
+                        {
+                            id: actionContext.uri || actionContext.classUri
+                        }
+                    ]);
+                }
+                return resolve({
+                    uri: actionContext.uri || actionContext.classUri
+                });
+            } else {
+                reject(response.msg || __('Unable to delete the selected resource'));
+            }
+        });
+    }
+
+    function cancel(reject) {
+        reject({ cancel: true });
+    }
 });

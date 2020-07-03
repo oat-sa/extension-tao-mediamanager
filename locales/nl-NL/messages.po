@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint127\n"
-"PO-Revision-Date: 2020-05-13T10:57:47\n"
+"Project-Id-Version: TAO 3.4.0-sprint132\n"
+"PO-Revision-Date: 2020-07-03T09:31:49\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: nl-NL\n"
@@ -13,13 +13,25 @@ msgstr ""
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
 
+msgid "%s media on this environment"
+msgstr ""
+
+msgid "%s media successfully modified"
+msgstr ""
+
+msgid "%s media to modify"
+msgstr ""
+
 msgid "Add a media file"
 msgstr "Voeg een media bestand toe"
 
-msgid "Adding the new resource has failed"
+msgid "An error has occurred. Please contact your administrator."
 msgstr ""
 
-msgid "An error has occurred. Please contact your administrator."
+msgid "Are you sure you want to delete this"
+msgstr ""
+
+msgid "Are you sure you want to delete this class and all of its content?"
 msgstr ""
 
 #, tao-public
@@ -33,21 +45,27 @@ msgstr ""
 msgid "Back to Manage Assets"
 msgstr ""
 
-msgid "Cancel"
+msgid "Center"
 msgstr ""
 
-msgid "Define asset language"
+msgid "Define item language."
 msgstr ""
 
 #, tao-public
 msgid "Delete"
 msgstr "Verwijderen"
 
+msgid "Deleting this class will break the items and the tests that are currently using them."
+msgstr ""
+
 msgid "Edit Instance"
 msgstr "Pas instantie aan"
 
 msgid "Edited %s"
 msgstr "Geredigeerd %s"
+
+msgid "Element Properties"
+msgstr ""
 
 #, tao-public
 msgid "Export"
@@ -56,10 +74,10 @@ msgstr "Exporteren"
 msgid "Export Media as Zip file"
 msgstr "Exporteer media als zip bestand"
 
-msgid "Fail to edit Shared Stimulus"
+msgid "Fail to edit shared stimulus"
 msgstr "Aanpassen gedeelde stimulus heeft gefaald"
 
-msgid "Fail to edit shared stimulus"
+msgid "Fail to edit Shared Stimulus"
 msgstr "Aanpassen gedeelde stimulus heeft gefaald"
 
 msgid "Fail to import media"
@@ -73,6 +91,9 @@ msgstr "Bestand"
 
 msgid "File name"
 msgstr "Bestandsnaam"
+
+msgid "Forbidden action"
+msgstr ""
 
 #, tao-public
 msgid "Import"
@@ -90,7 +111,19 @@ msgstr "Initiële import"
 msgid "Instance saved"
 msgstr "Instantie opgeslagen"
 
+msgid "is currently used in"
+msgstr ""
+
+msgid "Issue while modifying %s"
+msgstr ""
+
+msgid "item(s)"
+msgstr ""
+
 msgid "Language"
+msgstr ""
+
+msgid "Left"
 msgstr ""
 
 #, tao-public
@@ -100,6 +133,9 @@ msgstr ""
 #, tao-public
 msgid "Manage Schema"
 msgstr "Schema beheren"
+
+msgid "Media imported"
+msgstr ""
 
 msgid "Media imported successfully"
 msgstr "Media succesvol geïmporteerd"
@@ -136,10 +172,13 @@ msgstr "Geen bestand gevonden voor deze media"
 msgid "Passage Properties"
 msgstr ""
 
+msgid "Please delete the subclasses before."
+msgstr ""
+
 msgid "Preview"
 msgstr "Voorbeeld"
 
-msgid "Preview the asset"
+msgid "Preview the item"
 msgstr ""
 
 #, tao-public
@@ -149,13 +188,16 @@ msgstr "Eigenschappen"
 msgid "Replace Asset"
 msgstr ""
 
+msgid "Resource deleted"
+msgstr ""
+
+msgid "Right"
+msgstr ""
+
 msgid "Save"
 msgstr ""
 
 msgid "Save the asset"
-msgstr ""
-
-msgid "Set a CSS class name in order to customize the display style"
 msgstr ""
 
 msgid "Shared Stimulus"
@@ -167,22 +209,46 @@ msgstr "Gedeelde stimulus succesvol aangepast"
 msgid "Shared Stimulus imported successfully"
 msgstr "Gedeelde stimulus succesvol geïmporteerd"
 
-msgid "Style Editor"
+msgid "some text ..."
 msgstr ""
 
-msgid "Text Block CSS Class"
+msgid "The class"
 msgstr ""
 
-msgid "The item needs to be saved before it can be previewed"
+msgid "This"
+msgstr ""
+
+msgid "Unable to delete the selected resource"
 msgstr ""
 
 msgid "Unable to extract the archive"
 msgstr "Kon archief niet uitpakken"
 
+msgid "Unable to import"
+msgstr ""
+
 msgid "Upload Media"
 msgstr "Media uploaden"
 
+msgid "Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
+msgstr ""
+
+msgid "Warning"
+msgstr ""
+
+msgid "which contains assets that are in use elsewhere."
+msgstr ""
+
+msgid "You are about to delete the class"
+msgstr ""
+
+msgid "you are trying to delete is too large and contains too many subclasses."
+msgstr ""
+
 msgid "You can\'t upload a zip file as a media"
+msgstr ""
+
+msgid "Your passage is saved"
 msgstr ""
 
 msgid "Zip"

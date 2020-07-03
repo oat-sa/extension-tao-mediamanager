@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint127\n"
-"PO-Revision-Date: 2020-05-13T10:57:47\n"
+"Project-Id-Version: TAO 3.4.0-sprint132\n"
+"PO-Revision-Date: 2020-07-03T09:31:49\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: fr-FR\n"
@@ -13,13 +13,25 @@ msgstr ""
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
 
+msgid "%s media on this environment"
+msgstr ""
+
+msgid "%s media successfully modified"
+msgstr ""
+
+msgid "%s media to modify"
+msgstr ""
+
 msgid "Add a media file"
 msgstr "Ajouter un fichier média"
 
-msgid "Adding the new resource has failed"
+msgid "An error has occurred. Please contact your administrator."
 msgstr ""
 
-msgid "An error has occurred. Please contact your administrator."
+msgid "Are you sure you want to delete this"
+msgstr ""
+
+msgid "Are you sure you want to delete this class and all of its content?"
 msgstr ""
 
 #, tao-public
@@ -33,21 +45,27 @@ msgstr "Édition"
 msgid "Back to Manage Assets"
 msgstr "Retour à Gérer les actifs"
 
-msgid "Cancel"
+msgid "Center"
 msgstr ""
 
-msgid "Define asset language"
-msgstr "Définir la langue de l'actif"
+msgid "Define item language."
+msgstr ""
 
 #, tao-public
 msgid "Delete"
 msgstr "Supprimer"
+
+msgid "Deleting this class will break the items and the tests that are currently using them."
+msgstr ""
 
 msgid "Edit Instance"
 msgstr "Éditer l'instance"
 
 msgid "Edited %s"
 msgstr "%s édité"
+
+msgid "Element Properties"
+msgstr ""
 
 #, tao-public
 msgid "Export"
@@ -56,10 +74,10 @@ msgstr "Exporter"
 msgid "Export Media as Zip file"
 msgstr "Exporter le média dans un fichier Zip"
 
-msgid "Fail to edit Shared Stimulus"
+msgid "Fail to edit shared stimulus"
 msgstr "Échec de l'édition du stimulus partagé"
 
-msgid "Fail to edit shared stimulus"
+msgid "Fail to edit Shared Stimulus"
 msgstr "Échec de l'édition du stimulus partagé"
 
 msgid "Fail to import media"
@@ -73,6 +91,9 @@ msgstr "Fichier"
 
 msgid "File name"
 msgstr "Nom de fichier"
+
+msgid "Forbidden action"
+msgstr ""
 
 #, tao-public
 msgid "Import"
@@ -90,8 +111,20 @@ msgstr "Import initial"
 msgid "Instance saved"
 msgstr "Instance enregistrée"
 
+msgid "is currently used in"
+msgstr ""
+
+msgid "Issue while modifying %s"
+msgstr ""
+
+msgid "item(s)"
+msgstr ""
+
 msgid "Language"
 msgstr "Langue"
+
+msgid "Left"
+msgstr ""
 
 #, tao-public
 msgid "Manage Assets"
@@ -100,6 +133,9 @@ msgstr "Gérer les actifs"
 #, tao-public
 msgid "Manage Schema"
 msgstr "Gérer le schéma"
+
+msgid "Media imported"
+msgstr ""
 
 msgid "Media imported successfully"
 msgstr "Média importé avec succès"
@@ -136,11 +172,14 @@ msgstr "Pas de fichier trouvé pour ce média"
 msgid "Passage Properties"
 msgstr "Propriétés de passage"
 
+msgid "Please delete the subclasses before."
+msgstr ""
+
 msgid "Preview"
 msgstr "Aperçu"
 
-msgid "Preview the asset"
-msgstr "Prévisualisation de l'actif"
+msgid "Preview the item"
+msgstr ""
 
 #, tao-public
 msgid "Properties"
@@ -149,14 +188,17 @@ msgstr "Propriétés"
 msgid "Replace Asset"
 msgstr "Remplacer l'actif"
 
+msgid "Resource deleted"
+msgstr ""
+
+msgid "Right"
+msgstr ""
+
 msgid "Save"
 msgstr "Sauvegarder"
 
 msgid "Save the asset"
 msgstr "Sauver l'actif"
-
-msgid "Set a CSS class name in order to customize the display style"
-msgstr "Définir un nom de classe CSS pour personnaliser le style d'affichage"
 
 msgid "Shared Stimulus"
 msgstr "Stimulus partagé"
@@ -167,22 +209,46 @@ msgstr "Stimulus partagé édité avec succès"
 msgid "Shared Stimulus imported successfully"
 msgstr "Stimulus partagé importé avec succès"
 
-msgid "Style Editor"
+msgid "some text ..."
 msgstr ""
 
-msgid "Text Block CSS Class"
-msgstr "Classe CSS du bloc de texte"
+msgid "The class"
+msgstr ""
 
-msgid "The item needs to be saved before it can be previewed"
+msgid "This"
+msgstr ""
+
+msgid "Unable to delete the selected resource"
 msgstr ""
 
 msgid "Unable to extract the archive"
 msgstr "Impossible d'extraire l'archive"
 
+msgid "Unable to import"
+msgstr ""
+
 msgid "Upload Media"
 msgstr "Envoyer un média"
 
+msgid "Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
+msgstr ""
+
+msgid "Warning"
+msgstr ""
+
+msgid "which contains assets that are in use elsewhere."
+msgstr ""
+
+msgid "You are about to delete the class"
+msgstr ""
+
+msgid "you are trying to delete is too large and contains too many subclasses."
+msgstr ""
+
 msgid "You can\'t upload a zip file as a media"
+msgstr ""
+
+msgid "Your passage is saved"
 msgstr ""
 
 msgid "Zip"

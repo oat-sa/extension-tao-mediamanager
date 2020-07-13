@@ -28,6 +28,7 @@ use core_kernel_classes_Resource;
 use oat\generis\model\data\Ontology;
 use oat\generis\test\TestCase;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
+use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\sharedStimulus\FindQuery;
 use oat\taoMediaManager\model\sharedStimulus\repository\SharedStimulusRepository;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
@@ -49,16 +50,21 @@ class SharedStimulusRepositoryTest extends TestCase
     /** @var FileManagement|MockObject */
     private $fileManagement;
 
+    /** @var MediaSource|MockObject */
+    private $mediaSource;
+
     public function setUp(): void
     {
         $this->ontology = $this->createMock(Ontology::class);
         $this->fileManagement = $this->createMock(FileManagement::class);
+        $this->mediaSource = $this->createMock(MediaSource::class);
         $this->repository = new SharedStimulusRepository();
         $this->repository->setServiceLocator(
             $this->getServiceLocatorMock(
                 [
                     Ontology::SERVICE_ID => $this->ontology,
                     FileManagement::SERVICE_ID => $this->fileManagement,
+                    MediaSource::class => $this->mediaSource,
                 ]
             )
         );

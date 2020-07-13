@@ -150,7 +150,6 @@ class MediaService extends ConfigurableService
     ): bool {
         $instance = $this->getResource($id);
         $link = $this->getLink($instance);
-
         $fileManager = $this->getFileManager();
         $fileManager->deleteFile($link);
         $link = $fileManager->storeFile($fileSource, $instance->getLabel());
@@ -196,7 +195,13 @@ class MediaService extends ConfigurableService
     {
         $instance = $resource->getUniquePropertyValue($this->getProperty(self::PROPERTY_LINK));
 
-        return $instance instanceof RdfResource ? $instance->getUri() : (string)$instance;
+        $link = $instance instanceof RdfResource ? $instance->getUri() : (string)$instance;
+        //fixing the asset Path
+        if (is_string($link)) {
+            $link = $this->getMediaSource()->unserializeAndRemovePrefixForAssets($link);
+        }
+
+        return $link;
     }
 
     private function getMediaSavedEventDispatcher(): MediaSavedEventDispatcher
@@ -230,5 +235,10 @@ class MediaService extends ConfigurableService
         }
 
         return null;
+    }
+
+    private function getMediaSource(): MediaSource
+    {
+        return $this->getServiceLocator()->get(MediaSource::class);
     }
 }

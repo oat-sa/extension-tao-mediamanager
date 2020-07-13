@@ -30,6 +30,7 @@ use oat\generis\model\data\Ontology;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\MediaService;
+use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\sharedStimulus\FindQuery;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 
@@ -59,6 +60,10 @@ class SharedStimulusRepository extends ConfigurableService implements SharedStim
     {
         $link = $this->getPropertyValue($resource, MediaService::PROPERTY_LINK);
 
+        if (is_string($link)) {
+            $link = $this->getMediaSource()->unserializeAndRemovePrefixForAssets($link);
+        }
+
         return (string)$this->getFileManagement()->getFileStream($link);
     }
 
@@ -87,5 +92,10 @@ class SharedStimulusRepository extends ConfigurableService implements SharedStim
     private function getOntology(): Ontology
     {
         return $this->getServiceLocator()->get(Ontology::SERVICE_ID);
+    }
+
+    private function getMediaSource(): MediaSource
+    {
+        return $this->getServiceLocator()->get(MediaSource::class);
     }
 }

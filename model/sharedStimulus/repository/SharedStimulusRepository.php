@@ -59,10 +59,8 @@ class SharedStimulusRepository extends ConfigurableService implements SharedStim
     private function getContent(core_kernel_classes_Resource $resource): string
     {
         $link = $this->getPropertyValue($resource, MediaService::PROPERTY_LINK);
-
-        if (is_string($link)) {
-            $link = $this->getMediaSource()->unserializeAndRemovePrefixForAssets($link);
-        }
+        //fixing the asset path
+        $link = $this->getMediaSource()->unserializeAndRemovePrefixForAssets($link);
 
         return (string)$this->getFileManagement()->getFileStream($link);
     }

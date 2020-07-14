@@ -180,10 +180,7 @@ class MediaSource extends ConfigurableService implements MediaManagement, Proces
         return $file;
     }
 
-    /**
-     * @return FileReferenceSerializer
-     */
-    private function getFileRefSerializer()
+    private function getFileRefSerializer(): FileReferenceSerializer
     {
         return $this->getServiceLocator()->get(FileReferenceSerializer::SERVICE_ID);
     }

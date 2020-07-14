@@ -157,9 +157,7 @@ class MediaSource extends ConfigurableService implements MediaManagement, Proces
         $fileLink = $resource->getUniquePropertyValue($this->getProperty(MediaService::PROPERTY_LINK));
         $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
         //fixing the asset Path
-        if (is_string($fileLink)) {
-            $fileLink = $this->unserializeAndRemovePrefixForAssets($fileLink);
-        }
+        $fileLink = $this->unserializeAndRemovePrefixForAssets($fileLink);
         $file = null;
         $mime = (string) $resource->getUniquePropertyValue($this->getProperty(MediaService::PROPERTY_MIME_TYPE));
 
@@ -205,9 +203,8 @@ class MediaSource extends ConfigurableService implements MediaManagement, Proces
         }
         $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
         //fixing the asset Path
-        if (is_string($fileLink)) {
-            $fileLink = $this->unserializeAndRemovePrefixForAssets($fileLink);
-        }
+        $fileLink = $this->unserializeAndRemovePrefixForAssets($fileLink);
+
         return $this->getFileManagement()->getFileStream($fileLink);
     }
 

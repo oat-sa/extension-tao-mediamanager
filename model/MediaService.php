@@ -197,9 +197,7 @@ class MediaService extends ConfigurableService
 
         $link = $instance instanceof RdfResource ? $instance->getUri() : (string)$instance;
         //fixing the asset Path
-        if (is_string($link)) {
-            $link = $this->getMediaSource()->unserializeAndRemovePrefixForAssets($link);
-        }
+        $link = $this->getMediaSource()->unserializeAndRemovePrefixForAssets($link);
 
         return $link;
     }

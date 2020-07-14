@@ -196,7 +196,6 @@ class MediaService extends ConfigurableService
         $instance = $resource->getUniquePropertyValue($this->getProperty(self::PROPERTY_LINK));
 
         $link = $instance instanceof RdfResource ? $instance->getUri() : (string)$instance;
-        //fixing the asset Path
         return $this->getMediaSource()->unserializeAndRemovePrefixForAssets($link);
     }
 

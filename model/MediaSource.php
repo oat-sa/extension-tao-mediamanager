@@ -156,9 +156,7 @@ class MediaSource extends ConfigurableService implements MediaManagement, Proces
 
         $fileLink = $resource->getUniquePropertyValue($this->getProperty(MediaService::PROPERTY_LINK));
         $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
-        //fixing the asset Path
         $fileLink = $this->unserializeAndRemovePrefixForAssets($fileLink);
-        $file = null;
         $mime = (string) $resource->getUniquePropertyValue($this->getProperty(MediaService::PROPERTY_MIME_TYPE));
 
         // add the alt text to file array
@@ -199,7 +197,6 @@ class MediaSource extends ConfigurableService implements MediaManagement, Proces
             throw new \tao_models_classes_FileNotFoundException($link);
         }
         $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
-        //fixing the asset Path
         $fileLink = $this->unserializeAndRemovePrefixForAssets($fileLink);
 
         return $this->getFileManagement()->getFileStream($fileLink);

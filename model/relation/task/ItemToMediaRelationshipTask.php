@@ -74,5 +74,4 @@ class ItemToMediaRelationshipTask extends AbstractRelationshipTask
 
         return $isOver;
     }
-
 }

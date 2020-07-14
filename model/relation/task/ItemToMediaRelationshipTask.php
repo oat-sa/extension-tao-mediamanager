@@ -31,7 +31,6 @@ use Throwable;
 
 class ItemToMediaRelationshipTask extends AbstractRelationshipTask
 {
-
     private function updateRelationship(core_kernel_classes_Resource $resource): void
     {
         $item = $this->getQtiService()->getDataItemByRdfItem($resource);

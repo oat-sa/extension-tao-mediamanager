@@ -22,12 +22,14 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\task;
 
+use common_persistence_KvDriver;
 use common_persistence_sql_QueryIterator;
 use common_report_Report;
 use Doctrine\DBAL\Connection;
 use Iterator;
 use oat\generis\model\OntologyAwareTrait;
 use oat\generis\model\OntologyRdf;
+use oat\generis\persistence\PersistenceManager;
 use oat\oatbox\action\Action;
 use oat\tao\model\taskQueue\QueueDispatcherInterface;
 use oat\tao\model\taskQueue\Task\CallbackTaskInterface;
@@ -41,6 +43,8 @@ abstract class AbstractRelationshipTask implements Action, ServiceLocatorAwareIn
     use ServiceLocatorAwareTrait;
     use OntologyAwareTrait;
     use TaskAwareTrait;
+
+    public const CACHE_KEY =  '::_last_known';
 
     /** @var int */
     protected $affected;
@@ -107,6 +111,8 @@ abstract class AbstractRelationshipTask implements Action, ServiceLocatorAwareIn
 
         $max = $this->getLastRowNumber();
 
+        $this->keepCurrentPosition($start);
+
         $end = $start + $chunkSize;
 
         if ($end >= $max) {
@@ -153,5 +159,12 @@ abstract class AbstractRelationshipTask implements Action, ServiceLocatorAwareIn
     protected function addAnomaly(string $id, string $uri, string $reason): void
     {
         $this->anomalies->add(new common_report_Report(common_report_Report::TYPE_WARNING, $reason, [$id, $uri]));
+    }
+
+    private function keepCurrentPosition(int $param): void
+    {
+        /** @var common_persistence_KvDriver $persistence */
+        $persistence = $this->getServiceLocator()->get(PersistenceManager::SERVICE_ID)->getPersistenceById('default_kv');
+        $persistence->set(static::class . static::CACHE_KEY, $param);
     }
 }

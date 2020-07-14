@@ -22,8 +22,19 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\task;
 
+use Iterator;
+use oat\taoMediaManager\model\MediaService;
 
-class MediaToMedia
+class MediaToMediaRelationTask extends AbstractRelationshipTask
 {
 
+    protected function getTargetClasses(): array
+    {
+        return $this->getClass(MediaService::ROOT_CLASS_URI)->getSubClasses(true);
+    }
+
+    protected function applyProcessor(Iterator $iterator): bool
+    {
+        // TODO: Implement applyProcessor() method.
+    }
 }

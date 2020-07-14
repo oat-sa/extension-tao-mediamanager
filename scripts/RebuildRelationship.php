@@ -136,22 +136,29 @@ class RebuildRelationship extends ScriptAction
         try {
             $task = $this->spawnTask($start, $chunkSize, $pickSize, $taskClass, $repeat);
 
-            $result = $this->getTaskLogReturnData($task->getId());
-            if (0 === strcasecmp($result['status'], TaskLogInterface::STATUS_FAILED)) {
+            $taskLogEntity = $this->getTaskLogEntity($task->getId());
+            $taskReport = $taskLogEntity->getReport();
+
+            if (0 === strcasecmp($taskLogEntity->getStatus()->getLabel(), TaskLogInterface::STATUS_FAILED)) {
                 throw new RuntimeException('task failed please refer logs');
             }
         } catch (Throwable $e) {
             return common_report_Report::createFailure($e->getMessage());
         }
 
-        return common_report_Report::createSuccess(
+        $report = common_report_Report::createSuccess(
             sprintf(
-                "Operation against %d items took %fsec and %dMb",
-                1,
+                "Operation against took %fsec and %dMb",
                 (time() - $startedAt),
                 memory_get_peak_usage(true) / 1024 / 1024
             )
         );
+
+        if (null !== $taskReport) {
+            $report->add($taskReport);
+        }
+
+        return $report;
     }
 
     protected function provideUsage()
@@ -206,6 +213,6 @@ class RebuildRelationship extends ScriptAction
         if (self::TARGET_ITEMS === $target) {
             return MediaToMediaRelationTask::class;
         }
-        throw  new InvalidArgumentException('Incorrect target please run script with -h flag');
+        throw new InvalidArgumentException('Incorrect target please run script with -h flag');
     }
 }

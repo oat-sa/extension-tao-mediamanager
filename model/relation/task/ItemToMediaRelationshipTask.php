@@ -27,6 +27,7 @@ use Iterator;
 use oat\tao\model\TaoOntology;
 use oat\taoQtiItem\model\qti\event\UpdatedItemEventDispatcher;
 use oat\taoQtiItem\model\qti\Service;
+use Throwable;
 
 class ItemToMediaRelationshipTask extends AbstractRelationshipTask
 {
@@ -57,21 +58,31 @@ class ItemToMediaRelationshipTask extends AbstractRelationshipTask
 
     protected function applyProcessor(Iterator $iterator): bool
     {
+        /** @var array $item */
         $item = $iterator->current();
         ++$this->affected;
 
-        echo sprintf(
-            '%s %s %s %s',
-            $this->affected,
-            $item['id'],
-            $item['subject'],
-            PHP_EOL
-        );
+        $id = $item['id'];
+        $subject = $item['subject'];
 
-        $this->updateRelationship($this->getResource($item['subject']));
+        try {
+            echo sprintf(
+                '%s %s %s %s',
+                $this->affected,
+                $id,
+                $subject,
+                PHP_EOL
+            );
+
+            $this->updateRelationship($this->getResource($subject));
+        } catch (Throwable $exception) {
+            $this->addAnomaly($id, $subject, $exception->getMessage());
+        }
 
         $isOver = $this->pickSize ? $this->affected < $this->pickSize * 2 : true;
 
         return $isOver;
     }
+
+
 }

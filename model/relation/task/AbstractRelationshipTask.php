@@ -42,8 +42,12 @@ abstract class AbstractRelationshipTask implements Action, ServiceLocatorAwareIn
     use OntologyAwareTrait;
     use TaskAwareTrait;
 
+    /** @var int */
     protected $affected;
+    /** @var int */
     protected $pickSize;
+    /** @var common_report_Report */
+    protected $anomalies;
 
     protected function getLastRowNumber(): int
     {
@@ -78,7 +82,7 @@ abstract class AbstractRelationshipTask implements Action, ServiceLocatorAwareIn
     {
         $persistence = $this->getModel()->getPersistence();
 
-        $query = 'SELECT * FROM statements WHERE (id BETWEEN :start AND :end) AND predicate = :predicate AND object IN (:class) ORDER BY id';
+        $query = 'SELECT id, subject FROM statements WHERE (id BETWEEN :start AND :end) AND predicate = :predicate AND object IN (:class) ORDER BY id';
         $params = [
             'start' => $start,
             'end' => $end,
@@ -113,6 +117,8 @@ abstract class AbstractRelationshipTask implements Action, ServiceLocatorAwareIn
 
         $iterator = $this->getIterator($itemClasses, $start, $end);
 
+        $this->initAnomaliesCollector();
+
         iterator_apply(
             $iterator,
             [$this, 'applyProcessor'],
@@ -126,12 +132,26 @@ abstract class AbstractRelationshipTask implements Action, ServiceLocatorAwareIn
             }
         }
 
-        return common_report_Report::createSuccess(
+        $report = common_report_Report::createSuccess(
             sprintf("Items in range from %s to %s proceeded in amount of %s", $start, $end, $this->affected)
         );
+
+        $report->add($this->anomalies);
+
+        return $report;
     }
 
     abstract protected function getTargetClasses(): array;
 
     abstract protected function applyProcessor(Iterator $iterator): bool;
+
+    private function initAnomaliesCollector(): void
+    {
+        $this->anomalies = common_report_Report::createInfo('Anomalies list');
+    }
+
+    protected function addAnomaly(string $id, string $uri, string $reason): void
+    {
+        $this->anomalies->add(new common_report_Report(common_report_Report::TYPE_WARNING, $reason, [$id, $uri]));
+    }
 }

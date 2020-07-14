@@ -20,8 +20,8 @@
 
 namespace oat\taoMediaManager\model;
 
-use oat\generis\model\fileReference\FileReferenceSerializer;
 use oat\generis\model\OntologyAwareTrait;
+use oat\oatbox\Configurable;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\ServiceManager;
@@ -29,21 +29,18 @@ use oat\tao\model\media\MediaManagement;
 use oat\tao\model\media\ProcessedFileStreamAware;
 use oat\taoMediaManager\model\export\service\MediaResourcePreparer;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
+use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
 use Psr\Http\Message\StreamInterface;
 use tao_helpers_Uri;
-use core_kernel_classes_Triple as Triple;
+
 use function GuzzleHttp\Psr7\stream_for;
 
-
-class MediaSource extends ConfigurableService implements MediaManagement, ProcessedFileStreamAware
+class MediaSource extends Configurable implements MediaManagement, ProcessedFileStreamAware
 {
     use LoggerAwareTrait;
     use OntologyAwareTrait;
 
     public const SCHEME_NAME = 'taomedia://mediamanager/';
-
-    private const FILE_PREFIX = 'file://';
-    private const MEDIA_MANAGER_FOLDER = 'mediaManager';
 
     /** @var MediaService */
     protected $mediaService;
@@ -156,7 +153,7 @@ class MediaSource extends ConfigurableService implements MediaManagement, Proces
 
         $fileLink = $resource->getUniquePropertyValue($this->getProperty(MediaService::PROPERTY_LINK));
         $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
-        $fileLink = $this->unserializeAndRemovePrefixForAssets($fileLink);
+        $fileLink = $this->getFileSourceUnserializer()->unserialize($fileLink);
         $mime = (string) $resource->getUniquePropertyValue($this->getProperty(MediaService::PROPERTY_MIME_TYPE));
 
         // add the alt text to file array
@@ -192,7 +189,7 @@ class MediaSource extends ConfigurableService implements MediaManagement, Proces
             throw new \tao_models_classes_FileNotFoundException($link);
         }
         $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
-        $fileLink = $this->unserializeAndRemovePrefixForAssets($fileLink);
+        $fileLink = $this->getFileSourceUnserializer()->unserialize($fileLink);
 
         return $this->getFileManagement()->getFileStream($fileLink);
     }
@@ -301,7 +298,7 @@ class MediaSource extends ConfigurableService implements MediaManagement, Proces
      *
      * @return ServiceManager
      */
-    public function getServiceLocator()
+    protected function getServiceLocator()
     {
         return ServiceManager::getServiceManager();
     }
@@ -353,33 +350,13 @@ class MediaSource extends ConfigurableService implements MediaManagement, Proces
         );
     }
 
-    public function addFilePrefixForAssets(Triple $triple): void
-    {
-        if (
-            $triple->predicate === MediaService::PROPERTY_LINK
-            && strpos($triple->object, self::FILE_PREFIX) === false
-        ) {
-            $triple->object = self::FILE_PREFIX . self::MEDIA_MANAGER_FOLDER . DIRECTORY_SEPARATOR . $triple->object;
-        }
-    }
-
-    public function unserializeAndRemovePrefixForAssets(string $link): string
-    {
-        if (strpos($link, self::FILE_PREFIX . self::MEDIA_MANAGER_FOLDER) !== false) {
-            $unserializedFile = $this->getFileRefSerializer()->unserializeFile($link);
-            $link = (string)$unserializedFile->getPrefix();
-        }
-
-        return $link;
-    }
-
     private function getPreparer(): MediaResourcePreparer
     {
         return $this->getServiceLocator()->get(MediaResourcePreparer::class);
     }
 
-    private function getFileRefSerializer(): FileReferenceSerializer
+    private function getFileSourceUnserializer(): FileSourceUnserializer
     {
-        return $this->getServiceLocator()->get(FileReferenceSerializer::SERVICE_ID);
+        return $this->getServiceLocator()->get(FileSourceUnserializer::class);
     }
 }

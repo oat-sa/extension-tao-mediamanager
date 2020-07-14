@@ -29,6 +29,7 @@ use core_kernel_classes_Resource;
 use oat\generis\model\data\Ontology;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
+use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\sharedStimulus\FindQuery;
@@ -59,7 +60,7 @@ class SharedStimulusRepository extends ConfigurableService implements SharedStim
     private function getContent(core_kernel_classes_Resource $resource): string
     {
         $link = $this->getPropertyValue($resource, MediaService::PROPERTY_LINK);
-        $link = $this->getMediaSource()->unserializeAndRemovePrefixForAssets($link);
+        $link = $this->getFileSourceUnserializer()->unserialize($link);
 
         return (string)$this->getFileManagement()->getFileStream($link);
     }
@@ -91,8 +92,8 @@ class SharedStimulusRepository extends ConfigurableService implements SharedStim
         return $this->getServiceLocator()->get(Ontology::SERVICE_ID);
     }
 
-    private function getMediaSource(): MediaSource
+    private function getFileSourceUnserializer(): FileSourceUnserializer
     {
-        return $this->getServiceLocator()->get(MediaSource::class);
+        return $this->getServiceLocator()->get(FileSourceUnserializer::class);
     }
 }

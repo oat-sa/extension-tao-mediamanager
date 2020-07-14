@@ -197,9 +197,7 @@ class MediaService extends ConfigurableService
 
         $link = $instance instanceof RdfResource ? $instance->getUri() : (string)$instance;
         //fixing the asset Path
-        $link = $this->getMediaSource()->unserializeAndRemovePrefixForAssets($link);
-
-        return $link;
+        return $this->getMediaSource()->unserializeAndRemovePrefixForAssets($link);
     }
 
     private function getMediaSavedEventDispatcher(): MediaSavedEventDispatcher

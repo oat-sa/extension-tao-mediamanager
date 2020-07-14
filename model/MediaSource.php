@@ -178,11 +178,6 @@ class MediaSource extends ConfigurableService implements MediaManagement, Proces
         return $file;
     }
 
-    private function getFileRefSerializer(): FileReferenceSerializer
-    {
-        return $this->getServiceLocator()->get(FileReferenceSerializer::SERVICE_ID);
-    }
-
     /**
      * @param string $link
      * @return \Psr\Http\Message\StreamInterface
@@ -381,5 +376,10 @@ class MediaSource extends ConfigurableService implements MediaManagement, Proces
     private function getPreparer(): MediaResourcePreparer
     {
         return $this->getServiceLocator()->get(MediaResourcePreparer::class);
+    }
+
+    private function getFileRefSerializer(): FileReferenceSerializer
+    {
+        return $this->getServiceLocator()->get(FileReferenceSerializer::SERVICE_ID);
     }
 }

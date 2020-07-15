@@ -83,7 +83,7 @@ abstract class AbstractRelationshipTask implements Action, ServiceLocatorAwareIn
         );
     }
 
-    protected function getIterator(array $itemClasses, $start, $end): common_persistence_sql_QueryIterator
+    protected function getIterator(iterable $itemClasses, $start, $end): common_persistence_sql_QueryIterator
     {
         $persistence = $this->getModel()->getPersistence();
 

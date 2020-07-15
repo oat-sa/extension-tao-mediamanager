@@ -54,7 +54,6 @@ class ItemToMediaRelationshipTask extends AbstractRelationshipTask
         return $this->getClass(TaoOntology::CLASS_URI_ITEM)->getSubClasses(true);
     }
 
-
     protected function applyProcessor(Iterator $iterator): bool
     {
         /** @var array $item */
@@ -82,6 +81,5 @@ class ItemToMediaRelationshipTask extends AbstractRelationshipTask
 
         return $isOver;
     }
-
 
 }

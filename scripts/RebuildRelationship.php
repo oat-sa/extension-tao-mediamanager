@@ -150,7 +150,7 @@ class RebuildRelationship extends ScriptAction
 
         $report = common_report_Report::createSuccess(
             sprintf(
-                "Operation against took %fsec and %dMb",
+                "Operation took %fsec and %dMb",
                 (time() - $startedAt),
                 memory_get_peak_usage(true) / 1024 / 1024
             )
@@ -202,6 +202,7 @@ class RebuildRelationship extends ScriptAction
 
     private function addTaskBroker(string $queue)
     {
+
     }
 
     protected function returnJson($data, $httpStatus = 200)

@@ -23,26 +23,26 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\relation\task;
 
 use common_exception_MissingParameter;
-use common_persistence_sql_QueryIterator;
 use common_report_Report;
-use Doctrine\DBAL\Connection;
 use Iterator;
 use oat\generis\model\OntologyAwareTrait;
-use oat\generis\model\OntologyRdf;
 use oat\oatbox\action\Action;
+use oat\oatbox\log\LoggerAwareTrait;
 use oat\tao\model\taskQueue\QueueDispatcherInterface;
 use oat\tao\model\taskQueue\Task\CallbackTaskInterface;
 use oat\tao\model\taskQueue\Task\TaskAwareInterface;
 use oat\tao\model\taskQueue\Task\TaskAwareTrait;
+use Throwable;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorAwareTrait;
 
-abstract class AbstractRelationshipTask implements Action, ServiceLocatorAwareInterface, TaskAwareInterface
+abstract class AbstractStatementMigrationTask implements Action, ServiceLocatorAwareInterface, TaskAwareInterface
 {
     use ServiceLocatorAwareTrait;
     use OntologyAwareTrait;
     use TaskAwareTrait;
     use PositionTrackTrait;
+    use LoggerAwareTrait;
 
     public const CACHE_KEY = '::_last_known';
 
@@ -55,50 +55,9 @@ abstract class AbstractRelationshipTask implements Action, ServiceLocatorAwareIn
     /** @var common_report_Report */
     protected $anomalies;
 
-    protected function getLastRowNumber(): int
-    {
-        $platform = $this->getModel()->getPersistence()->getPlatForm();
-        $query = $platform->getQueryBuilder()
-            ->select('MAX(id)')
-            ->from('statements');
+    abstract protected function getTargetClasses(): array;
 
-        $results = $query->execute()->fetchColumn();
-
-        return (int)$results;
-    }
-
-    protected function selfRepeat(int $start, int $chunkSize, int $pickSize, bool $repeat): CallbackTaskInterface
-    {
-        /** @var QueueDispatcherInterface $queueDispatcher */
-        $queueDispatcher = $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
-        return $queueDispatcher->createTask(
-            new static(),
-            [$start, $chunkSize, $pickSize, $repeat],
-            sprintf(
-                'Relation recovery for %s started from %s with chunk size of %s',
-                self::class,
-                $start,
-                $chunkSize
-            )
-        );
-    }
-
-    protected function getIterator(iterable $itemClasses, $start, $end): common_persistence_sql_QueryIterator
-    {
-        $persistence = $this->getModel()->getPersistence();
-
-        $query = 'SELECT id, subject FROM statements WHERE (id BETWEEN :start AND :end) AND predicate = :predicate AND object IN (:class) ORDER BY id';
-        $params = [
-            'start' => $start,
-            'end' => $end,
-            'predicate' => OntologyRdf::RDF_TYPE,
-            'class' => array_keys($itemClasses)
-        ];
-
-        $types['class'] = Connection::PARAM_STR_ARRAY;
-
-        return new common_persistence_sql_QueryIterator($persistence, $query, $params, $types);
-    }
+    abstract protected function processUnit(array $unit): void;
 
     public function __invoke($params)
     {
@@ -122,7 +81,7 @@ abstract class AbstractRelationshipTask implements Action, ServiceLocatorAwareIn
 
         $itemClasses = $this->getTargetClasses();
 
-        $iterator = $this->getIterator($itemClasses, $start, $end);
+        $iterator = $this->getServiceLocator()->get(TaskIterator::class)->getIterator($itemClasses, $start, $end);
 
         $this->initAnomaliesCollector();
 
@@ -150,17 +109,55 @@ abstract class AbstractRelationshipTask implements Action, ServiceLocatorAwareIn
         return $report;
     }
 
-    abstract protected function getTargetClasses(): array;
+    protected function getLastRowNumber(): int
+    {
+        return $this->getServiceLocator()->get(StatementLastIdRetriever::class)->retrieve();
+    }
 
-    abstract protected function applyProcessor(Iterator $iterator): bool;
+    protected function addAnomaly(string $id, string $uri, string $reason): void
+    {
+        $this->anomalies->add(new common_report_Report(common_report_Report::TYPE_WARNING, $reason, [$id, $uri]));
+    }
 
     private function initAnomaliesCollector(): void
     {
         $this->anomalies = common_report_Report::createInfo('Anomalies list');
     }
 
-    protected function addAnomaly(string $id, string $uri, string $reason): void
+    private function applyProcessor(Iterator $iterator): bool
     {
-        $this->anomalies->add(new common_report_Report(common_report_Report::TYPE_WARNING, $reason, [$id, $uri]));
+        /** @var array $unit */
+        $unit = $iterator->current();
+
+        $id = $unit['id'];
+        $subject = $unit['subject'];
+
+        try {
+            $this->logDebug(sprintf('%s processing %s as %s', static::class, $id, $subject));
+
+            $this->processUnit($unit);
+
+            ++$this->affected;
+        } catch (Throwable $exception) {
+            $this->addAnomaly($id, $subject, $exception->getMessage());
+        }
+
+        return $this->pickSize ? $this->affected < $this->pickSize * 2 : true;
+    }
+
+    private function selfRepeat(int $start, int $chunkSize, int $pickSize, bool $repeat): CallbackTaskInterface
+    {
+        /** @var QueueDispatcherInterface $queueDispatcher */
+        $queueDispatcher = $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
+        return $queueDispatcher->createTask(
+            new static(),
+            [$start, $chunkSize, $pickSize, $repeat],
+            sprintf(
+                'Relation recovery for %s started from %s with chunk size of %s',
+                self::class,
+                $start,
+                $chunkSize
+            )
+        );
     }
 }

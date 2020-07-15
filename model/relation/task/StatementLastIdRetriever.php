@@ -15,26 +15,31 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2020 (original work) Open Assessment Technologies SA
  */
 
 declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\task;
 
-use Iterator;
-use oat\taoMediaManager\model\MediaService;
 
-class MediaToMediaRelationTask extends AbstractStatementMigrationTask
+use oat\generis\model\OntologyAwareTrait;
+use oat\oatbox\service\ConfigurableService;
+
+class StatementLastIdRetriever extends ConfigurableService
 {
+    use OntologyAwareTrait;
 
-    protected function getTargetClasses(): array
+    public function retrieve(): int
     {
-        return $this->getClass(MediaService::ROOT_CLASS_URI)->getSubClasses(true);
-    }
+        $platform = $this->getModel()->getPersistence()->getPlatForm();
 
-    protected function applyProcessor(Iterator $iterator): bool
-    {
-        // TODO: Implement applyProcessor() method.
+        $query = $platform->getQueryBuilder()
+            ->select('MAX(id)')
+            ->from('statements');
+
+        $results = $query->execute()->fetchColumn();
+
+        return (int)$results;
     }
 }

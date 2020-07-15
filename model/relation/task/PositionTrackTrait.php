@@ -42,8 +42,7 @@ trait PositionTrackTrait
     protected function getLastPosition(string $taskClass): int
     {
         $cache = $this->getPositionStorage();
-        $start = $cache->get($taskClass . AbstractRelationshipTask::CACHE_KEY);
+        $start = $cache->get($taskClass . AbstractStatementMigrationTask::CACHE_KEY);
         return $start ? (int)$start : 0;
     }
-
 }

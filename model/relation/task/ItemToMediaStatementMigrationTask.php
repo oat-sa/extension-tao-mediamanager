@@ -22,22 +22,12 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\task;
 
-use core_kernel_classes_Resource;
-use Iterator;
 use oat\tao\model\TaoOntology;
 use oat\taoQtiItem\model\qti\event\UpdatedItemEventDispatcher;
 use oat\taoQtiItem\model\qti\Service;
-use Throwable;
 
-class ItemToMediaRelationshipTask extends AbstractRelationshipTask
+class ItemToMediaStatementMigrationTask extends AbstractStatementMigrationTask
 {
-    private function updateRelationship(core_kernel_classes_Resource $resource): void
-    {
-        $item = $this->getQtiService()->getDataItemByRdfItem($resource);
-        if ($item) {
-            $this->getUpdatedItemEventDispatcher()->dispatch($item, $resource);
-        }
-    }
 
     private function getUpdatedItemEventDispatcher(): UpdatedItemEventDispatcher
     {
@@ -54,32 +44,14 @@ class ItemToMediaRelationshipTask extends AbstractRelationshipTask
         return $this->getClass(TaoOntology::CLASS_URI_ITEM)->getSubClasses(true);
     }
 
-    protected function applyProcessor(Iterator $iterator): bool
+    protected function processUnit(array $unit): void
     {
-        /** @var array $item */
-        $item = $iterator->current();
-        ++$this->affected;
+        $resource = $this->getResource($unit['subject']);
 
-        $id = $item['id'];
-        $subject = $item['subject'];
+        $item = $this->getQtiService()->getDataItemByRdfItem($resource);
 
-        try {
-            echo sprintf(
-                '%s %s %s %s',
-                $this->affected,
-                $id,
-                $subject,
-                PHP_EOL
-            );
-
-            $this->updateRelationship($this->getResource($subject));
-        } catch (Throwable $exception) {
-            $this->addAnomaly($id, $subject, $exception->getMessage());
+        if ($item) {
+            $this->getUpdatedItemEventDispatcher()->dispatch($item, $resource);
         }
-
-        $isOver = $this->pickSize ? $this->affected < $this->pickSize * 2 : true;
-
-        return $isOver;
     }
-
 }

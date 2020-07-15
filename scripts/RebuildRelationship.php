@@ -30,7 +30,7 @@ use oat\tao\model\taskQueue\QueueDispatcherInterface;
 use oat\tao\model\taskQueue\Task\CallbackTaskInterface;
 use oat\tao\model\taskQueue\TaskLogActionTrait;
 use oat\tao\model\taskQueue\TaskLogInterface;
-use oat\taoMediaManager\model\relation\task\ItemToMediaRelationshipTask;
+use oat\taoMediaManager\model\relation\task\ItemToMediaStatementMigrationTask;
 use oat\taoMediaManager\model\relation\task\MediaToMediaRelationTask;
 use oat\taoMediaManager\model\relation\task\PositionTrackTrait;
 use RuntimeException;
@@ -195,6 +195,7 @@ class RebuildRelationship extends ScriptAction
 
     private function addTaskBroker(string $queue): void
     {
+
     }
 
     protected function returnJson($data, $httpStatus = 200)
@@ -204,7 +205,7 @@ class RebuildRelationship extends ScriptAction
     private function detectTargetClass(string $target): string
     {
         if (self::TARGET_ITEMS === $target) {
-            return ItemToMediaRelationshipTask::class;
+            return ItemToMediaStatementMigrationTask::class;
         }
 
         if (self::TARGET_MEDIA === $target) {

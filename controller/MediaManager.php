@@ -62,7 +62,7 @@ class MediaManager extends \tao_actions_SaSModule
             $fileInfo = $mediaSource->getFileInfo($uri);
 
             $mimeType = $fileInfo['mime'];
-            $xml = in_array($mimeType, ['application/xml', 'text/xml']);
+            $xml = in_array($mimeType, ['application/xml', 'text/xml', MediaService::SHARED_STIMULUS_MIME_TYPE]);
             $url = \tao_helpers_Uri::url(
                 'getFile',
                 'MediaManager',

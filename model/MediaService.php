@@ -34,6 +34,7 @@ use oat\oatbox\service\ServiceManager;
 use oat\tao\model\ClassServiceTrait;
 use oat\tao\model\GenerisServiceTrait;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
+use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
 use oat\taoMediaManager\model\relation\event\MediaRemovedEvent;
 use oat\taoMediaManager\model\relation\event\MediaSavedEventDispatcher;
 use oat\taoRevision\model\RepositoryInterface;
@@ -65,9 +66,9 @@ class MediaService extends ConfigurableService
     public const SHARED_STIMULUS_MIME_TYPE = 'application/qti+xml';
 
     /**
-     * @deprecated 
+     * @deprecated
      */
-    static public function singleton()
+    public static function singleton()
     {
         return ServiceManager::getServiceManager()->get(self::class);
     }
@@ -150,7 +151,6 @@ class MediaService extends ConfigurableService
     ): bool {
         $instance = $this->getResource($id);
         $link = $this->getLink($instance);
-
         $fileManager = $this->getFileManager();
         $fileManager->deleteFile($link);
         $link = $fileManager->storeFile($fileSource, $instance->getLabel());
@@ -196,7 +196,8 @@ class MediaService extends ConfigurableService
     {
         $instance = $resource->getUniquePropertyValue($this->getProperty(self::PROPERTY_LINK));
 
-        return $instance instanceof RdfResource ? $instance->getUri() : (string)$instance;
+        $link = $instance instanceof RdfResource ? $instance->getUri() : (string)$instance;
+        return $this->getFileSourceUnserializer()->unserialize($link);
     }
 
     private function getMediaSavedEventDispatcher(): MediaSavedEventDispatcher
@@ -230,5 +231,10 @@ class MediaService extends ConfigurableService
         }
 
         return null;
+    }
+
+    private function getFileSourceUnserializer(): FileSourceUnserializer
+    {
+        return $this->getServiceLocator()->get(FileSourceUnserializer::class);
     }
 }

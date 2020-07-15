@@ -23,11 +23,13 @@ namespace oat\taoMediaManager\model;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\Configurable;
 use oat\oatbox\log\LoggerAwareTrait;
+use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\ServiceManager;
 use oat\tao\model\media\MediaManagement;
 use oat\tao\model\media\ProcessedFileStreamAware;
 use oat\taoMediaManager\model\export\service\MediaResourcePreparer;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
+use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
 use Psr\Http\Message\StreamInterface;
 use tao_helpers_Uri;
 
@@ -151,7 +153,7 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
 
         $fileLink = $resource->getUniquePropertyValue($this->getProperty(MediaService::PROPERTY_LINK));
         $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
-        $file = null;
+        $fileLink = $this->getFileSourceUnserializer()->unserialize($fileLink);
         $mime = (string) $resource->getUniquePropertyValue($this->getProperty(MediaService::PROPERTY_MIME_TYPE));
 
         // add the alt text to file array
@@ -187,6 +189,8 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
             throw new \tao_models_classes_FileNotFoundException($link);
         }
         $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
+        $fileLink = $this->getFileSourceUnserializer()->unserialize($fileLink);
+
         return $this->getFileManagement()->getFileStream($fileLink);
     }
 
@@ -349,5 +353,10 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
     private function getPreparer(): MediaResourcePreparer
     {
         return $this->getServiceLocator()->get(MediaResourcePreparer::class);
+    }
+
+    private function getFileSourceUnserializer(): FileSourceUnserializer
+    {
+        return $this->getServiceLocator()->get(FileSourceUnserializer::class);
     }
 }

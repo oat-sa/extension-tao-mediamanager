@@ -29,7 +29,6 @@ use oat\generis\model\data\Ontology;
 use oat\generis\test\TestCase;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
-use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\sharedStimulus\FindQuery;
 use oat\taoMediaManager\model\sharedStimulus\repository\SharedStimulusRepository;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
@@ -51,7 +50,7 @@ class SharedStimulusRepositoryTest extends TestCase
     /** @var FileManagement|MockObject */
     private $fileManagement;
 
-    /** @var MediaSource|MockObject */
+    /** @var FileSourceUnserializer|MockObject */
     private $unserializer;
 
     public function setUp(): void

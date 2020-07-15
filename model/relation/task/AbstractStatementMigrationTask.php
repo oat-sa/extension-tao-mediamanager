@@ -41,10 +41,7 @@ abstract class AbstractStatementMigrationTask implements Action, ServiceLocatorA
     use ServiceLocatorAwareTrait;
     use OntologyAwareTrait;
     use TaskAwareTrait;
-    use PositionTrackTrait;
     use LoggerAwareTrait;
-
-    public const CACHE_KEY = '::_last_known';
 
     /** @var int */
     protected $affected;
@@ -71,7 +68,7 @@ abstract class AbstractStatementMigrationTask implements Action, ServiceLocatorA
 
         $max = $this->getLastRowNumber();
 
-        $this->keepCurrentPosition($start);
+        $this->getServiceLocator()->get(PositionTracker::class)->keepCurrentPosition(static::class, $start);
 
         $end = $start + $chunkSize;
 

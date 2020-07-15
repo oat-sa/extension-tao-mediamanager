@@ -24,25 +24,26 @@ namespace oat\taoMediaManager\model\relation\task;
 
 use common_persistence_KeyValuePersistence;
 use oat\generis\persistence\PersistenceManager;
+use oat\oatbox\service\ConfigurableService;
 
-trait PositionTrackTrait
+class PositionTracker extends ConfigurableService
 {
+    private const CACHE_KEY = '::_last_known';
 
-    protected function keepCurrentPosition(int $position): void
+    public function keepCurrentPosition(string $id, int $position): void
     {
-        $persistence = $this->getPositionStorage();
-        $persistence->set(static::class . static::CACHE_KEY, $position);
+        $persistence = $this->getStorage();
+        $persistence->set($id . self::CACHE_KEY, $position);
     }
 
-    protected function getPositionStorage(): common_persistence_KeyValuePersistence
+    protected function getStorage(): common_persistence_KeyValuePersistence
     {
         return $this->getServiceLocator()->get(PersistenceManager::SERVICE_ID)->getPersistenceById('default_kv');
     }
 
-    protected function getLastPosition(string $taskClass): int
+    public function getLastPosition(string $id): int
     {
-        $cache = $this->getPositionStorage();
-        $start = $cache->get($taskClass . AbstractStatementMigrationTask::CACHE_KEY);
+        $start = $this->getStorage()->get($id . self::CACHE_KEY);
         return $start ? (int)$start : 0;
     }
 }

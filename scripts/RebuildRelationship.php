@@ -32,7 +32,7 @@ use oat\tao\model\taskQueue\TaskLogActionTrait;
 use oat\tao\model\taskQueue\TaskLogInterface;
 use oat\taoMediaManager\model\relation\task\ItemToMediaStatementMigrationTask;
 use oat\taoMediaManager\model\relation\task\MediaToMediaRelationTask;
-use oat\taoMediaManager\model\relation\task\PositionTrackTrait;
+use oat\taoMediaManager\model\relation\task\PositionTracker;
 use RuntimeException;
 use Throwable;
 
@@ -40,7 +40,6 @@ class RebuildRelationship extends ScriptAction
 {
     use OntologyAwareTrait;
     use TaskLogActionTrait;
-    use PositionTrackTrait;
 
     private const TARGET_ITEMS = 'item';
     private const TARGET_MEDIA = 'media';
@@ -132,7 +131,7 @@ class RebuildRelationship extends ScriptAction
         $this->addTaskBroker($queue);
 
         if ($isRecovery) {
-            $start = $this->getLastPosition($taskClass);
+            $start = $this->getServiceLocator()->get(PositionTracker::class)->getLastPosition($taskClass, $start);
         }
 
         try {
@@ -195,7 +194,6 @@ class RebuildRelationship extends ScriptAction
 
     private function addTaskBroker(string $queue): void
     {
-
     }
 
     protected function returnJson($data, $httpStatus = 200)

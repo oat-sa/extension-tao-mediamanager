@@ -30,7 +30,10 @@ class MediaToMediaRelationTask extends AbstractStatementMigrationTask
 
     protected function getTargetClasses(): array
     {
-        return $this->getClass(MediaService::ROOT_CLASS_URI)->getSubClasses(true);
+        return array_merge(
+            [MediaService::ROOT_CLASS_URI],
+            array_keys($this->getClass(MediaService::ROOT_CLASS_URI)->getSubClasses(true))
+        );
     }
 
     protected function processUnit(array $unit): void

@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\relation\task;
 
 use oat\tao\model\TaoOntology;
+use oat\tao\model\task\AbstractStatementMigrationTask;
 use oat\taoQtiItem\model\qti\event\UpdatedItemEventDispatcher;
 use oat\taoQtiItem\model\qti\Service;
 

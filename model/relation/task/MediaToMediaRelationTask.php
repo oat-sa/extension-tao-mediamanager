@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\task;
 
-use Iterator;
+use oat\tao\model\task\AbstractStatementMigrationTask;
 use oat\taoMediaManager\model\MediaService;
 
 class MediaToMediaRelationTask extends AbstractStatementMigrationTask
@@ -33,8 +33,8 @@ class MediaToMediaRelationTask extends AbstractStatementMigrationTask
         return $this->getClass(MediaService::ROOT_CLASS_URI)->getSubClasses(true);
     }
 
-    protected function applyProcessor(Iterator $iterator): bool
+    protected function processUnit(array $unit): void
     {
-        // TODO: Implement applyProcessor() method.
+        // TODO: Implement processUnit() method.
     }
 }

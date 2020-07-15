@@ -25,15 +25,14 @@ namespace oat\taoMediaManager\scripts;
 use common_report_Report;
 use InvalidArgumentException;
 use oat\generis\model\OntologyAwareTrait;
-use oat\generis\persistence\PersistenceManager;
 use oat\oatbox\extension\script\ScriptAction;
 use oat\tao\model\taskQueue\QueueDispatcherInterface;
 use oat\tao\model\taskQueue\Task\CallbackTaskInterface;
 use oat\tao\model\taskQueue\TaskLogActionTrait;
 use oat\tao\model\taskQueue\TaskLogInterface;
-use oat\taoMediaManager\model\relation\task\AbstractRelationshipTask;
 use oat\taoMediaManager\model\relation\task\ItemToMediaRelationshipTask;
 use oat\taoMediaManager\model\relation\task\MediaToMediaRelationTask;
+use oat\taoMediaManager\model\relation\task\PositionTrackTrait;
 use RuntimeException;
 use Throwable;
 
@@ -41,6 +40,7 @@ class RebuildRelationship extends ScriptAction
 {
     use OntologyAwareTrait;
     use TaskLogActionTrait;
+    use PositionTrackTrait;
 
     private const TARGET_ITEMS = 'item';
     private const TARGET_MEDIA = 'media';
@@ -132,7 +132,7 @@ class RebuildRelationship extends ScriptAction
         $this->addTaskBroker($queue);
 
         if ($isRecovery) {
-            $start = $this->getLastChunkStart($taskClass);
+            $start = $this->getLastPosition($taskClass);
         }
 
         try {
@@ -173,7 +173,7 @@ class RebuildRelationship extends ScriptAction
     }
 
     private function spawnTask(
-        $start,
+        int $start,
         int $chunkSize,
         int $pickSize,
         string $taskClass,
@@ -193,16 +193,8 @@ class RebuildRelationship extends ScriptAction
         );
     }
 
-    private function getLastChunkStart(string $taskClass): int
+    private function addTaskBroker(string $queue): void
     {
-        $cache = $this->getServiceLocator()->get(PersistenceManager::SERVICE_ID)->getPersistenceById('default_kv');
-        $start = $cache->get($taskClass . AbstractRelationshipTask::CACHE_KEY);
-        return $start ? (int)$start : 0;
-    }
-
-    private function addTaskBroker(string $queue)
-    {
-
     }
 
     protected function returnJson($data, $httpStatus = 200)
@@ -215,7 +207,7 @@ class RebuildRelationship extends ScriptAction
             return ItemToMediaRelationshipTask::class;
         }
 
-        if (self::TARGET_ITEMS === $target) {
+        if (self::TARGET_MEDIA === $target) {
             return MediaToMediaRelationTask::class;
         }
         throw new InvalidArgumentException('Incorrect target please run script with -h flag');

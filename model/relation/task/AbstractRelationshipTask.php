@@ -22,14 +22,13 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\task;
 
-use common_persistence_KvDriver;
+use common_exception_MissingParameter;
 use common_persistence_sql_QueryIterator;
 use common_report_Report;
 use Doctrine\DBAL\Connection;
 use Iterator;
 use oat\generis\model\OntologyAwareTrait;
 use oat\generis\model\OntologyRdf;
-use oat\generis\persistence\PersistenceManager;
 use oat\oatbox\action\Action;
 use oat\tao\model\taskQueue\QueueDispatcherInterface;
 use oat\tao\model\taskQueue\Task\CallbackTaskInterface;
@@ -43,22 +42,22 @@ abstract class AbstractRelationshipTask implements Action, ServiceLocatorAwareIn
     use ServiceLocatorAwareTrait;
     use OntologyAwareTrait;
     use TaskAwareTrait;
+    use PositionTrackTrait;
 
-    public const CACHE_KEY =  '::_last_known';
+    public const CACHE_KEY = '::_last_known';
 
     /** @var int */
     protected $affected;
-    
+
     /** @var int */
     protected $pickSize;
-    
+
     /** @var common_report_Report */
     protected $anomalies;
 
     protected function getLastRowNumber(): int
     {
-        $persistence = $this->getModel()->getPersistence();
-        $platform = $persistence->getPlatForm();
+        $platform = $this->getModel()->getPersistence()->getPlatForm();
         $query = $platform->getQueryBuilder()
             ->select('MAX(id)')
             ->from('statements');
@@ -68,7 +67,7 @@ abstract class AbstractRelationshipTask implements Action, ServiceLocatorAwareIn
         return (int)$results;
     }
 
-    protected function selfRepeat($start, int $chunkSize, int $pickSize, bool $repeat): CallbackTaskInterface
+    protected function selfRepeat(int $start, int $chunkSize, int $pickSize, bool $repeat): CallbackTaskInterface
     {
         /** @var QueueDispatcherInterface $queueDispatcher */
         $queueDispatcher = $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
@@ -144,7 +143,9 @@ abstract class AbstractRelationshipTask implements Action, ServiceLocatorAwareIn
             sprintf("Items in range from %s to %s proceeded in amount of %s", $start, $end, $this->affected)
         );
 
-        $report->add($this->anomalies);
+        if ($this->anomalies->hasChildren()) {
+            $report->add($this->anomalies);
+        }
 
         return $report;
     }
@@ -161,12 +162,5 @@ abstract class AbstractRelationshipTask implements Action, ServiceLocatorAwareIn
     protected function addAnomaly(string $id, string $uri, string $reason): void
     {
         $this->anomalies->add(new common_report_Report(common_report_Report::TYPE_WARNING, $reason, [$id, $uri]));
-    }
-
-    private function keepCurrentPosition(int $param): void
-    {
-        /** @var common_persistence_KvDriver $persistence */
-        $persistence = $this->getServiceLocator()->get(PersistenceManager::SERVICE_ID)->getPersistenceById('default_kv');
-        $persistence->set(static::class . static::CACHE_KEY, $param);
     }
 }

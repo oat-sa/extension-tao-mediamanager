@@ -24,6 +24,8 @@ namespace oat\taoMediaManager\model\relation\task;
 
 use oat\tao\model\TaoOntology;
 use oat\tao\model\task\AbstractStatementMigrationTask;
+use oat\taoItems\model\event\ItemUpdatedEvent;
+use oat\taoMediaManager\model\relation\event\processor\ItemUpdatedEventProcessor;
 use oat\taoQtiItem\model\qti\event\UpdatedItemEventDispatcher;
 use oat\taoQtiItem\model\qti\Service;
 
@@ -42,17 +44,27 @@ class ItemToMediaStatementMigrationTask extends AbstractStatementMigrationTask
 
     protected function getTargetClasses(): array
     {
-        return $this->getClass(TaoOntology::CLASS_URI_ITEM)->getSubClasses(true);
+        return array_merge(
+            [TaoOntology::CLASS_URI_ITEM],
+            array_keys($this->getClass(TaoOntology::CLASS_URI_ITEM)->getSubClasses(true))
+        );
     }
 
     protected function processUnit(array $unit): void
     {
         $resource = $this->getResource($unit['subject']);
 
-        $item = $this->getQtiService()->getDataItemByRdfItem($resource);
+        $qtiItem = $this->getQtiService()->getDataItemByRdfItem($resource);
 
-        if ($item) {
-            $this->getUpdatedItemEventDispatcher()->dispatch($item, $resource);
+        $data = $this->getUpdatedItemEventDispatcher()->extractReferences($qtiItem);
+
+        if (array_filter($data)) {
+            $this->getItemProcessor()->process(new ItemUpdatedEvent($unit['subject'], $data));
         }
+    }
+
+    private function getItemProcessor(): ItemUpdatedEventProcessor
+    {
+        return $this->getServiceLocator()->get(ItemUpdatedEventProcessor::class);
     }
 }

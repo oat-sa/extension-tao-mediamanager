@@ -48,8 +48,10 @@ abstract class AbstractRelationshipTask implements Action, ServiceLocatorAwareIn
 
     /** @var int */
     protected $affected;
+    
     /** @var int */
     protected $pickSize;
+    
     /** @var common_report_Report */
     protected $anomalies;
 

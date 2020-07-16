@@ -24,7 +24,7 @@ namespace oat\taoMediaManager\model\relation\task;
 
 use common_Exception;
 use oat\tao\model\TaoOntology;
-use oat\tao\model\task\AbstractStatementMigrationTask;
+use oat\tao\model\task\migration\AbstractStatementMigrationTask;
 use oat\taoMediaManager\model\relation\service\update\ItemRelationUpdateService;
 use oat\taoQtiItem\model\qti\parser\ElementReferencesExtractor;
 use oat\taoQtiItem\model\qti\Service;

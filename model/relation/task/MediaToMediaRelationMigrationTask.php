@@ -24,14 +24,14 @@ namespace oat\taoMediaManager\model\relation\task;
 
 use core_kernel_classes_Resource;
 use oat\oatbox\filesystem\File;
+use oat\tao\model\task\migration\AbstractStatementMigrationTask;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\MediaService;
-use oat\taoMediaManager\model\relation\event\MediaSavedEvent;
-use oat\taoMediaManager\model\relation\event\processor\MediaSavedEventProcessor;
+use oat\taoMediaManager\model\relation\service\update\MediaRelationUpdateService;
 use oat\taoMediaManager\model\sharedStimulus\parser\SharedStimulusMediaExtractor;
 use tao_models_classes_FileNotFoundException;
 
-class MediaToMediaRelationMigrationTask extends \oat\tao\model\task\migration\AbstractStatementMigrationTask
+class MediaToMediaRelationMigrationTask extends AbstractStatementMigrationTask
 {
 
     protected function getTargetClasses(): array
@@ -59,7 +59,7 @@ class MediaToMediaRelationMigrationTask extends \oat\tao\model\task\migration\Ab
         if ($this->isSharedStimulus($mimeType)) {
             $content = $fileSource instanceof File ? $fileSource->read() : $fileSource->getContents();
             $elementIds = $this->getSharedStimulusExtractor()->extractMediaIdentifiers($content);
-            $this->getMediaProcessor()->process(new MediaSavedEvent($uri, $elementIds));
+            $this->getMediaRelationUpdateService()->updateByTargetId($uri, $elementIds);
         }
     }
 
@@ -78,8 +78,8 @@ class MediaToMediaRelationMigrationTask extends \oat\tao\model\task\migration\Ab
         return $this->getServiceLocator()->get(FileManagement::SERVICE_ID);
     }
 
-    private function getMediaProcessor(): MediaSavedEventProcessor
+    private function getMediaRelationUpdateService(): MediaRelationUpdateService
     {
-        return $this->getServiceLocator()->get(MediaSavedEventProcessor::class);
+        return $this->getServiceLocator()->get(MediaRelationUpdateService::class);
     }
 }

@@ -23,13 +23,12 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\relation\task;
 
 use oat\tao\model\TaoOntology;
-use oat\tao\model\task\AbstractStatementMigrationTask;
 use oat\taoItems\model\event\ItemUpdatedEvent;
 use oat\taoMediaManager\model\relation\event\processor\ItemUpdatedEventProcessor;
 use oat\taoQtiItem\model\qti\event\UpdatedItemEventDispatcher;
 use oat\taoQtiItem\model\qti\Service;
 
-class ItemToMediaRelationshipMigrationTask extends AbstractStatementMigrationTask
+class ItemToMediaRelationshipMigrationTask extends \oat\tao\model\task\migration\AbstractStatementMigrationTask
 {
 
     private function getUpdatedItemEventDispatcher(): UpdatedItemEventDispatcher

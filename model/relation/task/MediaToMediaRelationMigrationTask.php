@@ -24,7 +24,6 @@ namespace oat\taoMediaManager\model\relation\task;
 
 use core_kernel_classes_Resource;
 use oat\oatbox\filesystem\File;
-use oat\tao\model\task\AbstractStatementMigrationTask;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\relation\event\MediaSavedEvent;
@@ -32,7 +31,7 @@ use oat\taoMediaManager\model\relation\event\processor\MediaSavedEventProcessor;
 use oat\taoMediaManager\model\sharedStimulus\parser\SharedStimulusMediaExtractor;
 use tao_models_classes_FileNotFoundException;
 
-class MediaToMediaRelationMigrationTask extends AbstractStatementMigrationTask
+class MediaToMediaRelationMigrationTask extends \oat\tao\model\task\migration\AbstractStatementMigrationTask
 {
 
     protected function getTargetClasses(): array

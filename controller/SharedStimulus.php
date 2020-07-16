@@ -105,7 +105,7 @@ class SharedStimulus extends tao_actions_CommonModule
 
             $command = $this->getCommandFactory()->makePatchCommand($id, $body, $user);
 
-            $sharedStimulus = $this->getPatchService()->patch($command);
+            $this->getPatchService()->patch($command);
 
             $formatter->withBody(new SuccessJsonResponse([]));
         } catch (Throwable $exception) {

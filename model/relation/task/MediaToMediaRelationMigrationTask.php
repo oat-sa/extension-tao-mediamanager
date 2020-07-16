@@ -22,8 +22,15 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\task;
 
+use core_kernel_classes_Resource;
+use oat\oatbox\filesystem\File;
 use oat\tao\model\task\AbstractStatementMigrationTask;
+use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\MediaService;
+use oat\taoMediaManager\model\relation\event\MediaSavedEvent;
+use oat\taoMediaManager\model\relation\event\processor\MediaSavedEventProcessor;
+use oat\taoMediaManager\model\sharedStimulus\parser\SharedStimulusMediaExtractor;
+use tao_models_classes_FileNotFoundException;
 
 class MediaToMediaRelationMigrationTask extends AbstractStatementMigrationTask
 {
@@ -38,6 +45,42 @@ class MediaToMediaRelationMigrationTask extends AbstractStatementMigrationTask
 
     protected function processUnit(array $unit): void
     {
-        // TODO: Implement processUnit() method.
+        $uri = $unit['subject'];
+        $resource = $this->getResource($uri);
+
+        $fileLink = $resource->getUniquePropertyValue($this->getProperty(MediaService::PROPERTY_LINK));
+        if (is_null($fileLink)) {
+            throw new tao_models_classes_FileNotFoundException($uri);
+        }
+        $fileLink = $fileLink instanceof core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
+        $fileSource = $this->getFileManager()->getFileStream($fileLink);
+
+        $mimeType = (string)$resource->getUniquePropertyValue($this->getProperty(MediaService::PROPERTY_MIME_TYPE));
+
+        if ($this->isSharedStimulus($mimeType)) {
+            $content = $fileSource instanceof File ? $fileSource->read() : $fileSource->getContents();
+            $elementIds = $this->getSharedStimulusExtractor()->extractMediaIdentifiers($content);
+            $this->getMediaProcessor()->process(new MediaSavedEvent($uri, $elementIds));
+        }
+    }
+
+    private function getSharedStimulusExtractor(): SharedStimulusMediaExtractor
+    {
+        return $this->getServiceLocator()->get(SharedStimulusMediaExtractor::class);
+    }
+
+    private function isSharedStimulus(string $mimeType): bool
+    {
+        return $mimeType === MediaService::SHARED_STIMULUS_MIME_TYPE;
+    }
+
+    private function getFileManager(): FileManagement
+    {
+        return $this->getServiceLocator()->get(FileManagement::SERVICE_ID);
+    }
+
+    private function getMediaProcessor(): MediaSavedEventProcessor
+    {
+        return $this->getServiceLocator()->get(MediaSavedEventProcessor::class);
     }
 }

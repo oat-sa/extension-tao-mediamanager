@@ -29,7 +29,7 @@ use oat\taoMediaManager\model\relation\event\processor\ItemUpdatedEventProcessor
 use oat\taoQtiItem\model\qti\event\UpdatedItemEventDispatcher;
 use oat\taoQtiItem\model\qti\Service;
 
-class ItemToMediaStatementMigrationTask extends AbstractStatementMigrationTask
+class ItemToMediaRelationshipMigrationTask extends AbstractStatementMigrationTask
 {
 
     private function getUpdatedItemEventDispatcher(): UpdatedItemEventDispatcher

@@ -25,7 +25,7 @@ namespace oat\taoMediaManager\model\relation\task;
 use oat\tao\model\task\AbstractStatementMigrationTask;
 use oat\taoMediaManager\model\MediaService;
 
-class MediaToMediaRelationTask extends AbstractStatementMigrationTask
+class MediaToMediaRelationMigrationTask extends AbstractStatementMigrationTask
 {
 
     protected function getTargetClasses(): array

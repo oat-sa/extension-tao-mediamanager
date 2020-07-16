@@ -22,26 +22,16 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\task;
 
+use common_Exception;
 use oat\tao\model\TaoOntology;
 use oat\tao\model\task\AbstractStatementMigrationTask;
 use oat\taoItems\model\event\ItemUpdatedEvent;
 use oat\taoMediaManager\model\relation\event\processor\ItemUpdatedEventProcessor;
-use oat\taoQtiItem\model\qti\event\UpdatedItemEventDispatcher;
+use oat\taoQtiItem\model\qti\parser\ElementReferencesExtractor;
 use oat\taoQtiItem\model\qti\Service;
 
 class ItemToMediaRelationshipMigrationTask extends AbstractStatementMigrationTask
 {
-
-    private function getUpdatedItemEventDispatcher(): UpdatedItemEventDispatcher
-    {
-        return $this->getServiceLocator()->get(UpdatedItemEventDispatcher::class);
-    }
-
-    private function getQtiService(): Service
-    {
-        return $this->getServiceLocator()->get(Service::class);
-    }
-
     protected function getTargetClasses(): array
     {
         return array_merge(
@@ -50,21 +40,33 @@ class ItemToMediaRelationshipMigrationTask extends AbstractStatementMigrationTas
         );
     }
 
+    /**
+     * @throws common_Exception
+     */
     protected function processUnit(array $unit): void
     {
         $resource = $this->getResource($unit['subject']);
 
         $qtiItem = $this->getQtiService()->getDataItemByRdfItem($resource);
+        $elementReferences = $this->getElementReferencesExtractor()->extractAll($qtiItem);
 
-        $data = $this->getUpdatedItemEventDispatcher()->extractReferences($qtiItem);
-
-        if (array_filter($data)) {
-            $this->getItemProcessor()->process(new ItemUpdatedEvent($unit['subject'], $data));
+        if ($elementReferences) {
+            $this->getItemProcessor()->process(new ItemUpdatedEvent($unit['subject'], $elementReferences->extractReferences()));
         }
     }
 
     private function getItemProcessor(): ItemUpdatedEventProcessor
     {
         return $this->getServiceLocator()->get(ItemUpdatedEventProcessor::class);
+    }
+
+    private function getElementReferencesExtractor(): ElementReferencesExtractor
+    {
+        return $this->getServiceLocator()->get(ElementReferencesExtractor::class);
+    }
+
+    private function getQtiService(): Service
+    {
+        return $this->getServiceLocator()->get(Service::class);
     }
 }

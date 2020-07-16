@@ -47,18 +47,13 @@ class ItemToMediaRelationshipMigrationTask extends AbstractStatementMigrationTas
         $resource = $this->getResource($unit['subject']);
 
         $qtiItem = $this->getQtiService()->getDataItemByRdfItem($resource);
-        $elementReferences = $this->getElementReferencesExtractor()->extractAll($qtiItem);
-        $allElementReferences = array_merge(
-            [
-                $elementReferences->getXIncludeReferences(),
-                $elementReferences->getImgReferences(),
-                $elementReferences->getObjectReferences(),
-            ]
-        );
+        $elementReferences = $this->getElementReferencesExtractor()
+            ->extractAll($qtiItem)
+            ->getAllReferences();
 
-        if (!empty($allElementReferences)) {
+        if (!empty($elementReferences)) {
             $this->getItemRelationUpdateService()
-                ->updateByTargetId($unit['subject'], $allElementReferences);
+                ->updateByTargetId($unit['subject'], $elementReferences);
         }
     }
 

@@ -25,8 +25,7 @@ namespace oat\taoMediaManager\model\relation\task;
 use common_Exception;
 use oat\tao\model\TaoOntology;
 use oat\tao\model\task\AbstractStatementMigrationTask;
-use oat\taoItems\model\event\ItemUpdatedEvent;
-use oat\taoMediaManager\model\relation\event\processor\ItemUpdatedEventProcessor;
+use oat\taoMediaManager\model\relation\service\update\ItemRelationUpdateService;
 use oat\taoQtiItem\model\qti\parser\ElementReferencesExtractor;
 use oat\taoQtiItem\model\qti\Service;
 
@@ -51,13 +50,22 @@ class ItemToMediaRelationshipMigrationTask extends AbstractStatementMigrationTas
         $elementReferences = $this->getElementReferencesExtractor()->extractAll($qtiItem);
 
         if ($elementReferences) {
-            $this->getItemProcessor()->process(new ItemUpdatedEvent($unit['subject'], $elementReferences->extractReferences()));
+            $this->getItemRelationUpdateService()->updateByTargetId(
+                $unit['subject'],
+                array_merge(
+                    [
+                        $elementReferences->getXIncludeReferences(),
+                        $elementReferences->getImgReferences(),
+                        $elementReferences->getObjectReferences(),
+                    ]
+                )
+            );
         }
     }
 
-    private function getItemProcessor(): ItemUpdatedEventProcessor
+    private function getItemRelationUpdateService(): ItemRelationUpdateService
     {
-        return $this->getServiceLocator()->get(ItemUpdatedEventProcessor::class);
+        return $this->getServiceLocator()->get(ItemRelationUpdateService::class);
     }
 
     private function getElementReferencesExtractor(): ElementReferencesExtractor

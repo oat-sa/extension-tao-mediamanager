@@ -25,6 +25,7 @@ namespace oat\taoMediaManager\model\relation\task;
 use common_Exception;
 use oat\tao\model\TaoOntology;
 use oat\tao\model\task\migration\AbstractStatementMigrationTask;
+use oat\taoMediaManager\model\relation\service\IdDiscoverService;
 use oat\taoMediaManager\model\relation\service\update\ItemRelationUpdateService;
 use oat\taoQtiItem\model\qti\parser\ElementReferencesExtractor;
 use oat\taoQtiItem\model\qti\Service;
@@ -52,8 +53,10 @@ class ItemToMediaRelationshipMigrationTask extends AbstractStatementMigrationTas
             ->getAllReferences();
 
         if (!empty($elementReferences)) {
+            $ids = $this->getIdDiscoverService()->discover($elementReferences);
+
             $this->getItemRelationUpdateService()
-                ->updateByTargetId($unit['subject'], $elementReferences);
+                ->updateByTargetId($unit['subject'], $ids);
         }
     }
 
@@ -70,5 +73,10 @@ class ItemToMediaRelationshipMigrationTask extends AbstractStatementMigrationTas
     private function getQtiService(): Service
     {
         return $this->getServiceLocator()->get(Service::class);
+    }
+
+    private function getIdDiscoverService(): IdDiscoverService
+    {
+        return $this->getServiceLocator()->get(IdDiscoverService::class);
     }
 }

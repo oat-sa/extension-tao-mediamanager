@@ -81,6 +81,7 @@ class ItemUpdatedEventProcessor extends ConfigurableService implements EventProc
 
         $ids = [];
 
+        //FIXME @TODO Convert from IdsDiscoverService
         foreach ($references as $reference) {
             $mediaAsset = $this->getMediaResolver()->resolve($reference);
 

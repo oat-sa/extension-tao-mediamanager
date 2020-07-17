@@ -47,16 +47,15 @@ class MediaToMediaRelationMigrationTask extends AbstractStatementMigrationTask
         $uri = $unit['subject'];
         $resource = $this->getResource($uri);
 
-        $fileLink = $resource->getUniquePropertyValue($this->getProperty(MediaService::PROPERTY_LINK));
-        if (is_null($fileLink)) {
-            throw new tao_models_classes_FileNotFoundException($uri);
-        }
-        $fileLink = $fileLink instanceof core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
-        $fileSource = $this->getFileManager()->getFileStream($fileLink);
-
         $mimeType = (string)$resource->getUniquePropertyValue($this->getProperty(MediaService::PROPERTY_MIME_TYPE));
 
         if ($this->isSharedStimulus($mimeType)) {
+            $fileLink = $resource->getUniquePropertyValue($this->getProperty(MediaService::PROPERTY_LINK));
+            if (is_null($fileLink)) {
+                throw new tao_models_classes_FileNotFoundException($uri);
+            }
+            $fileLink = $fileLink instanceof core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
+            $fileSource = $this->getFileManager()->getFileStream($fileLink);
             $content = $fileSource instanceof File ? $fileSource->read() : $fileSource->getContents();
             $elementIds = $this->getSharedStimulusExtractor()->extractMediaIdentifiers($content);
             $this->getMediaRelationUpdateService()->updateByTargetId($uri, $elementIds);

@@ -29,6 +29,7 @@ use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\relation\service\update\MediaRelationUpdateService;
 use oat\taoMediaManager\model\sharedStimulus\parser\SharedStimulusMediaExtractor;
+use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourceSpecification;
 use tao_models_classes_FileNotFoundException;
 
 class MediaToMediaRelationMigrationTask extends AbstractStatementMigrationTask
@@ -47,9 +48,7 @@ class MediaToMediaRelationMigrationTask extends AbstractStatementMigrationTask
         $uri = $unit['subject'];
         $resource = $this->getResource($uri);
 
-        $mimeType = (string)$resource->getUniquePropertyValue($this->getProperty(MediaService::PROPERTY_MIME_TYPE));
-
-        if ($this->isSharedStimulus($mimeType)) {
+        if ($this->getSharedStimulusResourceSpecification()->isSatisfiedBy($resource)) {
             $fileLink = $resource->getUniquePropertyValue($this->getProperty(MediaService::PROPERTY_LINK));
             if (is_null($fileLink)) {
                 throw new tao_models_classes_FileNotFoundException($uri);
@@ -67,11 +66,6 @@ class MediaToMediaRelationMigrationTask extends AbstractStatementMigrationTask
         return $this->getServiceLocator()->get(SharedStimulusMediaExtractor::class);
     }
 
-    private function isSharedStimulus(string $mimeType): bool
-    {
-        return $mimeType === MediaService::SHARED_STIMULUS_MIME_TYPE;
-    }
-
     private function getFileManager(): FileManagement
     {
         return $this->getServiceLocator()->get(FileManagement::SERVICE_ID);
@@ -80,5 +74,10 @@ class MediaToMediaRelationMigrationTask extends AbstractStatementMigrationTask
     private function getMediaRelationUpdateService(): MediaRelationUpdateService
     {
         return $this->getServiceLocator()->get(MediaRelationUpdateService::class);
+    }
+
+    private function getSharedStimulusResourceSpecification(): SharedStimulusResourceSpecification
+    {
+        return $this->getServiceLocator()->get(SharedStimulusResourceSpecification::class);
     }
 }

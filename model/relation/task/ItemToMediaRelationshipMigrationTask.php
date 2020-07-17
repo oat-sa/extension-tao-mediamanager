@@ -22,61 +22,13 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\task;
 
-use common_Exception;
-use oat\tao\model\TaoOntology;
 use oat\tao\model\task\migration\AbstractStatementMigrationTask;
-use oat\taoMediaManager\model\relation\service\IdDiscoverService;
-use oat\taoMediaManager\model\relation\service\update\ItemRelationUpdateService;
-use oat\taoQtiItem\model\qti\parser\ElementReferencesExtractor;
-use oat\taoQtiItem\model\qti\Service;
+use oat\tao\model\task\migration\StatementUnitProcessorInterface;
 
 class ItemToMediaRelationshipMigrationTask extends AbstractStatementMigrationTask
 {
-    protected function getTargetClasses(): array
+    protected function getUnitProcessor(): StatementUnitProcessorInterface
     {
-        return array_merge(
-            [TaoOntology::CLASS_URI_ITEM],
-            array_keys($this->getClass(TaoOntology::CLASS_URI_ITEM)->getSubClasses(true))
-        );
-    }
-
-    /**
-     * @throws common_Exception
-     */
-    protected function processUnit(array $unit): void
-    {
-        $resource = $this->getResource($unit['subject']);
-
-        $qtiItem = $this->getQtiService()->getDataItemByRdfItem($resource);
-        $elementReferences = $this->getElementReferencesExtractor()
-            ->extractAll($qtiItem)
-            ->getAllReferences();
-
-        if (!empty($elementReferences)) {
-            $ids = $this->getIdDiscoverService()->discover($elementReferences);
-
-            $this->getItemRelationUpdateService()
-                ->updateByTargetId($unit['subject'], $ids);
-        }
-    }
-
-    private function getItemRelationUpdateService(): ItemRelationUpdateService
-    {
-        return $this->getServiceLocator()->get(ItemRelationUpdateService::class);
-    }
-
-    private function getElementReferencesExtractor(): ElementReferencesExtractor
-    {
-        return $this->getServiceLocator()->get(ElementReferencesExtractor::class);
-    }
-
-    private function getQtiService(): Service
-    {
-        return $this->getServiceLocator()->get(Service::class);
-    }
-
-    private function getIdDiscoverService(): IdDiscoverService
-    {
-        return $this->getServiceLocator()->get(IdDiscoverService::class);
+        return $this->getServiceLocator()->get(ItemToMediaUnitProcessor::class);
     }
 }

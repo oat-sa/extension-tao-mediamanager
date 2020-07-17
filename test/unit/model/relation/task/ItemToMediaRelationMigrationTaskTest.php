@@ -23,22 +23,22 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\test\unit\model\relation\task;
 
 use oat\generis\test\TestCase;
-use oat\taoMediaManager\model\relation\task\ItemToMediaRelationshipMigrationTask;
+use oat\taoMediaManager\model\relation\task\ItemToMediaRelationMigrationTask;
 use oat\taoMediaManager\model\relation\task\ItemToMediaUnitProcessor;
 use ReflectionMethod;
 
-class ItemToMediaRelationshipMigrationTaskTest extends TestCase
+class ItemToMediaRelationMigrationTaskTest extends TestCase
 {
     /** @var ItemToMediaUnitProcessor */
     private $processor;
 
-    /** @var ItemToMediaRelationshipMigrationTask */
+    /** @var ItemToMediaRelationMigrationTask */
     private $subject;
 
     public function setUp(): void
     {
         $this->processor = $this->createMock(ItemToMediaUnitProcessor::class);
-        $this->subject = $this->getMockForAbstractClass(ItemToMediaRelationshipMigrationTask::class);
+        $this->subject = $this->getMockForAbstractClass(ItemToMediaRelationMigrationTask::class);
         $this->subject->setServiceLocator(
             $this->getServiceLocatorMock(
                 [

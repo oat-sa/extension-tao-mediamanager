@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\test\unit\model\relation\task;
 
 use oat\generis\test\TestCase;
-use oat\taoMediaManager\model\relation\task\ItemToMediaRelationshipMigrationTask;
+use oat\taoMediaManager\model\relation\task\ItemToMediaRelationMigrationTask;
 use oat\taoMediaManager\model\relation\task\MediaToMediaRelationMigrationTask;
 use oat\taoMediaManager\model\relation\task\MediaToMediaUnitProcessor;
 use ReflectionMethod;

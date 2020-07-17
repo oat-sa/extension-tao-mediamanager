@@ -25,7 +25,7 @@ namespace oat\taoMediaManager\model\relation\task;
 use oat\tao\model\task\migration\AbstractStatementMigrationTask;
 use oat\tao\model\task\migration\StatementUnitProcessorInterface;
 
-class ItemToMediaRelationshipMigrationTask extends AbstractStatementMigrationTask
+class ItemToMediaRelationMigrationTask extends AbstractStatementMigrationTask
 {
     protected function getUnitProcessor(): StatementUnitProcessorInterface
     {

@@ -24,21 +24,15 @@ namespace oat\taoMediaManager\model\relation\event\processor;
 
 use oat\oatbox\event\Event;
 use oat\oatbox\service\ConfigurableService;
-use oat\tao\model\media\TaoMediaResolver;
 use oat\taoItems\model\event\ItemUpdatedEvent;
-use oat\taoItems\model\media\ItemMediaResolver;
-use oat\taoMediaManager\model\MediaSource;
+use oat\taoMediaManager\model\relation\service\IdDiscoverService;
 use oat\taoMediaManager\model\relation\service\update\ItemRelationUpdateService;
-use tao_helpers_Uri;
 
 class ItemUpdatedEventProcessor extends ConfigurableService implements EventProcessorInterface
 {
     private const INCLUDE_ELEMENT_REFERENCES_KEY = 'includeElementReferences';
     private const OBJECT_ELEMENT_REFERENCES_KEY = 'objectElementReferences';
     private const IMG_ELEMENT_REFERENCES_KEY = 'imgElementReferences';
-
-    /** @var TaoMediaResolver */
-    private $mediaResolver;
 
     /**
      * @inheritDoc
@@ -57,13 +51,6 @@ class ItemUpdatedEventProcessor extends ConfigurableService implements EventProc
         }
     }
 
-    public function withMediaResolver(TaoMediaResolver $mediaResolver): self
-    {
-        $this->mediaResolver = $mediaResolver;
-
-        return $this;
-    }
-
     private function mustUpdateItemRelation(array $data): bool
     {
         return array_key_exists(self::INCLUDE_ELEMENT_REFERENCES_KEY, $data)
@@ -73,37 +60,22 @@ class ItemUpdatedEventProcessor extends ConfigurableService implements EventProc
 
     private function getAggregatedMediaIds(array $data): array
     {
-        $references = array_merge(
-            $data[self::INCLUDE_ELEMENT_REFERENCES_KEY] ?? [],
-            $data[self::OBJECT_ELEMENT_REFERENCES_KEY] ?? [],
-            $data[self::IMG_ELEMENT_REFERENCES_KEY] ?? []
+        return $this->getIdDiscoverService()->discover(
+            array_merge(
+                $data[self::INCLUDE_ELEMENT_REFERENCES_KEY] ?? [],
+                $data[self::OBJECT_ELEMENT_REFERENCES_KEY] ?? [],
+                $data[self::IMG_ELEMENT_REFERENCES_KEY] ?? []
+            )
         );
-
-        $ids = [];
-
-        //FIXME @TODO Convert from IdsDiscoverService
-        foreach ($references as $reference) {
-            $mediaAsset = $this->getMediaResolver()->resolve($reference);
-
-            if ($mediaAsset->getMediaSource() instanceof MediaSource) {
-                $ids[] = tao_helpers_Uri::decode($mediaAsset->getMediaIdentifier());
-            }
-        }
-
-        return $ids;
-    }
-
-    private function getMediaResolver(): TaoMediaResolver
-    {
-        if (!$this->mediaResolver) {
-            $this->mediaResolver = new ItemMediaResolver('', null);
-        }
-
-        return $this->mediaResolver;
     }
 
     private function getItemRelationUpdateService(): ItemRelationUpdateService
     {
         return $this->getServiceLocator()->get(ItemRelationUpdateService::class);
+    }
+
+    private function getIdDiscoverService(): IdDiscoverService
+    {
+        return $this->getServiceLocator()->get(IdDiscoverService::class);
     }
 }

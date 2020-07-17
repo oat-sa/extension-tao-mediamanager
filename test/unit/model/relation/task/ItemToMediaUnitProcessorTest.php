@@ -83,11 +83,10 @@ class ItemToMediaUnitProcessorTest extends TestCase
         $references = $this->createMock(ElementReferences::class);
         $allReferences = ['ref'];
         $referenceIds = ['id'];
+        $uri = 'abc123';
 
         $references->method('getAllReferences')
             ->willReturn($allReferences);
-
-        $uri = 'abc123';
 
         $this->ontology
             ->method('getResource')

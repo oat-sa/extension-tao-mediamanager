@@ -30,7 +30,6 @@ use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\relation\service\update\MediaRelationUpdateService;
 use oat\taoMediaManager\model\sharedStimulus\parser\SharedStimulusMediaExtractor;
 use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourceSpecification;
-use tao_models_classes_FileNotFoundException;
 
 class MediaToMediaRelationMigrationTask extends AbstractStatementMigrationTask
 {
@@ -50,9 +49,6 @@ class MediaToMediaRelationMigrationTask extends AbstractStatementMigrationTask
 
         if ($this->getSharedStimulusResourceSpecification()->isSatisfiedBy($resource)) {
             $fileLink = $resource->getUniquePropertyValue($this->getProperty(MediaService::PROPERTY_LINK));
-            if (is_null($fileLink)) {
-                throw new tao_models_classes_FileNotFoundException($uri);
-            }
             $fileLink = $fileLink instanceof core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
             $fileSource = $this->getFileManager()->getFileStream($fileLink);
             $content = $fileSource instanceof File ? $fileSource->read() : $fileSource->getContents();

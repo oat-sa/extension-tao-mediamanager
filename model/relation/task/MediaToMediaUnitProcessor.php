@@ -42,7 +42,7 @@ class MediaToMediaUnitProcessor extends ConfigurableService implements Statement
     {
         return array_merge(
             [
-                MediaService::ROOT_CLASS_URI
+                MediaService::ROOT_CLASS_URI,
             ],
             array_keys($this->getClass(MediaService::ROOT_CLASS_URI)->getSubClasses(true))
         );

@@ -26,14 +26,14 @@ use common_Exception;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\TaoOntology;
-use oat\tao\model\task\migration\StatementUnitProcessorInterface;
+use oat\tao\model\task\migration\service\ResultUnitProcessorInterface;
 use oat\tao\model\task\migration\StatementUnit;
 use oat\taoMediaManager\model\relation\service\IdDiscoverService;
 use oat\taoMediaManager\model\relation\service\update\ItemRelationUpdateService;
 use oat\taoQtiItem\model\qti\parser\ElementReferencesExtractor;
 use oat\taoQtiItem\model\qti\Service;
 
-class ItemToMediaUnitProcessor extends ConfigurableService implements StatementUnitProcessorInterface
+class ItemToMediaUnitProcessor extends ConfigurableService implements ResultUnitProcessorInterface
 {
     use OntologyAwareTrait;
 
@@ -41,7 +41,7 @@ class ItemToMediaUnitProcessor extends ConfigurableService implements StatementU
     {
         return array_merge(
             [
-                TaoOntology::CLASS_URI_ITEM
+                TaoOntology::CLASS_URI_ITEM,
             ],
             array_keys($this->getClass(TaoOntology::CLASS_URI_ITEM)->getSubClasses(true))
         );

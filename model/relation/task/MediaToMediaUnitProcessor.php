@@ -22,11 +22,13 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\task;
 
+use common_Exception;
+use core_kernel_classes_EmptyProperty;
 use core_kernel_classes_Resource;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\filesystem\File;
 use oat\oatbox\service\ConfigurableService;
-use oat\tao\model\task\migration\StatementUnitProcessorInterface;
+use oat\tao\model\task\migration\service\ResultUnitProcessorInterface;
 use oat\tao\model\task\migration\StatementUnit;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\MediaService;
@@ -34,7 +36,7 @@ use oat\taoMediaManager\model\relation\service\update\MediaRelationUpdateService
 use oat\taoMediaManager\model\sharedStimulus\parser\SharedStimulusMediaExtractor;
 use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourceSpecification;
 
-class MediaToMediaUnitProcessor extends ConfigurableService implements StatementUnitProcessorInterface
+class MediaToMediaUnitProcessor extends ConfigurableService implements ResultUnitProcessorInterface
 {
     use OntologyAwareTrait;
 
@@ -48,6 +50,10 @@ class MediaToMediaUnitProcessor extends ConfigurableService implements Statement
         );
     }
 
+    /**
+     * @throws common_Exception
+     * @throws core_kernel_classes_EmptyProperty
+     */
     public function process(StatementUnit $unit): void
     {
         $resource = $this->getResource($unit->getUri());

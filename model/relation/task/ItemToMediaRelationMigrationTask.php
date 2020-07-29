@@ -23,11 +23,11 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\relation\task;
 
 use oat\tao\model\task\migration\AbstractStatementMigrationTask;
-use oat\tao\model\task\migration\StatementUnitProcessorInterface;
+use oat\tao\model\task\migration\service\ResultUnitProcessorInterface;
 
 class ItemToMediaRelationMigrationTask extends AbstractStatementMigrationTask
 {
-    protected function getUnitProcessor(): StatementUnitProcessorInterface
+    protected function getUnitProcessor(): ResultUnitProcessorInterface
     {
         return $this->getServiceLocator()->get(ItemToMediaUnitProcessor::class);
     }

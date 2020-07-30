@@ -28,8 +28,8 @@ use core_kernel_classes_Resource;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\filesystem\File;
 use oat\oatbox\service\ConfigurableService;
+use oat\tao\model\task\migration\service\ResultUnit;
 use oat\tao\model\task\migration\service\ResultUnitProcessorInterface;
-use oat\tao\model\task\migration\StatementUnit;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\relation\service\update\MediaRelationUpdateService;
@@ -40,23 +40,15 @@ class MediaToMediaUnitProcessor extends ConfigurableService implements ResultUni
 {
     use OntologyAwareTrait;
 
-    public function getTargetClasses(): array
-    {
-        return array_merge(
-            [
-                MediaService::ROOT_CLASS_URI
-            ],
-            array_keys($this->getClass(MediaService::ROOT_CLASS_URI)->getSubClasses(true))
-        );
-    }
-
     /**
      * @throws common_Exception
      * @throws core_kernel_classes_EmptyProperty
      */
-    public function process(StatementUnit $unit): void
+    public function process(ResultUnit $unit): void
     {
-        $resource = $this->getResource($unit->getUri());
+        $id = $unit->getResource()['subject'];
+
+        $resource = $this->getResource($id);
 
         if ($this->getSharedStimulusResourceSpecification()->isSatisfiedBy($resource)) {
             $fileLink = $resource->getUniquePropertyValue($this->getProperty(MediaService::PROPERTY_LINK));

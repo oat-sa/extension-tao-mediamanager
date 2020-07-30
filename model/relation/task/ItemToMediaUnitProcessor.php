@@ -22,12 +22,10 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\task;
 
-use common_Exception;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\ConfigurableService;
-use oat\tao\model\TaoOntology;
+use oat\tao\model\task\migration\service\ResultUnit;
 use oat\tao\model\task\migration\service\ResultUnitProcessorInterface;
-use oat\tao\model\task\migration\StatementUnit;
 use oat\taoMediaManager\model\relation\service\IdDiscoverService;
 use oat\taoMediaManager\model\relation\service\update\ItemRelationUpdateService;
 use oat\taoQtiItem\model\qti\parser\ElementReferencesExtractor;
@@ -37,22 +35,11 @@ class ItemToMediaUnitProcessor extends ConfigurableService implements ResultUnit
 {
     use OntologyAwareTrait;
 
-    public function getTargetClasses(): array
+    public function process(ResultUnit $unit): void
     {
-        return array_merge(
-            [
-                TaoOntology::CLASS_URI_ITEM,
-            ],
-            array_keys($this->getClass(TaoOntology::CLASS_URI_ITEM)->getSubClasses(true))
-        );
-    }
+        $id = $unit->getResource()['subject'];
 
-    /**
-     * @throws common_Exception
-     */
-    public function process(StatementUnit $unit): void
-    {
-        $resource = $this->getResource($unit->getUri());
+        $resource = $this->getResource($id);
 
         $qtiItem = $this->getQtiService()->getDataItemByRdfItem($resource);
 

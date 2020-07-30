@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint120\n"
-"PO-Revision-Date: 2020-01-31T09:48:49\n"
+"Project-Id-Version: TAO 3.4.0-sprint121\n"
+"PO-Revision-Date: 2020-07-30T20:09:15\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: da-DK\n"
@@ -13,40 +13,40 @@ msgstr ""
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#Media
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Media"
-msgstr ""
+msgstr "Medier"
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#Media
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Media"
-msgstr ""
+msgstr "Medier"
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#AltText
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Alternative Text"
-msgstr ""
+msgstr "Alternativ tekst"
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#AltText
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Alternative Text"
-msgstr ""
+msgstr "Alternativ tekst"
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#Language
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Language"
-msgstr ""
+msgstr "Sprog"
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#Language
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Language"
-msgstr ""
+msgstr "Sprog"
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Media Manager"
-msgstr ""
+msgstr "Medieadministrator"
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "The Media Manager Role"
-msgstr ""
+msgstr "Medieadministratorrollen"
 

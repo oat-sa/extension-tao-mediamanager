@@ -22,37 +22,48 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\test\unit\model\relation\task;
 
+use common_exception_MissingParameter;
 use oat\generis\test\TestCase;
+use oat\tao\model\task\migration\service\QueueMigrationService;
 use oat\taoMediaManager\model\relation\task\ItemToMediaRelationMigrationTask;
 use oat\taoMediaManager\model\relation\task\ItemToMediaUnitProcessor;
-use ReflectionMethod;
+use PHPUnit\Framework\MockObject\MockObject;
 
 class ItemToMediaRelationMigrationTaskTest extends TestCase
 {
+    private const CHUNKSIZE_EXAMPLE = 1;
+    private const START_EXAMPLE = 0;
+    private const PICKSIZE_EXAMPLE = 2;
+    private const REPEAT_EXAMPLE = true;
+
     /** @var ItemToMediaUnitProcessor */
     private $processor;
 
     /** @var ItemToMediaRelationMigrationTask */
     private $subject;
+    /** @var QueueMigrationService|MockObject */
+    private $queueMigrationServiceMock;
 
     public function setUp(): void
     {
         $this->processor = $this->createMock(ItemToMediaUnitProcessor::class);
-        $this->subject = $this->getMockForAbstractClass(ItemToMediaRelationMigrationTask::class);
+        $this->queueMigrationServiceMock = $this->createMock(QueueMigrationService::class);
+        $this->subject = new ItemToMediaRelationMigrationTask();
         $this->subject->setServiceLocator(
-            $this->getServiceLocatorMock(
-                [
-                    ItemToMediaUnitProcessor::class => $this->processor,
-                ]
-            )
-        );
+            $this->getServiceLocatorMock([
+                ItemToMediaUnitProcessor::class => $this->processor,
+                QueueMigrationService::class => $this->queueMigrationServiceMock
+            ]));
     }
 
-    public function testGetUnitProcessor(): void
+    public function testGetUnitProcessorWithMissingParams(): void
     {
-        $reflectionMethod = new ReflectionMethod($this->subject, 'getUnitProcessor');
-        $reflectionMethod->setAccessible(true);
+        $params['chunkSize'] = self::CHUNKSIZE_EXAMPLE;
+        $params['start'] = self::START_EXAMPLE;
+        $params['pickSize'] = self::PICKSIZE_EXAMPLE;
 
-        $this->assertSame($this->processor, $reflectionMethod->invoke($this->subject));
+        $this->expectException(common_exception_MissingParameter::class);
+
+        $this->subject->__invoke($params);
     }
 }

@@ -25,6 +25,8 @@ namespace oat\taoMediaManager\test\unit\model\relation\task;
 use common_exception_MissingParameter;
 use oat\generis\test\TestCase;
 use oat\tao\model\task\migration\service\QueueMigrationService;
+use oat\tao\model\task\migration\StatementMigrationConfig;
+use oat\tao\model\taskQueue\QueueDispatcherInterface;
 use oat\taoMediaManager\model\relation\task\ItemToMediaRelationMigrationTask;
 use oat\taoMediaManager\model\relation\task\ItemToMediaUnitProcessor;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -36,33 +38,83 @@ class ItemToMediaRelationMigrationTaskTest extends TestCase
     private const PICKSIZE_EXAMPLE = 2;
     private const REPEAT_EXAMPLE = true;
 
-    /** @var ItemToMediaUnitProcessor */
-    private $processor;
+    /** @var ItemToMediaUnitProcessor|MockObject */
+    private $processorMock;
 
     /** @var ItemToMediaRelationMigrationTask */
     private $subject;
+
     /** @var QueueMigrationService|MockObject */
     private $queueMigrationServiceMock;
 
+    /** @var QueueDispatcherInterface|MockObject */
+    private $queueDispatcherInterfaceMock;
+
     public function setUp(): void
     {
-        $this->processor = $this->createMock(ItemToMediaUnitProcessor::class);
+        $this->processorMock = $this->createMock(ItemToMediaUnitProcessor::class);
+        $this->queueDispatcherInterfaceMock = $this->createMock(QueueDispatcherInterface::class);
         $this->queueMigrationServiceMock = $this->createMock(QueueMigrationService::class);
         $this->subject = new ItemToMediaRelationMigrationTask();
         $this->subject->setServiceLocator(
             $this->getServiceLocatorMock([
-                ItemToMediaUnitProcessor::class => $this->processor,
+                ItemToMediaUnitProcessor::class => $this->processorMock,
                 QueueMigrationService::class => $this->queueMigrationServiceMock
             ]));
     }
 
-    public function testGetUnitProcessorWithMissingParams(): void
+    public function testInvokeWithMissingParams(): void
     {
         $params['chunkSize'] = self::CHUNKSIZE_EXAMPLE;
         $params['start'] = self::START_EXAMPLE;
         $params['pickSize'] = self::PICKSIZE_EXAMPLE;
 
         $this->expectException(common_exception_MissingParameter::class);
+
+        $this->subject->__invoke($params);
+    }
+
+    public function testInvokeWithRespawnConfig(): void
+    {
+        /** @var StatementMigrationConfig|MockObject $respawnTaskConfig */
+        $respawnTaskConfig = $this->createMock(StatementMigrationConfig::class);
+        $params['chunkSize'] = self::CHUNKSIZE_EXAMPLE;
+        $params['start'] = self::START_EXAMPLE;
+        $params['pickSize'] = self::PICKSIZE_EXAMPLE;
+        $params['repeat'] = self::REPEAT_EXAMPLE;
+
+        $this->processorMock
+            ->expects($this->once())
+            ->method('getTargetClasses')
+            ->willReturn([
+                'fully/qulify/name/class/1',
+                'fully/qulify/name/class/2'
+            ]);
+
+        $this->queueMigrationServiceMock
+            ->expects($this->once())
+            ->method('migrate')
+            ->willReturn($respawnTaskConfig);
+
+        $respawnTaskConfig
+            ->expects($this->once())
+            ->method('getChunkSize');
+
+        $respawnTaskConfig
+            ->expects($this->once())
+            ->method('getStart');
+
+        $respawnTaskConfig
+            ->expects($this->once())
+            ->method('getPickSize');
+
+        $respawnTaskConfig
+            ->expects($this->once())
+            ->method('isProcessAllStatements');
+
+        $this->queueDispatcherInterfaceMock
+            ->expects($this->once())
+            ->method('createTask');
 
         $this->subject->__invoke($params);
     }

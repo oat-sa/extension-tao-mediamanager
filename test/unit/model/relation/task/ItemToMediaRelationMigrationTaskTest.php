@@ -27,6 +27,8 @@ use oat\generis\test\TestCase;
 use oat\tao\model\task\migration\service\QueueMigrationService;
 use oat\tao\model\task\migration\MigrationConfig;
 use oat\tao\model\taskQueue\QueueDispatcherInterface;
+use oat\tao\model\taskQueue\Task\CallbackTaskInterface;
+use oat\taoMediaManager\model\relation\service\ItemToMediaRdsSearcher;
 use oat\taoMediaManager\model\relation\task\ItemToMediaRelationMigrationTask;
 use oat\taoMediaManager\model\relation\task\ItemToMediaUnitProcessor;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -50,16 +52,22 @@ class ItemToMediaRelationMigrationTaskTest extends TestCase
     /** @var QueueDispatcherInterface|MockObject */
     private $queueDispatcherInterfaceMock;
 
+    /** @var ItemToMediaRdsSearcher|MockObject */
+    private $itemToMediaRdsSearcher;
+
     public function setUp(): void
     {
         $this->processorMock = $this->createMock(ItemToMediaUnitProcessor::class);
         $this->queueDispatcherInterfaceMock = $this->createMock(QueueDispatcherInterface::class);
         $this->queueMigrationServiceMock = $this->createMock(QueueMigrationService::class);
+        $this->itemToMediaRdsSearcher = $this->createMock(ItemToMediaRdsSearcher::class);
         $this->subject = new ItemToMediaRelationMigrationTask();
         $this->subject->setServiceLocator(
             $this->getServiceLocatorMock([
                 ItemToMediaUnitProcessor::class => $this->processorMock,
-                QueueMigrationService::class => $this->queueMigrationServiceMock
+                QueueMigrationService::class => $this->queueMigrationServiceMock,
+                ItemToMediaRdsSearcher::class => $this->itemToMediaRdsSearcher,
+                QueueDispatcherInterface::SERVICE_ID => $this->queueDispatcherInterfaceMock,
             ]));
     }
 
@@ -83,14 +91,6 @@ class ItemToMediaRelationMigrationTaskTest extends TestCase
         $params['pickSize'] = self::PICKSIZE_EXAMPLE;
         $params['repeat'] = self::REPEAT_EXAMPLE;
 
-        $this->processorMock
-            ->expects($this->once())
-            ->method('getTargetClasses')
-            ->willReturn([
-                'fully/qulify/name/class/1',
-                'fully/qulify/name/class/2'
-            ]);
-
         $this->queueMigrationServiceMock
             ->expects($this->once())
             ->method('migrate')
@@ -108,13 +108,11 @@ class ItemToMediaRelationMigrationTaskTest extends TestCase
             ->expects($this->once())
             ->method('getPickSize');
 
-        $respawnTaskConfig
-            ->expects($this->once())
-            ->method('isProcessAllStatements');
-
+        $callbackTaskInterface = $this->createMock(CallbackTaskInterface::class);
         $this->queueDispatcherInterfaceMock
             ->expects($this->once())
-            ->method('createTask');
+            ->method('createTask')
+            ->willReturn($callbackTaskInterface);
 
         $this->subject->__invoke($params);
     }

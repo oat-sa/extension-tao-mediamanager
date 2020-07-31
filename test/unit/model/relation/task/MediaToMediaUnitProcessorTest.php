@@ -27,7 +27,7 @@ use core_kernel_classes_Resource;
 use oat\generis\model\data\Ontology;
 use oat\generis\test\TestCase;
 use oat\oatbox\filesystem\File;
-use oat\tao\model\task\migration\StatementUnit;
+use oat\tao\model\task\migration\ResourceResultUnit;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\relation\service\update\MediaRelationUpdateService;
 use oat\taoMediaManager\model\relation\task\MediaToMediaUnitProcessor;
@@ -124,6 +124,8 @@ class MediaToMediaUnitProcessorTest extends TestCase
             ->with($resource)
             ->willReturn(true);
 
-        $this->assertNull($this->subject->process(new StatementUnit($uri)));
+        $resource->method('getUri')->willReturn($uri);
+
+        $this->assertNull($this->subject->process(new ResourceResultUnit($resource)));
     }
 }

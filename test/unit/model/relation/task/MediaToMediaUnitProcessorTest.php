@@ -124,6 +124,8 @@ class MediaToMediaUnitProcessorTest extends TestCase
             ->with($resource)
             ->willReturn(true);
 
-        $this->assertNull($this->subject->process(new ResourceResultUnit($uri)));
+        $resource->method('getUri')->willReturn($uri);
+
+        $this->assertNull($this->subject->process(new ResourceResultUnit($resource)));
     }
 }

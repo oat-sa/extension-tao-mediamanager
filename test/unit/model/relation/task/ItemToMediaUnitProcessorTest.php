@@ -112,7 +112,7 @@ class ItemToMediaUnitProcessorTest extends TestCase
             ->method('updateByTargetId')
             ->with($uri, $referenceIds);
 
-        $resource->method('getUri')->willReturn('url/String');
+        $resource->method('getUri')->willReturn($uri);
 
         $this->assertNull($this->subject->process(new ResourceResultUnit($resource)));
     }

@@ -42,9 +42,9 @@ abstract class AbstractRdsSearcher extends ConfigurableService implements Result
 
     abstract protected function getTargetClasses(): array;
 
-    public function search(int $start, int $end, int $max): ResultUnitCollection
+    public function search(int $start, int $end): ResultUnitCollection
     {
-        $results = $this->getPersistenceIterator($start, $max, $end);
+        $results = $this->getPersistenceIterator($start, $end);
         $resultUnitCollection = new ResultUnitCollection();
         foreach ($results as $result){
             $resultUnitCollection->add(new ResourceResultUnit($this->getResource($result['subject'])));
@@ -53,7 +53,7 @@ abstract class AbstractRdsSearcher extends ConfigurableService implements Result
         return $resultUnitCollection;
     }
 
-    private function getPersistenceIterator(int $start, int $end, int $max): iterable
+    private function getPersistenceIterator(int $start, int $end): iterable
     {
         /** @var common_persistence_Persistence $persistence */
         $persistence = $this->getModel()->getPersistence();
@@ -70,7 +70,7 @@ abstract class AbstractRdsSearcher extends ConfigurableService implements Result
         return new common_persistence_sql_QueryIterator(
             $persistence,
             $query,
-            $this->getFilterArray($start, $end, $max),
+            $this->getFilterArray($start, $end),
             $type
         );
     }

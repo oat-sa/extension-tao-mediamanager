@@ -22,13 +22,20 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\task;
 
-use oat\tao\model\task\migration\AbstractStatementMigrationTask;
+use oat\tao\model\task\migration\AbstractMigrationTask;
+use oat\tao\model\task\migration\service\ResultSearcherInterface;
 use oat\tao\model\task\migration\service\ResultUnitProcessorInterface;
+use oat\taoMediaManager\model\relation\service\MediaToMediaRdsSearcher;
 
-class MediaToMediaRelationMigrationTask extends AbstractStatementMigrationTask
+class MediaToMediaRelationMigrationTask extends AbstractMigrationTask
 {
     protected function getUnitProcessor(): ResultUnitProcessorInterface
     {
         return $this->getServiceLocator()->get(MediaToMediaUnitProcessor::class);
+    }
+
+    protected function getResultSearcher(): ResultSearcherInterface
+    {
+        return $this->getServiceLocator()->get(MediaToMediaRdsSearcher::class);
     }
 }

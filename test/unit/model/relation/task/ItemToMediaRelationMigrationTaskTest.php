@@ -25,7 +25,7 @@ namespace oat\taoMediaManager\test\unit\model\relation\task;
 use common_exception_MissingParameter;
 use oat\generis\test\TestCase;
 use oat\tao\model\task\migration\service\QueueMigrationService;
-use oat\tao\model\task\migration\StatementMigrationConfig;
+use oat\tao\model\task\migration\MigrationConfig;
 use oat\tao\model\taskQueue\QueueDispatcherInterface;
 use oat\taoMediaManager\model\relation\task\ItemToMediaRelationMigrationTask;
 use oat\taoMediaManager\model\relation\task\ItemToMediaUnitProcessor;
@@ -76,8 +76,8 @@ class ItemToMediaRelationMigrationTaskTest extends TestCase
 
     public function testInvokeWithRespawnConfig(): void
     {
-        /** @var StatementMigrationConfig|MockObject $respawnTaskConfig */
-        $respawnTaskConfig = $this->createMock(StatementMigrationConfig::class);
+        /** @var MigrationConfig|MockObject $respawnTaskConfig */
+        $respawnTaskConfig = $this->createMock(MigrationConfig::class);
         $params['chunkSize'] = self::CHUNKSIZE_EXAMPLE;
         $params['start'] = self::START_EXAMPLE;
         $params['pickSize'] = self::PICKSIZE_EXAMPLE;

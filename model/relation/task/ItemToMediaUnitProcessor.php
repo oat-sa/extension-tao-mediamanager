@@ -23,11 +23,12 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\relation\task;
 
 use common_Exception;
+use core_kernel_classes_Resource;
+use Exception;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\ConfigurableService;
-use oat\tao\model\TaoOntology;
 use oat\tao\model\task\migration\service\ResultUnitProcessorInterface;
-use oat\tao\model\task\migration\StatementUnit;
+use oat\tao\model\task\migration\ResourceResultUnit;
 use oat\taoMediaManager\model\relation\service\IdDiscoverService;
 use oat\taoMediaManager\model\relation\service\update\ItemRelationUpdateService;
 use oat\taoQtiItem\model\qti\parser\ElementReferencesExtractor;
@@ -37,23 +38,16 @@ class ItemToMediaUnitProcessor extends ConfigurableService implements ResultUnit
 {
     use OntologyAwareTrait;
 
-    public function getTargetClasses(): array
-    {
-        return array_merge(
-            [
-                TaoOntology::CLASS_URI_ITEM,
-            ],
-            array_keys($this->getClass(TaoOntology::CLASS_URI_ITEM)->getSubClasses(true))
-        );
-    }
-
     /**
      * @throws common_Exception
      */
-    public function process(StatementUnit $unit): void
+    public function process(ResourceResultUnit $unit): void
     {
-        $resource = $this->getResource($unit->getUri());
-
+        /** @var core_kernel_classes_Resource $resource */
+        $resource = $unit->getResource();
+        if (!($unit->getResource() instanceof core_kernel_classes_Resource)){
+            throw new Exception('Unit is not a resource');
+        }
         $qtiItem = $this->getQtiService()->getDataItemByRdfItem($resource);
 
         $elementReferences = $this->getElementReferencesExtractor()
@@ -64,7 +58,7 @@ class ItemToMediaUnitProcessor extends ConfigurableService implements ResultUnit
             $ids = $this->getIdDiscoverService()->discover($elementReferences);
 
             $this->getItemRelationUpdateService()
-                ->updateByTargetId($unit->getUri(), $ids);
+                ->updateByTargetId($resource->getUri(), $ids);
         }
     }
 

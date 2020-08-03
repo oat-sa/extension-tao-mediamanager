@@ -23,9 +23,8 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\relation\service;
 
 use oat\tao\model\TaoOntology;
-use oat\tao\model\task\migration\service\ResultSearcherInterface;
 
-class ItemToMediaRdsSearcher extends AbstractRdsSearcher implements ResultSearcherInterface
+class ItemToMediaRdsSearcher extends AbstractRdsSearcher
 {
     protected function getTargetClasses(): array
     {

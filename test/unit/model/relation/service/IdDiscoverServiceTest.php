@@ -29,7 +29,7 @@ use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\relation\service\IdDiscoverService;
 use PHPUnit\Framework\MockObject\MockObject;
 
-class ItemUpdatedEventProcessorTest extends TestCase
+class IdDiscoverServiceTest extends TestCase
 {
     private const MEDIA_LINK_1 = 'taomedia://mediamanager/https_2_test-tao-deploy_0_docker_0_localhost_1_ontologies_1_tao_0_rdf_3_i5ec293a38ebe623833180e3b0a547a6d4';
     private const MEDIA_LINK_2 = 'taomedia://mediamanager/https_2_test-tao-deploy_0_docker_0_localhost_1_ontologies_1_tao_0_rdf_3_i5ec293a38ebe623833180e3b0a547a6d5';

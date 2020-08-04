@@ -83,6 +83,5 @@ abstract class AbstractRdsSearcher extends ConfigurableService implements Result
             'predicate' => OntologyRdf::RDF_TYPE,
             'class' => array_unique($this->getTargetClasses()),
         ];
-
     }
 }

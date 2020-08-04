@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\service;
 
-
 use common_persistence_Persistence;
 use common_persistence_sql_QueryIterator;
 use common_persistence_SqlPersistence;

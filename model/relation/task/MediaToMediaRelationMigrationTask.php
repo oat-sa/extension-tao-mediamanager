@@ -23,8 +23,14 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\relation\task;
 
 use oat\tao\model\task\migration\AbstractMigrationTask;
+use oat\tao\model\task\migration\service\MigrationConfigFactory;
+use oat\tao\model\task\migration\service\MigrationConfigFactoryInterface;
+use oat\tao\model\task\migration\service\ResultFilterFactory;
+use oat\tao\model\task\migration\service\ResultFilterFactoryInterface;
 use oat\tao\model\task\migration\service\ResultSearcherInterface;
 use oat\tao\model\task\migration\service\ResultUnitProcessorInterface;
+use oat\tao\model\task\migration\service\SpawnMigrationConfigService;
+use oat\tao\model\task\migration\service\SpawnMigrationConfigServiceInterface;
 use oat\taoMediaManager\model\relation\service\MediaToMediaRdsSearcher;
 
 class MediaToMediaRelationMigrationTask extends AbstractMigrationTask
@@ -37,5 +43,20 @@ class MediaToMediaRelationMigrationTask extends AbstractMigrationTask
     protected function getResultSearcher(): ResultSearcherInterface
     {
         return $this->getServiceLocator()->get(MediaToMediaRdsSearcher::class);
+    }
+
+    protected function getSpawnMigrationConfigService(): SpawnMigrationConfigServiceInterface
+    {
+        return $this->getServiceLocator()->get(SpawnMigrationConfigService::class);
+    }
+
+    protected function getResultFilterFactory(): ResultFilterFactoryInterface
+    {
+        return $this->getServiceLocator()->get(ResultFilterFactory::class);
+    }
+
+    protected function getMigrationConfigFactory(): MigrationConfigFactoryInterface
+    {
+        return $this->getServiceLocator()->get(MigrationConfigFactory::class);
     }
 }

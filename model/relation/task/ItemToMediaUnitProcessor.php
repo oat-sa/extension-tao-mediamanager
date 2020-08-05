@@ -28,7 +28,7 @@ use Exception;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\task\migration\service\ResultUnitProcessorInterface;
-use oat\tao\model\task\migration\ResourceResultUnit;
+use oat\tao\model\task\migration\ResultUnit;
 use oat\taoMediaManager\model\relation\service\IdDiscoverService;
 use oat\taoMediaManager\model\relation\service\update\ItemRelationUpdateService;
 use oat\taoQtiItem\model\qti\parser\ElementReferencesExtractor;
@@ -41,11 +41,11 @@ class ItemToMediaUnitProcessor extends ConfigurableService implements ResultUnit
     /**
      * @throws common_Exception
      */
-    public function process(ResourceResultUnit $unit): void
+    public function process(ResultUnit $unit): void
     {
         /** @var core_kernel_classes_Resource $resource */
-        $resource = $unit->getResource();
-        if (!($unit->getResource() instanceof core_kernel_classes_Resource)){
+        $resource = $unit->getResult();
+        if (!($unit->getResult() instanceof core_kernel_classes_Resource)){
             throw new Exception('Unit is not a resource');
         }
         $qtiItem = $this->getQtiService()->getDataItemByRdfItem($resource);

@@ -25,7 +25,7 @@ namespace oat\taoMediaManager\test\unit\model\relation\task;
 use core_kernel_classes_Resource;
 use oat\generis\model\data\Ontology;
 use oat\generis\test\TestCase;
-use oat\tao\model\task\migration\ResourceResultUnit;
+use oat\tao\model\task\migration\ResultUnit;
 use oat\taoMediaManager\model\relation\service\IdDiscoverService;
 use oat\taoMediaManager\model\relation\service\update\ItemRelationUpdateService;
 use oat\taoMediaManager\model\relation\task\ItemToMediaUnitProcessor;
@@ -114,6 +114,6 @@ class ItemToMediaUnitProcessorTest extends TestCase
 
         $resource->method('getUri')->willReturn($uri);
 
-        $this->assertNull($this->subject->process(new ResourceResultUnit($resource)));
+        $this->assertNull($this->subject->process(new ResultUnit($resource)));
     }
 }

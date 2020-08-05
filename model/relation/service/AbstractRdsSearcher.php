@@ -32,8 +32,9 @@ use Doctrine\DBAL\Connection;
 use oat\generis\model\OntologyAwareTrait;
 use oat\generis\model\OntologyRdf;
 use oat\oatbox\service\ConfigurableService;
-use oat\tao\model\task\migration\ResourceResultUnit;
+use oat\tao\model\task\migration\ResultUnit;
 use oat\tao\model\task\migration\ResultUnitCollection;
+use oat\tao\model\task\migration\service\ResultFilter;
 use oat\tao\model\task\migration\service\ResultSearcherInterface;
 
 abstract class AbstractRdsSearcher extends ConfigurableService implements ResultSearcherInterface
@@ -42,12 +43,16 @@ abstract class AbstractRdsSearcher extends ConfigurableService implements Result
 
     abstract protected function getTargetClasses(): array;
 
-    public function search(int $start, int $end): ResultUnitCollection
+    public function search(ResultFilter $filter): ResultUnitCollection
     {
-        $results = $this->getPersistenceIterator($start, $end);
+        $results = $this->getPersistenceIterator(
+            $filter->getParameter('start'),
+            $filter->getParameter('end')
+        );
+
         $resultUnitCollection = new ResultUnitCollection();
         foreach ($results as $result){
-            $resultUnitCollection->add(new ResourceResultUnit($this->getResource($result['subject'])));
+            $resultUnitCollection->add(new ResultUnit($this->getResource($result['subject'])));
         }
 
         return $resultUnitCollection;

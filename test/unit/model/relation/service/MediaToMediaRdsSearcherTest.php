@@ -27,6 +27,7 @@ use core_kernel_persistence_Exception;
 use core_kernel_persistence_smoothsql_SmoothModel;
 use oat\generis\test\MockObject;
 use oat\generis\test\TestCase;
+use oat\tao\model\task\migration\service\ResultFilter;
 use oat\taoMediaManager\model\relation\service\MediaToMediaRdsSearcher;
 
 class MediaToMediaRdsSearcherTest extends TestCase
@@ -55,7 +56,11 @@ class MediaToMediaRdsSearcherTest extends TestCase
         $advKeyValuePersistence = $this->createMock(common_persistence_AdvKeyValuePersistence::class);
         $this->ontologyMock->method('getPersistence')->willReturn($advKeyValuePersistence);
 
+        $filter  = new ResultFilter([
+            'start' => 1,
+            'end' => 2
+        ]);
         $this->expectException(core_kernel_persistence_Exception::class);
-        $this->subject->search(0, 2, 1);
+        $this->subject->search($filter);
     }
 }

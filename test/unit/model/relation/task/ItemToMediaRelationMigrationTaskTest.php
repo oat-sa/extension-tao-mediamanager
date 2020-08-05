@@ -24,8 +24,12 @@ namespace oat\taoMediaManager\test\unit\model\relation\task;
 
 use common_exception_MissingParameter;
 use oat\generis\test\TestCase;
+use oat\tao\model\task\migration\service\MigrationConfigFactory;
 use oat\tao\model\task\migration\service\QueueMigrationService;
 use oat\tao\model\task\migration\MigrationConfig;
+use oat\tao\model\task\migration\service\ResultFilter;
+use oat\tao\model\task\migration\service\ResultFilterFactory;
+use oat\tao\model\task\migration\service\SpawnMigrationConfigService;
 use oat\tao\model\taskQueue\QueueDispatcherInterface;
 use oat\tao\model\taskQueue\Task\CallbackTaskInterface;
 use oat\taoMediaManager\model\relation\service\ItemToMediaRdsSearcher;
@@ -54,6 +58,12 @@ class ItemToMediaRelationMigrationTaskTest extends TestCase
 
     /** @var ItemToMediaRdsSearcher|MockObject */
     private $itemToMediaRdsSearcher;
+    /** @var SpawnMigrationConfigService|MockObject */
+    private $spawnMigrationConfigServiceMock;
+    /** @var ResultFilterFactory|MockObject */
+    private $resultFilterFactoryMock;
+    /** @var MigrationConfigFactory|MockObject */
+    private $migrationConfigFactoryMock;
 
     public function setUp(): void
     {
@@ -61,6 +71,9 @@ class ItemToMediaRelationMigrationTaskTest extends TestCase
         $this->queueDispatcherInterfaceMock = $this->createMock(QueueDispatcherInterface::class);
         $this->queueMigrationServiceMock = $this->createMock(QueueMigrationService::class);
         $this->itemToMediaRdsSearcher = $this->createMock(ItemToMediaRdsSearcher::class);
+        $this->spawnMigrationConfigServiceMock = $this->createMock(SpawnMigrationConfigService::class);
+        $this->resultFilterFactoryMock = $this->createMock(ResultFilterFactory::class);
+        $this->migrationConfigFactoryMock = $this->createMock(MigrationConfigFactory::class);
         $this->subject = new ItemToMediaRelationMigrationTask();
         $this->subject->setServiceLocator(
             $this->getServiceLocatorMock([
@@ -68,18 +81,10 @@ class ItemToMediaRelationMigrationTaskTest extends TestCase
                 QueueMigrationService::class => $this->queueMigrationServiceMock,
                 ItemToMediaRdsSearcher::class => $this->itemToMediaRdsSearcher,
                 QueueDispatcherInterface::SERVICE_ID => $this->queueDispatcherInterfaceMock,
+                SpawnMigrationConfigService::class => $this->spawnMigrationConfigServiceMock,
+                ResultFilterFactory::class => $this->resultFilterFactoryMock,
+                MigrationConfigFactory::class => $this->migrationConfigFactoryMock,
             ]));
-    }
-
-    public function testInvokeWithMissingParams(): void
-    {
-        $params['chunkSize'] = self::CHUNKSIZE_EXAMPLE;
-        $params['start'] = self::START_EXAMPLE;
-        $params['pickSize'] = self::PICKSIZE_EXAMPLE;
-
-        $this->expectException(common_exception_MissingParameter::class);
-
-        $this->subject->__invoke($params);
     }
 
     public function testInvokeWithRespawnConfig(): void
@@ -97,16 +102,26 @@ class ItemToMediaRelationMigrationTaskTest extends TestCase
             ->willReturn($respawnTaskConfig);
 
         $respawnTaskConfig
-            ->expects($this->once())
+            ->expects($this->exactly(2))
             ->method('getChunkSize');
 
         $respawnTaskConfig
             ->expects($this->once())
-            ->method('getStart');
-
-        $respawnTaskConfig
-            ->expects($this->once())
             ->method('getPickSize');
+
+        $this->migrationConfigFactoryMock
+            ->method('create')
+            ->willReturn(new MigrationConfig(
+                ['start' => 0],
+                1,
+                2,
+                true
+            ));
+
+        $this->resultFilterFactoryMock
+            ->expects($this->once())
+            ->method('create')
+            ->willReturn(new ResultFilter(['param1' => 1]));
 
         $callbackTaskInterface = $this->createMock(CallbackTaskInterface::class);
         $this->queueDispatcherInterfaceMock

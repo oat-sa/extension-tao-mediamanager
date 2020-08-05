@@ -58,12 +58,16 @@ class ItemToMediaRelationMigrationTaskTest extends TestCase
 
     /** @var ItemToMediaRdsSearcher|MockObject */
     private $itemToMediaRdsSearcher;
+
     /** @var SpawnMigrationConfigService|MockObject */
     private $spawnMigrationConfigServiceMock;
+
     /** @var ResultFilterFactory|MockObject */
     private $resultFilterFactoryMock;
+
     /** @var MigrationConfigFactory|MockObject */
     private $migrationConfigFactoryMock;
+
 
     public function setUp(): void
     {

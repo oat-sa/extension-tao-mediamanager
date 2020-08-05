@@ -37,7 +37,6 @@ class MediaToMediaRdsSearcherTest extends TestCase
      */
     private $subject;
 
-
     /**
      * @var core_kernel_persistence_smoothsql_SmoothModel|MockObject
      */

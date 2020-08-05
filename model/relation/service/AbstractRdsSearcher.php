@@ -20,9 +20,7 @@
 
 declare(strict_types=1);
 
-
 namespace oat\taoMediaManager\model\relation\service;
-
 
 use common_persistence_Persistence;
 use common_persistence_sql_QueryIterator;
@@ -88,6 +86,5 @@ abstract class AbstractRdsSearcher extends ConfigurableService implements Result
             'predicate' => OntologyRdf::RDF_TYPE,
             'class' => array_unique($this->getTargetClasses()),
         ];
-
     }
 }

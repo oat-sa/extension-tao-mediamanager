@@ -45,6 +45,7 @@ class ItemToMediaUnitProcessor extends ConfigurableService implements ResultUnit
     {
         /** @var core_kernel_classes_Resource $resource */
         $resource = $unit->getResult();
+
         if (!($unit->getResult() instanceof core_kernel_classes_Resource)){
             throw new Exception('Unit is not a resource');
         }

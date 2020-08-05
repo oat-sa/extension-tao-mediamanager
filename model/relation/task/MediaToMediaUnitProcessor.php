@@ -48,6 +48,7 @@ class MediaToMediaUnitProcessor extends ConfigurableService implements ResultUni
     public function process(ResultUnit $unit): void
     {
         $resource = $unit->getResult();
+
         if (!($resource instanceof core_kernel_classes_Resource)) {
             throw new Exception('Unit is not a resource');
         }

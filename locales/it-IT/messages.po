@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint120\n"
-"PO-Revision-Date: 2020-01-31T09:48:49\n"
+"Project-Id-Version: TAO 3.4.0-sprint121\n"
+"PO-Revision-Date: 2020-07-30T20:09:18\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: it-IT\n"
@@ -14,65 +14,65 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "Add a media file"
-msgstr ""
+msgstr "Aggiungi un file multimediale"
 
 msgid "An error has occurred. Please contact your administrator."
 msgstr ""
 
 #, tao-public
 msgid "Delete"
-msgstr ""
+msgstr "Cancella"
 
 msgid "Edit Instance"
-msgstr ""
+msgstr "Modifica Istanza"
 
 msgid "Edited %s"
 msgstr ""
 
 #, tao-public
 msgid "Export"
-msgstr ""
+msgstr "Esporta"
 
 msgid "Export Media as Zip file"
-msgstr ""
+msgstr "Esporta Media come file Zip"
 
 msgid "Fail to edit Shared Stimulus"
-msgstr ""
+msgstr "Impossibile modificare Stimolo Condiviso"
 
 msgid "Fail to edit shared stimulus"
-msgstr ""
+msgstr "Impossibile modificare stimolo condiviso"
 
 msgid "Fail to import media"
-msgstr ""
+msgstr "Impossibile importare file multimediali"
 
 msgid "Fail to import Shared Stimulus"
-msgstr ""
+msgstr "Impossibile importare Stimolo Condiviso"
 
 msgid "File"
-msgstr ""
+msgstr "File"
 
 msgid "File name"
-msgstr ""
+msgstr "Nome file"
 
 #, tao-public
 msgid "Import"
-msgstr ""
+msgstr "Importare"
 
 msgid "Imported %s"
-msgstr ""
+msgstr "Importati %s"
 
 msgid "Imported new file"
-msgstr ""
+msgstr "Importato nuovo file"
 
 msgid "Initial import"
-msgstr ""
+msgstr "Importazione iniziale"
 
 msgid "Instance saved"
-msgstr ""
+msgstr "Istanza salvata"
 
 #, tao-public
 msgid "Manage Media"
-msgstr ""
+msgstr "Gestione Media"
 
 #, tao-public
 msgid "Manage Schema"
@@ -80,21 +80,21 @@ msgstr ""
 
 #, tao-public
 msgid "Media"
-msgstr ""
+msgstr "Media"
 
 msgid "Media imported successfully"
-msgstr ""
+msgstr "Media importati con successo"
 
 #, tao-public
 msgid "Media Manager"
-msgstr ""
+msgstr "Gestione Media"
 
 #, tao-public
 msgid "Media Manager extension"
-msgstr ""
+msgstr "Estensione Gestione Media"
 
 msgid "Media Options"
-msgstr ""
+msgstr "Opzioni Media"
 
 msgid "Media successfully exported."
 msgstr ""
@@ -105,39 +105,42 @@ msgstr ""
 
 #, tao-public
 msgid "New class"
-msgstr ""
+msgstr "Nuova classe"
 
 msgid "No file found for this media"
-msgstr ""
+msgstr "Nessun file trovato per questo media"
 
 msgid "Preview"
-msgstr ""
+msgstr "Anteprima"
 
 #, tao-public
 msgid "Properties"
-msgstr ""
+msgstr "Proprietà"
 
 msgid "Shared Stimulus"
-msgstr ""
+msgstr "Stimolo Condiviso"
 
 msgid "Shared Stimulus edited successfully"
-msgstr ""
+msgstr "Stimolo condiviso modificato con successo"
 
 msgid "Shared Stimulus imported successfully"
-msgstr ""
+msgstr "Stimolo condiviso importato con successo"
 
 msgid "Unable to extract the archive"
-msgstr ""
+msgstr "Impossibile estrarre l'archivio"
 
 msgid "Upload Media"
-msgstr ""
+msgstr "Carica Media"
 
 msgid "Upload new media"
-msgstr ""
+msgstr "Carica nuovi media"
 
 msgid "You can\'t upload a zip file as a media"
 msgstr ""
 
-msgid "Zip"
+msgid "You can\\'t upload a zip file as a media"
 msgstr ""
+
+msgid "Zip"
+msgstr "Zip"
 

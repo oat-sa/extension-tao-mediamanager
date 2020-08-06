@@ -25,6 +25,7 @@ define([
     'taoMediaManager/qtiCreator/sharedStimulusCreator',
     'taoQtiItem/qtiCreator/editor/areaBroker',
     'tpl!taoMediaManager/qtiCreator/component/tpl/sharedStimulusAuthoring',
+    'context',
     'css!taoQtiItemCss/qti-runner.css',
     'css!taoQtiItemCss/themes/default.css',
     'css!taoQtiItemCss/item-creator.css'
@@ -34,7 +35,8 @@ define([
     pluginLoaderFactory,
     sharedStimulusCreatorFactory,
     areaBrokerFactory,
-    componentTpl
+    componentTpl,
+    context
 ) {
     'use strict';
 
@@ -125,7 +127,7 @@ define([
                 });
 
                 // load the plugins, then render the sharedStimulus creator
-                pluginLoader.load()
+                pluginLoader.load(!!context.bundle)
                     .then(() => this.render(container))
                     .catch(err => this.trigger('error', err));
             })

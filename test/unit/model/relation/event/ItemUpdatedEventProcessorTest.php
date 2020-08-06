@@ -24,12 +24,10 @@ namespace oat\taoMediaManager\test\unit\model\relation\event;
 
 use oat\generis\test\TestCase;
 use oat\oatbox\event\Event;
-use oat\tao\model\media\MediaAsset;
-use oat\tao\model\media\TaoMediaResolver;
 use oat\taoItems\model\event\ItemUpdatedEvent;
-use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\relation\event\processor\InvalidEventException;
 use oat\taoMediaManager\model\relation\event\processor\ItemUpdatedEventProcessor;
+use oat\taoMediaManager\model\relation\service\IdDiscoverService;
 use oat\taoMediaManager\model\relation\service\update\ItemRelationUpdateService;
 use PHPUnit\Framework\MockObject\MockObject;
 
@@ -38,10 +36,6 @@ class ItemUpdatedEventProcessorTest extends TestCase
     private const MEDIA_LINK_1 = 'taomedia://mediamanager/https_2_test-tao-deploy_0_docker_0_localhost_1_ontologies_1_tao_0_rdf_3_i5ec293a38ebe623833180e3b0a547a6d4';
     private const MEDIA_LINK_2 = 'taomedia://mediamanager/https_2_test-tao-deploy_0_docker_0_localhost_1_ontologies_1_tao_0_rdf_3_i5ec293a38ebe623833180e3b0a547a6d5';
     private const MEDIA_LINK_3 = 'taomedia://mediamanager/https_2_test-tao-deploy_0_docker_0_localhost_1_ontologies_1_tao_0_rdf_3_i5ec293a38ebe623833180e3b0a547a6d6';
-
-    private const MEDIA_LINK_1_URI = 'https_2_test-tao-deploy_0_docker_0_localhost_1_ontologies_1_tao_0_rdf_3_i5ec293a38ebe623833180e3b0a547a6d4';
-    private const MEDIA_LINK_2_URI = 'https_2_test-tao-deploy_0_docker_0_localhost_1_ontologies_1_tao_0_rdf_3_i5ec293a38ebe623833180e3b0a547a6d5';
-    private const MEDIA_LINK_3_URI = 'https_2_test-tao-deploy_0_docker_0_localhost_1_ontologies_1_tao_0_rdf_3_i5ec293a38ebe623833180e3b0a547a6d6';
 
     private const MEDIA_LINK_1_PARSED = 'https://test-tao-deploy.docker.localhost/ontologies/tao.rdf#i5ec293a38ebe623833180e3b0a547a6d4';
     private const MEDIA_LINK_2_PARSED = 'https://test-tao-deploy.docker.localhost/ontologies/tao.rdf#i5ec293a38ebe623833180e3b0a547a6d5';
@@ -53,19 +47,19 @@ class ItemUpdatedEventProcessorTest extends TestCase
     /** @var ItemRelationUpdateService|MockObject */
     private $updateService;
 
-    /** @var TaoMediaResolver|MockObject */
-    private $mediaResolver;
+    /** @var IdDiscoverService|MockObject */
+    private $idDiscoverService;
 
     public function setUp(): void
     {
-        $this->mediaResolver = $this->createMock(TaoMediaResolver::class);
+        $this->idDiscoverService = $this->createMock(IdDiscoverService::class);
         $this->updateService = $this->createMock(ItemRelationUpdateService::class);
         $this->subject = new ItemUpdatedEventProcessor();
-        $this->subject->withMediaResolver($this->mediaResolver);
         $this->subject->setServiceLocator(
             $this->getServiceLocatorMock(
                 [
                     ItemRelationUpdateService::class => $this->updateService,
+                    IdDiscoverService::class => $this->idDiscoverService,
                 ]
             )
         );
@@ -85,13 +79,13 @@ class ItemUpdatedEventProcessorTest extends TestCase
                 ]
             );
 
-        $this->mediaResolver
-            ->method('resolve')
-            ->willReturnOnConsecutiveCalls(
-                ... [
-                    new MediaAsset(new MediaSource(), self::MEDIA_LINK_1_URI),
-                    new MediaAsset(new MediaSource(), self::MEDIA_LINK_2_URI),
-                    new MediaAsset(new MediaSource(), self::MEDIA_LINK_3_URI),
+        $this->idDiscoverService
+            ->method('discover')
+            ->willReturn(
+                [
+                    self::MEDIA_LINK_1_PARSED,
+                    self::MEDIA_LINK_2_PARSED,
+                    self::MEDIA_LINK_3_PARSED,
                 ]
             );
 

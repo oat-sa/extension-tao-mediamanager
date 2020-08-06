@@ -28,13 +28,13 @@ return [
     'label' => 'extension-tao-mediamanager',
     'description' => 'TAO media manager extension',
     'license' => 'GPL-2.0',
-    'version' => '11.2.3',
+    'version' => '11.3.0',
     'author' => 'Open Assessment Technologies SA',
     'requires' => [
-        'tao' => '>=43.1.0',
-        'generis' => '>=12.23.0',
+        'tao' => '>=44.12.0',
+        'generis' => '>=12.33.0',
         'taoItems' => '>=10.6.2',
-        'taoQtiItem' => '>=25.3.1',
+        'taoQtiItem' => '>=25.3.4',
         'taoQtiTestPreviewer' => '>=2.13.0',
         'taoTests' => '>=14.0.0'
     ],

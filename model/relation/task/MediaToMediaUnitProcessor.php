@@ -49,7 +49,7 @@ class MediaToMediaUnitProcessor extends ConfigurableService implements ResultUni
     {
         $resource = $unit->getResult();
 
-        if (!($resource instanceof core_kernel_classes_Resource)) {
+        if (!$resource instanceof core_kernel_classes_Resource) {
             throw new Exception('Unit is not a resource');
         }
 

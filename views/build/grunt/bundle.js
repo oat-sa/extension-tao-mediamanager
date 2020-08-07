@@ -41,8 +41,15 @@ module.exports = function (grunt) {
                                 'taoItems/loader/taoItemsRunner.min',
                                 'taoTests/loader/taoTestsRunner.min',
                                 'taoQtiItem/loader/taoQtiItemRunner.min',
+                                'taoQtiItem/loader/taoQtiItem.min',
                                 'taoQtiTestPreviewer/loader/qtiPreviewer.min'
-                            ]
+                            ],
+                            include : [
+                              'taoMediaManager/controller/**/*',
+                              'taoMediaManager/previewer/**/*',
+                              'taoMediaManager/qtiCreator/**/*',
+                              'taoMediaManager/qtiXmlRenderer/**/*'
+                          ]
                         }
                     ]
                 }

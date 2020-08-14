@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus\parser;
 
+use oat\tao\helpers\Base64;
 use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\media\TaoMediaException;
 use oat\tao\model\media\TaoMediaResolver;
@@ -82,7 +83,7 @@ class SharedStimulusMediaParser extends ConfigurableService
 
     private function processMediaSource(string $uri, callable $processor, array &$matches): void
     {
-        if (false === strpos($uri, 'data:image')) {
+        if (!Base64::isEncoded($uri)) {
 
             if (isset(parse_url($uri)['scheme'])) {
                 $asset = $this->getMediaResolver()->resolve($uri);

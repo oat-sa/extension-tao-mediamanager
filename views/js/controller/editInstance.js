@@ -46,8 +46,10 @@ define([
             file.mime = $previewer.data('type');
 
             if (file.mime !== 'application/qti+xml') {
+                // to hide the loading icon, inherited from the .previewer
+                file.containerClass = 'no-background';
                 $previewer.previewer(file);
-            } else{
+            } else {
                 qtiItemPreviewerFactory($previewer, {itemUri:  $('#edit-media').data('uri')})
                     .on('error', function (err) {
                         if (!_.isUndefined(err.message)) {

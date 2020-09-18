@@ -53,7 +53,7 @@ class JsonQtiAttributeParser extends ConfigurableService
         }
 
         $document = new DOMDocument();
-        $document->loadXML($content);
+        $document->loadXML($content, LIBXML_BIGLINES | LIBXML_PARSEHUGE);
 
         return $document;
     }

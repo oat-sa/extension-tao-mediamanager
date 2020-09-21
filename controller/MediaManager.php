@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\controller;
 
+use oat\tao\model\http\ContentDetector;
 use oat\taoMediaManager\model\editInstanceForm;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
@@ -104,6 +105,9 @@ class MediaManager extends \tao_actions_SaSModule
             $this->returnJson(htmlentities((string)$stream));
         } else {
             $this->setContentHeader($fileInfo['mime']);
+            if ($this->getServiceLocator()->get(ContentDetector::class)->isGzip($stream)) {
+                $this->response = $this->getPsrResponse()->withHeader('Content-Encoding', 'gzip');
+            }
             $this->response = $this->getPsrResponse()->withBody($stream);
         }
     }

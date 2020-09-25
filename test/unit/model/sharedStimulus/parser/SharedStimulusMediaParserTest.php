@@ -92,10 +92,11 @@ class SharedStimulusMediaParserTest extends TestCase
 
     public function testExtractMediaWithInvalidQtiXml()
     {
-        $xml = '<?xml version="1.0" encoding="UTF-8"?><div><img src="fixture.tao"/></div>';
+        // missing closing div element (</div>)
+        $invalidXml = '<?xml version="1.0" encoding="UTF-8"?><div><img src="fixture.tao"/>';
 
         $this->expectException(TaoMediaException::class);
-        $this->subject->extractMedia($xml, function () {});
+        $this->subject->extractMedia($invalidXml, function () {});
     }
 
     private function createMediaAsset(string $path, string $sourceClass): MediaAsset

@@ -69,7 +69,7 @@ define([
             data: JSON.stringify({ classId: classUri }),
             method: 'POST'
         })
-            .then(function (response) {
+            .then(function (response) {             
                 //backward compat format for jstree
                 if (actionContext.tree) {
                     $(actionContext.tree).trigger('addnode.taotree', [
@@ -120,7 +120,7 @@ define([
         let data = {};
         let mediaRelationsData = {};
 
-        if (actionContext.context[0] === 'instance') {
+        if (actionContext.type === 'instance') {
             mediaRelationsData.sourceId = actionContext.id
         } else {
             mediaRelationsData.classId = actionContext.id
@@ -139,7 +139,7 @@ define([
                 let message;
                 const haveItemReferences = responseRelated.data;
                 const name = $('a.clicked', actionContext.tree).text().trim();
-                if (actionContext.context[0] === 'instance') {
+                if (actionContext.type === 'instance') {
                     if (haveItemReferences.length === 0) {
                         message = `${__('Are you sure you want to delete this')} <b>${name}</b>?`;
                     } else {
@@ -149,7 +149,7 @@ define([
                             items: haveItemReferences
                         });
                     }
-                } else if (actionContext.context[0] !== 'instance') {
+                } else if (actionContext.type !== 'instance') {
                     if (haveItemReferences.length === 0) {
                         message = `${__('Are you sure you want to delete this class and all of its content?')}`;
                     } else if (haveItemReferences.length !== 0) {
@@ -163,7 +163,7 @@ define([
                 callConfirmModal(actionContext, message, self.url, data, resolve, reject)
             }).catch(errorObject => {
                 let message;
-                if (actionContext.context[0] === 'class' && errorObject.response.code === 999) {
+                if (actionContext.type === 'class' && errorObject.response.code === 999) {
                     message = forbiddenClassActionTpl();
                 }
                 callAlertModal(actionContext, message, reject)

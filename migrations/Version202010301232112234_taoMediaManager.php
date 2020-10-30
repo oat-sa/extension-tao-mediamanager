@@ -21,6 +21,7 @@ final class Version202010301232112234_taoMediaManager extends AbstractMigration
         /** @var ResourceRelationServiceProxy $resourceRelationService */
         $resourceRelationService = $this->getServiceManager()->get(ResourceRelationServiceProxy::SERVICE_ID);
         $resourceRelationService->addService('item', MediaRelationService::class);
+        $resourceRelationService->addService('media', MediaRelationService::class);
 
         $this->getServiceManager()->register(ResourceRelationServiceProxy::SERVICE_ID, $resourceRelationService);
     }

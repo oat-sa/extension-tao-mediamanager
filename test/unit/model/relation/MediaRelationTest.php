@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\test\unit\model\relation;
 
-use InvalidArgumentException;
 use JsonSerializable;
 use oat\generis\test\TestCase;
 use oat\taoMediaManager\model\relation\MediaRelation;
@@ -59,11 +58,5 @@ class MediaRelationTest extends TestCase
         ]);
 
         $this->assertSame($expected, json_encode($mediaRelation));
-    }
-
-    public function testConstructExpectionWithWrongType()
-    {
-        $this->expectException(InvalidArgumentException::class);
-        new MediaRelation('bad-example', '123');
     }
 }

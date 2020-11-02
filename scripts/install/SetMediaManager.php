@@ -25,6 +25,8 @@ use oat\oatbox\event\EventManager;
 use oat\oatbox\extension\InstallAction;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\tao\model\media\MediaService;
+use oat\tao\model\resources\relation\service\ResourceRelationServiceInterface;
+use oat\tao\model\resources\relation\service\ResourceRelationServiceProxy;
 use oat\taoItems\model\event\ItemRemovedEvent;
 use oat\taoItems\model\event\ItemUpdatedEvent;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
@@ -33,6 +35,7 @@ use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\relation\event\MediaRelationListener;
 use oat\taoMediaManager\model\relation\event\MediaRemovedEvent;
 use oat\taoMediaManager\model\relation\event\MediaSavedEvent;
+use oat\taoMediaManager\model\relation\MediaRelationService;
 use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
 use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRelationRepository;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
@@ -78,6 +81,12 @@ class SetMediaManager extends InstallAction
         }
 
         $this->getServiceManager()->register(FileSystemService::SERVICE_ID, $fsService);
+
+        /** @var ResourceRelationServiceInterface $resourceRelationService */
+        $resourceRelationService = $this->getServiceManager()->get(ResourceRelationServiceProxy::SERVICE_ID);
+        $resourceRelationService->addService('media', MediaRelationService::class);
+
+        $this->getServiceManager()->register(ResourceRelationServiceProxy::SERVICE_ID, $resourceRelationService);
 
         return common_report_Report::createSuccess('MediaManager successfully installed');
     }

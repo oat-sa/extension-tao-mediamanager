@@ -29,11 +29,17 @@ use oat\taoMediaManager\model\relation\MediaRelationService;
 use tao_actions_CommonModule;
 use Throwable;
 
+/**
+ * @deprecated use tao_actions_ResourceRelations
+ */
 class MediaRelations extends tao_actions_CommonModule
 {
     use LoggerAwareTrait;
     use HttpJsonResponseTrait;
 
+    /**
+     * @deprecated use tao_actions_ResourceRelations
+     */
     public function relations(): void
     {
         try {

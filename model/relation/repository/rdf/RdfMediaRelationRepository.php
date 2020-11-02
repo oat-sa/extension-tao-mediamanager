@@ -71,7 +71,7 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
     private function findMediaWithRelations(ClassResource $class): MediaRelationCollection
     {
         if (count($class->getSubClasses(true)) > self::NESTED_CLASS_LIMIT) {
-            throw new ComplexSearchLimitException('Maximum nested classes exceeded maximum amount');
+            throw new ComplexSearchLimitException(self::NESTED_CLASS_LIMIT);
         }
 
         $mediaRelationCollection = new MediaRelationCollection();

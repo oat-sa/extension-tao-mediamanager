@@ -118,7 +118,7 @@ define([
     binder.register('deleteSharedStimulus', function remove(actionContext) {
         const self = this;
         let data = {};
-        let mediaRelationsData = {};
+        let mediaRelationsData = {type: 'media'};
 
         if (actionContext.context[0] === 'instance') {
             mediaRelationsData.sourceId = actionContext.id
@@ -131,13 +131,13 @@ define([
         data.signature  = actionContext.signature;
         return new Promise(function (resolve, reject) {
             request({
-                url: urlUtil.route('relations', 'MediaRelations', 'taoMediaManager'),
+                url: urlUtil.route('index', 'ResourceRelations', 'tao'),
                 data: mediaRelationsData,
                 method: 'GET',
                 noToken: true
             }).then(function (responseRelated) {
                 let message;
-                const haveItemReferences = responseRelated.data;
+                const haveItemReferences = responseRelated.data.relations;
                 const name = $('a.clicked', actionContext.tree).text().trim();
                 if (actionContext.context[0] === 'instance') {
                     if (haveItemReferences.length === 0) {

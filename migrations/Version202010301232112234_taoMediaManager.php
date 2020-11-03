@@ -28,5 +28,8 @@ final class Version202010301232112234_taoMediaManager extends AbstractMigration
 
     public function down(Schema $schema): void
     {
+        /** @var ResourceRelationServiceInterface $resourceRelationService */
+        $resourceRelationService = $this->getServiceManager()->get(ResourceRelationServiceProxy::SERVICE_ID);
+        $resourceRelationService->removeService('media', MediaRelationService::class);
     }
 }

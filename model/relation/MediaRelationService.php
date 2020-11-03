@@ -39,7 +39,7 @@ class MediaRelationService extends ConfigurableService implements ResourceRelati
         return $this->getMediaRelationRepository()->findAll($query);
     }
 
-    public function relations(FindAllQuery $query): ResourceRelationCollection
+    public function findRelations(FindAllQuery $query): ResourceRelationCollection
     {
         $legacyQuery = new LegacyQuery(
             $query->getSourceId(),

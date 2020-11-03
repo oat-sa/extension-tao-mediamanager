@@ -47,7 +47,7 @@ class MediaRelations extends tao_actions_CommonModule
                 ->createFindAllQueryByRequest($this->getPsrRequest());
 
             $collection = $this->getMediaRelationService()
-                ->relations($query)
+                ->findRelations($query)
                 ->jsonSerialize();
 
             $this->setSuccessJsonResponse($collection);

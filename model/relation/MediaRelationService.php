@@ -32,7 +32,7 @@ use oat\taoMediaManager\model\relation\repository\query\FindAllQuery as LegacyQu
 class MediaRelationService extends ConfigurableService implements ResourceRelationServiceInterface
 {
     /**
-     * @deprecated Use self::relations()
+     * @deprecated Use self::findRelations()
      */
     public function getMediaRelations(LegacyQuery $query): MediaRelationCollection
     {

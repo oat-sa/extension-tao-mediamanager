@@ -23,14 +23,30 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\relation;
 
 use oat\oatbox\service\ConfigurableService;
+use oat\tao\model\resources\relation\FindAllQuery;
+use oat\tao\model\resources\relation\ResourceRelationCollection;
+use oat\tao\model\resources\relation\service\ResourceRelationServiceInterface;
 use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
-use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
+use oat\taoMediaManager\model\relation\repository\query\FindAllQuery as LegacyQuery;
 
-class MediaRelationService extends ConfigurableService
+class MediaRelationService extends ConfigurableService implements ResourceRelationServiceInterface
 {
-    public function getMediaRelations(FindAllQuery $query): MediaRelationCollection
+    /**
+     * @deprecated Use self::findRelations()
+     */
+    public function getMediaRelations(LegacyQuery $query): MediaRelationCollection
     {
         return $this->getMediaRelationRepository()->findAll($query);
+    }
+
+    public function findRelations(FindAllQuery $query): ResourceRelationCollection
+    {
+        $legacyQuery = new LegacyQuery(
+            $query->getSourceId(),
+            $query->getClassId()
+        );
+
+        return $this->getMediaRelationRepository()->findAll($legacyQuery);
     }
 
     private function getMediaRelationRepository(): MediaRelationRepositoryInterface

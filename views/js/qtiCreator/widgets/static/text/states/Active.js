@@ -4,7 +4,7 @@ define([
     'taoMediaManager/qtiCreator/editor/ckEditor/htmlEditor',
     'taoQtiItem/qtiCreator/editor/gridEditor/content',
     'taoQtiItem/qtiCreator/widgets/helpers/formElement',
-    'tpl!taoQtiItem/qtiCreator/tpl/forms/static/text'
+    'tpl!taoMediaManager/qtiCreator/tpl/forms/static/text'
 ], function(stateFactory, Active, htmlEditor, content, formElement, formTpl){
     'use strict';
 

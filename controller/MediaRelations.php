@@ -23,20 +23,23 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\controller;
 
 use oat\oatbox\log\LoggerAwareTrait;
-use oat\tao\model\http\formatter\ResponseFormatter;
 use oat\tao\model\http\HttpJsonResponseTrait;
-use oat\tao\model\http\response\JsonResponseInterface;
 use oat\taoMediaManager\model\relation\factory\QueryFactory;
 use oat\taoMediaManager\model\relation\MediaRelationService;
-use Psr\Http\Message\ResponseInterface;
 use tao_actions_CommonModule;
 use Throwable;
 
+/**
+ * @deprecated use tao_actions_ResourceRelations
+ */
 class MediaRelations extends tao_actions_CommonModule
 {
     use LoggerAwareTrait;
     use HttpJsonResponseTrait;
 
+    /**
+     * @deprecated use tao_actions_ResourceRelations
+     */
     public function relations(): void
     {
         try {
@@ -44,7 +47,7 @@ class MediaRelations extends tao_actions_CommonModule
                 ->createFindAllQueryByRequest($this->getPsrRequest());
 
             $collection = $this->getMediaRelationService()
-                ->getMediaRelations($query)
+                ->findRelations($query)
                 ->jsonSerialize();
 
             $this->setSuccessJsonResponse($collection);
@@ -53,20 +56,6 @@ class MediaRelations extends tao_actions_CommonModule
 
             $this->setErrorJsonResponse($exception->getMessage(), $exception->getCode());
         }
-    }
-
-    private function formatResponse(JsonResponseInterface $jsonResponse, int $statusCode): ResponseInterface
-    {
-        return $this->getResponseFormatter()
-            ->withJsonHeader()
-            ->withStatusCode($statusCode)
-            ->withBody($jsonResponse)
-            ->format($this->getPsrResponse());
-    }
-
-    private function getResponseFormatter(): ResponseFormatter
-    {
-        return $this->getServiceLocator()->get(ResponseFormatter::class);
     }
 
     private function getMediaRelationService(): MediaRelationService

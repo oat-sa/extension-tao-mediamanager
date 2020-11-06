@@ -16,34 +16,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
- *
  */
 
 declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\repository\query;
 
-class FindAllQuery
+/**
+ * @deprecated use \oat\tao\model\resources\relation\FindAllQuery
+ */
+class FindAllQuery extends \oat\tao\model\resources\relation\FindAllQuery
 {
-    /** @var string */
-    private $mediaId;
-
-    /** @var string */
-    private $classId;
-
-    public function __construct(string $mediaId = null, string $classId = null)
-    {
-        $this->mediaId = $mediaId;
-        $this->classId = $classId;
-    }
-
+    /**
+     * @deprecated use \oat\tao\model\resources\relation\FindAllQuery::getSourceId()
+     */
     public function getMediaId(): ?string
     {
-        return $this->mediaId;
-    }
-
-    public function getClassId(): ?string
-    {
-        return $this->classId;
+        return $this->getSourceId();
     }
 }

@@ -16,64 +16,32 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
- *
  */
 
 declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation;
 
-use ArrayIterator;
-use IteratorAggregate;
-use JsonSerializable;
+use oat\tao\model\resources\relation\ResourceRelationCollection;
 
-class MediaRelationCollection implements IteratorAggregate, JsonSerializable
+/**
+ * @deprecated Use oat\tao\model\resources\relation\ResourceRelationCollection
+ */
+class MediaRelationCollection extends ResourceRelationCollection
 {
-    /** @var MediaRelation[] */
-    private $mediaRelations = [];
-
-    public function __construct(MediaRelation ...$mediaRelations)
-    {
-        foreach ($mediaRelations as $mediaRelation) {
-            $this->add($mediaRelation);
-        }
-    }
-
-    public function getIterator(): ArrayIterator
-    {
-        return new ArrayIterator($this->mediaRelations);
-    }
-
-    public function add(MediaRelation $mediaRelation): self
-    {
-        $this->mediaRelations[] = $mediaRelation;
-
-        return $this;
-    }
-
-    public function jsonSerialize(): array
-    {
-        return $this->mediaRelations;
-    }
-
+    /**
+     * @deprecated use oat\tao\model\resources\relation\ResourceRelationCollection::filterNewSourceIds()
+     */
     public function filterNewMediaIds(array $currentMediaIds): array
     {
-        return array_diff($currentMediaIds, $this->getMediaIds());
+        return $this->filterNewSourceIds($currentMediaIds);
     }
 
+    /**
+     * @deprecated use oat\tao\model\resources\relation\ResourceRelationCollection::filterRemovedSourceIds()
+     */
     public function filterRemovedMediaIds(array $currentMediaIds): array
     {
-        return array_diff($this->getMediaIds(), $currentMediaIds);
-    }
-
-    private function getMediaIds(): array
-    {
-        $mediaIds = [];
-
-        foreach ($this->mediaRelations as $relation) {
-            $mediaIds[] = $relation->getSourceId();
-        }
-
-        return $mediaIds;
+        return $this->filterRemovedSourceIds($currentMediaIds);
     }
 }

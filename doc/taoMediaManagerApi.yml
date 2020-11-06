@@ -112,8 +112,6 @@ components:
       description: 'A relationship between two resources'
       type: object
       properties:
-        source:
-          $ref: '#/components/schemas/MediaRelationResource'
         relations:
           type: array
           items:

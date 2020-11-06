@@ -22,14 +22,11 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\exception;
 
-use Exception;
+use oat\tao\model\resources\relation\exception\NestedClassLimitExceededException;
 
-class ComplexSearchLimitException extends Exception
+/**
+ * @deprecated use oat\tao\model\resources\relation\exception\NestedClassLimitExceededException
+ */
+class ComplexSearchLimitException extends NestedClassLimitExceededException
 {
-    private const ERROR_CODE = 999;
-
-    public function __construct(string $message = '')
-    {
-        parent::__construct($message, self::ERROR_CODE);
-    }
 }

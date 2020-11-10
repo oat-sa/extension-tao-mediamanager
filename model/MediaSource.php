@@ -118,16 +118,16 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
                 $children[] = $this->getDirectory($subclass->getUri(), $acceptableMime, $depth - 1);
             }
 
-            // add a filter for example on language (not for now)
             $filter = [];
 
+            if (count($acceptableMime) > 0) {
+                $filter = array_merge($filter, [MediaService::PROPERTY_MIME_TYPE => $acceptableMime]);
+            }
+
             foreach ($class->searchInstances($filter) as $instance) {
-                try {
-                    $file = $this->getFileInfo($instance->getUri());
-                    if (count($acceptableMime) == 0 || in_array($file['mime'], $acceptableMime)) {
-                        $children[] = $file;
-                    }
-                } catch (\tao_models_classes_FileNotFoundException $e) {
+                try{
+                    $children[] = $this->getFileInfo($instance->getUri());
+                }catch(\tao_models_classes_FileNotFoundException $e){
                     \common_Logger::e($e->getMessage());
                 }
             }
@@ -146,33 +146,39 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
     public function getFileInfo($link)
     {
         // get the media link from the resource
-        $resource = $this->getResource(tao_helpers_Uri::decode($this->removeSchemaFromUriOrLink($link)));
-        if (!$resource->exists()) {
+        $resource = $this->getResource($this->removeSchemaFromUriOrLink($link));
+        $properties = [
+            $this->getProperty(MediaService::PROPERTY_LINK),
+            $this->getProperty(MediaService::PROPERTY_MIME_TYPE),
+            $this->getProperty(MediaService::PROPERTY_ALT_TEXT)
+        ];
+
+        $propertiesValues = $resource->getPropertiesValues($properties);
+
+        $fileLink = $propertiesValues[MediaService::PROPERTY_LINK][0] ?? null;
+        $mime = $propertiesValues[MediaService::PROPERTY_MIME_TYPE][0] ?? null;
+        $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
+        $fileLink = $this->getFileSourceUnserializer()->unserialize($fileLink);
+
+        if (!isset($mime, $fileLink)){
             throw new \tao_models_classes_FileNotFoundException($link);
         }
 
-        $fileLink = $resource->getUniquePropertyValue($this->getProperty(MediaService::PROPERTY_LINK));
-        $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
-        $fileLink = $this->getFileSourceUnserializer()->unserialize($fileLink);
-        $mime = (string) $resource->getUniquePropertyValue($this->getProperty(MediaService::PROPERTY_MIME_TYPE));
-
         // add the alt text to file array
-        $altArray = $resource->getPropertyValues($this->getProperty(MediaService::PROPERTY_ALT_TEXT));
+        $altArray = $propertiesValues[MediaService::PROPERTY_ALT_TEXT] ?? null;
         $alt = $resource->getLabel();
         if (count($altArray) > 0) {
-            $alt = $altArray[0];
+            $alt = (string)$altArray[0];
         }
 
-        $file = [
+        return [
             'name' => $resource->getLabel(),
-            'uri' => self::SCHEME_NAME . tao_helpers_Uri::encode($link),
-            'mime' => $mime,
+            'uri' => self::SCHEME_NAME . \tao_helpers_Uri::encode($link),
+            'mime' => (string) $mime,
             'size' => $this->getFileManagement()->getFileSize($fileLink),
             'alt' => $alt,
             'link' => $fileLink
         ];
-
-        return $file;
     }
 
     /**

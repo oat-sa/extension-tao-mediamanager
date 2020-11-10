@@ -109,7 +109,7 @@ class MediaSource extends Configurable implements MediaManagement
                 $children[] = $this->getDirectory($subclass->getUri(), $acceptableMime, $depth - 1);
             }
 
-            $filter = array();
+            $filter = [];
 
             if (count($acceptableMime) > 0) {
                 $filter = array_merge($filter, [MediaService::PROPERTY_MIME_TYPE => $acceptableMime]);
@@ -136,7 +136,8 @@ class MediaSource extends Configurable implements MediaManagement
      */
     public function getFileInfo($link)
     {
-        $resource = $this->getResource(\tao_helpers_Uri::decode($link));
+        // get the media link from the resource
+        $resource = $this->getResource($this->removeSchemaFromUriOrLink($link));
         $properties = [
             $this->getProperty(MediaService::PROPERTY_LINK),
             $this->getProperty(MediaService::PROPERTY_MIME_TYPE),
@@ -148,6 +149,7 @@ class MediaSource extends Configurable implements MediaManagement
         $fileLink = $propertiesValues[MediaService::PROPERTY_LINK][0] ?? null;
         $mime = $propertiesValues[MediaService::PROPERTY_MIME_TYPE][0] ?? null;
         $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
+        $fileLink = $this->getFileSourceUnserializer()->unserialize($fileLink);
 
         if (!isset($mime, $fileLink)){
             throw new \tao_models_classes_FileNotFoundException($link);

@@ -77,20 +77,6 @@ define([
             .substr(0, 255);
     };
 
-    const _initAlign = function (widget) {
-        let align = 'default';
-
-        //init float positioning:
-        if (widget.element.hasClass('rgt')) {
-            align = 'right';
-        } else if (widget.element.hasClass('lft')) {
-            align = 'left';
-        }
-
-        inlineHelper.positionFloat(widget, align);
-        widget.$form.find('select[name=align]').val(align);
-    };
-
     const _getMedia = function (imgQtiElement, $imgNode, cb) {
         //init data-responsive:
         if (typeof imgQtiElement.data('responsive') === 'undefined') {
@@ -154,7 +140,7 @@ define([
                     }
                 };
                 media.$container = $mediaSpan.parents('.widget-box');
-                mediaEditor = mediaEditorComponent($mediaResizer, media, options).on('change', function (nMedia) {
+                mediaEditor = mediaEditorComponent($mediaResizer, media, options, widget).on('change', function (nMedia) {
                     media = nMedia;
                     $img.prop('style', null); // not allowed by qti
                     $img.removeAttr('style');
@@ -308,10 +294,9 @@ define([
             })
         );
 
-        //init slider and set align value before ...
+        //init slider
         _initAdvanced(_widget);
         _initMediaSizer(_widget);
-        _initAlign(_widget);
         _initUpload(_widget);
 
         //... init standard ui widget
@@ -339,10 +324,7 @@ define([
             alt: function (img, value) {
                 img.attr('alt', value);
             },
-            longdesc: formElement.getAttributeChangeCallback(),
-            align: function (img, value) {
-                inlineHelper.positionFloat(_widget, value);
-            }
+            longdesc: formElement.getAttributeChangeCallback()
         });
     };
 

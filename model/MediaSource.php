@@ -146,7 +146,7 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
     public function getFileInfo($link)
     {
         // get the media link from the resource
-        $resource = $this->getResource($this->removeSchemaFromUriOrLink($link));
+        $resource = $this->getResource(tao_helpers_Uri::decode($this->removeSchemaFromUriOrLink($link)));
         $properties = [
             $this->getProperty(MediaService::PROPERTY_LINK),
             $this->getProperty(MediaService::PROPERTY_MIME_TYPE),

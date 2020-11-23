@@ -32,7 +32,6 @@ use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
 use Psr\Http\Message\StreamInterface;
 use tao_helpers_Uri;
-
 use tao_models_classes_FileNotFoundException;
 
 use function GuzzleHttp\Psr7\stream_for;
@@ -175,7 +174,7 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
 
         return [
             'name' => $resource->getLabel(),
-            'uri' => self::SCHEME_NAME . \tao_helpers_Uri::encode($link),
+            'uri' => self::SCHEME_NAME . tao_helpers_Uri::encode($link),
             'mime' => (string) $mime,
             'size' => $this->getFileManagement()->getFileSize($fileLink),
             'alt' => $alt,

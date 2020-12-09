@@ -29,11 +29,11 @@ return array(
     'license' => 'GPL-2.0',
     'version' => '5.0.3.3',
     'author' => 'Open Assessment Technologies SA',
-    'requires' => array(
+    'requires' => [
         'tao' => '>=22.6.2',
         'generis' => '>=8.1.3',
         'taoItems' => '>=6.0.0'
-    ),
+    ],
     'models' => array(
         'http://www.tao.lu/Ontologies/TAOMedia.rdf'
     ),

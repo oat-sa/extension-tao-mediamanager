@@ -20,7 +20,6 @@
  */
 namespace oat\taoMediaManager\model;
 
-use common_Logger;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\Configurable;
 use oat\oatbox\log\LoggerAwareTrait;
@@ -97,7 +96,13 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
      *
      * @see \oat\tao\model\media\MediaBrowser::getDirectory
      */
-    public function getDirectory($parentLink = '', $acceptableMime = array(), $depth = 1)
+    public function getDirectory(
+        string $parentLink = '',
+        array $acceptableMime = [],
+        int $depth = 1,
+        int $limit = 0,
+        int $offset = 0
+    ): array
     {
         if ($parentLink == '') {
             $class = $this->getClass($this->getRootClassUri());
@@ -113,7 +118,7 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
         if ($depth > 0) {
             $children = array();
             foreach ($class->getSubClasses() as $subclass) {
-                $children[] = $this->getDirectory($subclass->getUri(), $acceptableMime, $depth - 1);
+                $children[] = $this->getDirectory($subclass->getUri(), $acceptableMime, $depth - 1, $limit, $offset);
             }
 
             $filter = [];
@@ -122,14 +127,21 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
                 $filter = array_merge($filter, [MediaService::PROPERTY_MIME_TYPE => $acceptableMime]);
             }
 
-            foreach ($class->searchInstances($filter) as $instance) {
+            $options = [
+                'limit' => $limit,
+                'offset' => $offset,
+            ];
+            $options = array_filter($options);
+
+            foreach ($class->searchInstances($filter, $options) as $instance) {
                 try {
                     $children[] = $this->getFileInfo($instance->getUri());
                 } catch (tao_models_classes_FileNotFoundException $e) {
-                    common_Logger::e($e->getMessage());
+                    $this->logEmergency($e->getMessage());
                 }
             }
             $data['children'] = $children;
+            $data['total'] = $class->countInstances($filter);
         } else {
             $data['parent'] = $parentLink;
         }

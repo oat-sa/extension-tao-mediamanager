@@ -115,7 +115,8 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
 
         $data = [
             'path' => self::SCHEME_NAME . tao_helpers_Uri::encode($class->getUri()),
-            'label' => $class->getLabel()
+            'label' => $class->getLabel(),
+            'limit' => $limit,
         ];
 
         if ($depth > 0) {

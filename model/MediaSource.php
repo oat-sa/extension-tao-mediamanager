@@ -97,7 +97,7 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
     public function getDirectories(QueryObject $params): array
     {
         return $this->searchDirectories($params->getParentLink(), $params->getFilter(), $params->getDepth(),
-            $params->getLimit(), $params->getOffset());
+            $params->getChildrenLimit(), $params->getChildrenOffset());
     }
 
     /**

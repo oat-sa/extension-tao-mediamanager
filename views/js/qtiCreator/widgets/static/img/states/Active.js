@@ -76,6 +76,18 @@ define([
             .replace(/\W/, ' ')
             .substr(0, 255);
     };
+    var _initAlign = function (widget) {
+        var align = 'default';
+
+        //init float positioning:
+        if (widget.element.hasClass('rgt')) {
+            align = 'right';
+        } else if (widget.element.hasClass('lft')) {
+            align = 'left';
+        }
+
+        inlineHelper.positionFloat(widget, align);
+    };
 
     const _getMedia = function (imgQtiElement, $imgNode, cb) {
         //init data-responsive:
@@ -140,8 +152,17 @@ define([
                     }
                 };
                 media.$container = $mediaSpan.parents('.widget-box');
-                mediaEditor = mediaEditorComponent($mediaResizer, media, options, widget).on('change', function (nMedia) {
+                mediaEditor = mediaEditorComponent($mediaResizer, media, options).on('change', function (nMedia) {
                     media = nMedia;
+                    media.$container.css('min-height', $img.height() + 16 + 'px');
+                    inlineHelper.positionFloat(widget, media.align);
+                    if (nMedia.align === 'right') {
+                        widget.$container.css('margin', '0 0 0 16px');
+                    } else if (nMedia.align === 'left') {
+                        widget.$container.css('margin', '0 16px 0 0');
+                    } else {
+                        widget.$container.css('margin', '0');
+                    }
                     $img.prop('style', null); // not allowed by qti
                     $img.removeAttr('style');
                     img.data('responsive', media.responsive);
@@ -297,6 +318,7 @@ define([
         //init slider
         _initAdvanced(_widget);
         _initMediaSizer(_widget);
+        _initAlign(_widget);
         _initUpload(_widget);
 
         //... init standard ui widget
@@ -324,7 +346,10 @@ define([
             alt: function (img, value) {
                 img.attr('alt', value);
             },
-            longdesc: formElement.getAttributeChangeCallback()
+            longdesc: formElement.getAttributeChangeCallback(),
+            align: function (img, value) {
+                inlineHelper.positionFloat(_widget, value);
+            }
         });
     };
 

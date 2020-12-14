@@ -106,13 +106,7 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
      */
     public function getDirectory($parentLink = '', $acceptableMime = [], $depth = 1)
     {
-        return $this->searchDirectories(
-            $parentLink,
-            $acceptableMime,
-            $depth,
-            0,
-            0
-        );
+        return $this->searchDirectories($parentLink, $acceptableMime, $depth, 0, 0);
     }
 
     /**

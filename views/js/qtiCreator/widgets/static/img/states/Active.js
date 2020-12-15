@@ -76,13 +76,14 @@ define([
             .replace(/\W/, ' ')
             .substr(0, 255);
     };
-    var _initAlign = function (widget) {
-        var align = 'default';
+    const _initAlign = function (widget) {
+        let align = 'default';
+        const className = widget.$original[0].classList;
 
         //init float positioning:
-        if (widget.element.hasClass('rgt')) {
+        if (className.contains('rgt')) {
             align = 'right';
-        } else if (widget.element.hasClass('lft')) {
+        } else if (className.contains('lft')) {
             align = 'left';
         }
 
@@ -346,10 +347,7 @@ define([
             alt: function (img, value) {
                 img.attr('alt', value);
             },
-            longdesc: formElement.getAttributeChangeCallback(),
-            align: function (img, value) {
-                inlineHelper.positionFloat(_widget, value);
-            }
+            longdesc: formElement.getAttributeChangeCallback()
         });
     };
 

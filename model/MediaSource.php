@@ -25,7 +25,7 @@ use oat\oatbox\Configurable;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ServiceManager;
 use oat\tao\model\media\MediaManagement;
-use oat\tao\model\media\MediaSource\QueryObject;
+use oat\tao\model\media\mediaSource\DirectorySearchQuery;
 use oat\tao\model\media\ProcessedFileStreamAware;
 use oat\taoMediaManager\model\export\service\MediaResourcePreparer;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
@@ -94,7 +94,7 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
         return $this->getMediaService()->deleteResource($this->getResource(\tao_helpers_Uri::decode($link)));
     }
 
-    public function getDirectories(QueryObject $params): array
+    public function getDirectories(DirectorySearchQuery $params): array
     {
         return $this->searchDirectories($params->getParentLink(), $params->getFilter(), $params->getDepth(),
             $params->getChildrenLimit(), $params->getChildrenOffset());

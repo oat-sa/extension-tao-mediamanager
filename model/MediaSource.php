@@ -341,8 +341,8 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
         string $parentLink = '',
         array $acceptableMime = [],
         int $depth = 1,
-        int $limit = 0,
-        int $offset = 0
+        int $childrenLimit = 0,
+        int $childrenOffset = 0
     ): array {
         if ($parentLink == '') {
             $class = $this->getClass($this->getRootClassUri());
@@ -353,14 +353,14 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
         $data = [
             'path' => self::SCHEME_NAME . tao_helpers_Uri::encode($class->getUri()),
             'label' => $class->getLabel(),
-            'limit' => $limit,
+            'childrenLimit' => $childrenLimit,
         ];
 
         if ($depth > 0) {
             $children = [];
             foreach ($class->getSubClasses() as $subclass) {
-                $children[] = $this->searchDirectories($subclass->getUri(), $acceptableMime, $depth - 1, $limit,
-                    $offset);
+                $children[] = $this->searchDirectories($subclass->getUri(), $acceptableMime, $depth - 1, $childrenLimit,
+                    $childrenOffset);
             }
 
             $filter = [];
@@ -370,8 +370,8 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
             }
 
             $options = array_filter([
-                'limit' => $limit,
-                'offset' => $offset,
+                'childrenLimit' => $childrenLimit,
+                'childrenOffset' => $childrenOffset,
             ]);
 
             foreach ($class->searchInstances($filter, $options) as $instance) {

@@ -370,8 +370,8 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
             }
 
             $options = array_filter([
-                'childrenLimit' => $childrenLimit,
-                'childrenOffset' => $childrenOffset,
+                'limit' => $childrenLimit,
+                'offset' => $childrenOffset,
             ]);
 
             foreach ($class->searchInstances($filter, $options) as $instance) {

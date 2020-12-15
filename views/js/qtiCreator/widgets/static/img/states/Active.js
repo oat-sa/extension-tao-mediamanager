@@ -156,9 +156,9 @@ define([
                     media = nMedia;
                     media.$container.css('min-height', $img.height() + 16 + 'px');
                     inlineHelper.positionFloat(widget, media.align);
-                    if (nMedia.align === 'right') {
+                    if (media.align === 'right') {
                         widget.$container.css('margin', '0 0 0 16px');
-                    } else if (nMedia.align === 'left') {
+                    } else if (media.align === 'left') {
                         widget.$container.css('margin', '0 16px 0 0');
                     } else {
                         widget.$container.css('margin', '0');

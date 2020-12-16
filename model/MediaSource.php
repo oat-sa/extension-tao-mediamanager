@@ -329,6 +329,7 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
         int $childrenLimit = 0,
         int $childrenOffset = 0
     ): array {
+
         $class = $this->getClass($parentLink == '' ? $this->getRootClassUri() : tao_helpers_Uri::decode($parentLink));
 
         $data = [
@@ -340,7 +341,11 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
         if ($depth > 0) {
             $children = [];
             foreach ($class->getSubClasses() as $subclass) {
-                $children[] = $this->searchDirectories($subclass->getUri(), $acceptableMime, $depth - 1, $childrenLimit,
+                $children[] = $this->searchDirectories(
+                    $subclass->getUri(),
+                    $acceptableMime,
+                    $depth - 1,
+                    $childrenLimit,
                     $childrenOffset);
             }
 
@@ -359,7 +364,7 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
                 try {
                     $children[] = $this->getFileInfo($instance->getUri());
                 } catch (tao_models_classes_FileNotFoundException $e) {
-                    $this->logEmergency(sprintf('Encountered issues %s while fetching details for %s',
+                    $this->logEmergency(sprintf('Encountered issues "%s" while fetching details for %s',
                             $e->getMessage(),
                             $instance->getUri())
                     );

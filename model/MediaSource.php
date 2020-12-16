@@ -346,7 +346,8 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
                     $acceptableMime,
                     $depth - 1,
                     $childrenLimit,
-                    $childrenOffset);
+                    $childrenOffset
+                );
             }
 
             $filter = [];
@@ -364,9 +365,12 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
                 try {
                     $children[] = $this->getFileInfo($instance->getUri());
                 } catch (tao_models_classes_FileNotFoundException $e) {
-                    $this->logEmergency(sprintf('Encountered issues "%s" while fetching details for %s',
+                    $this->logEmergency(
+                        sprintf(
+                            'Encountered issues "%s" while fetching details for %s',
                             $e->getMessage(),
-                            $instance->getUri())
+                            $instance->getUri()
+                        )
                     );
                 }
             }

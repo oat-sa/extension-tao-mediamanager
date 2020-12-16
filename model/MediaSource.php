@@ -97,8 +97,13 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
 
     public function getDirectories(DirectorySearchQuery $params): array
     {
-        return $this->searchDirectories($params->getParentLink(), $params->getFilter(), $params->getDepth(),
-            $params->getChildrenLimit(), $params->getChildrenOffset());
+        return $this->searchDirectories(
+            $params->getParentLink(),
+            $params->getFilter(),
+            $params->getDepth(),
+            $params->getChildrenLimit(),
+            $params->getChildrenOffset()
+        );
     }
 
     /**
@@ -344,11 +349,7 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
         int $childrenLimit = 0,
         int $childrenOffset = 0
     ): array {
-        if ($parentLink == '') {
-            $class = $this->getClass($this->getRootClassUri());
-        } else {
-            $class = $this->getClass(tao_helpers_Uri::decode($parentLink));
-        }
+        $class = $this->getClass($parentLink == '' ? $this->getRootClassUri() : tao_helpers_Uri::decode($parentLink));
 
         $data = [
             'path' => self::SCHEME_NAME . tao_helpers_Uri::encode($class->getUri()),
@@ -378,7 +379,10 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
                 try {
                     $children[] = $this->getFileInfo($instance->getUri());
                 } catch (tao_models_classes_FileNotFoundException $e) {
-                    $this->logEmergency($e->getMessage());
+                    $this->logEmergency(sprintf('Encountered issues %s while fetching details for %s',
+                            $e->getMessage(),
+                            $instance->getUri())
+                    );
                 }
             }
             $data['children'] = $children;
@@ -386,6 +390,7 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
         } else {
             $data['parent'] = $parentLink;
         }
+
         return $data;
     }
 }

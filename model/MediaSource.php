@@ -290,11 +290,6 @@ class MediaSource extends Configurable implements MediaManagement
         return $this->fileManagementService;
     }
 
-    private function removeSchemaFromUriOrLink(string $uriOrLink): string
-    {
-        return str_replace(self::SCHEME_NAME, '', $uriOrLink);
-    }
-
     private function searchDirectories(
         string $parentLink = '',
         array $acceptableMime = [],

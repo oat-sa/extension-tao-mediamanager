@@ -82,9 +82,9 @@ define([
 
         //init float positioning:
         if (className.contains('rgt')) {
-            align = 'right';
+            align = 'right txt-rgt';
         } else if (className.contains('lft')) {
-            align = 'left';
+            align = 'left txt-lft';
         }
 
         inlineHelper.positionFloat(widget, align);

@@ -26,17 +26,11 @@ use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ServiceManager;
 use oat\tao\model\media\MediaManagement;
 use oat\tao\model\media\mediaSource\DirectorySearchQuery;
-use oat\tao\model\media\ProcessedFileStreamAware;
-use oat\taoMediaManager\model\export\service\MediaResourcePreparer;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
-use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
-use Psr\Http\Message\StreamInterface;
 use tao_helpers_Uri;
 use tao_models_classes_FileNotFoundException;
 
-use function GuzzleHttp\Psr7\stream_for;
-
-class MediaSource extends Configurable implements MediaManagement, ProcessedFileStreamAware
+class MediaSource extends Configurable implements MediaManagement
 {
     use LoggerAwareTrait;
     use OntologyAwareTrait;
@@ -91,7 +85,7 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
      */
     public function delete($link)
     {
-        return $this->getMediaService()->deleteResource($this->getResource(\tao_helpers_Uri::decode($link)));
+        return $this->getMediaService()->deleteResource($this->getResource(tao_helpers_Uri::decode($link)));
     }
 
     public function getDirectories(DirectorySearchQuery $params): array
@@ -121,7 +115,7 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
     public function getFileInfo($link)
     {
         // get the media link from the resource
-        $resource = $this->getResource(tao_helpers_Uri::decode($this->removeSchemaFromUriOrLink($link)));
+        $resource = $this->getResource(tao_helpers_Uri::decode($link));
         $properties = [
             $this->getProperty(MediaService::PROPERTY_LINK),
             $this->getProperty(MediaService::PROPERTY_MIME_TYPE),
@@ -133,7 +127,6 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
         $fileLink = $propertiesValues[MediaService::PROPERTY_LINK][0] ?? null;
         $mime = $propertiesValues[MediaService::PROPERTY_MIME_TYPE][0] ?? null;
         $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
-        $fileLink = $this->getFileSourceUnserializer()->unserialize($fileLink);
 
         if (!isset($mime, $fileLink)) {
             throw new tao_models_classes_FileNotFoundException($link);
@@ -164,7 +157,7 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
      */
     public function getFileStream($link)
     {
-        $resource = new \core_kernel_classes_Resource(\tao_helpers_Uri::decode($link));
+        $resource = new \core_kernel_classes_Resource(tao_helpers_Uri::decode($link));
         $fileLink = $resource->getOnePropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LINK));
         if (is_null($fileLink)) {
             throw new tao_models_classes_FileNotFoundException($link);
@@ -222,7 +215,7 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
      */
     public function forceMimeType($link, $mimeType)
     {
-        $resource = new \core_kernel_classes_Resource(\tao_helpers_Uri::decode($link));
+        $resource = new \core_kernel_classes_Resource(tao_helpers_Uri::decode($link));
         return $resource->editPropertyValues(new \core_kernel_classes_Property(MediaService::PROPERTY_MIME_TYPE), $mimeType);
     }
 
@@ -236,7 +229,7 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
         if ($path === '') {
             $clazz = $this->getRootClass();
         } else {
-            $clazz = $this->getClass(\tao_helpers_Uri::decode($path));
+            $clazz = $this->getClass(tao_helpers_Uri::decode($path));
             if (!$clazz->isSubClassOf($this->getRootClass()) && !$clazz->equals($this->getRootClass()) && !$clazz->exists()) {
                 // consider $path to be a label
                 $found = false;
@@ -300,26 +293,6 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
     private function removeSchemaFromUriOrLink(string $uriOrLink): string
     {
         return str_replace(self::SCHEME_NAME, '', $uriOrLink);
-    }
-
-    public function getProcessedFileStream(string $link): StreamInterface
-    {
-        return stream_for(
-            $this->getPreparer()->prepare(
-                $this->getResource(tao_helpers_Uri::decode($link)),
-                $this->getFileStream($link)
-            )
-        );
-    }
-
-    private function getPreparer(): MediaResourcePreparer
-    {
-        return $this->getServiceLocator()->get(MediaResourcePreparer::class);
-    }
-
-    private function getFileSourceUnserializer(): FileSourceUnserializer
-    {
-        return $this->getServiceLocator()->get(FileSourceUnserializer::class);
     }
 
     private function searchDirectories(

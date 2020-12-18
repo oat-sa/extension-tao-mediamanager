@@ -20,12 +20,12 @@
 
 namespace oat\taoMediaManager\model;
 
-use common_Logger;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\Configurable;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ServiceManager;
 use oat\tao\model\media\MediaManagement;
+use oat\tao\model\media\mediaSource\DirectorySearchQuery;
 use oat\tao\model\media\ProcessedFileStreamAware;
 use oat\taoMediaManager\model\export\service\MediaResourcePreparer;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
@@ -95,48 +95,23 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
         return $this->getMediaService()->deleteResource($this->getResource(tao_helpers_Uri::decode($link)));
     }
 
+    public function getDirectories(DirectorySearchQuery $params): array
+    {
+        return $this->searchDirectories(
+            $params->getParentLink(),
+            $params->getFilter(),
+            $params->getDepth(),
+            $params->getChildrenLimit(),
+            $params->getChildrenOffset()
+        );
+    }
+
     /**
-     * (non-PHPdoc)
-     *
-     * @see \oat\tao\model\media\MediaBrowser::getDirectory
+     * @inheritDoc
      */
     public function getDirectory($parentLink = '', $acceptableMime = [], $depth = 1)
     {
-        if ($parentLink == '') {
-            $class = $this->getClass($this->getRootClassUri());
-        } else {
-            $class = $this->getClass(tao_helpers_Uri::decode($parentLink));
-        }
-
-        $data = [
-            'path' => self::SCHEME_NAME . tao_helpers_Uri::encode($class->getUri()),
-            'label' => $class->getLabel()
-        ];
-
-        if ($depth > 0) {
-            $children = [];
-            foreach ($class->getSubClasses() as $subclass) {
-                $children[] = $this->getDirectory($subclass->getUri(), $acceptableMime, $depth - 1);
-            }
-
-            $filter = [];
-
-            if (!empty($acceptableMime)) {
-                $filter = array_merge($filter, [MediaService::PROPERTY_MIME_TYPE => $acceptableMime]);
-            }
-
-            foreach ($class->searchInstances($filter) as $instance) {
-                try {
-                    $children[] = $this->getFileInfo($instance->getUri());
-                } catch (tao_models_classes_FileNotFoundException $e) {
-                    common_Logger::e($e->getMessage());
-                }
-            }
-            $data['children'] = $children;
-        } else {
-            $data['parent'] = $parentLink;
-        }
-        return $data;
+        return $this->searchDirectories($parentLink, $acceptableMime, $depth, 0, 0);
     }
 
     /**
@@ -161,7 +136,7 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
         $fileLink = $fileLink instanceof \core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
         $fileLink = $this->getFileSourceUnserializer()->unserialize($fileLink);
 
-        if (!isset($mime, $fileLink)){
+        if (!isset($mime, $fileLink)) {
             throw new tao_models_classes_FileNotFoundException($link);
         }
 
@@ -175,7 +150,7 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
         return [
             'name' => $resource->getLabel(),
             'uri' => self::SCHEME_NAME . tao_helpers_Uri::encode($link),
-            'mime' => (string) $mime,
+            'mime' => (string)$mime,
             'size' => $this->getFileManagement()->getFileSize($fileLink),
             'alt' => $alt,
             'link' => $fileLink
@@ -365,5 +340,66 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
     private function getFileSourceUnserializer(): FileSourceUnserializer
     {
         return $this->getServiceLocator()->get(FileSourceUnserializer::class);
+    }
+
+    private function searchDirectories(
+        string $parentLink = '',
+        array $acceptableMime = [],
+        int $depth = 1,
+        int $childrenLimit = 0,
+        int $childrenOffset = 0
+    ): array {
+
+        $class = $this->getClass($parentLink == '' ? $this->getRootClassUri() : tao_helpers_Uri::decode($parentLink));
+
+        $data = [
+            'path' => self::SCHEME_NAME . tao_helpers_Uri::encode($class->getUri()),
+            'label' => $class->getLabel(),
+            'childrenLimit' => $childrenLimit,
+        ];
+
+        if ($depth > 0) {
+            $children = [];
+            foreach ($class->getSubClasses() as $subclass) {
+                $children[] = $this->searchDirectories(
+                    $subclass->getUri(),
+                    $acceptableMime,
+                    $depth - 1,
+                    $childrenLimit,
+                    $childrenOffset
+                );
+            }
+
+            $filter = [];
+
+            if (!empty($acceptableMime)) {
+                $filter = array_merge($filter, [MediaService::PROPERTY_MIME_TYPE => $acceptableMime]);
+            }
+
+            $options = array_filter([
+                'limit' => $childrenLimit,
+                'offset' => $childrenOffset,
+            ]);
+
+            foreach ($class->searchInstances($filter, $options) as $instance) {
+                try {
+                    $children[] = $this->getFileInfo($instance->getUri());
+                } catch (tao_models_classes_FileNotFoundException $e) {
+                    $this->logEmergency(
+                        sprintf(
+                            'Encountered issues "%s" while fetching details for %s',
+                            $e->getMessage(),
+                            $instance->getUri()
+                        )
+                    );
+                }
+            }
+            $data['children'] = $children;
+            $data['total'] = $class->countInstances($filter);
+        } else {
+            $data['parent'] = $parentLink;
+        }
+
+        return $data;
     }
 }

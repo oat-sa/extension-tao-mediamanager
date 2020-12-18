@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint132\n"
-"PO-Revision-Date: 2020-07-03T09:31:49\n"
+"Project-Id-Version: TAO 3.4.0-sprint144\n"
+"PO-Revision-Date: 2020-12-18T10:26:49\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: nl-NL\n"
@@ -74,10 +74,10 @@ msgstr "Exporteren"
 msgid "Export Media as Zip file"
 msgstr "Exporteer media als zip bestand"
 
-msgid "Fail to edit shared stimulus"
+msgid "Fail to edit Shared Stimulus"
 msgstr "Aanpassen gedeelde stimulus heeft gefaald"
 
-msgid "Fail to edit Shared Stimulus"
+msgid "Fail to edit shared stimulus"
 msgstr "Aanpassen gedeelde stimulus heeft gefaald"
 
 msgid "Fail to import media"
@@ -200,6 +200,9 @@ msgstr ""
 msgid "Save the asset"
 msgstr ""
 
+msgid "Set a CSS class name in order to customize the display style."
+msgstr ""
+
 msgid "Shared Stimulus"
 msgstr "Gedeelde stimulus"
 
@@ -210,6 +213,9 @@ msgid "Shared Stimulus imported successfully"
 msgstr "Gedeelde stimulus succesvol geïmporteerd"
 
 msgid "some text ..."
+msgstr ""
+
+msgid "Text Block CSS Class"
 msgstr ""
 
 msgid "The class"

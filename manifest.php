@@ -32,7 +32,7 @@ return array(
     'requires' => [
         'tao' => '>=27.1.1.2',
         'generis' => '>=8.1.3',
-        'taoItems' => '>=6.6.1.1'
+        'taoItems' => '>=6.6.1.2'
     ],
     'models' => array(
         'http://www.tao.lu/Ontologies/TAOMedia.rdf'

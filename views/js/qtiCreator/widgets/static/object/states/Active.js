@@ -138,6 +138,9 @@ define([
                 })
             .on('change', onChange);
         } else {
+            if (mediaEditor) {
+                mediaEditor.destroy();
+            }
             $panelObjectSize.show();
             $panelMediaSize.hide();
         }

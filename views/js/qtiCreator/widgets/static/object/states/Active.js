@@ -35,7 +35,7 @@ define([
      * media Editor instance if has been initialized
      * @type {null}
      */
-    var mediaEditor = null;
+    let mediaEditor = null;
 
     const _config = {
         renderingThrottle: 1000,
@@ -112,8 +112,8 @@ define([
                 }
             }
             const onChange = _.debounce((nMedia) => {
-                if (qtiObject.attr('width') !== (nMedia['width'] + '%')) {
-                    const newWidth = Math.round(nMedia['width']) + '%';
+                if (qtiObject.attr('width') !== (`${nMedia['width']}%`)) {
+                    const newWidth = `${Math.round(nMedia['width'])}%`;
                     qtiObject.attr('width', newWidth);
                     mediaplayer.resize(newWidth, 'auto');
                 }

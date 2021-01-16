@@ -64,10 +64,10 @@ define([
             url: obj.renderer.resolveUrl(obj.attr('data')),
             mime: obj.attr('type')
         };
-        if(obj.attr('height')){
+        if (obj.attr('height')) {
             previewOptions.height = obj.attr('height');
         }
-        if(obj.attr('width')){
+        if (obj.attr('width')) {
             previewOptions.width = obj.attr('width');
         }
         if (previewOptions.url && previewOptions.mime) {
@@ -75,7 +75,7 @@ define([
         }
     }, _config.renderingThrottle);
 
-    const setMediaSizeEditor = (widget) => {
+    const setMediaSizeEditor = widget => {
         const $form = widget.$form;
         const qtiObject = widget.element;
         const $panelObjectSize = $('.size-panel', $form);
@@ -103,7 +103,9 @@ define([
                     height = 0;
                 } else if (height) {
                     // for old format (px and height is set) the default % is calculated on rendered width and height
-                    const scaleHeight = (Math.max(height || 0, 200) - $container.find('.mediaplayer .controls').height()) / originalSize.height;
+                    const scaleHeight =
+                        (Math.max(height || 0, 200) - $container.find('.mediaplayer .controls').height()) /
+                        originalSize.height;
                     const scaleWidth = Math.max(width || 0, 200) / originalSize.width;
                     const scale = Math.min(scaleHeight, scaleWidth);
                     width = Math.round(100 / (containerWidth / (scale * originalSize.width)));
@@ -111,8 +113,8 @@ define([
                     height = 0;
                 }
             }
-            const onChange = _.debounce((nMedia) => {
-                if (qtiObject.attr('width') !== (`${nMedia['width']}%`)) {
+            const onChange = _.debounce(nMedia => {
+                if (qtiObject.attr('width') !== `${nMedia['width']}%`) {
                     const newWidth = `${Math.round(nMedia['width'])}%`;
                     qtiObject.attr('width', newWidth);
                     mediaplayer.resize(newWidth, 'auto');
@@ -121,7 +123,8 @@ define([
             if (mediaEditor) {
                 mediaEditor.destroy();
             }
-            mediaEditor = mediaEditorComponent($panelMediaSize,
+            mediaEditor = mediaEditorComponent(
+                $panelMediaSize,
                 {
                     $node: $container.find('.mediaplayer .media'),
                     $container: $container,
@@ -135,8 +138,8 @@ define([
                         active: true,
                         showResponsiveToggle: false
                     }
-                })
-            .on('change', onChange);
+                }
+            ).on('change', onChange);
         } else {
             if (mediaEditor) {
                 mediaEditor.destroy();
@@ -226,7 +229,7 @@ define([
         //init standard ui widget
         formElement.initWidget($form);
 
-        $container.off('playerready').on('playerready', function() {
+        $container.off('playerready').on('playerready', function () {
             setMediaSizeEditor(_widget);
         });
 

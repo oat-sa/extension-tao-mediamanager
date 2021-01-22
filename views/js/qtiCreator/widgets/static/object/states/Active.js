@@ -25,11 +25,17 @@ define([
     'tpl!taoQtiItem/qtiCreator/tpl/forms/static/object',
     'taoQtiItem/qtiCreator/widgets/helpers/formElement',
     'taoQtiItem/qtiCreator/widgets/static/helpers/inline',
+    'ui/mediaEditor/mediaEditorComponent',
     'ui/previewer',
     'ui/resourcemgr',
     'ui/tooltip'
-], function (_, $, __, stateFactory, Active, formTpl, formElement, inlineHelper) {
+], function (_, $, __, stateFactory, Active, formTpl, formElement, inlineHelper, mediaEditorComponent) {
     'use strict';
+    /**
+     * media Editor instance if has been initialized
+     * @type {null}
+     */
+    let mediaEditor = null;
 
     const _config = {
         renderingThrottle: 1000,
@@ -43,6 +49,10 @@ define([
             this.initForm();
         },
         function () {
+            if (mediaEditor) {
+                mediaEditor.destroy();
+            }
+            this.widget.$original.off('playerready');
             this.widget.$form.empty();
         }
     );
@@ -64,6 +74,80 @@ define([
             $container.previewer(previewOptions);
         }
     }, _config.renderingThrottle);
+
+    const setMediaSizeEditor = widget => {
+        const $form = widget.$form;
+        const qtiObject = widget.element;
+        const $panelObjectSize = $('.size-panel', $form);
+        const $panelMediaSize = $('.media-size-panel', $form);
+        const type = qtiObject.attr('type');
+        if (/video/.test(type)) {
+            $panelObjectSize.hide();
+            $panelMediaSize.show();
+
+            const $container = widget.$original;
+            const mediaplayer = $container.data('player');
+            let width = qtiObject.attr('width');
+            let height = qtiObject.attr('height');
+            if (!/%/.test(width)) {
+                // if we don't have % width we need calculate default % width
+                const originalSize = mediaplayer.getMediaOriginalSize();
+                if (!originalSize.width) {
+                    // video is not loaded yet
+                    return;
+                }
+                const containerWidth = $container.closest('.widget-textBlock').width();
+                // the default % and by that the size of the video is based on the original video size compared to the container size
+                if (!width) {
+                    width = Math.round(100 / (containerWidth / originalSize.width));
+                    height = 0;
+                } else if (height) {
+                    // for old format (px and height is set) the default % is calculated on rendered width and height
+                    const scaleHeight =
+                        (Math.max(height || 0, 200) - $container.find('.mediaplayer .controls').height()) /
+                        originalSize.height;
+                    const scaleWidth = Math.max(width || 0, 200) / originalSize.width;
+                    const scale = Math.min(scaleHeight, scaleWidth);
+                    width = Math.round(100 / (containerWidth / (scale * originalSize.width)));
+                    qtiObject.removeAttr('height');
+                    height = 0;
+                }
+            }
+            const onChange = _.debounce(nMedia => {
+                if (qtiObject.attr('width') !== `${nMedia['width']}%`) {
+                    const newWidth = `${Math.round(nMedia['width'])}%`;
+                    qtiObject.attr('width', newWidth);
+                    mediaplayer.resize(newWidth, 'auto');
+                }
+            }, 200);
+            if (mediaEditor) {
+                mediaEditor.destroy();
+            }
+            mediaEditor = mediaEditorComponent(
+                $panelMediaSize,
+                {
+                    $node: $container.find('.mediaplayer .media'),
+                    $container: $container,
+                    type: qtiObject.attr('type'),
+                    width,
+                    height,
+                    responsive: true
+                },
+                {
+                    mediaDimension: {
+                        active: true,
+                        showResponsiveToggle: false
+                    }
+                }
+            ).on('change', onChange);
+        } else {
+            if (mediaEditor) {
+                mediaEditor.destroy();
+            }
+            $panelObjectSize.show();
+            $panelMediaSize.hide();
+        }
+    };
 
     const _initUpload = function (widget) {
         const $form = widget.$form,
@@ -127,6 +211,7 @@ define([
             $form = _widget.$form,
             qtiObject = _widget.element,
             baseUrl = _widget.options.baseUrl;
+        const $container = _widget.$original;
 
         $form.html(
             formTpl({
@@ -143,6 +228,10 @@ define([
 
         //init standard ui widget
         formElement.initWidget($form);
+
+        $container.off('playerready').on('playerready', function () {
+            setMediaSizeEditor(_widget);
+        });
 
         //init data change callbacks
         formElement.setChangeCallbacks($form, qtiObject, {

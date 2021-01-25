@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\export\service;
 
+use core_kernel_classes_EmptyProperty;
 use core_kernel_classes_Resource;
 use Exception;
 use LogicException;
@@ -31,6 +32,7 @@ use oat\tao\model\media\MediaAsset;
 use oat\tao\model\media\TaoMediaException;
 use oat\tao\model\media\TaoMediaResolver;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
+use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourceSpecification;
 use Psr\Http\Message\StreamInterface;
@@ -51,11 +53,13 @@ class MediaResourcePreparer extends ConfigurableService
     /** @var TaoMediaResolver */
     private $mediaResolver;
 
-    public function prepare(core_kernel_classes_Resource $mediaResource, StreamInterface $contents): string
+    public function prepare(core_kernel_classes_Resource $mediaResource, StreamInterface $contents): array
     {
         if (!$this->getSharedStimulusResourceSpecification()->isSatisfiedBy($mediaResource)) {
-            return (string)$contents;
+            return [$mediaResource->getLabel() => (string)$contents];
         }
+
+        $result = [];
 
         $xmlDocument = new XmlDocument();
         $xmlDocument->loadFromString((string)$contents);
@@ -68,7 +72,15 @@ class MediaResourcePreparer extends ConfigurableService
             }
         }
 
-        return $xmlDocument->saveToString();
+        $result[$mediaResource->getLabel()] = $xmlDocument->saveToString();
+
+        // Todo: move to separate service
+        $cssFileLink = $this->getAdditionalStylesheetPropertyValue($mediaResource);
+        if ($cssFileLink) {
+            $result[$cssFileLink] = (string) $this->getFileManagement()->getFileStream($cssFileLink);
+        }
+
+        return $result;
     }
 
     private function replaceComponentPath(BodyElement $component, MediaAsset $mediaAsset): void
@@ -177,5 +189,16 @@ class MediaResourcePreparer extends ConfigurableService
     private function getSharedStimulusResourceSpecification(): SharedStimulusResourceSpecification
     {
         return $this->getServiceLocator()->get(SharedStimulusResourceSpecification::class);
+    }
+
+    private function getAdditionalStylesheetPropertyValue(core_kernel_classes_Resource $resource): ?string
+    {
+        $property = $resource->getProperty(MediaService::ADDITIONAL_STYLESHEET);
+
+        try {
+            return (string) $resource->getUniquePropertyValue($property);
+        } catch (core_kernel_classes_EmptyProperty $e) {
+            return null;
+        }
     }
 }

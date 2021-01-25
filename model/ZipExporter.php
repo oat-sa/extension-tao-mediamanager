@@ -138,6 +138,7 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
         if ($zip->numFiles === 0) {
             foreach ($exportFiles as $label => $files) {
                 $archivePath = '';
+                $filesToAdd = [];
 
                 /** @var $class core_kernel_classes_Class */
                 if (array_key_exists($label, $exportClasses)) {
@@ -155,9 +156,11 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
                     $fileContent = $this->getFileManagement()
                         ->getFileStream($link);
 
-                    $preparedFileContent = $this->getMediaResourcePreparer()->prepare($fileResource, $fileContent);
+                    $filesToAdd = array_merge($this->getMediaResourcePreparer()->prepare($fileResource, $fileContent), $filesToAdd);
+                }
 
-                    $zip->addFromString($archivePath . $fileResource->getLabel(), $preparedFileContent);
+                foreach ($filesToAdd as $name => $content) {
+                    $zip->addFromString($archivePath . $name, $content);
                 }
             }
         }

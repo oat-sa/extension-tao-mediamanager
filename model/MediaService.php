@@ -63,6 +63,9 @@ class MediaService extends ConfigurableService
 
     public const PROPERTY_MIME_TYPE = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#mimeType';
 
+    //Todo update RDF
+    public const ADDITIONAL_STYLESHEET = 'stylesheet';
+
     public const SHARED_STIMULUS_MIME_TYPE = 'application/qti+xml';
 
     /**
@@ -93,7 +96,7 @@ class MediaService extends ConfigurableService
      * @param string|null $userId owner of the resource
      * @return string | bool $instanceUri or false on error
      */
-    public function createMediaInstance($fileSource, $classUri, $language, $label = null, $mimeType = null, $userId = null)
+    public function createMediaInstance($fileSource, $classUri, $language, $label = null, $mimeType = null, $userId = null, $additionalProperties = [])
     {
         $link = $this->getFileManager()->storeFile($fileSource, $label);
 
@@ -121,8 +124,8 @@ class MediaService extends ConfigurableService
             self::PROPERTY_LANGUAGE => $language,
             self::PROPERTY_MD5 => $md5,
             self::PROPERTY_MIME_TYPE => $mimeType,
-            self::PROPERTY_ALT_TEXT => $label
-        ];
+            self::PROPERTY_ALT_TEXT => $label,
+        ] + $additionalProperties;
 
         $instance = $clazz->createInstanceWithProperties($properties);
         $id = $instance->getUri();
@@ -182,6 +185,7 @@ class MediaService extends ConfigurableService
     {
         $link = $this->getLink($resource);
 
+        // Todo: remove CSS file if exists
         if ($this->getFileManager()->deleteFile($link) && $resource->delete()) {
             $this->getEventManager()
                 ->trigger(new MediaRemovedEvent($resource->getUri()));

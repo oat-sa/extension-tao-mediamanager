@@ -33,6 +33,7 @@ use helpers_File;
 use helpers_TimeOutHelper;
 use oat\oatbox\filesystem\File;
 use oat\tao\model\import\InvalidSourcePathException;
+use oat\taoMediaManager\model\fileManagement\FileManagement;
 use qtism\data\content\xhtml\Img;
 use qtism\data\content\xhtml\QtiObject;
 use qtism\data\storage\xml\XmlDocument;
@@ -66,7 +67,12 @@ class SharedStimulusPackageImporter extends ZipImporter
         try {
             $uploadedFile = $this->fetchUploadedFile($form);
 
-            $xmlFile = $this->getSharedStimulusFile($uploadedFile);
+            helpers_TimeOutHelper::setTimeOutLimit(helpers_TimeOutHelper::LONG);
+            $extractPath = $this->extractArchive($uploadedFile);
+            helpers_TimeOutHelper::reset();
+
+            $xmlFile = $this->getSharedStimulusFile($extractPath);
+            $cssFile = $this->getSharedStimulusAdditionalStylesheet($extractPath);
 
             $this->getUploadService()->remove($uploadedFile);
 
@@ -77,7 +83,8 @@ class SharedStimulusPackageImporter extends ZipImporter
 
             $report = Report::createSuccess(__('Shared Stimulus imported successfully'));
 
-            $subReport = $this->storeSharedStimulus($class, $this->getDecodedUri($form), $embeddedFile, $userId);
+            // Todo: store related CSS somehow
+            $subReport = $this->storeSharedStimulus($class, $this->getDecodedUri($form), $embeddedFile, $cssFile, $userId);
 
             $report->add($subReport);
         } catch (Exception $e) {
@@ -190,22 +197,19 @@ class SharedStimulusPackageImporter extends ZipImporter
     /**
      * Get the shared stimulus file with assets from the zip
      *
-     * @param string|File $filePath path of the zip file
+     * @param $extractPath
+     * @return string path to the xml
      *
-     * @return string|false path to the xml
-     *
-     * @throws common_Exception
+     * @throws common_Exception if the xml not found
      */
-    private function getSharedStimulusFile($filePath)
+    private function getSharedStimulusFile($extractPath)
     {
-        helpers_TimeOutHelper::setTimeOutLimit(helpers_TimeOutHelper::LONG);
-        $extractPath = $this->extractArchive($filePath);
-        helpers_TimeOutHelper::reset();
-
         $iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($extractPath),
             RecursiveIteratorIterator::LEAVES_ONLY
         );
+
+        // Todo: find and validate CSS file from zip
 
         /** @var $file SplFileInfo */
         foreach ($iterator as $file) {
@@ -217,22 +221,68 @@ class SharedStimulusPackageImporter extends ZipImporter
             }
         }
 
+
         throw new common_Exception('XML not found in the package');
+    }
+
+    /**
+     * Get an additional CSS stylesheet for the shared stimulus (If exists)
+     *
+     * @param $extractPath
+     * @return string|null path to the CSS or false if not found
+     *
+     */
+    private function getSharedStimulusAdditionalStylesheet($extractPath): ?string
+    {
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($extractPath),
+            RecursiveIteratorIterator::LEAVES_ONLY
+        );
+
+        // Todo: find and validate CSS file from zip
+
+        /** @var $file SplFileInfo */
+        foreach ($iterator as $file) {
+            //check each file to see if it can be the shared stimulus file
+            if ($file->isFile()) {
+                if (preg_match('/^[\w]/', $file->getFilename()) === 1 && $file->getExtension() === 'css') {
+                    return $file->getRealPath();
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
      * Validate an xml file, convert file linked inside and store it into media manager
      *
+     * @param Resource $class
+     * @param string $lang
+     * @param string $xmlFile
+     * @param string|null $cssFile
+     * @param string|null $userId
+     * @return Report
      * @throws XmlStorageException
+     * @throws common_exception_Error
      */
     protected function storeSharedStimulus(
         Resource $class,
         string $lang,
         string $xmlFile,
+        ?string $cssFile,
         string $userId = null
     ): Report
     {
         SharedStimulusImporter::isValidSharedStimulus($xmlFile);
+        $additionalProperties = [];
+
+        if ($cssFile) {
+            $additionalCSSFileLink = $this->getServiceLocator()->get(FileManagement::SERVICE_ID)->storeFile($cssFile, basename($cssFile));
+            $additionalProperties = [
+                MediaService::ADDITIONAL_STYLESHEET => $additionalCSSFileLink
+            ];
+        }
 
         $mediaResourceUri = $this->getMediaService()->createMediaInstance(
             $xmlFile,
@@ -240,7 +290,8 @@ class SharedStimulusPackageImporter extends ZipImporter
             $lang,
             basename($xmlFile),
             MediaService::SHARED_STIMULUS_MIME_TYPE,
-            $userId
+            $userId,
+            $additionalProperties
         );
 
         if ($mediaResourceUri !== false) {

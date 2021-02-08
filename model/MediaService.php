@@ -88,8 +88,8 @@ class MediaService extends ConfigurableService
      * @param string|File $fileSource path to the file to create instance from
      * @param string $classUri parent to add the instance to
      * @param string $language language of the content
-     * @param null $label label of the instance
-     * @param null $mimeType mimeType of the file
+     * @param string|null $label label of the instance
+     * @param string|null $mimeType mimeType of the file
      * @param string|null $userId owner of the resource
      * @param bool $storeFile
      * @return string | bool $instanceUri or false on error

@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2014-2021 (original work) Open Assessment Technologies SA;
  *
  *
  */
@@ -44,7 +44,10 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
         $filename = $this->getUniqueFilename($label);
         $stream = $fileSource instanceof File ? $fileSource->readStream() : fopen($fileSource, 'r');
         $this->getFileSystem()->writeStream($filename, $stream);
-        fclose($stream);
+
+        if (is_resource($stream)) {
+            fclose($stream);
+        }
 
         return $filename;
     }

@@ -36,6 +36,8 @@ define([
      * @type {null}
      */
     let mediaEditor = null;
+    let $panelObjectSize = null;
+    let $panelMediaSize = null;
 
     const _config = {
         renderingThrottle: 1000,
@@ -52,6 +54,9 @@ define([
             if (mediaEditor) {
                 mediaEditor.destroy();
             }
+            mediaEditor = null;
+            $panelObjectSize = null;
+            $panelMediaSize = null;
             this.widget.$original.off('playerready');
             this.widget.$form.empty();
         }
@@ -76,15 +81,9 @@ define([
     }, _config.renderingThrottle);
 
     const setMediaSizeEditor = widget => {
-        const $form = widget.$form;
         const qtiObject = widget.element;
-        const $panelObjectSize = $('.size-panel', $form);
-        const $panelMediaSize = $('.media-size-panel', $form);
         const type = qtiObject.attr('type');
         if (/video/.test(type)) {
-            $panelObjectSize.hide();
-            $panelMediaSize.show();
-
             const $container = widget.$original;
             const mediaplayer = $container.data('player');
             let width = qtiObject.attr('width');
@@ -140,6 +139,12 @@ define([
                     }
                 }
             ).on('change', onChange);
+        }
+    };
+    const hideShowPanels = type => {
+        if (/video/.test(type)) {
+            $panelObjectSize.hide();
+            $panelMediaSize.show();
         } else {
             if (mediaEditor) {
                 mediaEditor.destroy();
@@ -148,7 +153,6 @@ define([
             $panelMediaSize.hide();
         }
     };
-
     const _initUpload = function (widget) {
         const $form = widget.$form,
             options = widget.options,
@@ -229,6 +233,10 @@ define([
         //init standard ui widget
         formElement.initWidget($form);
 
+        $panelObjectSize = $('.size-panel', $form);
+        $panelMediaSize = $('.media-size-panel', $form);
+        hideShowPanels(qtiObject.attr('type'));
+
         $container.off('playerready').on('playerready', function () {
             setMediaSizeEditor(_widget);
         });
@@ -236,9 +244,17 @@ define([
         //init data change callbacks
         formElement.setChangeCallbacks($form, qtiObject, {
             src: function (object, value) {
-                qtiObject.attr('data', value);
-                inlineHelper.togglePlaceholder(_widget);
-                refreshRendering(_widget);
+                if (value !== qtiObject.attr('data')) {
+                    qtiObject.attr('data', value);
+                    qtiObject.removeAttr('width');
+                    qtiObject.removeAttr('height');
+                    $form.find('input[name=width]').val('');
+                    $form.find('input[name=height]').val('');
+                    $container.removeData('ui.previewer');
+                    hideShowPanels(qtiObject.attr('type'));
+                    inlineHelper.togglePlaceholder(_widget);
+                    refreshRendering(_widget);
+                }
             },
             width: function (object, value) {
                 const val = parseInt(value, 10);

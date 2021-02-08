@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2021 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
@@ -94,8 +94,15 @@ class MediaService extends ConfigurableService
      * @param bool $storeFile
      * @return string | bool $instanceUri or false on error
      */
-    public function createMediaInstance($fileSource, $classUri, $language, $label = null, $mimeType = null, $userId = null, $storeFile = true)
-    {
+    public function createMediaInstance(
+        $fileSource,
+        $classUri,
+        $language,
+        $label = null,
+        $mimeType = null,
+        $userId = null,
+        $storeFile = true
+    ) {
         if ($storeFile) {
             $link = $this->getFileManager()->storeFile($fileSource, $label);
             $content = null;
@@ -247,7 +254,7 @@ class MediaService extends ConfigurableService
         if ($container instanceof core_kernel_classes_Literal) {
             $mimeType = (string)$container;
 
-            return  $mimeType === MediaService::SHARED_STIMULUS_MIME_TYPE ? $mimeType : null;
+            return $mimeType === MediaService::SHARED_STIMULUS_MIME_TYPE ? $mimeType : null;
         }
 
         return null;

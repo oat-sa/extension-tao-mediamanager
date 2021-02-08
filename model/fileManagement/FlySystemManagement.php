@@ -60,11 +60,10 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
      * @return string
      * @throws \League\Flysystem\FileExistsException
      */
-    public function storeSharedStimulusFile($stimulusXmlSource, $stimulusLabel, $stimulusFilename, $cssFiles, $CSSFolderName)
+    public function storeSharedStimulusDirectory($stimulusXmlSource, $stimulusLabel, $stimulusFilename, $cssFiles, $CSSFolderName)
     {
         $dirname = $this->getUniqueFilename($stimulusLabel, false);
 
-        //Create Directory and write SS file
         $this->getFileSystem()->createDir($dirname);
         $this->getFileSystem()->writeStream($dirname . DIRECTORY_SEPARATOR . $stimulusFilename, fopen($stimulusXmlSource, 'r'));
 

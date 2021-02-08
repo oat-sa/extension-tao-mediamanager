@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2021 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
@@ -85,7 +85,13 @@ class SharedStimulusPackageImporter extends ZipImporter
             $report = Report::createSuccess(__('Shared Stimulus imported successfully'));
 
             // Todo: store related CSS somehow
-            $subReport = $this->storeSharedStimulus($class, $this->getDecodedUri($form), $embeddedFile, $cssFiles, $userId);
+            $subReport = $this->storeSharedStimulus(
+                $class,
+                $this->getDecodedUri($form),
+                $embeddedFile,
+                $cssFiles,
+                $userId
+            );
 
             $report->add($subReport);
         } catch (Exception $e) {
@@ -277,14 +283,19 @@ class SharedStimulusPackageImporter extends ZipImporter
         string $xmlFile,
         array $cssFiles,
         string $userId = null
-    ): Report
-    {
+    ): Report {
         SharedStimulusImporter::isValidSharedStimulus($xmlFile);
         $stimulusFilename = basename($xmlFile);
 
         /** @var $fsManager FlySystemManagement */
         $fsManager = $this->getServiceLocator()->get(FileManagement::SERVICE_ID);
-        $directory = $fsManager->storeSharedStimulusFile($xmlFile, basename($xmlFile), $stimulusFilename, $cssFiles, SharedStimulusCSSExporter::CSS_DIR_NAME);
+        $directory = $fsManager->storeSharedStimulusDirectory(
+            $xmlFile,
+            basename($xmlFile),
+            $stimulusFilename,
+            $cssFiles,
+            SharedStimulusCSSExporter::CSS_DIR_NAME
+        );
 
 
         $mediaResourceUri = $this->getMediaService()->createMediaInstance(
@@ -319,8 +330,7 @@ class SharedStimulusPackageImporter extends ZipImporter
         string $lang,
         string $xmlFile,
         string $userId = null
-    ): Report
-    {
+    ): Report {
         //if the class does not belong to media classes create a new one with its name (for items)
         $mediaClass = new core_kernel_classes_Class(MediaService::ROOT_CLASS_URI);
         if (!$instance->isInstanceOf($mediaClass)) {

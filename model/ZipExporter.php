@@ -32,6 +32,7 @@ use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
 use oat\oatbox\service\ServiceManager;
 use oat\taoMediaManager\model\export\service\MediaResourcePreparer;
+use oat\taoMediaManager\model\export\service\SharedStimulusCSSExporter;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use tao_helpers_Export;
 use tao_models_classes_export_ExportHandler;
@@ -138,7 +139,6 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
         if ($zip->numFiles === 0) {
             foreach ($exportFiles as $label => $files) {
                 $archivePath = '';
-                $filesToAdd = [];
 
                 /** @var $class core_kernel_classes_Class */
                 if (array_key_exists($label, $exportClasses)) {
@@ -156,11 +156,10 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
                     $fileContent = $this->getFileManagement()
                         ->getFileStream($link);
 
-                    $filesToAdd = array_merge($this->getMediaResourcePreparer()->prepare($fileResource, $fileContent), $filesToAdd);
-                }
+                    $preparedFileContent = $this->getMediaResourcePreparer()->prepare($fileResource, $fileContent);
+                    $zip->addFromString($archivePath . $fileResource->getLabel(), $preparedFileContent);
 
-                foreach ($filesToAdd as $name => $content) {
-                    $zip->addFromString($archivePath . $name, $content);
+                    $this->getSharedStimulusCSSExporter()->pack($fileResource, $link, $zip);
                 }
             }
         }
@@ -183,6 +182,11 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
     private function getMediaResourcePreparer(): MediaResourcePreparer
     {
         return $this->getServiceManager()->get(MediaResourcePreparer::class);
+    }
+
+    private function getSharedStimulusCSSExporter(): SharedStimulusCSSExporter
+    {
+        return $this->getServiceManager()->get(SharedStimulusCSSExporter::class);
     }
 
     /**

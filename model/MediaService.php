@@ -63,9 +63,6 @@ class MediaService extends ConfigurableService
 
     public const PROPERTY_MIME_TYPE = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#mimeType';
 
-    //Todo update RDF
-    public const ADDITIONAL_STYLESHEET = 'stylesheet';
-
     public const SHARED_STIMULUS_MIME_TYPE = 'application/qti+xml';
 
     /**
@@ -91,14 +88,21 @@ class MediaService extends ConfigurableService
      * @param string|File $fileSource path to the file to create instance from
      * @param string $classUri parent to add the instance to
      * @param string $language language of the content
-     * @param string $label label of the instance
-     * @param string $mimeType mimeType of the file
+     * @param null $label label of the instance
+     * @param null $mimeType mimeType of the file
      * @param string|null $userId owner of the resource
+     * @param bool $storeFile
      * @return string | bool $instanceUri or false on error
      */
-    public function createMediaInstance($fileSource, $classUri, $language, $label = null, $mimeType = null, $userId = null, $additionalProperties = [])
+    public function createMediaInstance($fileSource, $classUri, $language, $label = null, $mimeType = null, $userId = null, $storeFile = true)
     {
-        $link = $this->getFileManager()->storeFile($fileSource, $label);
+        if ($storeFile) {
+            $link = $this->getFileManager()->storeFile($fileSource, $label);
+            $content = null;
+        } else {
+            $link = $fileSource;
+            $content = $this->getFileManager()->getFileStream($fileSource)->getContents();
+        }
 
         if ($link === false) {
             return false;
@@ -111,7 +115,9 @@ class MediaService extends ConfigurableService
             $label = $fileSource instanceof File ? $fileSource->getBasename() : basename($fileSource);
         }
 
-        $content = $fileSource instanceof File ? $fileSource->read() : file_get_contents($fileSource);
+        if (is_null($content)) {
+            $content = $fileSource instanceof File ? $fileSource->read() : file_get_contents($fileSource);
+        }
         $md5 = md5($content);
 
         if (is_null($mimeType)) {
@@ -125,7 +131,7 @@ class MediaService extends ConfigurableService
             self::PROPERTY_MD5 => $md5,
             self::PROPERTY_MIME_TYPE => $mimeType,
             self::PROPERTY_ALT_TEXT => $label,
-        ] + $additionalProperties;
+        ];
 
         $instance = $clazz->createInstanceWithProperties($properties);
         $id = $instance->getUri();
@@ -185,8 +191,7 @@ class MediaService extends ConfigurableService
     {
         $link = $this->getLink($resource);
 
-        // Todo: remove CSS file if exists
-        if ($this->getFileManager()->deleteFile($link) && $resource->delete()) {
+        if ($this->removeFromFilesystem($link) && $resource->delete()) {
             $this->getEventManager()
                 ->trigger(new MediaRemovedEvent($resource->getUri()));
 
@@ -194,6 +199,17 @@ class MediaService extends ConfigurableService
         }
 
         return false;
+    }
+
+    private function removeFromFilesystem($link): bool
+    {
+        $directory = dirname($link);
+
+        if ($directory !== '.') {
+            return $this->getFileManager()->deleteDirectory($directory);
+        } else {
+            return $this->getFileManager()->deleteFile($link);
+        }
     }
 
     private function getLink(RdfResource $resource): string

@@ -48,6 +48,50 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
 
         return $filename;
     }
+
+    /**
+     * Stores Shared Stimulus and CSS to own directory and returns it's path
+     *
+     * @param $stimulusXmlSource
+     * @param $stimulusLabel
+     * @param $stimulusFilename
+     * @param $cssFiles
+     * @param $CSSFolderName
+     * @return string
+     * @throws \League\Flysystem\FileExistsException
+     */
+    public function storeSharedStimulusFile($stimulusXmlSource, $stimulusLabel, $stimulusFilename, $cssFiles, $CSSFolderName)
+    {
+        $dirname = $this->getUniqueFilename($stimulusLabel, false);
+
+        //Create Directory and write SS file
+        $this->getFileSystem()->createDir($dirname);
+        $this->getFileSystem()->writeStream($dirname . DIRECTORY_SEPARATOR . $stimulusFilename, fopen($stimulusXmlSource, 'r'));
+
+        if (count($cssFiles)) {
+            $this->getFileSystem()->createDir($dirname . DIRECTORY_SEPARATOR. $CSSFolderName);
+            foreach ($cssFiles as $file) {
+                $this->getFileSystem()->writeStream($dirname . DIRECTORY_SEPARATOR . $CSSFolderName . DIRECTORY_SEPARATOR . basename($file), fopen($file, 'r'));
+            }
+        }
+
+        return $dirname;
+    }
+
+    public function fetchDirectory($directoryPath): array
+    {
+        return $this->getFilesystem()->listContents($directoryPath);
+    }
+
+    public function deleteDirectory($directoryPath): bool
+    {
+        return $this->getFilesystem()->deleteDir($directoryPath);
+    }
+
+    public function pathExists($path): bool
+    {
+        return $this->getFilesystem()->has($path);
+    }
     
     public function getFileSize($link)
     {
@@ -64,7 +108,6 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
         $resource = $this->getFilesystem()->readStream($link);
         return new Stream($resource);
     }
-    
     
     /**
      * (non-PHPdoc)
@@ -93,20 +136,23 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
         $fs = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
         return $fs->getFileSystem($this->getOption(self::OPTION_FS));
     }
-    
+
     /**
      * Create a new unique filename based on an existing filename
      *
      * @param string $fileName
+     * @param bool $keepExtension
      * @return string
      */
-    protected function getUniqueFilename($fileName)
+    protected function getUniqueFilename($fileName, $keepExtension = true)
     {
         $returnValue = uniqid(hash('crc32', $fileName));
-    
-        $ext = @pathinfo($fileName, PATHINFO_EXTENSION);
-        if (!empty($ext)) {
-            $returnValue .= '.' . $ext;
+
+        if ($keepExtension) {
+            $ext = @pathinfo($fileName, PATHINFO_EXTENSION);
+            if (!empty($ext)) {
+                $returnValue .= '.' . $ext;
+            }
         }
     
         return $returnValue;

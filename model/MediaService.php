@@ -214,9 +214,9 @@ class MediaService extends ConfigurableService
 
         if ($directory !== '.') {
             return $this->getFileManager()->deleteDirectory($directory);
-        } else {
-            return $this->getFileManager()->deleteFile($link);
         }
+        
+        return $this->getFileManager()->deleteFile($link);
     }
 
     private function getLink(RdfResource $resource): string

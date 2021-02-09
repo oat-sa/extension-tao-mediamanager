@@ -29,22 +29,24 @@ use oat\taoMediaManager\model\fileManagement\FileManagement;
 class StoreService extends ConfigurableService
 {
 
+    /**
+     * name of sub-directory to store stylesheets
+     */
     public const CSS_DIR_NAME = 'CSS';
 
     /**
      * Stores Shared Stimulus and CSS to own directory and returns it's path
      *
      * @param $stimulusXmlSource
-     * @param $stimulusLabel
      * @param $stimulusFilename
      * @param $cssFiles
      * @return string
      */
-    public function store($stimulusXmlSource, $stimulusLabel, $stimulusFilename, $cssFiles): string
+    public function store($stimulusXmlSource, $stimulusFilename, $cssFiles): string
     {
         $fileManager = $this->getFileManagement();
 
-        $dirname = uniqid(hash('crc32', $stimulusLabel));
+        $dirname = uniqid(hash('crc32', $stimulusFilename));
 
         $fileManager->createDir($dirname);
         $fileManager->writeStream($dirname . DIRECTORY_SEPARATOR . $stimulusFilename, fopen($stimulusXmlSource, 'r'));

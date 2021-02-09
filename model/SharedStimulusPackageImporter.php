@@ -250,7 +250,7 @@ class SharedStimulusPackageImporter extends ZipImporter
         foreach ($iterator as $file) {
             if ($file->isFile()) {
                 if (preg_match('/^[\w]/', $file->getFilename()) === 1 && $file->getExtension() === 'css') {
-                    $CssFileInfoArray[] = $file->getRealPath();
+                    $cssFileInfoArray[] = $file->getRealPath();
                 }
             }
         }
@@ -272,9 +272,8 @@ class SharedStimulusPackageImporter extends ZipImporter
     ): Report {
         $stimulusFilename = basename($xmlFile);
 
-        $directory =  $this->getSharedStimulusStoreService()->store(
+        $directory = $this->getSharedStimulusStoreService()->store(
             $xmlFile,
-            basename($xmlFile),
             $stimulusFilename,
             $cssFiles
         );

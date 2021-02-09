@@ -32,9 +32,7 @@ use Exception;
 use helpers_File;
 use helpers_TimeOutHelper;
 use oat\tao\model\import\InvalidSourcePathException;
-use oat\taoMediaManager\model\export\service\SharedStimulusCSSExporter;
-use oat\taoMediaManager\model\fileManagement\FileManagement;
-use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
+use oat\taoMediaManager\model\sharedStimulus\service\StoreService;
 use qtism\data\content\xhtml\Img;
 use qtism\data\content\xhtml\QtiObject;
 use qtism\data\storage\xml\XmlDocument;
@@ -84,7 +82,6 @@ class SharedStimulusPackageImporter extends ZipImporter
 
             $report = Report::createSuccess(__('Shared Stimulus imported successfully'));
 
-            // Todo: store related CSS somehow
             $subReport = $this->storeSharedStimulus(
                 $class,
                 $this->getDecodedUri($form),
@@ -213,14 +210,12 @@ class SharedStimulusPackageImporter extends ZipImporter
      *
      * @throws common_Exception if the xml not found
      */
-    private function getSharedStimulusFile($extractPath)
+    private function getSharedStimulusFile($extractPath): string
     {
         $iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($extractPath),
             RecursiveIteratorIterator::LEAVES_ONLY
         );
-
-        // Todo: find and validate CSS file from zip
 
         /** @var $file SplFileInfo */
         foreach ($iterator as $file) {
@@ -231,7 +226,6 @@ class SharedStimulusPackageImporter extends ZipImporter
                 }
             }
         }
-
 
         throw new common_Exception('XML not found in the package');
     }
@@ -250,11 +244,10 @@ class SharedStimulusPackageImporter extends ZipImporter
             RecursiveIteratorIterator::LEAVES_ONLY
         );
 
-        $CssFileInfoArray = [];
+        $cssFileInfoArray = [];
 
         /** @var $file SplFileInfo */
         foreach ($iterator as $file) {
-            //check each file to see if it can be the shared stimulus file
             if ($file->isFile()) {
                 if (preg_match('/^[\w]/', $file->getFilename()) === 1 && $file->getExtension() === 'css') {
                     $CssFileInfoArray[] = $file->getRealPath();
@@ -262,19 +255,12 @@ class SharedStimulusPackageImporter extends ZipImporter
             }
         }
 
-        return $CssFileInfoArray;
+        return $cssFileInfoArray;
     }
 
     /**
-     * Validate an xml file, convert file linked inside and store it into media manager
+     * Convert file linked inside and store it into media manager
      *
-     * @param Resource $class
-     * @param string $lang
-     * @param string $xmlFile
-     * @param array $cssFiles
-     * @param string|null $userId
-     * @return Report
-     * @throws XmlStorageException
      * @throws common_exception_Error
      */
     protected function storeSharedStimulus(
@@ -284,28 +270,20 @@ class SharedStimulusPackageImporter extends ZipImporter
         array $cssFiles,
         string $userId = null
     ): Report {
-        SharedStimulusImporter::isValidSharedStimulus($xmlFile);
         $stimulusFilename = basename($xmlFile);
 
-        /** @var $fsManager FlySystemManagement */
-        $fsManager = $this->getServiceLocator()->get(FileManagement::SERVICE_ID);
-        $directory = $fsManager->storeSharedStimulusDirectory(
+        $directory =  $this->getSharedStimulusStoreService()->store(
             $xmlFile,
             basename($xmlFile),
             $stimulusFilename,
-            $cssFiles,
-            SharedStimulusCSSExporter::CSS_DIR_NAME
+            $cssFiles
         );
 
-
-        $mediaResourceUri = $this->getMediaService()->createMediaInstance(
+        $mediaResourceUri = $this->getMediaService()->createSharedStimulusInstance(
             $directory . DIRECTORY_SEPARATOR . $stimulusFilename,
             $class->getUri(),
             $lang,
-            $stimulusFilename,
-            MediaService::SHARED_STIMULUS_MIME_TYPE,
-            $userId,
-            false
+            $userId
         );
 
         if ($mediaResourceUri !== false) {
@@ -403,5 +381,10 @@ class SharedStimulusPackageImporter extends ZipImporter
     private function getMediaService(): MediaService
     {
         return $this->getServiceLocator()->get(MediaService::class);
+    }
+
+    private function getSharedStimulusStoreService(): StoreService
+    {
+        return $this->getServiceLocator()->get(StoreService::class);
     }
 }

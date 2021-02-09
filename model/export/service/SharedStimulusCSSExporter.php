@@ -27,7 +27,7 @@ use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 
 use oat\taoMediaManager\model\fileManagement\FileManagement;
-use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
+use oat\taoMediaManager\model\sharedStimulus\service\StoreService;
 use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourceSpecification;
 use ZipArchive;
 
@@ -35,7 +35,7 @@ class SharedStimulusCSSExporter extends ConfigurableService
 {
     use OntologyAwareTrait;
 
-    public const CSS_DIR_NAME = 'CSS';
+    public const CSS_ZIP_DIR_NAME = 'CSS';
 
     public function pack(core_kernel_classes_Resource $mediaResource, string $link, ZipArchive $zip): void
     {
@@ -43,25 +43,23 @@ class SharedStimulusCSSExporter extends ConfigurableService
             return;
         }
 
-        /** @var $fsManager FlySystemManagement */
-        $fs = $this->getFileManagement();
+        $fileManager  = $this->getFileManagement();
+        $cssPath = dirname($link) . DIRECTORY_SEPARATOR . StoreService::CSS_DIR_NAME;
 
-        $cssPath = dirname($link) . DIRECTORY_SEPARATOR . self::CSS_DIR_NAME;
-
-        if (!$fs->pathExists($cssPath)) {
+        if (!$fileManager->pathExists($cssPath)) {
             return;
         }
 
-        $files = $fs->fetchDirectory($cssPath);
+        $files = $fileManager->fetchDirectory($cssPath);
         if (!count($files)) {
             return;
         }
 
-        $zip->addEmptyDir(self::CSS_DIR_NAME);
+        $zip->addEmptyDir(self::CSS_ZIP_DIR_NAME);
         foreach ($files as $file) {
             $content = $this->getFileContent($cssPath . DIRECTORY_SEPARATOR . $file['basename']);
             if ($this->validateCCS($content)) {
-                $zip->addFromString(self::CSS_DIR_NAME . DIRECTORY_SEPARATOR . $file['basename'], $content);
+                $zip->addFromString(self::CSS_ZIP_DIR_NAME . DIRECTORY_SEPARATOR . $file['basename'], $content);
             }
         }
     }
@@ -73,7 +71,7 @@ class SharedStimulusCSSExporter extends ConfigurableService
 
     private function validateCCS($content): bool
     {
-        // Check CSS has valid structure and classes
+        // Check CSS has valid structure and classes (in scope of future tasks)
         return true;
     }
 

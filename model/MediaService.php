@@ -88,28 +88,14 @@ class MediaService extends ConfigurableService
      * @param string|File $fileSource path to the file to create instance from
      * @param string $classUri parent to add the instance to
      * @param string $language language of the content
-     * @param string|null $label label of the instance
-     * @param string|null $mimeType mimeType of the file
+     * @param string $label label of the instance
+     * @param string $mimeType mimeType of the file
      * @param string|null $userId owner of the resource
-     * @param bool $storeFile
      * @return string | bool $instanceUri or false on error
      */
-    public function createMediaInstance(
-        $fileSource,
-        $classUri,
-        $language,
-        $label = null,
-        $mimeType = null,
-        $userId = null,
-        $storeFile = true
-    ) {
-        if ($storeFile) {
-            $link = $this->getFileManager()->storeFile($fileSource, $label);
-            $content = null;
-        } else {
-            $link = $fileSource;
-            $content = $this->getFileManager()->getFileStream($fileSource)->getContents();
-        }
+    public function createMediaInstance($fileSource, $classUri, $language, $label = null, $mimeType = null, $userId = null)
+    {
+        $link = $this->getFileManager()->storeFile($fileSource, $label);
 
         if ($link === false) {
             return false;
@@ -122,9 +108,7 @@ class MediaService extends ConfigurableService
             $label = $fileSource instanceof File ? $fileSource->getBasename() : basename($fileSource);
         }
 
-        if (is_null($content)) {
-            $content = $fileSource instanceof File ? $fileSource->read() : file_get_contents($fileSource);
-        }
+        $content = $fileSource instanceof File ? $fileSource->read() : file_get_contents($fileSource);
         $md5 = md5($content);
 
         if (is_null($mimeType)) {
@@ -137,13 +121,54 @@ class MediaService extends ConfigurableService
             self::PROPERTY_LANGUAGE => $language,
             self::PROPERTY_MD5 => $md5,
             self::PROPERTY_MIME_TYPE => $mimeType,
-            self::PROPERTY_ALT_TEXT => $label,
+            self::PROPERTY_ALT_TEXT => $label
         ];
 
         $instance = $clazz->createInstanceWithProperties($properties);
         $id = $instance->getUri();
 
         $this->getMediaSavedEventDispatcher()->dispatchFromContent($id, $mimeType, $content);
+
+        // @todo: move taoRevision stuff under a listener of MediaSavedEvent
+        if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
+            $this->logInfo('Auto generating initial revision');
+            $this->getRepositoryService()->commit($instance, __('Initial import'), null, $userId);
+        }
+
+        return $id;
+    }
+
+    /**
+     * Create a shared stimulus media instance from a file, and define its class and language
+     *
+     * @return string | bool $instanceUri or false on error
+     */
+    public function createSharedStimulusInstance(
+        string $link,
+        string $classUri,
+        string $language,
+        $userId = null
+    ) {
+
+        $content = $this->getFileManager()->getFileStream($link)->getContents();
+        $md5 = md5($content);
+
+        $clazz = $this->getClass($classUri);
+        $label = basename($link);
+
+        $properties = [
+            OntologyRdfs::RDFS_LABEL => $label,
+            self::PROPERTY_LINK => $link,
+            self::PROPERTY_LANGUAGE => $language,
+            self::PROPERTY_MD5 => $md5,
+            self::PROPERTY_MIME_TYPE => self::SHARED_STIMULUS_MIME_TYPE,
+            self::PROPERTY_ALT_TEXT => $label,
+        ];
+
+        $instance = $clazz->createInstanceWithProperties($properties);
+        $id = $instance->getUri();
+
+        $this->getMediaSavedEventDispatcher()->dispatchFromContent($id, self::SHARED_STIMULUS_MIME_TYPE, $content);
 
         // @todo: move taoRevision stuff under a listener of MediaSavedEvent
         if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
@@ -214,9 +239,9 @@ class MediaService extends ConfigurableService
 
         if ($directory !== '.') {
             return $this->getFileManager()->deleteDirectory($directory);
-        } else {
-            return $this->getFileManager()->deleteFile($link);
         }
+
+        return $this->getFileManager()->deleteFile($link);
     }
 
     private function getLink(RdfResource $resource): string

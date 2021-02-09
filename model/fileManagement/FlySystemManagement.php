@@ -52,32 +52,14 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
         return $filename;
     }
 
-    /**
-     * Stores Shared Stimulus and CSS to own directory and returns it's path
-     *
-     * @param $stimulusXmlSource
-     * @param $stimulusLabel
-     * @param $stimulusFilename
-     * @param $cssFiles
-     * @param $CSSFolderName
-     * @return string
-     * @throws \League\Flysystem\FileExistsException
-     */
-    public function storeSharedStimulusDirectory($stimulusXmlSource, $stimulusLabel, $stimulusFilename, $cssFiles, $CSSFolderName)
+    public function writeStream($path, $resource, array $config = []): bool
     {
-        $dirname = $this->getUniqueFilename($stimulusLabel, false);
+        return $this->getFileSystem()->writeStream($path, $resource, $config);
+    }
 
-        $this->getFileSystem()->createDir($dirname);
-        $this->getFileSystem()->writeStream($dirname . DIRECTORY_SEPARATOR . $stimulusFilename, fopen($stimulusXmlSource, 'r'));
-
-        if (count($cssFiles)) {
-            $this->getFileSystem()->createDir($dirname . DIRECTORY_SEPARATOR. $CSSFolderName);
-            foreach ($cssFiles as $file) {
-                $this->getFileSystem()->writeStream($dirname . DIRECTORY_SEPARATOR . $CSSFolderName . DIRECTORY_SEPARATOR . basename($file), fopen($file, 'r'));
-            }
-        }
-
-        return $dirname;
+    public function createDir($dirName): bool
+    {
+        return $this->getFileSystem()->createDir($dirName);
     }
 
     public function fetchDirectory($directoryPath): array
@@ -143,18 +125,15 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
      * Create a new unique filename based on an existing filename
      *
      * @param string $fileName
-     * @param bool $keepExtension
      * @return string
      */
-    protected function getUniqueFilename($fileName, $keepExtension = true)
+    protected function getUniqueFilename($fileName)
     {
         $returnValue = uniqid(hash('crc32', $fileName));
 
-        if ($keepExtension) {
-            $ext = @pathinfo($fileName, PATHINFO_EXTENSION);
-            if (!empty($ext)) {
-                $returnValue .= '.' . $ext;
-            }
+        $ext = @pathinfo($fileName, PATHINFO_EXTENSION);
+        if (!empty($ext)) {
+            $returnValue .= '.' . $ext;
         }
     
         return $returnValue;

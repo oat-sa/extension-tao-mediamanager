@@ -35,6 +35,9 @@ class SharedStimulusCSSExporter extends ConfigurableService
 {
     use OntologyAwareTrait;
 
+    /**
+     * stylesheets folder name inside zip archive
+     */
     public const CSS_ZIP_DIR_NAME = 'CSS';
 
     public function pack(core_kernel_classes_Resource $mediaResource, string $link, ZipArchive $zip): void
@@ -43,7 +46,7 @@ class SharedStimulusCSSExporter extends ConfigurableService
             return;
         }
 
-        $fileManager  = $this->getFileManagement();
+        $fileManager = $this->getFileManagement();
         $cssPath = dirname($link) . DIRECTORY_SEPARATOR . StoreService::CSS_DIR_NAME;
 
         if (!$fileManager->pathExists($cssPath)) {

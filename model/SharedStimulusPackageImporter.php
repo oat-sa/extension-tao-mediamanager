@@ -30,7 +30,6 @@ use core_kernel_classes_Class;
 use core_kernel_classes_Resource as Resource;
 use Exception;
 use helpers_File;
-use helpers_TimeOutHelper;
 use oat\tao\model\import\InvalidSourcePathException;
 use oat\taoMediaManager\model\sharedStimulus\service\StoreService;
 use qtism\data\content\xhtml\Img;
@@ -65,10 +64,7 @@ class SharedStimulusPackageImporter extends ZipImporter
     {
         try {
             $uploadedFile = $this->fetchUploadedFile($form);
-
-            helpers_TimeOutHelper::setTimeOutLimit(helpers_TimeOutHelper::LONG);
             $extractPath = $this->extractArchive($uploadedFile);
-            helpers_TimeOutHelper::reset();
 
             $xmlFile = $this->getSharedStimulusFile($extractPath);
             $cssFiles = $this->getSharedStimulusStylesheets($extractPath);
@@ -114,10 +110,7 @@ class SharedStimulusPackageImporter extends ZipImporter
     {
         try {
             $uploadedFile = $this->fetchUploadedFile($form);
-
-            helpers_TimeOutHelper::setTimeOutLimit(helpers_TimeOutHelper::LONG);
             $extractPath = $this->extractArchive($uploadedFile);
-            helpers_TimeOutHelper::reset();
 
             $xmlFile = $this->getSharedStimulusFile($extractPath);
 

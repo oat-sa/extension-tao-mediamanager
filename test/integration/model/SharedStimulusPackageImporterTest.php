@@ -29,6 +29,7 @@ use oat\tao\model\import\InvalidSourcePathException;
 use oat\tao\model\upload\UploadService;
 use oat\taoMediaManager\model\FileImportForm;
 use oat\taoMediaManager\model\MediaService;
+use oat\taoMediaManager\model\sharedStimulus\service\StoreService;
 use oat\taoMediaManager\model\SharedStimulusPackageImporter;
 use Psr\Log\NullLogger;
 use qtism\data\storage\xml\XmlDocument;
@@ -39,12 +40,15 @@ class SharedStimulusPackageImporterTest extends TestCase
     /**
      * @var MockObject
      */
-    private $service = null;
+    private $mediaServiceMock = null;
+    private $storeServiceMock = null;
     private $tempDirectoryPath;
 
     public function setUp(): void
     {
-        $this->service = $this->getMockBuilder(MediaService::class)
+        $this->mediaServiceMock = $this->getMockBuilder(MediaService::class)
+            ->disableOriginalConstructor()->getMock();
+        $this->storeServiceMock = $this->getMockBuilder(StoreService::class)
             ->disableOriginalConstructor()->getMock();
     }
 
@@ -80,8 +84,8 @@ class SharedStimulusPackageImporterTest extends TestCase
         $form->setValues(['source' => $fileinfo, 'lang' => 'EN_en']);
 
         if ($expectedSuccess) {
-            $this->service->expects($this->once())
-                ->method('createMediaInstance')
+            $this->mediaServiceMock->expects($this->once())
+                ->method('createSharedStimulusInstance')
                 ->willReturn('myGreatLink');
         }
 
@@ -119,7 +123,7 @@ class SharedStimulusPackageImporterTest extends TestCase
         $form->setValues(['source' => $fileinfo, 'lang' => 'EN_en']);
 
         if ($expectedSuccess) {
-            $this->service->expects($this->once())
+            $this->mediaServiceMock->expects($this->once())
                 ->method('editMediaInstance')
                 ->willReturn(true);
         }
@@ -225,7 +229,8 @@ class SharedStimulusPackageImporterTest extends TestCase
         $importer->setServiceLocator($this->getServiceLocatorMock([
             UploadService::SERVICE_ID => $uploadServiceMock,
             LoggerService::SERVICE_ID => new NullLogger(),
-            MediaService::class => $this->service,
+            MediaService::class => $this->mediaServiceMock,
+            StoreService::class => $this->storeServiceMock,
         ]));
 
         return $importer;

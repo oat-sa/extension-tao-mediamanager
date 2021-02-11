@@ -25,7 +25,6 @@ namespace oat\taoMediaManager\model\sharedStimulus\service;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 
-
 class StoreService extends ConfigurableService
 {
 
@@ -52,9 +51,12 @@ class StoreService extends ConfigurableService
         $fileManager->writeStream($dirname . DIRECTORY_SEPARATOR . $stimulusFilename, fopen($stimulusXmlSource, 'r'));
 
         if (count($cssFiles)) {
-            $fileManager->createDir($dirname . DIRECTORY_SEPARATOR. self::CSS_DIR_NAME);
+            $fileManager->createDir($dirname . DIRECTORY_SEPARATOR . self::CSS_DIR_NAME);
             foreach ($cssFiles as $file) {
-                $fileManager->writeStream($dirname . DIRECTORY_SEPARATOR . self::CSS_DIR_NAME . DIRECTORY_SEPARATOR . basename($file), fopen($file, 'r'));
+                $fileManager->writeStream(
+                    $dirname . DIRECTORY_SEPARATOR . self::CSS_DIR_NAME . DIRECTORY_SEPARATOR . basename($file),
+                    fopen($file, 'r')
+                );
             }
         }
 

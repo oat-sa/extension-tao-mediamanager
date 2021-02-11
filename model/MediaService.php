@@ -93,8 +93,14 @@ class MediaService extends ConfigurableService
      * @param string|null $userId owner of the resource
      * @return string | bool $instanceUri or false on error
      */
-    public function createMediaInstance($fileSource, $classUri, $language, $label = null, $mimeType = null, $userId = null)
-    {
+    public function createMediaInstance(
+        $fileSource,
+        $classUri,
+        $language,
+        $label = null,
+        $mimeType = null,
+        $userId = null
+    ) {
         $link = $this->getFileManager()->storeFile($fileSource, $label);
 
         if ($link === false) {
@@ -109,17 +115,18 @@ class MediaService extends ConfigurableService
         }
 
         $content = $fileSource instanceof File ? $fileSource->read() : file_get_contents($fileSource);
-        $md5 = md5($content);
 
         if (is_null($mimeType)) {
-            $mimeType = $fileSource instanceof File ? $fileSource->getMimeType() : tao_helpers_File::getMimeType($fileSource);
+            $mimeType = $fileSource instanceof File ? $fileSource->getMimeType() : tao_helpers_File::getMimeType(
+                $fileSource
+            );
         }
 
         $properties = [
             OntologyRdfs::RDFS_LABEL => $label,
             self::PROPERTY_LINK => $link,
             self::PROPERTY_LANGUAGE => $language,
-            self::PROPERTY_MD5 => $md5,
+            self::PROPERTY_MD5 => md5($content),
             self::PROPERTY_MIME_TYPE => $mimeType,
             self::PROPERTY_ALT_TEXT => $label
         ];
@@ -149,10 +156,7 @@ class MediaService extends ConfigurableService
         string $language,
         $userId = null
     ) {
-
         $content = $this->getFileManager()->getFileStream($link)->getContents();
-        $md5 = md5($content);
-
         $clazz = $this->getClass($classUri);
         $label = basename($link);
 
@@ -160,7 +164,7 @@ class MediaService extends ConfigurableService
             OntologyRdfs::RDFS_LABEL => $label,
             self::PROPERTY_LINK => $link,
             self::PROPERTY_LANGUAGE => $language,
-            self::PROPERTY_MD5 => $md5,
+            self::PROPERTY_MD5 => md5($content),
             self::PROPERTY_MIME_TYPE => self::SHARED_STIMULUS_MIME_TYPE,
             self::PROPERTY_ALT_TEXT => $label,
         ];
@@ -170,7 +174,6 @@ class MediaService extends ConfigurableService
 
         $this->getMediaSavedEventDispatcher()->dispatchFromContent($id, self::SHARED_STIMULUS_MIME_TYPE, $content);
 
-        // @todo: move taoRevision stuff under a listener of MediaSavedEvent
         if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
             $this->logInfo('Auto generating initial revision');
             $this->getRepositoryService()->commit($instance, __('Initial import'), null, $userId);

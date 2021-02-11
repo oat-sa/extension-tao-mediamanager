@@ -61,9 +61,7 @@ class SharedStimulusCSSExporter extends ConfigurableService
         $zip->addEmptyDir(self::CSS_ZIP_DIR_NAME);
         foreach ($files as $file) {
             $content = $this->getFileContent($cssPath . DIRECTORY_SEPARATOR . $file['basename']);
-            if ($this->validateCCS($content)) {
-                $zip->addFromString(self::CSS_ZIP_DIR_NAME . DIRECTORY_SEPARATOR . $file['basename'], $content);
-            }
+            $zip->addFromString(self::CSS_ZIP_DIR_NAME . DIRECTORY_SEPARATOR . $file['basename'], $content);
         }
     }
 
@@ -72,11 +70,6 @@ class SharedStimulusCSSExporter extends ConfigurableService
         return $this->getFileManagement()->getFileStream($path)->getContents();
     }
 
-    private function validateCCS($content): bool
-    {
-        // Check CSS has valid structure and classes (in scope of future tasks)
-        return true;
-    }
 
     private function getFileManagement(): FileManagement
     {

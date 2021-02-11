@@ -20,7 +20,7 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\test\integration\model;
+namespace oat\taoMediaManager\test\unit\model\sharedStimulus\service;
 
 use oat\generis\test\TestCase;
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;

@@ -254,7 +254,7 @@ class SharedStimulusPackageImporter extends ZipImporter
      *
      * @throws common_exception_Error
      */
-    protected function storeSharedStimulus(
+    private function storeSharedStimulus(
         Resource $class,
         string $lang,
         string $xmlFile,

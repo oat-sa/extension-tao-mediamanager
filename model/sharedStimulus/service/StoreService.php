@@ -45,7 +45,7 @@ class StoreService extends ConfigurableService
     {
         $fileManager = $this->getFileManagement();
 
-        $dirname = uniqid(hash('crc32', $stimulusFilename));
+        $dirname = $this->getUniqueName($stimulusFilename);
 
         $fileManager->createDir($dirname);
         $fileManager->writeStream($dirname . DIRECTORY_SEPARATOR . $stimulusFilename, fopen($stimulusXmlSource, 'r'));
@@ -61,6 +61,11 @@ class StoreService extends ConfigurableService
         }
 
         return $dirname;
+    }
+
+    protected function getUniqueName(string $name): string
+    {
+        return uniqid(hash('crc32', $name));
     }
 
     private function getFileManagement(): FileManagement

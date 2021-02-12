@@ -52,31 +52,11 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
         return $filename;
     }
 
-    public function writeStream($path, $resource, array $config = []): bool
-    {
-        return $this->getFileSystem()->writeStream($path, $resource, $config);
-    }
-
-    public function createDir($dirName): bool
-    {
-        return $this->getFileSystem()->createDir($dirName);
-    }
-
-    public function fetchDirectory($directoryPath): array
-    {
-        return $this->getFilesystem()->listContents($directoryPath);
-    }
-
-    public function deleteDirectory($directoryPath): bool
+    public function deleteDirectory(string $directoryPath): bool
     {
         return $this->getFilesystem()->deleteDir($directoryPath);
     }
 
-    public function pathExists($path): bool
-    {
-        return $this->getFilesystem()->has($path);
-    }
-    
     public function getFileSize($link)
     {
         return $this->getFilesystem()->getSize($link);

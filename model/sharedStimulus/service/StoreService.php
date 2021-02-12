@@ -22,38 +22,30 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus\service;
 
+use League\Flysystem\FilesystemInterface;
+use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
-use oat\taoMediaManager\model\fileManagement\FileManagement;
+use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 
 class StoreService extends ConfigurableService
 {
-
     /**
      * name of sub-directory to store stylesheets
      */
     public const CSS_DIR_NAME = 'CSS';
 
-    /**
-     * Stores Shared Stimulus and CSS to own directory and returns it's path
-     *
-     * @param $stimulusXmlSource
-     * @param $stimulusFilename
-     * @param $cssFiles
-     * @return string
-     */
-    public function store($stimulusXmlSource, $stimulusFilename, $cssFiles): string
+    public function store(string $stimulusXmlSourcePath, string $stimulusFilename, array $cssFiles): string
     {
-        $fileManager = $this->getFileManagement();
+        $fs = $this->getFileSystem();
 
         $dirname = $this->getUniqueName($stimulusFilename);
-
-        $fileManager->createDir($dirname);
-        $fileManager->writeStream($dirname . DIRECTORY_SEPARATOR . $stimulusFilename, fopen($stimulusXmlSource, 'r'));
+        $fs->createDir($dirname);
+        $fs->writeStream($dirname . DIRECTORY_SEPARATOR . $stimulusFilename, fopen($stimulusXmlSourcePath, 'r'));
 
         if (count($cssFiles)) {
-            $fileManager->createDir($dirname . DIRECTORY_SEPARATOR . self::CSS_DIR_NAME);
+            $fs->createDir($dirname . DIRECTORY_SEPARATOR . self::CSS_DIR_NAME);
             foreach ($cssFiles as $file) {
-                $fileManager->writeStream(
+                $fs->writeStream(
                     $dirname . DIRECTORY_SEPARATOR . self::CSS_DIR_NAME . DIRECTORY_SEPARATOR . basename($file),
                     fopen($file, 'r')
                 );
@@ -68,8 +60,19 @@ class StoreService extends ConfigurableService
         return uniqid(hash('crc32', $name));
     }
 
-    private function getFileManagement(): FileManagement
+    private function getFileSystem(): FilesystemInterface
     {
-        return $this->getServiceLocator()->get(FileManagement::SERVICE_ID);
+        return $this->getFileSystemService()
+            ->getFileSystem($this->getFlySystemManagement()->getOption(FlySystemManagement::OPTION_FS));
+    }
+
+    private function getFileSystemService(): FileSystemService
+    {
+        return $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
+    }
+
+    private function getFlySystemManagement(): FlySystemManagement
+    {
+        return $this->getServiceLocator()->get(FlySystemManagement::SERVICE_ID);
     }
 }

@@ -226,9 +226,8 @@ class SharedStimulusPackageImporter extends ZipImporter
      * Get an additional CSS stylesheet for the shared stimulus (If exists)
      *
      * @return array path to the CSS or false if not found
-     *
      */
-    private function getSharedStimulusStylesheets(string $extractPath): ?array
+    private function getSharedStimulusStylesheets(string $extractPath): array
     {
         $iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($extractPath),

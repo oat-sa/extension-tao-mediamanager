@@ -23,12 +23,18 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\test\unit\model\sharedStimulus\service;
 
 use oat\generis\test\TestCase;
+use oat\oatbox\filesystem\FileSystem;
+use oat\oatbox\filesystem\FileSystemService;
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\taoMediaManager\model\sharedStimulus\service\StoreService;
+use Prophecy\Argument;
 
 class StoreServiceTest extends TestCase
 {
-    private $tempFilePath = null;
+    /**
+     * @var string
+     */
+    private $tempFilePath;
 
     public function setUp(): void
     {
@@ -45,16 +51,16 @@ class StoreServiceTest extends TestCase
     {
         $fakeUniqueName = 'uniqueString';
 
-        $fileManagementMock = $this->initFileManagementMock();
-        $fileManagementMock->expects(self::once())
+        $fileSystemMock = $this->initFileSystemMock();
+        $fileSystemMock->expects(self::once())
             ->method('createDir')
             ->with($fakeUniqueName);
 
-        $fileManagementMock->expects(self::once())
+        $fileSystemMock->expects(self::once())
             ->method('writeStream')
             ->willReturn(true);
 
-        $stimulusStoreService = $this->getPreparedServiceInstance($fileManagementMock);
+        $stimulusStoreService = $this->getPreparedServiceInstance($fileSystemMock);
         $stimulusStoreService->expects(self::once())
             ->method('getUniqueName')
             ->willReturn($fakeUniqueName);
@@ -64,18 +70,33 @@ class StoreServiceTest extends TestCase
         $this->assertEquals($result, $fakeUniqueName);
     }
 
-    private function initFileManagementMock()
+    /**
+     * @return FileSystem|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private function initFileSystemMock()
     {
-        return $this->getMockBuilder(FlySystemManagement::class)
+        return $this->getMockBuilder(FileSystem::class)
+            ->disableOriginalConstructor()
             ->onlyMethods(['createDir', 'writeStream'])
             ->getMock();
     }
 
-    private function getPreparedServiceInstance($fileManagementMock)
+    /**
+     * @return StoreService|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private function getPreparedServiceInstance($fileSystemMock)
     {
+        $fileSystemServiceProphecy = $this->prophesize(FileSystemService::class);
+        $fileSystemServiceProphecy->getFileSystem(Argument::any())->willReturn($fileSystemMock);
+
         $service = $this->getMockBuilder(StoreService::class)->onlyMethods(['getUniqueName'])->getMock();
         $service->setServiceLocator(
-            $this->getServiceLocatorMock([FlySystemManagement::SERVICE_ID => $fileManagementMock,])
+            $this->getServiceLocatorMock(
+                [
+                    FlySystemManagement::SERVICE_ID => $this->getMockBuilder(FlySystemManagement::class)->getMock(),
+                    FileSystemService::SERVICE_ID => $fileSystemServiceProphecy->reveal()
+                ]
+            )
         );
         return $service;
     }

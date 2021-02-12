@@ -38,10 +38,13 @@ use oat\generis\test\MockObject;
 class SharedStimulusPackageImporterTest extends TestCase
 {
     /**
-     * @var MockObject
+     * @var MediaService|MockObject
      */
-    private $mediaServiceMock = null;
-    private $storeServiceMock = null;
+    private $mediaServiceMock;
+    /**
+     * @var StoreService|MockObject
+     */
+    private $storeServiceMock;
     private $tempDirectoryPath;
 
     public function setUp(): void

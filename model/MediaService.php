@@ -145,17 +145,12 @@ class MediaService extends ConfigurableService
         return $id;
     }
 
-    /**
-     * Create a shared stimulus media instance from a file, and define its class and language
-     *
-     * @return string | bool $instanceUri or false on error
-     */
     public function createSharedStimulusInstance(
         string $link,
         string $classUri,
         string $language,
         $userId = null
-    ) {
+    ): string {
         $content = $this->getFileManager()->getFileStream($link)->getContents();
         $clazz = $this->getClass($classUri);
         $label = basename($link);

@@ -23,21 +23,16 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\export\service;
 
 use core_kernel_classes_Resource;
-use oat\generis\model\OntologyAwareTrait;
+use League\Flysystem\FilesystemInterface;
+use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
-
-use oat\taoMediaManager\model\fileManagement\FileManagement;
+use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\taoMediaManager\model\sharedStimulus\service\StoreService;
 use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourceSpecification;
 use ZipArchive;
 
 class SharedStimulusCSSExporter extends ConfigurableService
 {
-    use OntologyAwareTrait;
-
-    /**
-     * stylesheets folder name inside zip archive
-     */
     public const CSS_ZIP_DIR_NAME = 'CSS';
 
     public function pack(core_kernel_classes_Resource $mediaResource, string $link, ZipArchive $zip): void
@@ -46,34 +41,40 @@ class SharedStimulusCSSExporter extends ConfigurableService
             return;
         }
 
-        $fileManager = $this->getFileManagement();
+        $fs = $this->getFileSystem();
         $cssPath = dirname($link) . DIRECTORY_SEPARATOR . StoreService::CSS_DIR_NAME;
 
-        if (!$fileManager->pathExists($cssPath)) {
+        if (!$fs->has($cssPath)) {
             return;
         }
 
-        $files = $fileManager->fetchDirectory($cssPath);
+        $files = $fs->listContents($cssPath);
         if (!count($files)) {
             return;
         }
 
         $zip->addEmptyDir(self::CSS_ZIP_DIR_NAME);
+
         foreach ($files as $file) {
-            $content = $this->getFileContent($cssPath . DIRECTORY_SEPARATOR . $file['basename']);
+            $content = $fs->read($cssPath . DIRECTORY_SEPARATOR . $file['basename']);
             $zip->addFromString(self::CSS_ZIP_DIR_NAME . DIRECTORY_SEPARATOR . $file['basename'], $content);
         }
     }
 
-    private function getFileContent($path): string
+    private function getFileSystem(): FilesystemInterface
     {
-        return $this->getFileManagement()->getFileStream($path)->getContents();
+        return $this->getFileSystemService()
+            ->getFileSystem($this->getFlySystemManagement()->getOption(FlySystemManagement::OPTION_FS));
     }
 
-
-    private function getFileManagement(): FileManagement
+    private function getFileSystemService(): FileSystemService
     {
-        return $this->getServiceManager()->get(FileManagement::SERVICE_ID);
+        return $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
+    }
+
+    private function getFlySystemManagement(): FlySystemManagement
+    {
+        return $this->getServiceLocator()->get(FlySystemManagement::SERVICE_ID);
     }
 
     private function getSharedStimulusResourceSpecification(): SharedStimulusResourceSpecification

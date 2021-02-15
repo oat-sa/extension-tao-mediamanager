@@ -149,7 +149,7 @@ class MediaService extends ConfigurableService
         string $link,
         string $classUri,
         string $language,
-        ?string $userId = null
+        string $userId = null
     ): string {
         $content = $this->getFileManager()->getFileStream($link)->getContents();
         $clazz = $this->getClass($classUri);

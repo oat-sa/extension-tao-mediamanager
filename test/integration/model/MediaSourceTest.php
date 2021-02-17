@@ -83,6 +83,13 @@ class MediaSourceTest extends TestCase
         $resourceProphecy->exists()->willReturn(true);
         $resourceProphecy->getUniquePropertyValue(Argument::any())->willReturn($link, $mime);
         $resourceProphecy->getPropertyValues(Argument::any())->willReturn([]);
+        $resourceProphecy->getPropertiesValues(Argument::any())->willReturn(
+            [
+                MediaService::PROPERTY_LINK => [$link],
+                MediaService::PROPERTY_MIME_TYPE => [$mime],
+                MediaService::PROPERTY_ALT_TEXT => [$size],
+            ]
+        );
         $resourceProphecy->getLabel()->willReturn($label);
 
         $linkPropertyProphecy = $this->prophesize(\core_kernel_classes_Property::class);
@@ -144,6 +151,13 @@ class MediaSourceTest extends TestCase
         $resourceProphecy->exists()->willReturn(true);
         $resourceProphecy->getUniquePropertyValue(Argument::any())->willReturn($link, $mime);
         $resourceProphecy->getPropertyValues(Argument::any())->willReturn([]);
+        $resourceProphecy->getPropertiesValues(Argument::any())->willReturn(
+            [
+                MediaService::PROPERTY_LINK => [$link],
+                MediaService::PROPERTY_MIME_TYPE => [$mime],
+                MediaService::PROPERTY_ALT_TEXT => [$size],
+            ]
+        );
         $resourceProphecy->getLabel()->willReturn($label);
 
         $linkPropertyProphecy = $this->prophesize(\core_kernel_classes_Property::class);

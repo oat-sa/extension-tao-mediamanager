@@ -212,10 +212,8 @@ class SharedStimulusPackageImporter extends ZipImporter
         /** @var $file SplFileInfo */
         foreach ($iterator as $file) {
             //check each file to see if it can be the shared stimulus file
-            if ($file->isFile()) {
-                if (preg_match('/^[\w]/', $file->getFilename()) === 1 && $file->getExtension() === 'xml') {
-                    return $file->getRealPath();
-                }
+            if ($this->isFileExtension($file, 'xml')) {
+                return $file->getRealPath();
             }
         }
 
@@ -238,14 +236,21 @@ class SharedStimulusPackageImporter extends ZipImporter
 
         /** @var $file SplFileInfo */
         foreach ($iterator as $file) {
-            if ($file->isFile()) {
-                if (preg_match('/^[\w]/', $file->getFilename()) === 1 && $file->getExtension() === 'css') {
-                    $cssFileInfoArray[] = $file->getRealPath();
-                }
+            if ($this->isFileExtension($file, 'css')) {
+                $cssFileInfoArray[] = $file->getRealPath();
             }
         }
 
         return $cssFileInfoArray;
+    }
+
+    public function isFileExtension(SplFileInfo $file, string $extension): bool
+    {
+        if ($file->isFile()) {
+            return preg_match('/^[\w]/', $file->getFilename()) === 1 && $file->getExtension() === $extension;
+        }
+
+        return false;
     }
 
     /**

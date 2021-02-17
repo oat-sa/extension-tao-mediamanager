@@ -37,13 +37,10 @@ use oat\generis\test\MockObject;
 
 class SharedStimulusPackageImporterTest extends TestCase
 {
-    /**
-     * @var MediaService|MockObject
-     */
+    /* @var MediaService|MockObject */
     private $mediaServiceMock;
-    /**
-     * @var StoreService|MockObject
-     */
+
+    /* @var StoreService|MockObject */
     private $storeServiceMock;
     private $tempDirectoryPath;
 
@@ -185,6 +182,28 @@ class SharedStimulusPackageImporterTest extends TestCase
     {
         $this->expectException(InvalidSourcePathException::class);
         SharedStimulusPackageImporter::embedAssets($directory . '/stimulus.xml');
+    }
+
+    /**
+     * @dataProvider fileExtensionDataProvider
+     */
+    public function testFileExtension (string $fileName, string $extension, bool $expectedResult) {
+        $o = new \SplFileObject($fileName, 'r');
+
+        $result = $this->getPackageImporter()->isFileExtension($o, $extension);
+        $this->assertEquals($expectedResult, $result);
+    }
+
+    public function fileExtensionDataProvider(): array
+    {
+        $sampleDir = dirname(__DIR__) . '/sample/sharedStimulus/';
+        return [
+            [$sampleDir . 'encodedImage.zip', 'zip', true],
+            [$sampleDir . 'stimulusPackage.zip', 'xml', false],
+            [$sampleDir . 'interactions.xml', '', false],
+            [$sampleDir . 'Й_wrongFilename.txt', 'css', false],
+            ['php://stdout', 'extension', false]
+        ];
     }
 
     /**

@@ -33,7 +33,7 @@ use ZipArchive;
 
 class SharedStimulusCSSExporter extends ConfigurableService
 {
-    public const CSS_ZIP_DIR_NAME = 'CSS';
+    public const CSS_ZIP_DIR_NAME = 'css';
 
     public function pack(core_kernel_classes_Resource $mediaResource, string $link, ZipArchive $zip): void
     {

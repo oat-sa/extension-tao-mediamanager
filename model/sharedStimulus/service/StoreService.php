@@ -32,7 +32,7 @@ class StoreService extends ConfigurableService
     /**
      * name of sub-directory to store stylesheets
      */
-    public const CSS_DIR_NAME = 'CSS';
+    public const CSS_DIR_NAME = 'css';
 
     public function store(string $stimulusXmlSourcePath, string $stimulusFilename, array $cssFiles): string
     {

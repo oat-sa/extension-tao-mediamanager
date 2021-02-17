@@ -27,6 +27,7 @@ use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\taoMediaManager\model\sharedStimulus\service\StoreService;
+use PHPUnit\Framework\MockObject\MockObject;
 use Prophecy\Argument;
 
 class StoreServiceTest extends TestCase
@@ -71,9 +72,9 @@ class StoreServiceTest extends TestCase
     }
 
     /**
-     * @return FileSystem|\PHPUnit\Framework\MockObject\MockObject
+     * @return FileSystem|MockObject
      */
-    private function initFileSystemMock()
+    private function initFileSystemMock(): FileSystem
     {
         return $this->getMockBuilder(FileSystem::class)
             ->disableOriginalConstructor()
@@ -82,9 +83,9 @@ class StoreServiceTest extends TestCase
     }
 
     /**
-     * @return StoreService|\PHPUnit\Framework\MockObject\MockObject
+     * @return StoreService|MockObject
      */
-    private function getPreparedServiceInstance($fileSystemMock)
+    private function getPreparedServiceInstance(FileSystem $fileSystemMock): StoreService
     {
         $fileSystemServiceProphecy = $this->prophesize(FileSystemService::class);
         $fileSystemServiceProphecy->getFileSystem(Argument::any())->willReturn($fileSystemMock);

@@ -48,7 +48,7 @@ class StoreServiceTest extends TestCase
         @unlink($this->tempFilePath);
     }
 
-    public function testStoreShareStimulus()
+    public function testStoreSharedStimulus(): void
     {
         $fakeUniqueName = 'uniqueString';
 

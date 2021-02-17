@@ -187,7 +187,8 @@ class SharedStimulusPackageImporterTest extends TestCase
     /**
      * @dataProvider fileExtensionDataProvider
      */
-    public function testFileExtension (string $fileName, string $extension, bool $expectedResult) {
+    public function testFileExtension(string $fileName, string $extension, bool $expectedResult): void
+    {
         $o = new \SplFileObject($fileName, 'r');
 
         $result = $this->getPackageImporter()->isFileExtension($o, $extension);

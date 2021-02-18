@@ -28,16 +28,7 @@ return [
     'label' => 'extension-tao-mediamanager',
     'description' => 'TAO media manager extension',
     'license' => 'GPL-2.0',
-    'version' => '11.8.1',
     'author' => 'Open Assessment Technologies SA',
-    'requires' => [
-        'tao' => '>=46.14.0',
-        'generis' => '>=12.33.0',
-        'taoItems' => '>=10.6.2',
-        'taoQtiItem' => '>=25.3.4',
-        'taoQtiTestPreviewer' => '>=2.13.0',
-        'taoTests' => '>=14.0.0'
-    ],
     'models' => [
         'http://www.tao.lu/Ontologies/TAOMedia.rdf'
     ],

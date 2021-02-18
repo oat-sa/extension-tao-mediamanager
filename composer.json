@@ -23,8 +23,15 @@
 		},
 		"minimum-stability" : "dev",
 		"require": {
+			"league/openapi-psr7-validator": "0.9",
 			"oat-sa/oatbox-extension-installer": "~1.1||dev-master",
-			"league/openapi-psr7-validator": "0.9"
+			"oat-sa/lib-generis-search": "2.1.2",
+			"oat-sa/generis" : ">=14.0.0",
+			"oat-sa/tao-core" : ">=47.0.0",
+			"oat-sa/extension-tao-item" : ">=11.0.0",
+			"oat-sa/extension-tao-itemqti" : ">=27.0.0",
+			"oat-sa/extension-tao-test" : ">=15.0.0",
+			"oat-sa/extension-tao-testqti-previewer" : "*"
 		},
 		"autoload" : {
 			"psr-4" : {

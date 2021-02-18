@@ -41,7 +41,8 @@ define([
     'taoMediaManager/qtiCreator/helper/xmlRenderer',
     'taoQtiItem/qtiItem/helper/xmlNsHandler',
     'core/request',
-    'util/url'
+    'util/url',
+    'taoMediaManager/qtiCreator/editor/interactionsPanel'
 ], function (
     $,
     _,
@@ -57,7 +58,8 @@ define([
     xmlRenderer,
     xmlNsHandler,
     request,
-    urlUtil
+    urlUtil,
+    interactionPanel
 ) {
     'use strict';
 
@@ -246,6 +248,8 @@ define([
                 //configure commonRenderer for the preview and initial qti element rendering
                 commonRenderer.setContext(areaBroker.getItemPanelArea());
                 commonRenderer.get(true, config).setOption('baseUrl', config.properties.baseUrl);
+
+                interactionPanel(areaBroker.getInteractionPanelArea());
 
                 //the renderers' widgets do not handle async yet, so we rely on this event
                 //TODO ready should be triggered once every renderer's widget is done (ie. promisify everything)

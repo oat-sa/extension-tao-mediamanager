@@ -1,31 +1,34 @@
-@import "inc/bootstrap";
+@import 'inc/bootstrap';
 
 .previewer {
-  position:relative;
-  iframe {
-    min-height: 400px;
-    width: 100%;
-  }
-  .previewer-component {
-    background-color: white;
-    text-align: initial;
-    .item-previewer-scope {
-      height: calc(100vh - 250px);
-      .action-bar,
-      .test-sidebar  {
-        display: none;
-      }
+    position: relative;
+    iframe {
+        min-height: 400px;
+        width: 100%;
     }
-  }
-  &.no-background {
-    background: none;
-  }
+    .previewer-component {
+        background-color: white;
+        text-align: initial;
+        .item-previewer-scope {
+            height: calc(100vh - 250px);
+            .action-bar,
+            .test-sidebar {
+                display: none;
+            }
+        }
+    }
+    &.no-background {
+        background: none;
+    }
 }
 
 #item-editor-scope {
-  [data-qti-class="_container"] {
-    border: 1px solid whiten($info, .5);
-  }
+    [data-qti-class='_container'] {
+        border: 1px solid whiten($info, 0.5);
+    }
+    .tool-group {
+        ._accordion {
+            display: none;
+        }
+    }
 }
-
-

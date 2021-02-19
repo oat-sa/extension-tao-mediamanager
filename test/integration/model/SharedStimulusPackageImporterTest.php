@@ -42,6 +42,7 @@ class SharedStimulusPackageImporterTest extends TestCase
 
     /* @var StoreService|MockObject */
     private $storeServiceMock;
+
     private $tempDirectoryPath;
 
     public function setUp(): void

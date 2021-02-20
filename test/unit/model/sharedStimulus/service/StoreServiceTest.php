@@ -22,12 +22,12 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\test\unit\model\sharedStimulus\service;
 
+use oat\generis\test\MockObject;
 use oat\generis\test\TestCase;
 use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\taoMediaManager\model\sharedStimulus\service\StoreService;
-use PHPUnit\Framework\MockObject\MockObject;
 use Prophecy\Argument;
 
 class StoreServiceTest extends TestCase

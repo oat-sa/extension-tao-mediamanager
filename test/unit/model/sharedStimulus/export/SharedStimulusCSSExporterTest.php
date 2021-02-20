@@ -78,15 +78,8 @@ class SharedStimulusCSSExporterTest extends TestCase
         $sharedStimulusCSSExporterService = $this->getPreparedServiceInstance($fileSystemMock);
         $sharedStimulusCSSExporterService->pack(new core_kernel_classes_Resource("dummyUri"), $link, $this->zipArchive);
 
-        if (!count($fileNames)) {
-            $this->assertEquals(0, $this->zipArchive->numFiles);
-        }
-
-        if (count($fileNames)) {
-            $zippedFiles = $this->getZippedFilesList($this->zipArchive);
-
-            $this->assertEquals($expectedZippedFiles, $zippedFiles);
-        }
+        $zippedFiles = $this->getZippedFilesList($this->zipArchive);
+        $this->assertEquals($expectedZippedFiles, $zippedFiles);
     }
 
     public function packTestDataProvider(): array

@@ -60,6 +60,10 @@ define([
         module: 'taoQtiItem/qtiCreator/plugins/content/changeTracker',
         bundle: 'taoQtiItem/loader/taoQtiItem.min',
         category: 'content'
+    }, {
+        module: 'taoMediaManager/qtiCreator/plugins/content/blockAdder',
+        bundle: 'taoMediaManager/loader/taoMediaManager.min',
+        category: 'content'
     }];
     /**
      * Embeds the assets creator UI in a component

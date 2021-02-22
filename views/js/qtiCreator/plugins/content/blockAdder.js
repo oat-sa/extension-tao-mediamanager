@@ -40,25 +40,7 @@ define([
         /**
          * Hook to the host's init
          */
-        init : function init(){
-
-            const tagTitles = {
-                inlineInteractions: __('Inline Interactions')
-            };
-
-            this.interations = {
-                _container: {
-                    label: __('Text Block'),
-                    icon: 'icon-font',
-                    description: __(
-                        'Block contains the content (stimulus) of the item such as text or image. It is also required for Inline Interactions.'
-                    ),
-                    short: __('Block'),
-                    qtiClass: '_container',
-                    tags: [tagTitles.inlineInteractions, 'text']
-                }
-            };
-        },
+        init : function init(){},
 
         /**
          * Hook to the host's render
@@ -68,8 +50,7 @@ define([
             //set up the block adder
             blockAdder.create(
                 this.getHost().getItem(),
-                this.getAreaBroker().getItemPanelArea(),
-                this.interations
+                this.getAreaBroker().getItemPanelArea()
             );
         }
     });

@@ -28,18 +28,18 @@ define([
 
     TextWidget.createToolbar = function(){
 
-        // var self = this,
-        //     $tlb = $(toolbarTpl({
-        //         serial : this.serial,
-        //         state : 'active'
-        //     }));
+        var self = this,
+            $tlb = $(toolbarTpl({
+                serial : this.serial,
+                state : 'active'
+            }));
 
-        // this.$container.append($tlb);
+        this.$container.append($tlb);
 
-        // $tlb.find('[data-role="delete"]').on('click.widget-box', function(e){
-        //     e.stopPropagation();//to prevent direct deleting;
-        //     self.changeState('deleting');
-        // });
+        $tlb.find('[data-role="delete"]').on('click.widget-box', function(e){
+            e.stopPropagation();//to prevent direct deleting;
+            self.changeState('deleting');
+        });
 
         return this;
     };

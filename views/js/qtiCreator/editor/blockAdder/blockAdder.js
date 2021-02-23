@@ -20,8 +20,6 @@ define([
      * @param {JQuery} $editorPanel - the container the selector popup will be located in
      */
     function create(item, $editorPanel) {
-        const $itemEditorPanel = $('#item-editor-panel');
-
         /**
          * Get the qti item body dom
          *
@@ -41,7 +39,7 @@ define([
             let $colRow = $widget.parent('.colrow');
 
             //trigger event to restore all currently active widget back to sleep state
-            $itemEditorPanel.trigger('beforesave.qti-creator.active');
+            $editorPanel.trigger('beforesave.qti-creator.active');
 
             if (!$colRow.length) {
                 $widget.wrap(_wrap);

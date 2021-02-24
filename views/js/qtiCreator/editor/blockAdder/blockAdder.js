@@ -109,6 +109,9 @@ define([
                 if ($colRow.hasClass('tmp')) {
                     _done($colRow);
                 }
+                if (!$colRow.length) {
+                    _widget.$container.wrap(_wrap);
+                }
                 _appendButton(_widget.$container);
             }
         });

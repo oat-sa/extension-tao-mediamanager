@@ -94,7 +94,7 @@ define([
             }
         }
 
-        $editorPanel.find('.widget-block, .widget-blockInteraction').each(function () {
+        $editorPanel.find('.widget-textBlock').each(function () {
             _appendButton($(this));
         });
 

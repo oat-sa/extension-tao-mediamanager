@@ -158,11 +158,14 @@ define([
                     media.$container.css('min-height', $img.height() + 16 + 'px');
                     inlineHelper.positionFloat(widget, media.align);
                     if (media.align === 'right') {
-                        widget.$container.css('margin', '0 0 0 16px');
+                        widget.$container.removeClass('wrap-left');
+                        widget.$container.addClass('wrap-right');
                     } else if (media.align === 'left') {
-                        widget.$container.css('margin', '0 16px 0 0');
+                        widget.$container.removeClass('wrap-right');
+                        widget.$container.addClass('wrap-left');
                     } else {
-                        widget.$container.css('margin', '0');
+                        widget.$container.removeClass('wrap-right');
+                        widget.$container.removeClass('wrap-left');
                     }
                     $img.prop('style', null); // not allowed by qti
                     $img.removeAttr('style');

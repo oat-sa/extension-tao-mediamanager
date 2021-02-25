@@ -6,7 +6,7 @@ define([
 ], function($, Widget, states, toolbarTpl){
     'use strict';
 
-    var TextWidget = Widget.clone();
+    const TextWidget = Widget.clone();
 
     TextWidget.initCreator = function(){
 
@@ -18,7 +18,7 @@ define([
 
     TextWidget.buildContainer = function(){
 
-        var $wrap = $('<div>', {'data-serial' : this.element.serial, 'data-qti-class' : '_container', 'class' : 'widget-box widget-block widget-textBlock'})
+        const $wrap = $('<div>', {'data-serial' : this.element.serial, 'data-qti-class' : '_container', 'class' : 'widget-box widget-block widget-textBlock'})
             .append($('<div>', {'data-html-editable' : true}));
 
         this.$original.wrapInner($wrap);
@@ -28,17 +28,16 @@ define([
 
     TextWidget.createToolbar = function(){
 
-        var self = this,
-            $tlb = $(toolbarTpl({
-                serial : this.serial,
-                state : 'active'
-            }));
+        const $tlb = $(toolbarTpl({
+            serial : this.serial,
+            state : 'active'
+        }));
 
         this.$container.append($tlb);
 
-        $tlb.find('[data-role="delete"]').on('click.widget-box', function(e){
+        $tlb.find('[data-role="delete"]').on('click.widget-box', e => {
             e.stopPropagation();//to prevent direct deleting;
-            self.changeState('deleting');
+            this.changeState('deleting');
         });
 
         return this;

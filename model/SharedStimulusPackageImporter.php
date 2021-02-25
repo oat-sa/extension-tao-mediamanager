@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2014-2021 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
@@ -30,9 +30,8 @@ use core_kernel_classes_Class;
 use core_kernel_classes_Resource as Resource;
 use Exception;
 use helpers_File;
-use helpers_TimeOutHelper;
-use oat\oatbox\filesystem\File;
 use oat\tao\model\import\InvalidSourcePathException;
+use oat\taoMediaManager\model\sharedStimulus\service\StoreService;
 use qtism\data\content\xhtml\Img;
 use qtism\data\content\xhtml\QtiObject;
 use qtism\data\storage\xml\XmlDocument;
@@ -65,8 +64,10 @@ class SharedStimulusPackageImporter extends ZipImporter
     {
         try {
             $uploadedFile = $this->fetchUploadedFile($form);
+            $extractPath = $this->extractArchive($uploadedFile);
 
-            $xmlFile = $this->getSharedStimulusFile($uploadedFile);
+            $xmlFile = $this->getSharedStimulusFile($extractPath);
+            $cssFiles = $this->getSharedStimulusStylesheets($extractPath);
 
             $this->getUploadService()->remove($uploadedFile);
 
@@ -77,7 +78,13 @@ class SharedStimulusPackageImporter extends ZipImporter
 
             $report = Report::createSuccess(__('Shared Stimulus imported successfully'));
 
-            $subReport = $this->storeSharedStimulus($class, $this->getDecodedUri($form), $embeddedFile, $userId);
+            $subReport = $this->storeSharedStimulus(
+                $class,
+                $this->getDecodedUri($form),
+                $embeddedFile,
+                $cssFiles,
+                $userId
+            );
 
             $report->add($subReport);
         } catch (Exception $e) {
@@ -103,8 +110,9 @@ class SharedStimulusPackageImporter extends ZipImporter
     {
         try {
             $uploadedFile = $this->fetchUploadedFile($form);
+            $extractPath = $this->extractArchive($uploadedFile);
 
-            $xmlFile = $this->getSharedStimulusFile($uploadedFile);
+            $xmlFile = $this->getSharedStimulusFile($extractPath);
 
             $this->getUploadService()->remove($uploadedFile);
 
@@ -190,18 +198,12 @@ class SharedStimulusPackageImporter extends ZipImporter
     /**
      * Get the shared stimulus file with assets from the zip
      *
-     * @param string|File $filePath path of the zip file
-     *
-     * @return string|false path to the xml
+     * @return string path to the xml
      *
      * @throws common_Exception
      */
-    private function getSharedStimulusFile($filePath)
+    private function getSharedStimulusFile(string $extractPath): string
     {
-        helpers_TimeOutHelper::setTimeOutLimit(helpers_TimeOutHelper::LONG);
-        $extractPath = $this->extractArchive($filePath);
-        helpers_TimeOutHelper::reset();
-
         $iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($extractPath),
             RecursiveIteratorIterator::LEAVES_ONLY
@@ -210,10 +212,8 @@ class SharedStimulusPackageImporter extends ZipImporter
         /** @var $file SplFileInfo */
         foreach ($iterator as $file) {
             //check each file to see if it can be the shared stimulus file
-            if ($file->isFile()) {
-                if (preg_match('/^[\w]/', $file->getFilename()) === 1 && $file->getExtension() === 'xml') {
-                    return $file->getRealPath();
-                }
+            if ($this->isFileExtension($file, 'xml')) {
+                return $file->getRealPath();
             }
         }
 
@@ -221,25 +221,62 @@ class SharedStimulusPackageImporter extends ZipImporter
     }
 
     /**
-     * Validate an xml file, convert file linked inside and store it into media manager
+     * Get an additional CSS stylesheet for the shared stimulus (If exists)
      *
-     * @throws XmlStorageException
+     * @return array path to the CSS or false if not found
      */
-    protected function storeSharedStimulus(
+    private function getSharedStimulusStylesheets(string $extractPath): array
+    {
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($extractPath),
+            RecursiveIteratorIterator::LEAVES_ONLY
+        );
+
+        $cssFileInfoArray = [];
+
+        /** @var $file SplFileInfo */
+        foreach ($iterator as $file) {
+            if ($this->isFileExtension($file, 'css')) {
+                $cssFileInfoArray[] = $file->getRealPath();
+            }
+        }
+
+        return $cssFileInfoArray;
+    }
+
+    public function isFileExtension(SplFileInfo $file, string $extension): bool
+    {
+        if ($file->isFile()) {
+            return preg_match('/^[\w]/', $file->getFilename()) === 1 && $file->getExtension() === $extension;
+        }
+
+        return false;
+    }
+
+    /**
+     * Convert file linked inside and store it into media manager
+     *
+     * @throws common_exception_Error
+     */
+    private function storeSharedStimulus(
         Resource $class,
         string $lang,
         string $xmlFile,
+        array $cssFiles,
         string $userId = null
-    ): Report
-    {
-        SharedStimulusImporter::isValidSharedStimulus($xmlFile);
+    ): Report {
+        $stimulusFilename = basename($xmlFile);
 
-        $mediaResourceUri = $this->getMediaService()->createMediaInstance(
+        $directory = $this->getSharedStimulusStoreService()->store(
             $xmlFile,
+            $stimulusFilename,
+            $cssFiles
+        );
+
+        $mediaResourceUri = $this->getMediaService()->createSharedStimulusInstance(
+            $directory . DIRECTORY_SEPARATOR . $stimulusFilename,
             $class->getUri(),
             $lang,
-            basename($xmlFile),
-            MediaService::SHARED_STIMULUS_MIME_TYPE,
             $userId
         );
 
@@ -265,8 +302,7 @@ class SharedStimulusPackageImporter extends ZipImporter
         string $lang,
         string $xmlFile,
         string $userId = null
-    ): Report
-    {
+    ): Report {
         //if the class does not belong to media classes create a new one with its name (for items)
         $mediaClass = new core_kernel_classes_Class(MediaService::ROOT_CLASS_URI);
         if (!$instance->isInstanceOf($mediaClass)) {
@@ -339,5 +375,10 @@ class SharedStimulusPackageImporter extends ZipImporter
     private function getMediaService(): MediaService
     {
         return $this->getServiceLocator()->get(MediaService::class);
+    }
+
+    private function getSharedStimulusStoreService(): StoreService
+    {
+        return $this->getServiceLocator()->get(StoreService::class);
     }
 }

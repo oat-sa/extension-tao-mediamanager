@@ -51,7 +51,12 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
 
         return $filename;
     }
-    
+
+    public function deleteDirectory(string $directoryPath): bool
+    {
+        return $this->getFilesystem()->deleteDir($directoryPath);
+    }
+
     public function getFileSize($link)
     {
         return $this->getFilesystem()->getSize($link);
@@ -67,7 +72,6 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
         $resource = $this->getFilesystem()->readStream($link);
         return new Stream($resource);
     }
-    
     
     /**
      * (non-PHPdoc)
@@ -96,7 +100,7 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
         $fs = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
         return $fs->getFileSystem($this->getOption(self::OPTION_FS));
     }
-    
+
     /**
      * Create a new unique filename based on an existing filename
      *
@@ -106,7 +110,7 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
     protected function getUniqueFilename($fileName)
     {
         $returnValue = uniqid(hash('crc32', $fileName));
-    
+
         $ext = @pathinfo($fileName, PATHINFO_EXTENSION);
         if (!empty($ext)) {
             $returnValue .= '.' . $ext;

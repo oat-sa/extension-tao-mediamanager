@@ -22,6 +22,7 @@
 namespace oat\taoMediaManager\model;
 
 use common_report_Report as Report;
+use helpers_TimeOutHelper;
 use oat\oatbox\filesystem\File;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\log\TaoLoggerAwareInterface;
@@ -60,9 +61,7 @@ class ZipImporter implements ServiceLocatorAwareInterface, TaoLoggerAwareInterfa
 
             // unzip the file
             try {
-                \helpers_TimeOutHelper::setTimeOutLimit(\helpers_TimeOutHelper::LONG);
                 $directory = $this->extractArchive($uploadedFile);
-                \helpers_TimeOutHelper::reset();
             } catch (\Exception $e) {
                 $report = Report::createFailure(__('Unable to extract the archive'));
                 $report->setData(['uriResource' => '']);
@@ -143,6 +142,8 @@ class ZipImporter implements ServiceLocatorAwareInterface, TaoLoggerAwareInterfa
      */
     protected function extractArchive($archiveFile)
     {
+        helpers_TimeOutHelper::setTimeOutLimit(helpers_TimeOutHelper::LONG);
+
         if ($archiveFile instanceof File) {
             if (!$archiveFile->exists()) {
                 throw new \common_Exception('Unable to open archive ' . '/' . $archiveFile->getPrefix());
@@ -191,6 +192,8 @@ class ZipImporter implements ServiceLocatorAwareInterface, TaoLoggerAwareInterfa
         if (isset($tmpDir) && file_exists($tmpDir)) {
             rmdir($tmpDir);
         }
+
+        helpers_TimeOutHelper::reset();
 
         return $archiveDir;
     }

@@ -17,9 +17,8 @@
  */
 
 define([
-    'taoQtiItem/qtiCreator/model/Item',
-    'tpl!taoMediaManager/qtiCreator/helper/tpl/emptySharedStimulus'
-], function(Item, emptySharedStimulusTpl) {
+    'taoQtiItem/qtiCreator/model/Item'
+], function(Item) {
     'use strict';
 
     const _generateIdentifier = function _generateIdentifier(uri) {
@@ -37,9 +36,6 @@ define([
         delete itemData.rootElement;
 
         itemData.body = sharedStimulusData.body.body;
-        if (itemData.body.body.match(/^\n$/)) { // place empty container if body is empty
-            itemData.body.body = emptySharedStimulusTpl();
-        }
         itemData.qtiClass = 'assessmentItem';
         itemData.responseProcessing = {
             attributes: {},

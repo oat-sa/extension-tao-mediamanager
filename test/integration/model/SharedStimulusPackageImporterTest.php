@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2014-2021 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
@@ -29,6 +29,7 @@ use oat\tao\model\import\InvalidSourcePathException;
 use oat\tao\model\upload\UploadService;
 use oat\taoMediaManager\model\FileImportForm;
 use oat\taoMediaManager\model\MediaService;
+use oat\taoMediaManager\model\sharedStimulus\service\StoreService;
 use oat\taoMediaManager\model\SharedStimulusPackageImporter;
 use Psr\Log\NullLogger;
 use qtism\data\storage\xml\XmlDocument;
@@ -36,15 +37,19 @@ use oat\generis\test\MockObject;
 
 class SharedStimulusPackageImporterTest extends TestCase
 {
-    /**
-     * @var MockObject
-     */
-    private $service = null;
+    /* @var MediaService|MockObject */
+    private $mediaServiceMock;
+
+    /* @var StoreService|MockObject */
+    private $storeServiceMock;
+
     private $tempDirectoryPath;
 
     public function setUp(): void
     {
-        $this->service = $this->getMockBuilder(MediaService::class)
+        $this->mediaServiceMock = $this->getMockBuilder(MediaService::class)
+            ->disableOriginalConstructor()->getMock();
+        $this->storeServiceMock = $this->getMockBuilder(StoreService::class)
             ->disableOriginalConstructor()->getMock();
     }
 
@@ -80,8 +85,8 @@ class SharedStimulusPackageImporterTest extends TestCase
         $form->setValues(['source' => $fileinfo, 'lang' => 'EN_en']);
 
         if ($expectedSuccess) {
-            $this->service->expects($this->once())
-                ->method('createMediaInstance')
+            $this->mediaServiceMock->expects($this->once())
+                ->method('createSharedStimulusInstance')
                 ->willReturn('myGreatLink');
         }
 
@@ -119,7 +124,7 @@ class SharedStimulusPackageImporterTest extends TestCase
         $form->setValues(['source' => $fileinfo, 'lang' => 'EN_en']);
 
         if ($expectedSuccess) {
-            $this->service->expects($this->once())
+            $this->mediaServiceMock->expects($this->once())
                 ->method('editMediaInstance')
                 ->willReturn(true);
         }
@@ -181,6 +186,29 @@ class SharedStimulusPackageImporterTest extends TestCase
     }
 
     /**
+     * @dataProvider fileExtensionDataProvider
+     */
+    public function testFileExtension(string $fileName, string $extension, bool $expectedResult): void
+    {
+        $o = new \SplFileObject($fileName, 'r');
+
+        $result = $this->getPackageImporter()->isFileExtension($o, $extension);
+        $this->assertEquals($expectedResult, $result);
+    }
+
+    public function fileExtensionDataProvider(): array
+    {
+        $sampleDir = dirname(__DIR__) . '/sample/sharedStimulus/';
+        return [
+            [$sampleDir . 'encodedImage.zip', 'zip', true],
+            [$sampleDir . 'stimulusPackage.zip', 'xml', false],
+            [$sampleDir . 'interactions.xml', '', false],
+            [$sampleDir . 'Й_wrongFilename.txt', 'css', false],
+            ['php://stdout', 'extension', false]
+        ];
+    }
+
+    /**
      * Providerr that returns packages that are missing files
      * @return string[][]
      */
@@ -225,7 +253,8 @@ class SharedStimulusPackageImporterTest extends TestCase
         $importer->setServiceLocator($this->getServiceLocatorMock([
             UploadService::SERVICE_ID => $uploadServiceMock,
             LoggerService::SERVICE_ID => new NullLogger(),
-            MediaService::class => $this->service,
+            MediaService::class => $this->mediaServiceMock,
+            StoreService::class => $this->storeServiceMock,
         ]));
 
         return $importer;

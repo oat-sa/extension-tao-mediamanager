@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2014-2021 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
@@ -32,6 +32,7 @@ use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
 use oat\oatbox\service\ServiceManager;
 use oat\taoMediaManager\model\export\service\MediaResourcePreparer;
+use oat\taoMediaManager\model\export\service\SharedStimulusCSSExporter;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use tao_helpers_Export;
 use tao_models_classes_export_ExportHandler;
@@ -156,8 +157,9 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
                         ->getFileStream($link);
 
                     $preparedFileContent = $this->getMediaResourcePreparer()->prepare($fileResource, $fileContent);
-
                     $zip->addFromString($archivePath . $fileResource->getLabel(), $preparedFileContent);
+
+                    $this->getSharedStimulusCSSExporter()->pack($fileResource, $link, $zip);
                 }
             }
         }
@@ -180,6 +182,11 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
     private function getMediaResourcePreparer(): MediaResourcePreparer
     {
         return $this->getServiceManager()->get(MediaResourcePreparer::class);
+    }
+
+    private function getSharedStimulusCSSExporter(): SharedStimulusCSSExporter
+    {
+        return $this->getServiceManager()->get(SharedStimulusCSSExporter::class);
     }
 
     /**

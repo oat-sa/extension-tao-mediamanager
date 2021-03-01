@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>BlockAdder QtiCreator Editor test</title>
+        <base href="../../../../../../../../tao/views/" />
+
+        <link rel="stylesheet" type="text/css" href="js/lib/qunit/qunit.css">
+        <link rel="stylesheet" type="text/css" href="css/tao-main-style.css">
+        <script type="text/javascript" src="js/lib/qunit/qunit.js"></script>
+        <script type="text/javascript" src="js/lib/require.js"></script>
+        <script type="text/javascript" src="js/lib/blanket/blanket.min.js" data-cover-flag="branchTracking" data-cover-only="qtiCreator/editor/blockAdder/blockAdder.js"></script>
+
+        <script  type="text/javascript">
+            QUnit.config.autostart = false;
+            require(['/tao/ClientConfig/config'], function(){
+                // mock Client Config data:
+                requirejs.config({
+                    "config": {
+                        "taoMediaManager/qtiCreator/helper/creatorRenderer" : {
+                            properties: {}
+                        }
+                    }
+                });
+                require(['taoMediaManager/test/qtiCreator/editor/blockAdder/test'], function(){
+                    QUnit.config.reorder = false;
+                    QUnit.start();
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div id="qunit"></div>
+        <div id="qunit-fixture">
+            <div id="item-editor-panel">
+                <div class="qti-item">
+                    <div class="qti-itemBody">
+                        <div class="grid-row" data-units="0">
+                            <div class="col-12" data-units="12">
+                                <div data-serial="_container_5xs4s7yselqnqnqr8v4vw4" data-qti-class="_container" class="widget-box widget-block widget-textBlock edit-active" data-html-editable-container="true"><div data-html-editable="true" contenteditable="true" data-placeholder="some text ..." class="cke_editable cke_editable_inline cke_contents_ltr" tabindex="0" spellcheck="false" role="textbox" aria-multiline="true" aria-label="Rich Text Editor, editor10" style="position: relative;"><p>Lorem ipsum dolor sit amet, consectetur adipisicing ...</p></div>
+                                    <div class="mini-tlb" data-edit="active" data-for="_container_5xs4s7yselqnqnqr8v4vw4" style="display: block;">
+                                        <div class="rgt tlb-button" title="Delete" data-role="delete">
+                                            <span class="icon-bin"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="grid-edit-resizable-zone grid-edit-resizable-zone-active ui-draggable" style="top: 0px; right: -10px; width: 20px; height: 39px; position: absolute;"><span class="grid-edit-resizable-handle"></span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

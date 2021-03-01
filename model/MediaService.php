@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2014-2021 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
@@ -93,8 +93,14 @@ class MediaService extends ConfigurableService
      * @param string|null $userId owner of the resource
      * @return string | bool $instanceUri or false on error
      */
-    public function createMediaInstance($fileSource, $classUri, $language, $label = null, $mimeType = null, $userId = null)
-    {
+    public function createMediaInstance(
+        $fileSource,
+        $classUri,
+        $language,
+        $label = null,
+        $mimeType = null,
+        $userId = null
+    ) {
         $link = $this->getFileManager()->storeFile($fileSource, $label);
 
         if ($link === false) {
@@ -109,17 +115,18 @@ class MediaService extends ConfigurableService
         }
 
         $content = $fileSource instanceof File ? $fileSource->read() : file_get_contents($fileSource);
-        $md5 = md5($content);
 
         if (is_null($mimeType)) {
-            $mimeType = $fileSource instanceof File ? $fileSource->getMimeType() : tao_helpers_File::getMimeType($fileSource);
+            $mimeType = $fileSource instanceof File ? $fileSource->getMimeType() : tao_helpers_File::getMimeType(
+                $fileSource
+            );
         }
 
         $properties = [
             OntologyRdfs::RDFS_LABEL => $label,
             self::PROPERTY_LINK => $link,
             self::PROPERTY_LANGUAGE => $language,
-            self::PROPERTY_MD5 => $md5,
+            self::PROPERTY_MD5 => md5($content),
             self::PROPERTY_MIME_TYPE => $mimeType,
             self::PROPERTY_ALT_TEXT => $label
         ];
@@ -130,6 +137,38 @@ class MediaService extends ConfigurableService
         $this->getMediaSavedEventDispatcher()->dispatchFromContent($id, $mimeType, $content);
 
         // @todo: move taoRevision stuff under a listener of MediaSavedEvent
+        if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
+            $this->logInfo('Auto generating initial revision');
+            $this->getRepositoryService()->commit($instance, __('Initial import'), null, $userId);
+        }
+
+        return $id;
+    }
+
+    public function createSharedStimulusInstance(
+        string $link,
+        string $classUri,
+        string $language,
+        string $userId = null
+    ): string {
+        $content = $this->getFileManager()->getFileStream($link)->getContents();
+        $clazz = $this->getClass($classUri);
+        $label = basename($link);
+
+        $properties = [
+            OntologyRdfs::RDFS_LABEL => $label,
+            self::PROPERTY_LINK => $link,
+            self::PROPERTY_LANGUAGE => $language,
+            self::PROPERTY_MD5 => md5($content),
+            self::PROPERTY_MIME_TYPE => self::SHARED_STIMULUS_MIME_TYPE,
+            self::PROPERTY_ALT_TEXT => $label,
+        ];
+
+        $instance = $clazz->createInstanceWithProperties($properties);
+        $id = $instance->getUri();
+
+        $this->getMediaSavedEventDispatcher()->dispatchFromContent($id, self::SHARED_STIMULUS_MIME_TYPE, $content);
+
         if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
             $this->logInfo('Auto generating initial revision');
             $this->getRepositoryService()->commit($instance, __('Initial import'), null, $userId);
@@ -182,7 +221,7 @@ class MediaService extends ConfigurableService
     {
         $link = $this->getLink($resource);
 
-        if ($this->getFileManager()->deleteFile($link) && $resource->delete()) {
+        if ($this->removeFromFilesystem($link) && $resource->delete()) {
             $this->getEventManager()
                 ->trigger(new MediaRemovedEvent($resource->getUri()));
 
@@ -190,6 +229,17 @@ class MediaService extends ConfigurableService
         }
 
         return false;
+    }
+
+    private function removeFromFilesystem($link): bool
+    {
+        $directory = dirname($link);
+
+        if ($directory !== '.') {
+            return $this->getFileManager()->deleteDirectory($directory);
+        }
+
+        return $this->getFileManager()->deleteFile($link);
     }
 
     private function getLink(RdfResource $resource): string
@@ -227,7 +277,7 @@ class MediaService extends ConfigurableService
         if ($container instanceof core_kernel_classes_Literal) {
             $mimeType = (string)$container;
 
-            return  $mimeType === MediaService::SHARED_STIMULUS_MIME_TYPE ? $mimeType : null;
+            return $mimeType === MediaService::SHARED_STIMULUS_MIME_TYPE ? $mimeType : null;
         }
 
         return null;

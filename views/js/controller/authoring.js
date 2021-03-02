@@ -53,7 +53,8 @@ define([
                     baseUrl: urlUtil.route('getFile', 'MediaManager', 'taoMediaManager', { uri: '' }),
                     path: 'taomedia://mediamanager/',
                     root: 'mediamanager',
-                    lang: 'en-US'
+                    lang: 'en-US',
+                    loadCssUrl: urlUtil.route('load', 'QtiCssAuthoring', 'taoQtiItem')
                 }
             })
                 .on('success', () => {

@@ -42,7 +42,8 @@ define([
     'taoQtiItem/qtiItem/helper/xmlNsHandler',
     'core/request',
     'util/url',
-    'taoMediaManager/qtiCreator/editor/interactionsPanel'
+    'taoMediaManager/qtiCreator/editor/interactionsPanel',
+    'taoQtiItem/qtiCreator/editor/styleEditor/styleEditor'
 ], function (
     $,
     _,
@@ -59,7 +60,8 @@ define([
     xmlNsHandler,
     request,
     urlUtil,
-    interactionPanel
+    interactionPanel,
+    styleEditor
 ) {
     'use strict';
 
@@ -170,25 +172,29 @@ define([
                     const item = this.getItem();
 
                     const xml = xmlNsHandler.restoreNs(xmlRenderer.render(item), item.getNamespaces());
-                    request({
-                        url: urlUtil.route('patch', 'SharedStimulus', 'taoMediaManager', { id: config.properties.id }),
-                        type: 'POST',
-                        contentType: 'application/json',
-                        dataType: 'json',
-                        data: JSON.stringify({ body: xml }),
-                        method: 'PATCH',
-                        noToken: true
-                    })
-                        .then(() => {
-                            if (!silent) {
-                                this.trigger('success');
-                            }
+                    //do the save
+                    Promise.all([
+                        request({
+                            url: urlUtil.route('patch', 'SharedStimulus', 'taoMediaManager', { id: config.properties.id }),
+                            type: 'POST',
+                            contentType: 'application/json',
+                            dataType: 'json',
+                            data: JSON.stringify({ body: xml }),
+                            method: 'PATCH',
+                            noToken: true
+                        }),
+                        styleEditor.save()
+                    ])
+                    .then(() => {
+                        if (!silent) {
+                            this.trigger('success');
+                        }
 
-                            this.trigger('saved');
-                        })
-                        .catch(err => {
-                            this.trigger('error', err);
-                        });
+                        this.trigger('saved');
+                    })
+                    .catch(err => {
+                        this.trigger('error', err);
+                    });
                 });
 
                 this.on('exit', function () {

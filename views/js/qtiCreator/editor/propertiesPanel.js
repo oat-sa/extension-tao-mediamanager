@@ -18,16 +18,28 @@
  */
 
 define([
-    'taoQtiItem/qtiCreator/helper/panel'
-], function(panel) {
+    'taoQtiItem/qtiCreator/helper/panel',
+    'taoQtiItem/qtiCreator/editor/styleEditor/styleEditor',
+    'taoQtiItem/qtiCreator/editor/styleEditor/styleSheetToggler',
+    'taoQtiItem/qtiCreator/editor/styleEditor/fontSelector',
+    'taoQtiItem/qtiCreator/editor/styleEditor/colorSelector',
+    'taoQtiItem/qtiCreator/editor/styleEditor/fontSizeChanger'
+], function(panel, styleEditor, styleSheetToggler, fontSelector, colorSelector, fontSizeChanger) {
     'use strict';
 
     /**
      * Set up the properties panel, including the style editor
      * @param {jQueryElement} $container - the panel container
      */
-    return function setUpInteractionPanel($container){
+    return function setUpInteractionPanel($container, widget, config){
         panel.initSidebarAccordion($container);
         panel.initFormVisibilityListener();
+
+        styleEditor.init(widget.element, config);
+        styleSheetToggler.init(config);
+
+        fontSelector();
+        colorSelector();
+        fontSizeChanger();
     };
 });

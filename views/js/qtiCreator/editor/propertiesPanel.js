@@ -13,23 +13,25 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2020-2021 (original work) Open Assessment Technologies SA;
  *
  */
 
 define([
     'taoQtiItem/qtiCreator/helper/panel',
-    'taoQtiItem/qtiCreator/editor/styleEditor/styleEditor',
-    'taoQtiItem/qtiCreator/editor/styleEditor/styleSheetToggler',
-    'taoQtiItem/qtiCreator/editor/styleEditor/fontSelector',
-    'taoQtiItem/qtiCreator/editor/styleEditor/colorSelector',
-    'taoQtiItem/qtiCreator/editor/styleEditor/fontSizeChanger'
+    'taoMediaManager/qtiCreator/editor/styleEditor/styleEditor',
+    'taoMediaManager/qtiCreator/editor/styleEditor/styleSheetToggler',
+    'taoMediaManager/qtiCreator/editor/styleEditor/fontSelector',
+    'taoMediaManager/qtiCreator/editor/styleEditor/colorSelector',
+    'taoMediaManager/qtiCreator/editor/styleEditor/fontSizeChanger'
 ], function(panel, styleEditor, styleSheetToggler, fontSelector, colorSelector, fontSizeChanger) {
     'use strict';
 
     /**
      * Set up the properties panel, including the style editor
      * @param {jQueryElement} $container - the panel container
+     * @param {Object} widget - item Widget
+     * @param {Object} config - sharedStimulusCreator config
      */
     return function setUpInteractionPanel($container, widget, config){
         panel.initSidebarAccordion($container);

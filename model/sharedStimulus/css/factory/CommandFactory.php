@@ -66,7 +66,7 @@ class CommandFactory extends ConfigurableService
 
     public function makeLoadCommandByRequest(ServerRequestInterface $request): LoadCommand
     {
-        $parsedBody = $request->getParsedBody();
+        $parsedBody = $request->getQueryParams();
 
 
         if (!isset($parsedBody['uri'])) {

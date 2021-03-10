@@ -23,9 +23,11 @@
 }
 
 #item-editor-scope {
-    .tool-group {
-        ._accordion {
-            display: none;
+    .left-bar {
+        .tool-group {
+            ._accordion {
+                display: none;
+            }
         }
     }
 }

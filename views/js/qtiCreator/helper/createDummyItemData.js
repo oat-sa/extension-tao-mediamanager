@@ -47,6 +47,9 @@ define([
         if (sharedStimulusData.body.attributes['xml:lang']) {
             itemData.attributes['xml:lang'] = sharedStimulusData.body.attributes['xml:lang'];
         }
+        if (sharedStimulusData.body.attributes.class) {
+            itemData.attributes.class = sharedStimulusData.body.attributes.class;
+        }
 
         return itemData;
     };

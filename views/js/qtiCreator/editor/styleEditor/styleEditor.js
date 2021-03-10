@@ -27,11 +27,10 @@ define([
     'lodash',
     'i18n',
     'util/urlParser',
-    'core/promise',
     'core/dataProvider/request',
     'tpl!taoMediaManager/qtiCreator/tpl/toolbars/cssToggler',
     'jquery.fileDownload'
-], function ($, _, __, UrlParser, Promise, request, cssTpl) {
+], function ($, _, __, UrlParser, request, cssTpl) {
     'use strict';
 
     let itemConfig;
@@ -194,24 +193,18 @@ define([
 
     /**
      * Save the resulting CSS to a file
-     *TODO saving mechanism should be indenpendant, ie. moved into the itemCreator, in order to configure endpoint, etc.
      * @returns {Promise}
      */
     const save = function save() {
-        return new Promise(function (resolve, reject) {
-            verifyInit();
-            $.post(
-                _getUri('save'),
-                _.extend({}, itemConfig, {
-                    cssJson: JSON.stringify(style),
-                    stylesheetUri: customStylesheet.attr('href')
-                })
-            )
-                .done(resolve)
-                .fail(function (xhr, status, err) {
-                    reject(err);
-                });
-        });
+        verifyInit();
+        return request(
+            _getUri('save'),
+            _.extend({}, itemConfig, {
+                cssJson: JSON.stringify(style),
+                stylesheetUri: customStylesheet.attr('href')
+            }),
+            'POST'
+        );
     };
 
     /**
@@ -377,7 +370,7 @@ define([
         // promise
         currentItem = item;
 
-        //prepare config object (don't pass all of them, otherwise, $.param will break)
+        //prepare config object
         itemConfig = {
             uri: config.id,
             lang: config.lang,
@@ -393,17 +386,16 @@ define([
 
         currentItem.data('responsive', true);
 
-        request(_getUri('load'), _.extend({}, itemConfig, { stylesheetUri: href }))
-            .then(function (_style) {
-                // copy style to global style
-                style = _style;
+        request(_getUri('load'), _.extend({}, itemConfig, { stylesheetUri: href })).then(function (_style) {
+            // copy style to global style
+            style = _style;
 
-                // apply rules
-                create();
+            // apply rules
+            create();
 
-                // inform editors about custom sheet
-                $(document).trigger('customcssloaded.styleeditor', [style]);
-            });
+            // inform editors about custom sheet
+            $(document).trigger('customcssloaded.styleeditor', [style]);
+        });
     };
 
     const getStyle = function () {

@@ -166,12 +166,13 @@ define([
                  */
                 this.on('save', silent => {
                     const item = this.getItem();
-
-                    const xml = xmlNsHandler.restoreNs(xmlRenderer.render(item), item.getNamespaces());
                     const styles = styleEditor.getStyle();
-                    if (styles.length && !item.attributes.class) {
+                    if (_.size(styles) && !item.attributes.class) {
                         item.attributes.class = styleEditor.getHashClass();
                     }
+
+                    const xml = xmlNsHandler.restoreNs(xmlRenderer.render(item), item.getNamespaces());
+
                     //do the save
                     Promise.all([
                         request({

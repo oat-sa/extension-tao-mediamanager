@@ -54,7 +54,8 @@ define([
                     path: 'taomedia://mediamanager/',
                     root: 'mediamanager',
                     lang: 'en-US',
-                    loadCssUrl: urlUtil.route('load', 'QtiCssAuthoring', 'taoQtiItem')
+                    loadCssUrl: urlUtil.route('load', 'SharedStimulusStyling', 'taoMediaManager'),
+                    saveCssUrl: urlUtil.route('save', 'SharedStimulusStyling', 'taoMediaManager')
                 }
             })
                 .on('success', () => {

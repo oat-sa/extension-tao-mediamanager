@@ -28,9 +28,10 @@ define([
     'i18n',
     'util/urlParser',
     'core/promise',
+    'core/dataProvider/request',
     'tpl!taoMediaManager/qtiCreator/tpl/toolbars/cssToggler',
     'jquery.fileDownload'
-], function ($, _, __, UrlParser, Promise, cssTpl) {
+], function ($, _, __, UrlParser, Promise, request, cssTpl) {
     'use strict';
 
     let itemConfig;
@@ -378,7 +379,7 @@ define([
 
         //prepare config object (don't pass all of them, otherwise, $.param will break)
         itemConfig = {
-            uri: config.uri,
+            uri: config.id,
             lang: config.lang,
             baseUrl: config.baseUrl
         };
@@ -392,20 +393,10 @@ define([
 
         currentItem.data('responsive', true);
 
-        $.getJSON(_getUri('load'), _.extend({}, itemConfig, { stylesheetUri: href }))
-            .done(function (_style) {
+        request(_getUri('load'), _.extend({}, itemConfig, { stylesheetUri: href }))
+            .then(function (_style) {
                 // copy style to global style
                 style = _style;
-
-                // apply rules
-                create();
-
-                // inform editors about custom sheet
-                $(document).trigger('customcssloaded.styleeditor', [style]);
-            })
-            .fail(function () {
-                // copy style to global style
-                style = {};
 
                 // apply rules
                 create();

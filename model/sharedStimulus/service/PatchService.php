@@ -65,7 +65,7 @@ class PatchService extends ConfigurableService
         );
 
         $id = $command->getId();
-        $userId = $command->getUserId(); //Todo taoRevision
+        $userId = $command->getUserId();
 
         $resource = $this->getResource($id);
 
@@ -81,12 +81,13 @@ class PatchService extends ConfigurableService
         $content = $file->read();
         $resource->editPropertyValues($this->getProperty(MediaService::PROPERTY_MD5), md5($content));
 
-        $this->getServiceLocator()->get(MediaSavedEventDispatcher::class)->dispatchMediaSavedEvent(
+        $this->getMediaService()->dispatchMediaSavedEvent(
             'Imported new file',
             $resource,
             $sharedStimulusStoredSourceFile,
             $file->getMimeType(),
-            $userId
+            $userId,
+            $content
         );
 
         $file->delete();

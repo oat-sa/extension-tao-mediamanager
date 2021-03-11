@@ -92,7 +92,7 @@ class JsonQtiAttributeParser extends ConfigurableService
     {
         if (isset($document->getElementsByTagName('div')->item(0)->attributes['class']->nodeValue)) {
             $xinclude->setAttribute(
-                'xml:class',
+                'class',
                 $document->getElementsByTagName('div')->item(0)->attributes['class']->nodeValue
             );
         }

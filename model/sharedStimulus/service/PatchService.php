@@ -65,7 +65,7 @@ class PatchService extends ConfigurableService
         );
 
         $id = $command->getId();
-        $userId = $command->getUserId(); //Todo taoRevision
+        $userId = $command->getUserId();
 
         $resource = $this->getResource($id);
 
@@ -86,7 +86,8 @@ class PatchService extends ConfigurableService
             $resource,
             $sharedStimulusStoredSourceFile,
             $file->getMimeType(),
-            $userId
+            $userId,
+            $content
         );
 
         $file->delete();

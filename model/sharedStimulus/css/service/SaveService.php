@@ -34,7 +34,7 @@ class SaveService extends ConfigurableService
 {
     public const STYLESHEET_WARNING_HEADER = " /* Do not edit */";
 
-    public function save(SaveCommand $command)
+    public function save(SaveCommand $command): void
     {
         $passageResource = $this->getOntology()->getResource($command->getUri());
         $link = $passageResource->getUniquePropertyValue($passageResource->getProperty(MediaService::PROPERTY_LINK));

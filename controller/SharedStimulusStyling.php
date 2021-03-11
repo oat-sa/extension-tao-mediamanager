@@ -48,6 +48,8 @@ class SharedStimulusStyling extends tao_actions_CommonModule
 
             $this->getSaveService()
                 ->save($command);
+
+            $formatter->withBody(new SuccessJsonResponse([]));
         } catch (Throwable $exception) {
             $this->logError(sprintf('Error saving passage styles: %s', $exception->getMessage()));
 

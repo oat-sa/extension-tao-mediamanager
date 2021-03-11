@@ -90,10 +90,11 @@ class JsonQtiAttributeParser extends ConfigurableService
      */
     private function addClassAttribute(DOMDocument $document, XInclude $xinclude): void
     {
-        if (isset($document->getElementsByTagName('div')->item(0)->attributes['class']->nodeValue)) {
+        $classAttr = $document->getElementsByTagName('div')->item(0)->attributes->getNamedItem('class');
+        if ($classAttr) {
             $xinclude->setAttribute(
                 'class',
-                $document->getElementsByTagName('div')->item(0)->attributes['class']->nodeValue
+                $classAttr->nodeValue
             );
         }
     }

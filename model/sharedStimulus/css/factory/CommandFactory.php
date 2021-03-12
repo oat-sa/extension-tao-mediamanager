@@ -28,9 +28,17 @@ use oat\taoMediaManager\model\sharedStimulus\css\SaveCommand;
 use Psr\Http\Message\ServerRequestInterface;
 use common_exception_InvalidArgumentType as InvalidParameterException;
 use common_exception_MissingParameter as MissingParameterException;
+use common_exception_Error as ErrorException;
+use tao_helpers_File;
 
 class CommandFactory extends ConfigurableService
 {
+
+    /**
+     * @throws ErrorException
+     * @throws InvalidParameterException
+     * @throws MissingParameterException
+     */
     public function makeSaveCommandByRequest(ServerRequestInterface $request): SaveCommand
     {
         $parsedBody = $request->getParsedBody();
@@ -46,6 +54,8 @@ class CommandFactory extends ConfigurableService
         if (!isset($parsedBody['cssJson'])) {
             throw new MissingParameterException('cssJson', __METHOD__);
         }
+
+        $this->securityCheckStylesheetPath($parsedBody['stylesheetUri']);
 
         $css = json_decode($parsedBody['cssJson'], true);
         if (!is_array($css)) {
@@ -64,10 +74,13 @@ class CommandFactory extends ConfigurableService
         );
     }
 
+    /**
+     * @throws ErrorException
+     * @throws MissingParameterException
+     */
     public function makeLoadCommandByRequest(ServerRequestInterface $request): LoadCommand
     {
         $parsedBody = $request->getQueryParams();
-
 
         if (!isset($parsedBody['uri'])) {
             throw new MissingParameterException('uri', __METHOD__);
@@ -77,9 +90,21 @@ class CommandFactory extends ConfigurableService
             throw new MissingParameterException('stylesheetUri', __METHOD__);
         }
 
+        $this->securityCheckStylesheetPath($parsedBody['stylesheetUri']);
+
         return new LoadCommand(
             $parsedBody['uri'],
             $parsedBody['stylesheetUri']
         );
+    }
+
+    /**
+     * @throws ErrorException
+     */
+    private function securityCheckStylesheetPath(string $stylesheetUri): void
+    {
+        if (!tao_helpers_File::securityCheck($stylesheetUri, true)) {
+            throw new ErrorException('invalid stylesheet path "' . $stylesheetUri . '"');
+        }
     }
 }

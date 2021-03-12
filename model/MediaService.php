@@ -213,10 +213,19 @@ class MediaService extends ConfigurableService
         return false;
     }
 
-    public function dispatchMediaSavedEvent(string $commitMessage, RdfResource $instance, $link, string $mimeType, string $userId = null, string $content = null)
-    {
+    /**
+     * @param string|File $link
+     */
+    public function dispatchMediaSavedEvent(
+        string $commitMessage,
+        RdfResource $instance,
+        $link,
+        string $mimeType,
+        string $userId = null,
+        string $content = null
+    ): void {
         $eventDispatcher = $this->getMediaSavedEventDispatcher();
-        if($content) {
+        if ($content) {
             $eventDispatcher->dispatchFromContent($instance->getUri(), $mimeType, $content);
         } else {
             $eventDispatcher->dispatchFromFile($instance->getUri(), $link, $this->getResourceMimeType($instance));

@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus\css\service;
 
+use League\Flysystem\FileNotFoundException;
 use League\Flysystem\FilesystemInterface;
 use oat\generis\model\data\Ontology;
 use oat\oatbox\filesystem\FileSystemService;
@@ -30,10 +31,11 @@ use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\sharedStimulus\css\SaveCommand;
+use common_Logger as Logger;
 
 class SaveService extends ConfigurableService
 {
-    public const STYLESHEET_WARNING_HEADER = " /* Do not edit */";
+    public const STYLESHEET_WARNING_HEADER = " /* Do not edit */" . "\n";
 
     public function save(SaveCommand $command): void
     {
@@ -46,16 +48,30 @@ class SaveService extends ConfigurableService
             throw new \Exception ('Shared stimulus stored as single file');
         }
 
-        $content = $this->getCssContentFromArray($command->getCssClassesArray());
+        $cssClassesArray = $command->getCssClassesArray();
+        if (!count($cssClassesArray)) {
+            $this->removeStoredStylesheet($path . DIRECTORY_SEPARATOR . $command->getStylesheetUri());
 
-        $fs = $this->getFileSystem();
-        $fs->put($path . DIRECTORY_SEPARATOR . $command->getStylesheetUri(), $content);
+            return;
+        }
+
+        $content = $this->getCssContentFromArray($cssClassesArray);
+        $this->getFileSystem()->put($path . DIRECTORY_SEPARATOR . $command->getStylesheetUri(), $content);
+    }
+
+    private function removeStoredStylesheet(string $path): void
+    {
+        try {
+            $this->getFileSystem()->delete($path);
+        } catch (FileNotFoundException $exception) {
+            Logger::d('Stylesheet ' . $path . ' to delete was not found when trying to clear styles');
+        }
     }
 
     private function getCssContentFromArray(array $array): string
     {
         // Todo clarify if can we use taoQtiItem/helpers/CssHelper.php here? For now duplicating the code
-        $css = self::STYLESHEET_WARNING_HEADER . "\n";
+        $css = self::STYLESHEET_WARNING_HEADER;
 
         // rebuild CSS
         foreach ($array as $key1 => $value1) {

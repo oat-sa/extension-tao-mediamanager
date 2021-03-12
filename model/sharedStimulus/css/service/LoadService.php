@@ -31,12 +31,13 @@ use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\sharedStimulus\css\LoadCommand;
+use common_Logger as Logger;
 
 class LoadService extends ConfigurableService
 {
     public const STYLESHEET_WARNING_HEADER = " /* Do not edit */";
 
-    public function load(LoadCommand $command)
+    public function load(LoadCommand $command): array
     {
         $passageResource = $this->getOntology()->getResource($command->getUri());
         $link = $passageResource->getUniquePropertyValue($passageResource->getProperty(MediaService::PROPERTY_LINK));
@@ -53,12 +54,10 @@ class LoadService extends ConfigurableService
 
             return $this->cssToArray($content);
         } catch (FileNotFoundException $e) {
-            \common_Logger::d(
-                'Stylesheet ' . $command->getStylesheetUri() . ' does not exist yet, returning empty array'
-            );
-
-            return [];
+            Logger::d('Stylesheet ' . $command->getStylesheetUri() . ' does not exist yet, returning empty array');
         }
+
+        return [];
     }
 
     private function cssToArray(string $css): array

@@ -31,16 +31,17 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
     const fontSizeChanger = function () {
         const $fontSizeChanger = $('#item-editor-font-size-changer'),
             itemSelector = styleEditor.replaceHashClass($fontSizeChanger.data('target')),
+            styleSelector = `${itemSelector} *`,
             $item = $(itemSelector),
-            itemFontSize = parseInt($item.css('font-size'), 10),
             $resetBtn = $fontSizeChanger.parents('.reset-group').find('[data-role="font-size-reset"]'),
             $input = $('#item-editor-font-size-text');
+        let itemFontSize = parseInt($item.css('font-size'), 10);
 
         /**
          * Writes new font size to virtual style sheet
          */
         const resizeFont = function () {
-            styleEditor.apply(`${itemSelector} *`, 'font-size', `${itemFontSize.toString()}px`);
+            styleEditor.apply(styleSelector, 'font-size', `${itemFontSize.toString()}px`);
         };
 
         /**
@@ -99,8 +100,8 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
          * style loaded from style sheet
          */
         $(document).on('customcssloaded.styleeditor', function (e, style) {
-            if (style[itemSelector] && style[itemSelector]['font-size']) {
-                $input.val(parseInt(style[itemSelector]['font-size'], 10));
+            if (style[styleSelector] && style[styleSelector]['font-size']) {
+                $input.val(parseInt(style[styleSelector]['font-size'], 10));
                 $input.trigger('blur');
             } else {
                 $input.val(parseInt($item.css('font-size'), 10));

@@ -28,8 +28,8 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
     /**
      * Changes the font size in the Style Editor
      */
-    var fontSizeChanger = function () {
-        var $fontSizeChanger = $('#item-editor-font-size-changer'),
+    const fontSizeChanger = function () {
+        const $fontSizeChanger = $('#item-editor-font-size-changer'),
             itemSelector = styleEditor.replaceHashClass($fontSizeChanger.data('target')),
             $item = $(itemSelector),
             itemFontSize = parseInt($item.css('font-size'), 10),
@@ -39,7 +39,7 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
         /**
          * Writes new font size to virtual style sheet
          */
-        var resizeFont = function () {
+        const resizeFont = function () {
             styleEditor.apply(`${itemSelector} *`, 'font-size', `${itemFontSize.toString()}px`);
         };
 

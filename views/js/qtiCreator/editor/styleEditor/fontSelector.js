@@ -47,12 +47,12 @@ define([
             target = styleEditor.replaceHashClass($selector.data('target')),
             $target = $(target),
             normalize = function (font) {
-                return font.replace(/"/g, "'").replace(/, /g, ",");
+                return font.replace(/"/g, "'").replace(/, /g, ',');
             },
             clean = function (font) {
                 return font.substring(0, font.indexOf(',')).replace(/'/g, '');
             },
-            resetButton =  $selector.parent().find('[data-role="font-selector-reset"]'),
+            resetButton = $selector.parent().find('[data-role="font-selector-reset"]'),
             toLabel = function (font) {
                 font = font.replace(/-/g, ' ');
                 return font.replace(/^([a-z\u00E0-\u00FC])|\s+([a-z\u00E0-\u00FC])/g, function ($1) {
@@ -66,7 +66,7 @@ define([
                 }
                 return `<span style="font-size: 12px;${$(originalOption).attr('style')}">${state.text}</span>`;
             },
-            reset = function() {
+            reset = function () {
                 styleEditor.apply(target, 'font-family');
                 $selector.select2('val', $target.css('font-family'));
             };
@@ -80,10 +80,9 @@ define([
                 const option = $('<option>', {
                     value: normalizeFont,
                     text: clean(normalizeFont)
-                })
-                    .css({
-                        fontFamily: normalizeFont
-                    });
+                }).css({
+                    fontFamily: normalizeFont
+                });
                 optGroup.append(option);
             });
             $selector.append(optGroup);
@@ -100,8 +99,19 @@ define([
         $selector.on('change', function () {
             styleEditor.apply(target, 'font-family', $(this).val());
         });
+
+        /**
+         * style loaded from style sheet
+         */
+        $(document).on('customcssloaded.styleeditor', function (e, style) {
+            if (style[target] && style[target]['font-family']) {
+                $selector.val(style[target]['font-family']);
+            } else {
+                $selector.val($target.css('font-family'));
+            }
+            $selector.trigger('change');
+        });
     };
 
     return fontSelector;
 });
-

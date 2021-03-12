@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2021 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
@@ -26,6 +26,7 @@ use League\Flysystem\FilesystemInterface;
 use oat\generis\model\data\Ontology;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
+use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\sharedStimulus\css\SaveCommand;
@@ -38,6 +39,7 @@ class SaveService extends ConfigurableService
     {
         $passageResource = $this->getOntology()->getResource($command->getUri());
         $link = $passageResource->getUniquePropertyValue($passageResource->getProperty(MediaService::PROPERTY_LINK));
+        $link = $this->getFileSourceUnserializer()->unserialize((string)$link);
 
         $path = dirname((string)$link);
         if ($path == '.') {
@@ -98,5 +100,10 @@ class SaveService extends ConfigurableService
     private function getFlySystemManagement(): FlySystemManagement
     {
         return $this->getServiceLocator()->get(FlySystemManagement::SERVICE_ID);
+    }
+
+    private function getFileSourceUnserializer(): FileSourceUnserializer
+    {
+        return $this->getServiceLocator()->get(FileSourceUnserializer::class);
     }
 }

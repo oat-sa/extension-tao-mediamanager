@@ -137,6 +137,13 @@
                         <div class="panel"></div>
                     </section>
                 </div>
+                <div class="item-editor-body-element-related sidebar-right-section-box" id="item-editor-body-element-property-bar">
+                    <section class="tool-group clearfix" id="sidebar-right-body-element-properties">
+                        <h2><?= __('Element Properties') ?></h2>
+
+                        <div class="panel"></div>
+                    </section>
+                </div>
             </div>
         </div>
         <!-- /properties panel -->

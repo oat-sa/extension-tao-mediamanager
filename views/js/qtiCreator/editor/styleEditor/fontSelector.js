@@ -70,6 +70,7 @@ define([
                 styleEditor.apply(target, 'font-family');
                 $selector.select2('val', $target.css('font-family'));
             };
+        let isStylesLoaded = false;
 
         $selector.append(`<option value="">${__('Default')}</option>`);
 
@@ -97,7 +98,11 @@ define([
         });
 
         $selector.on('change', function () {
-            styleEditor.apply(target, 'font-family', $(this).val());
+            if (!isStylesLoaded) {
+                styleEditor.apply(target, 'font-family', $(this).val());
+            } else {
+                isStylesLoaded = false;
+            }
         });
 
         /**
@@ -109,6 +114,7 @@ define([
             } else {
                 $selector.val($target.css('font-family'));
             }
+            isStylesLoaded = true;
             $selector.trigger('change');
         });
     };

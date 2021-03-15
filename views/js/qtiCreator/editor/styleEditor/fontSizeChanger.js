@@ -74,7 +74,12 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
          * Apply font size on blur
          */
         $input.on('blur', function () {
-            itemFontSize = parseInt(this.value, 10);
+            if (this.value) {
+                itemFontSize = parseInt(this.value, 10);
+            } else {
+                styleEditor.apply(`${itemSelector} *`, 'font-size');
+                itemFontSize = parseInt($item.css('font-size'), 10);
+            }
             resizeFont();
         });
 
@@ -94,6 +99,7 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
         $resetBtn.on('click', function () {
             $input.val('');
             styleEditor.apply(`${itemSelector} *`, 'font-size');
+            itemFontSize = parseInt($item.css('font-size'), 10);
         });
 
         /**
@@ -102,7 +108,7 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
         $(document).on('customcssloaded.styleeditor', function (e, style) {
             if (style[styleSelector] && style[styleSelector]['font-size']) {
                 $input.val(parseInt(style[styleSelector]['font-size'], 10));
-                $input.trigger('blur');
+                itemFontSize = parseInt(style[styleSelector]['font-size'], 10);
             } else {
                 $input.val(parseInt($item.css('font-size'), 10));
             }

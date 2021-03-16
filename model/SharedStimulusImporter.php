@@ -35,6 +35,7 @@ use oat\oatbox\log\TaoLoggerAwareInterface;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\service\ServiceManager;
 use oat\taoMediaManager\model\sharedStimulus\parser\SharedStimulusMediaExtractor;
+use oat\taoMediaManager\model\sharedStimulus\service\StoreService;
 use tao_helpers_File;
 use tao_helpers_form_Form as Form;
 use oat\tao\model\import\ImportHandlerHelperTrait;
@@ -126,12 +127,15 @@ class SharedStimulusImporter extends ConfigurableService implements
                     try {
                         self::isValidSharedStimulus($uploadedFile);
 
-                        $mediaResourceUri = $service->createMediaInstance(
+                        $directory = $this->getSharedStimulusStoreService()->store(
                             $uploadedFile,
+                            $fileInfo['name']
+                        );
+
+                        $mediaResourceUri = $this->getMediaService()->createSharedStimulusInstance(
+                            $directory . DIRECTORY_SEPARATOR . $fileInfo['name'],
                             $classUri,
                             tao_helpers_Uri::decode($form instanceof Form ? $form->getValue('lang') : $form['lang']),
-                            $fileInfo['name'],
-                            MediaService::SHARED_STIMULUS_MIME_TYPE,
                             $userId
                         );
 
@@ -168,6 +172,7 @@ class SharedStimulusImporter extends ConfigurableService implements
                         fclose($uploadedFileResource);
                     }
 
+                    //Todo: fix replace shared stimulus
                     $instanceEdited = $service->editMediaInstance(
                         isset($filepath) ? $filepath : $uploadedFile,
                         $instanceUri,
@@ -343,5 +348,10 @@ class SharedStimulusImporter extends ConfigurableService implements
     private function getMediaService(): MediaService
     {
         return $this->getServiceLocator()->get(MediaService::class);
+    }
+
+    private function getSharedStimulusStoreService(): StoreService
+    {
+        return $this->getServiceLocator()->get(StoreService::class);
     }
 }

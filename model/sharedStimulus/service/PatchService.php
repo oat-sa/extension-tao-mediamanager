@@ -15,23 +15,29 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2020-2021 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus\service;
 
+use core_kernel_classes_Literal;
 use core_kernel_classes_Resource as Resource;
 use core_kernel_persistence_Exception;
 use InvalidArgumentException;
+use League\Flysystem\FilesystemInterface;
 use oat\generis\model\fileReference\FileReferenceSerializer;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\filesystem\File;
+use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\media\TaoMediaException;
 use oat\tao\model\media\TaoMediaResolver;
+use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
+use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\taoMediaManager\model\MediaService;
+use oat\taoMediaManager\model\relation\event\MediaSavedEventDispatcher;
 use oat\taoMediaManager\model\sharedStimulus\parser\SharedStimulusMediaExtractor;
 use oat\taoMediaManager\model\sharedStimulus\PatchCommand;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
@@ -66,7 +72,24 @@ class PatchService extends ConfigurableService
         $this->validateResource($resource);
         $this->validateXml($file);
 
-        $this->getMediaService()->editMediaInstance($file, $id, null, $userId);
+        /* @var core_kernel_classes_Literal */
+        $link = $resource->getUniquePropertyValue($this->getProperty(MediaService::PROPERTY_LINK));
+        $sharedStimulusStoredSourceFile = $this->getFileSourceUnserializer()->unserialize((string)$link);
+
+        $this->getFileSystem()->putStream($sharedStimulusStoredSourceFile, $file->readStream());
+
+        $content = $file->read();
+        $resource->editPropertyValues($this->getProperty(MediaService::PROPERTY_MD5), md5($content));
+
+        $this->getMediaService()->dispatchMediaSavedEvent(
+            'Imported new file',
+            $resource,
+            $sharedStimulusStoredSourceFile,
+            $file->getMimeType(),
+            $userId,
+            $content
+        );
+
         $file->delete();
 
         return new SharedStimulus(
@@ -114,5 +137,26 @@ class PatchService extends ConfigurableService
     public function getMediaParser(): SharedStimulusMediaExtractor
     {
         return $this->getServiceLocator()->get(SharedStimulusMediaExtractor::class);
+    }
+
+    private function getFileSourceUnserializer(): FileSourceUnserializer
+    {
+        return $this->getServiceLocator()->get(FileSourceUnserializer::class);
+    }
+
+    private function getFileSystem(): FilesystemInterface
+    {
+        return $this->getFileSystemService()
+            ->getFileSystem($this->getFlySystemManagement()->getOption(FlySystemManagement::OPTION_FS));
+    }
+
+    private function getFileSystemService(): FileSystemService
+    {
+        return $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
+    }
+
+    private function getFlySystemManagement(): FlySystemManagement
+    {
+        return $this->getServiceLocator()->get(FlySystemManagement::SERVICE_ID);
     }
 }

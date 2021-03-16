@@ -134,13 +134,7 @@ class MediaService extends ConfigurableService
         $instance = $clazz->createInstanceWithProperties($properties);
         $id = $instance->getUri();
 
-        $this->getMediaSavedEventDispatcher()->dispatchFromContent($id, $mimeType, $content);
-
-        // @todo: move taoRevision stuff under a listener of MediaSavedEvent
-        if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
-            $this->logInfo('Auto generating initial revision');
-            $this->getRepositoryService()->commit($instance, __('Initial import'), null, $userId);
-        }
+        $this->dispatchMediaSavedEvent('Initial import', $instance, $link, $mimeType, $userId, $content);
 
         return $id;
     }
@@ -167,12 +161,7 @@ class MediaService extends ConfigurableService
         $instance = $clazz->createInstanceWithProperties($properties);
         $id = $instance->getUri();
 
-        $this->getMediaSavedEventDispatcher()->dispatchFromContent($id, self::SHARED_STIMULUS_MIME_TYPE, $content);
-
-        if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
-            $this->logInfo('Auto generating initial revision');
-            $this->getRepositoryService()->commit($instance, __('Initial import'), null, $userId);
-        }
+        $this->dispatchMediaSavedEvent('Initial import', $instance, $link, self::SHARED_STIMULUS_MIME_TYPE, $userId, $content);
 
         return $id;
     }
@@ -204,14 +193,7 @@ class MediaService extends ConfigurableService
                 $instance->editPropertyValues($this->getProperty(self::PROPERTY_LANGUAGE), $language);
             }
 
-            $this->getMediaSavedEventDispatcher()
-                ->dispatchFromFile($id, $fileSource, $this->getResourceMimeType($instance));
-
-            // @todo: move taoRevision stuff under a listener of MediaSavedEvent
-            if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
-                $this->logInfo('Auto generating revision');
-                $this->getRepositoryService()->commit($instance, __('Imported new file'), null, $userId);
-            }
+            $this->dispatchMediaSavedEvent('Imported new file', $instance, $fileSource, $this->getResourceMimeType($instance), $userId);
         }
 
         return $link !== false;
@@ -229,6 +211,30 @@ class MediaService extends ConfigurableService
         }
 
         return false;
+    }
+
+    /**
+     * @param string|File $link
+     */
+    public function dispatchMediaSavedEvent(
+        string $commitMessage,
+        RdfResource $instance,
+        $link,
+        string $mimeType,
+        string $userId = null,
+        string $content = null
+    ): void {
+        $eventDispatcher = $this->getMediaSavedEventDispatcher();
+        if ($content) {
+            $eventDispatcher->dispatchFromContent($instance->getUri(), $mimeType, $content);
+        } else {
+            $eventDispatcher->dispatchFromFile($instance->getUri(), $link, $this->getResourceMimeType($instance));
+        }
+
+        if ($this->getServiceLocator()->get(common_ext_ExtensionsManager::SERVICE_ID)->isEnabled('taoRevision')) {
+            $this->logInfo('Auto generating initial revision');
+            $this->getRepositoryService()->commit($instance, __($commitMessage), null, $userId);
+        }
     }
 
     private function removeFromFilesystem($link): bool

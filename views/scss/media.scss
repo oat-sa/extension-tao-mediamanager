@@ -23,9 +23,15 @@
 }
 
 #item-editor-scope {
-    .tool-group {
-        ._accordion {
-            display: none;
+    .left-bar {
+        .tool-group {
+            ._accordion {
+                display: none;
+            }
         }
+    }
+    .focus-border {
+        border: 1px solid whiten($info, .2);
+        box-shadow: 1px 1px 3px 1px whiten($info, .2);
     }
 }

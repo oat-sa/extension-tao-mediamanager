@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\sharedStimulus\service;
 
 use League\Flysystem\FilesystemInterface;
+use oat\oatbox\filesystem\File;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
@@ -34,18 +35,24 @@ class StoreService extends ConfigurableService
      */
     public const CSS_DIR_NAME = 'css';
 
-    public function store(string $stimulusXmlSourcePath, string $stimulusFilename, array $cssFiles): string
+    /**
+     * @param string|File $stimulusXmlSourceFile
+     */
+    public function store($stimulusXmlSourceFile, string $stimulusFilename, array $cssFiles = []): string
     {
         $fs = $this->getFileSystem();
 
         $dirname = $this->getUniqueName($stimulusFilename);
         $fs->createDir($dirname);
-        $fs->writeStream($dirname . DIRECTORY_SEPARATOR . $stimulusFilename, fopen($stimulusXmlSourcePath, 'r'));
+
+        $stimulusXmlStream = $stimulusXmlSourceFile instanceof File ? $stimulusXmlSourceFile->readStream() : fopen($stimulusXmlSourceFile, 'r');
+
+        $fs->putStream($dirname . DIRECTORY_SEPARATOR . $stimulusFilename, $stimulusXmlStream);
 
         if (count($cssFiles)) {
             $fs->createDir($dirname . DIRECTORY_SEPARATOR . self::CSS_DIR_NAME);
             foreach ($cssFiles as $file) {
-                $fs->writeStream(
+                $fs->putStream(
                     $dirname . DIRECTORY_SEPARATOR . self::CSS_DIR_NAME . DIRECTORY_SEPARATOR . basename($file),
                     fopen($file, 'r')
                 );

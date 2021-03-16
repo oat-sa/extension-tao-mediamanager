@@ -40,7 +40,8 @@ define([
     'core/request',
     'util/url',
     'taoMediaManager/qtiCreator/editor/interactionsPanel',
-    'taoMediaManager/qtiCreator/editor/styleEditor/styleEditor'
+    'taoMediaManager/qtiCreator/editor/styleEditor/styleEditor',
+    'taoQtiItem/qtiItem/core/Element'
 ], function (
     $,
     _,
@@ -57,7 +58,8 @@ define([
     request,
     urlUtil,
     interactionPanel,
-    styleEditor
+    styleEditor,
+    Element
 ) {
     'use strict';
 
@@ -176,7 +178,9 @@ define([
                     //do the save
                     Promise.all([
                         request({
-                            url: urlUtil.route('patch', 'SharedStimulus', 'taoMediaManager', { id: config.properties.id }),
+                            url: urlUtil.route('patch', 'SharedStimulus', 'taoMediaManager', {
+                                id: config.properties.id
+                            }),
                             type: 'POST',
                             contentType: 'application/json',
                             dataType: 'json',
@@ -186,16 +190,16 @@ define([
                         }),
                         styleEditor.save()
                     ])
-                    .then(() => {
-                        if (!silent) {
-                            this.trigger('success');
-                        }
+                        .then(() => {
+                            if (!silent) {
+                                this.trigger('success');
+                            }
 
-                        this.trigger('saved');
-                    })
-                    .catch(err => {
-                        this.trigger('error', err);
-                    });
+                            this.trigger('saved');
+                        })
+                        .catch(err => {
+                            this.trigger('error', err);
+                        });
                 });
 
                 this.on('exit', function () {
@@ -264,6 +268,25 @@ define([
                         this.trigger('ready');
                     }
                 });
+                // highlite passage creator container when it's in focus
+                $(document).on('afterStateInit.qti-widget', function (e, element, state) {
+                    if (element.getRootElement().data('widget')) {
+                        const $itemContainer = element.getRootElement().data('widget').$container;
+                        switch (state.name) {
+                            case 'active':
+                                if (!Element.isA(element, 'assessmentItem')) {
+                                    $itemContainer.removeClass('focus-border');
+                                }
+                                break;
+
+                            case 'sleep':
+                                if (!$itemContainer.find('.widget-box.edit-active').length) {
+                                    $itemContainer.addClass('focus-border');
+                                }
+                                break;
+                        }
+                    }
+                });
 
                 // pass an context reference to the renderer
                 config.qtiCreatorContext = qtiCreatorContext;
@@ -288,7 +311,9 @@ define([
 
                                 widget = item.data('widget');
 
-                                item.attributes.class ? styleEditor.setHashClass(item.attributes.class) : styleEditor.generateHashClass();
+                                item.attributes.class
+                                    ? styleEditor.setHashClass(item.attributes.class)
+                                    : styleEditor.generateHashClass();
                                 // set class on container for style editor
                                 widget.$container.addClass(styleEditor.getHashClass());
                                 propertiesPanel(areaBroker.getPropertyPanelArea(), widget, config.properties);

@@ -31,7 +31,15 @@
         }
     }
     .focus-border {
-        border: 1px solid whiten($info, .2);
-        box-shadow: 1px 1px 3px 1px whiten($info, .2);
+        box-shadow: 1px 1px 3px 2px whiten($info, .2);
     }
+    .qti-itemBody.item-editor-drop-area  {
+        margin-top: 0;
+    }
+    .qti-item {
+        padding: 20px;
+    }
+}
+div.item-editor-item {
+    border-color: transparent;
 }

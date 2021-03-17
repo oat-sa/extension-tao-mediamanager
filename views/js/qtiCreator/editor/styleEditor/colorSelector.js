@@ -31,6 +31,16 @@ define([
         return `#${toHexPair(rgbArr[1])}${toHexPair(rgbArr[2])}${toHexPair(rgbArr[3])}`;
     }
 
+    function additionalStylesToObject(additional) {
+        const styles = {};
+        const additionalStyles = additional.split(';');
+        additionalStyles.forEach(element => {
+            const keyValue = element.split(':');
+            styles[keyValue[0]] = keyValue[1];
+        });
+        return styles;
+    }
+
     const colorSelector = function () {
         const colorPicker = $('.item-editor-color-picker'),
             widget = colorPicker.find('.color-picker'),
@@ -87,6 +97,12 @@ define([
         // event received from modified farbtastic
         widget.on('colorchange.farbtastic', function (e, color) {
             styleEditor.apply(widget.prop('target'), currentProperty, color);
+            if (widget.prop('additional')) {
+                const additionalStyles = additionalStylesToObject(widget.prop('additional'));
+                Object.keys(additionalStyles).forEach(key => {
+                    styleEditor.apply(widget.prop('target'), key, additionalStyles[key]);
+                });
+            }
             setTriggerColor();
         });
 
@@ -98,6 +114,7 @@ define([
                     this.nodeName.toLowerCase() === 'label' ? $tmpTrigger.parent().find('.color-trigger') : $tmpTrigger;
 
             widget.prop('target', $trigger.data('target'));
+            widget.prop('additional', $trigger.data('additional') || '');
             widgetBox.hide();
             currentProperty = $trigger.data('value');
             setTitle(currentProperty, $trigger);
@@ -131,8 +148,15 @@ define([
             const $this = $(this),
                 $colorTrigger = $this.parent().find('.color-trigger'),
                 target = $colorTrigger.data('target'),
-                value = $colorTrigger.data('value');
+                value = $colorTrigger.data('value'),
+                additional = $colorTrigger.data('additional');
             styleEditor.apply(target, value);
+            if (additional) {
+                const additionalStyles = additionalStylesToObject(additional);
+                Object.keys(additionalStyles).forEach(key => {
+                    styleEditor.apply(target, key);
+                });
+            }
             setTriggerColor();
         });
 

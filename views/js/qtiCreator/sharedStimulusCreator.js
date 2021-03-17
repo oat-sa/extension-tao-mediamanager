@@ -316,6 +316,9 @@ define([
                                     : styleEditor.generateHashClass();
                                 // set class on container for style editor
                                 widget.$container.addClass(styleEditor.getHashClass());
+                                // remove class from itemBody
+                                widget.$container.find('.qti-itemBody').removeClass(styleEditor.getHashClass());
+
                                 propertiesPanel(areaBroker.getPropertyPanelArea(), widget, config.properties);
 
                                 //init event listeners:

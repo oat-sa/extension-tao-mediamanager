@@ -63,7 +63,7 @@
                                         <span class="icon-eraser reset-button" data-value="background-color"
                                               title="{{__ 'Remove custom background color'}}"></span>
                                         <span class="color-trigger" id="initial-bg" data-value="background-color"
-                                              data-target="body .hashClass"></span>
+                                              data-target="body .hashClass" data-additional="padding:20px"></span>
                                     </div>
                                     <div class="clearfix">
                                         <label for="initial-color" class="truncate">{{__ 'Text color'}}</label>
@@ -77,14 +77,14 @@
                                         <span class="icon-eraser reset-button" data-value="color"
                                               title="{{__ 'Remove custom border color'}}"></span>
                                         <span class="color-trigger" id="initial-color" data-value="border-color"
-                                              data-target="body .hashClass .solid,body .hashClass .matrix, body .hashClass table.matrix th, body div.qti-item table.matrix td"></span>
+                                              data-target="body .hashClass" data-additional="border-width:4px;border-style:solid"></span>
                                     </div>
                                     <div class="clearfix">
                                         <label for="initial-color" class="truncate">{{__ 'Table headings'}}</label>
                                         <span class="icon-eraser reset-button" data-value="color"
                                               title="{{__ 'Remove custom background color'}}"></span>
                                         <span class="color-trigger" id="initial-color" data-value="background-color"
-                                              data-target="body .hashClass .matrix th"></span>
+                                              data-target="body .hashClass table.qti-table th"></span>
                                     </div>
                                 </div>
                             </div>

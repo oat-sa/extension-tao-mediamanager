@@ -77,7 +77,7 @@
                                         <span class="icon-eraser reset-button" data-value="color"
                                               title="{{__ 'Remove custom border color'}}"></span>
                                         <span class="color-trigger" id="initial-color" data-value="border-color"
-                                              data-target="body .hashClass" data-additional="border-width:4px;border-style:solid"></span>
+                                              data-target="body .hashClass" data-additional="border-width:4px;border-style:solid;padding:20px"></span>
                                     </div>
                                     <div class="clearfix">
                                         <label for="initial-color" class="truncate">{{__ 'Table headings'}}</label>

@@ -31,7 +31,7 @@ define([
         return `#${toHexPair(rgbArr[1])}${toHexPair(rgbArr[2])}${toHexPair(rgbArr[3])}`;
     }
 
-    function additionalStylesToObject(additional) {
+    function additionalStylesToObject(additional = '') {
         const styles = {};
         const additionalStyles = additional.split(';');
         additionalStyles.forEach(element => {
@@ -50,7 +50,8 @@ define([
             resetButtons = colorPicker.find('.reset-button'),
             colorTriggers = colorPicker.find('.color-trigger'),
             colorTriggerLabels = colorPicker.find('label'),
-            $doc = $(document);
+            $doc = $(document),
+            additionalStyles = {};
         let currentProperty = 'color',
             widgetObj;
 
@@ -92,6 +93,25 @@ define([
             });
         };
 
+        /**
+         * Trigger button background
+         */
+        const collectCommonAdditionalStyles = function () {
+            colorTriggers.each(function () {
+                const $trigger = $(this);
+                const target = $trigger.data('target');
+                const value = $trigger.data('value');
+                const styles = additionalStylesToObject($trigger.data('additional'));
+                Object.keys(styles).forEach(key => {
+                    if (!additionalStyles[key]) {
+                        additionalStyles[key] = [{ target, value }];
+                    } else {
+                        additionalStyles[key].push({ target, value });
+                    }
+                });
+            });
+        };
+
         widgetObj = $.farbtastic(widget).linkTo(input);
 
         // event received from modified farbtastic
@@ -108,6 +128,7 @@ define([
 
         // open color picker
         setTriggerColor();
+        collectCommonAdditionalStyles();
         colorTriggers.add(colorTriggerLabels).on('click', function () {
             const $tmpTrigger = $(this),
                 $trigger =
@@ -152,9 +173,27 @@ define([
                 additional = $colorTrigger.data('additional');
             styleEditor.apply(target, value);
             if (additional) {
-                const additionalStyles = additionalStylesToObject(additional);
-                Object.keys(additionalStyles).forEach(key => {
-                    styleEditor.apply(target, key);
+                const styles = additionalStylesToObject(additional);
+                Object.keys(styles).forEach(key => {
+                    if (additionalStyles[key].length === 1) {
+                        styleEditor.apply(target, key);
+                    } else {
+                        // check other target: value pairs
+                        const style = styleEditor.getStyle() || {};
+                        let needToRemove = true;
+                        additionalStyles[key].forEach(element => {
+                            if (
+                                (target !== element.target || value !== element.value) &&
+                                style[target] &&
+                                style[element.target][element.value]
+                            ) {
+                                needToRemove = false;
+                            }
+                        });
+                        if (needToRemove) {
+                            styleEditor.apply(target, key);
+                        }
+                    }
                 });
             }
             setTriggerColor();

@@ -43,7 +43,7 @@
                     </section>
                     <section class="tool-group clearfix" id="sidebar-right-style-editor">
 
-                        <h2>{{__ 'Style Editor'}}</h2>
+                        <h2>{{__ 'Passage Style'}}</h2>
 
                         <div class="panel color-picker-panel">
                             <div class="item-editor-color-picker sidebar-popup-container-box">
@@ -131,6 +131,94 @@
                     </section>
                 </div>
                 <div class="item-editor-item-related sidebar-right-section-box" id="item-editor-text-property-bar">
+                    <section class="tool-group clearfix" id="sidebar-right-style-editor">
+
+                        <h2>{{__ 'Text Block Style'}}</h2>
+
+                        <div class="panel color-picker-panel">
+                            <div class="item-editor-color-picker sidebar-popup-container-box">
+                                <div class="color-picker-container sidebar-popup">
+                                    <div class="sidebar-popup-title">
+                                        <h3 id="color-picker-title"></h3>
+                                        <a class="closer" href="#" data-close="#color-picker-container"></a>
+                                    </div>
+                                    <div class="sidebar-popup-content">
+                                        <div class="color-picker"></div>
+                                        <input id="color-picker-input" type="text" value="#000000">
+                                    </div>
+                                </div>
+                                <div class="reset-group">
+                                    <div class="clearfix">
+                                        <label for="initial-bg" class="truncate">{{__ 'Background color'}}</label>
+                                        <span class="icon-eraser reset-button" data-value="background-color"
+                                              title="{{__ 'Remove custom background color'}}"></span>
+                                        <span class="color-trigger" id="initial-bg" data-value="background-color"
+                                              data-target="body .custom-text-box.hashClass" data-additional="padding:20px"></span>
+                                    </div>
+                                    <div class="clearfix">
+                                        <label for="initial-color" class="truncate">{{__ 'Text color'}}</label>
+                                        <span class="icon-eraser reset-button" data-value="color"
+                                              title="{{__ 'Remove custom text color'}}"></span>
+                                        <span class="color-trigger" id="initial-color" data-value="color"
+                                              data-target="body .custom-text-box.hashClass"></span>
+                                    </div>
+                                    <div class="clearfix">
+                                        <label for="initial-color" class="truncate">{{__ 'Border color'}}</label>
+                                        <span class="icon-eraser reset-button" data-value="color"
+                                              title="{{__ 'Remove custom border color'}}"></span>
+                                        <span class="color-trigger" id="initial-color" data-value="border-color"
+                                              data-target="body .custom-text-box.hashClass" data-additional="border-width:4px;border-style:solid;padding:20px"></span>
+                                    </div>
+                                    <div class="clearfix">
+                                        <label for="initial-color" class="truncate">{{__ 'Table headings'}}</label>
+                                        <span class="icon-eraser reset-button" data-value="color"
+                                              title="{{__ 'Remove custom background color'}}"></span>
+                                        <span class="color-trigger" id="initial-color" data-value="background-color"
+                                              data-target="body .custom-text-box.hashClass table.qti-table th"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="panel">
+
+                            <div>{{__ 'Font family'}}</div>
+
+                            <div class="reset-group">
+                                <select
+                                    data-target="body .custom-text-box.hashClass"
+                                    id="item-editor-font-selector"
+                                    data-has-search="false"
+                                    data-placeholder="{{__ 'Default'}}"
+                                    class="select2 has-icon"
+                                    data-role="font-selector"></select>
+                                <span class="icon-eraser reset-button" data-role="font-selector-reset"
+                                      title="{{__ 'Remove custom font family'}}"></span>
+                            </div>
+
+                        </div>
+                        <div class="panel">
+                            <div>{{__ 'Font size'}}</div>
+                            <div class="reset-group">
+                                        <span id="item-editor-font-size-changer" data-target="body .custom-text-box.hashClass">
+                                            <a href="#" data-action="reduce" title="{{__ 'Reduce font size'}}"
+                                               class="icon-smaller"></a>
+                                            <a href="#" data-action="enlarge" title="{{__ 'Enlarge font size'}}"
+                                               class="icon-larger"></a>
+                                        </span>
+
+                                <span id="item-editor-font-size-manual-input" class="item-editor-unit-input-box">
+                                            <input type="text" id="item-editor-font-size-text" class="has-icon"
+                                                   placeholder="{{__ 'e.g. 13'}}">
+                                                <span class="unit-indicator">px</span>
+                                        </span>
+                                <span class="icon-eraser reset-button" data-role="font-size-reset"
+                                      title="{{__ 'Remove custom font size'}}"></span>
+                            </div>
+
+                        </div>
+
+                    </section>
                     <section class="tool-group clearfix" id="sidebar-right-text-block-properties">
                         <h2>{{__ 'Text Block Properties'}}</h2>
 

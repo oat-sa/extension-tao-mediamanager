@@ -41,8 +41,8 @@ define([
         return styles;
     }
 
-    const colorSelector = function () {
-        const colorPicker = $('.item-editor-color-picker'),
+    const colorSelector = function ($container) {
+        const colorPicker = $container.find('.item-editor-color-picker'),
             widget = colorPicker.find('.color-picker'),
             widgetBox = colorPicker.find('.color-picker-container'),
             titleElement = colorPicker.find('#color-picker-title'),
@@ -114,18 +114,6 @@ define([
 
         widgetObj = $.farbtastic(widget).linkTo(input);
 
-        // event received from modified farbtastic
-        widget.on('colorchange.farbtastic', function (e, color) {
-            styleEditor.apply(widget.prop('target'), currentProperty, color);
-            if (widget.prop('additional')) {
-                const additionalStyles = additionalStylesToObject(widget.prop('additional'));
-                Object.keys(additionalStyles).forEach(key => {
-                    styleEditor.apply(widget.prop('target'), key, additionalStyles[key]);
-                });
-            }
-            setTriggerColor();
-        });
-
         // open color picker
         setTriggerColor();
         collectCommonAdditionalStyles();
@@ -141,27 +129,45 @@ define([
             setTitle(currentProperty, $trigger);
             widgetObj.setColor(rgbToHex($trigger.css('background-color')));
             widgetBox.show();
-        });
 
-        // close color picker, when clicking somewhere outside or on the x
-        $doc.on('mouseup', function (e) {
-            if ($(e.target).hasClass('closer')) {
-                widgetBox.hide();
-                return false;
-            }
+            // event received from modified farbtastic
+            widget.on('colorchange.farbtastic', function (e, color) {
+                styleEditor.apply(widget.prop('target'), currentProperty, color);
+                if (widget.prop('additional')) {
+                    const additionalStyles = additionalStylesToObject(widget.prop('additional'));
+                    Object.keys(additionalStyles).forEach(key => {
+                        styleEditor.apply(widget.prop('target'), key, additionalStyles[key]);
+                    });
+                }
+                setTriggerColor();
+            });
 
-            if (!widgetBox.is(e.target) && widgetBox.has(e.target).length === 0) {
-                widgetBox.hide();
-                return false;
-            }
-        });
+            // close color picker, when clicking somewhere outside or on the x
+            $doc.on('mouseup.colorselector', function (e) {
+                if ($(e.target).hasClass('closer')) {
+                    widgetBox.hide();
+                    widget.off('colorchange.farbtastic');
+                    $doc.off('colorselector');
+                    return false;
+                }
 
-        // close color picker on escape
-        $doc.on('keyup', function (e) {
-            if (e.keyCode === 27) {
-                widgetBox.hide();
-                return false;
-            }
+                if (!widgetBox.is(e.target) && widgetBox.has(e.target).length === 0) {
+                    widgetBox.hide();
+                    widget.off('colorchange.farbtastic');
+                    $doc.off('colorselector');
+                    return false;
+                }
+            });
+
+            // close color picker on escape
+            $doc.on('keyup.colorselector', function (e) {
+                if (e.keyCode === 27) {
+                    widgetBox.hide();
+                    widget.off('colorchange.farbtastic');
+                    $doc.off('colorselector');
+                    return false;
+                }
+            });
         });
 
         // reset to default

@@ -170,7 +170,7 @@ define([
                     const item = this.getItem();
                     const styles = styleEditor.getStyle();
                     if (_.size(styles) && !item.attributes.class) {
-                        item.attributes.class = styleEditor.getHashClass();
+                        item.attributes.class = this.hashClass;
                     }
 
                     const xml = xmlNsHandler.restoreNs(xmlRenderer.render(item), item.getNamespaces());
@@ -282,6 +282,7 @@ define([
                             case 'sleep':
                                 if (!$itemContainer.find('.widget-box.edit-active').length) {
                                     $itemContainer.addClass('focus-border');
+                                    styleEditor.setHashClass(sharedStimulusCreator.hashClass);
                                 }
                                 break;
                         }
@@ -314,10 +315,11 @@ define([
                                 item.attributes.class
                                     ? styleEditor.setHashClass(item.attributes.class)
                                     : styleEditor.generateHashClass();
+                                sharedStimulusCreator.hashClass = styleEditor.getHashClass();
                                 // set class on container for style editor
-                                widget.$container.addClass(styleEditor.getHashClass());
+                                widget.$container.addClass(sharedStimulusCreator.hashClass);
                                 // remove class from itemBody
-                                widget.$container.find('.qti-itemBody').removeClass(styleEditor.getHashClass());
+                                widget.$container.find('.qti-itemBody').removeClass(sharedStimulusCreator.hashClass);
 
                                 propertiesPanel(areaBroker.getPropertyPanelArea(), widget, config.properties);
 

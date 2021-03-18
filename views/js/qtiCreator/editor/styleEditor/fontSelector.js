@@ -42,15 +42,15 @@ define([
      * The function is called like this:
      * fontSelector();
      */
-    const fontSelector = function () {
-        const $selector = $('select#item-editor-font-selector'),
+    const fontSelector = function ($container) {
+        const $selector = $container.find('select#item-editor-font-selector'),
             target = styleEditor.replaceHashClass($selector.data('target')),
             $target = $(target),
             normalize = function (font) {
                 return font.replace(/"/g, "'").replace(/, /g, ',');
             },
             clean = function (font) {
-                return font.substring(0, font.indexOf(',')).replace(/'/g, '');
+                return font.substring(0, font.indexOf(',')).replace(/'/g, '').replace(/"/g, '');
             },
             resetButton = $selector.parent().find('[data-role="font-selector-reset"]'),
             toLabel = function (font) {
@@ -70,8 +70,9 @@ define([
                 styleEditor.apply(target, 'font-family');
                 $selector.select2('val', $target.css('font-family'));
             };
-        let isStylesLoaded = false;
+        let applyToStylesEditor = true;
 
+        $selector.empty();
         $selector.append(`<option value="">${__('Default')}</option>`);
 
         _.forEach(fontStacks, (value, key) => {
@@ -84,12 +85,15 @@ define([
                 }).css({
                     fontFamily: normalizeFont
                 });
+                if (clean(normalizeFont) === clean($target.css('font-family'))) {
+                    option.attr('selected', true);
+                }
                 optGroup.append(option);
             });
             $selector.append(optGroup);
         });
 
-        resetButton.on('click', reset);
+        resetButton.off('click').on('click', reset);
 
         $selector.select2({
             formatResult: format,
@@ -97,11 +101,11 @@ define([
             width: 'resolve'
         });
 
-        $selector.on('change', function () {
-            if (!isStylesLoaded) {
+        $selector.off('change').on('change', function () {
+            if (applyToStylesEditor) {
                 styleEditor.apply(target, 'font-family', $(this).val());
             } else {
-                isStylesLoaded = false;
+                applyToStylesEditor = true;
             }
         });
 
@@ -114,7 +118,7 @@ define([
             } else {
                 $selector.val($target.css('font-family'));
             }
-            isStylesLoaded = true;
+            applyToStylesEditor = false;
             $selector.trigger('change');
         });
     };

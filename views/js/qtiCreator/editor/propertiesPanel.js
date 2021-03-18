@@ -24,7 +24,7 @@ define([
     'taoMediaManager/qtiCreator/editor/styleEditor/fontSelector',
     'taoMediaManager/qtiCreator/editor/styleEditor/colorSelector',
     'taoMediaManager/qtiCreator/editor/styleEditor/fontSizeChanger'
-], function(panel, styleEditor, styleSheetToggler, fontSelector, colorSelector, fontSizeChanger) {
+], function (panel, styleEditor, styleSheetToggler, fontSelector, colorSelector, fontSizeChanger) {
     'use strict';
 
     /**
@@ -33,15 +33,16 @@ define([
      * @param {Object} widget - item Widget
      * @param {Object} config - sharedStimulusCreator config
      */
-    return function setUpInteractionPanel($container, widget, config){
+    return function setUpInteractionPanel($container, widget, config) {
         panel.initSidebarAccordion($container);
         panel.initFormVisibilityListener();
 
         styleEditor.init(widget.element, config);
         styleSheetToggler.init(config);
 
-        fontSelector();
-        colorSelector();
-        fontSizeChanger();
+        const $passageEditor = $('#item-editor-item-property-bar');
+        fontSelector($passageEditor);
+        colorSelector($passageEditor);
+        fontSizeChanger($passageEditor);
     };
 });

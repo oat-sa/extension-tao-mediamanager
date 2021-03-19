@@ -373,8 +373,7 @@ define([
         //prepare config object
         itemConfig = {
             uri: config.id,
-            lang: config.lang,
-            baseUrl: config.baseUrl
+            lang: config.lang
         };
 
         removeOrphanedStylesheets();

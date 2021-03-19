@@ -45,8 +45,8 @@ define([
         const colorPicker = $container.find('.item-editor-color-picker'),
             widget = colorPicker.find('.color-picker'),
             widgetBox = colorPicker.find('.color-picker-container'),
-            titleElement = colorPicker.find('#color-picker-title'),
-            input = colorPicker.find('#color-picker-input'),
+            titleElement = colorPicker.find('.color-picker-title'),
+            input = colorPicker.find('.color-picker-input'),
             resetButtons = colorPicker.find('.reset-button'),
             colorTriggers = colorPicker.find('.color-trigger'),
             colorTriggerLabels = colorPicker.find('label'),
@@ -99,7 +99,7 @@ define([
         const collectCommonAdditionalStyles = function () {
             colorTriggers.each(function () {
                 const $trigger = $(this);
-                const target = $trigger.data('target');
+                const target = styleEditor.replaceHashClass($trigger.data('target'));
                 const value = $trigger.data('value');
                 const styles = additionalStylesToObject($trigger.data('additional'));
                 Object.keys(styles).forEach(key => {
@@ -117,64 +117,69 @@ define([
         // open color picker
         setTriggerColor();
         collectCommonAdditionalStyles();
-        colorTriggers.add(colorTriggerLabels).on('click', function () {
-            const $tmpTrigger = $(this),
-                $trigger =
-                    this.nodeName.toLowerCase() === 'label' ? $tmpTrigger.parent().find('.color-trigger') : $tmpTrigger;
+        colorTriggers
+            .add(colorTriggerLabels)
+            .off('click')
+            .on('click', function () {
+                const $tmpTrigger = $(this),
+                    $trigger =
+                        this.nodeName.toLowerCase() === 'label'
+                            ? $tmpTrigger.parent().find('.color-trigger')
+                            : $tmpTrigger;
 
-            widget.prop('target', $trigger.data('target'));
-            widget.prop('additional', $trigger.data('additional') || '');
-            widgetBox.hide();
-            currentProperty = $trigger.data('value');
-            setTitle(currentProperty, $trigger);
-            widgetObj.setColor(rgbToHex($trigger.css('background-color')));
-            widgetBox.show();
+                widget.prop('target', $trigger.data('target'));
+                widget.prop('additional', $trigger.data('additional') || '');
+                widgetBox.hide();
+                currentProperty = $trigger.data('value');
+                setTitle(currentProperty, $trigger);
+                widgetObj.setColor(rgbToHex($trigger.css('background-color')));
+                widgetBox.show();
 
-            // event received from modified farbtastic
-            widget.on('colorchange.farbtastic', function (e, color) {
-                styleEditor.apply(widget.prop('target'), currentProperty, color);
-                if (widget.prop('additional')) {
-                    const additionalStyles = additionalStylesToObject(widget.prop('additional'));
-                    Object.keys(additionalStyles).forEach(key => {
-                        styleEditor.apply(widget.prop('target'), key, additionalStyles[key]);
-                    });
-                }
-                setTriggerColor();
+                // event received from modified farbtastic
+                widget.on('colorchange.farbtastic', function (e, color) {
+                    styleEditor.apply(widget.prop('target'), currentProperty, color);
+                    if (widget.prop('additional')) {
+                        const additionalStyles = additionalStylesToObject(widget.prop('additional'));
+                        Object.keys(additionalStyles).forEach(key => {
+                            styleEditor.apply(widget.prop('target'), key, additionalStyles[key]);
+                        });
+                    }
+                    setTriggerColor();
+                });
+
+                // close color picker, when clicking somewhere outside or on the x
+                $doc.on('mouseup.colorselector', function (e) {
+                    if ($(e.target).hasClass('closer')) {
+                        widgetBox.hide();
+                        widget.off('colorchange.farbtastic');
+                        $doc.off('colorselector');
+                        return false;
+                    }
+
+                    if (!widgetBox.is(e.target) && widgetBox.has(e.target).length === 0) {
+                        widgetBox.hide();
+                        widget.off('colorchange.farbtastic');
+                        $doc.off('colorselector');
+                        return false;
+                    }
+                });
+
+                // close color picker on escape
+                $doc.on('keyup.colorselector', function (e) {
+                    if (e.keyCode === 27) {
+                        widgetBox.hide();
+                        widget.off('colorchange.farbtastic');
+                        $doc.off('colorselector');
+                        return false;
+                    }
+                });
             });
-
-            // close color picker, when clicking somewhere outside or on the x
-            $doc.on('mouseup.colorselector', function (e) {
-                if ($(e.target).hasClass('closer')) {
-                    widgetBox.hide();
-                    widget.off('colorchange.farbtastic');
-                    $doc.off('colorselector');
-                    return false;
-                }
-
-                if (!widgetBox.is(e.target) && widgetBox.has(e.target).length === 0) {
-                    widgetBox.hide();
-                    widget.off('colorchange.farbtastic');
-                    $doc.off('colorselector');
-                    return false;
-                }
-            });
-
-            // close color picker on escape
-            $doc.on('keyup.colorselector', function (e) {
-                if (e.keyCode === 27) {
-                    widgetBox.hide();
-                    widget.off('colorchange.farbtastic');
-                    $doc.off('colorselector');
-                    return false;
-                }
-            });
-        });
 
         // reset to default
-        resetButtons.on('click', function () {
+        resetButtons.off('click').on('click', function () {
             const $this = $(this),
                 $colorTrigger = $this.parent().find('.color-trigger'),
-                target = $colorTrigger.data('target'),
+                target = styleEditor.replaceHashClass($colorTrigger.data('target')),
                 value = $colorTrigger.data('value'),
                 additional = $colorTrigger.data('additional');
             styleEditor.apply(target, value);

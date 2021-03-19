@@ -49,12 +49,12 @@
                             <div class="item-editor-color-picker sidebar-popup-container-box">
                                 <div class="color-picker-container sidebar-popup">
                                     <div class="sidebar-popup-title">
-                                        <h3 id="color-picker-title"></h3>
+                                        <h3 class="color-picker-title"></h3>
                                         <a class="closer" href="#" data-close="#color-picker-container"></a>
                                     </div>
                                     <div class="sidebar-popup-content">
                                         <div class="color-picker"></div>
-                                        <input id="color-picker-input" type="text" value="#000000">
+                                        <input class="color-picker-input" type="text" value="#000000">
                                     </div>
                                 </div>
                                 <div class="reset-group">
@@ -118,7 +118,7 @@
                                         </span>
 
                                 <span id="item-editor-font-size-manual-input" class="item-editor-unit-input-box">
-                                            <input type="text" id="item-editor-font-size-text" class="has-icon"
+                                            <input type="text" class="item-editor-font-size-text has-icon"
                                                    placeholder="{{__ 'e.g. 13'}}">
                                                 <span class="unit-indicator">px</span>
                                         </span>
@@ -144,7 +144,7 @@
                                     </div>
                                     <div class="sidebar-popup-content">
                                         <div class="color-picker"></div>
-                                        <input id="color-picker-input" type="text" value="#000000">
+                                        <input class="color-picker-input" type="text" value="#000000">
                                     </div>
                                 </div>
                                 <div class="reset-group">
@@ -208,7 +208,7 @@
                                         </span>
 
                                 <span id="item-editor-font-size-manual-input" class="item-editor-unit-input-box">
-                                            <input type="text" id="item-editor-font-size-text" class="has-icon"
+                                            <input type="text" class="item-editor-font-size-text has-icon"
                                                    placeholder="{{__ 'e.g. 13'}}">
                                                 <span class="unit-indicator">px</span>
                                         </span>

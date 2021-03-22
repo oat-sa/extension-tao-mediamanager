@@ -32,10 +32,9 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
         const $fontSizeChanger = $container.find('#item-editor-font-size-changer'),
             itemSelector = styleEditor.replaceHashClass($fontSizeChanger.data('target')),
             styleSelector = `${itemSelector} *`,
-            $item = $(itemSelector),
             $resetBtn = $fontSizeChanger.parents('.reset-group').find('[data-role="font-size-reset"]'),
             $input = $container.find('.item-editor-font-size-text');
-        let itemFontSize = parseInt($item.children().first().css('font-size'), 10);
+        let itemFontSize = parseInt($(itemSelector).children().first().css('font-size'), 10);
         $input.val(itemFontSize);
 
         /**
@@ -80,11 +79,10 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
         $input.off('blur').on('blur', function () {
             if (this.value) {
                 itemFontSize = parseInt(this.value, 10);
+                resizeFont();
             } else {
                 styleEditor.apply(`${itemSelector} *`, 'font-size');
-                itemFontSize = parseInt($item.css('font-size'), 10);
             }
-            resizeFont();
         });
 
         /**
@@ -101,9 +99,9 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
          * Remove font size from virtual style sheet
          */
         $resetBtn.off('click').on('click', function () {
-            $input.val('');
             styleEditor.apply(`${itemSelector} *`, 'font-size');
-            itemFontSize = parseInt($item.css('font-size'), 10);
+            itemFontSize = parseInt($(itemSelector).children().first().css('font-size'), 10);
+            $input.val(itemFontSize);
         });
 
         /**
@@ -113,8 +111,6 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
             if (style[styleSelector] && style[styleSelector]['font-size']) {
                 $input.val(parseInt(style[styleSelector]['font-size'], 10));
                 itemFontSize = parseInt(style[styleSelector]['font-size'], 10);
-            } else {
-                $input.val(parseInt($item.css('font-size'), 10));
             }
         });
     };

@@ -66,14 +66,6 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
             });
 
         /**
-         * Disallows invalid characters
-         */
-        $input.off('keydown').on('keydown', function (e) {
-            var c = e.keyCode;
-            return _.contains([8, 37, 39, 46], c) || (c >= 48 && c <= 57) || (c >= 96 && c <= 105);
-        });
-
-        /**
          * Apply font size on blur
          */
         $input.off('blur').on('blur', function () {
@@ -87,12 +79,14 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
 
         /**
          * Apply font size on enter
+         * Disallows invalid characters
          */
         $input.off('keydown').on('keydown', function (e) {
             var c = e.keyCode;
             if (c === 13) {
                 $input.trigger('blur');
             }
+            return _.contains([8, 37, 39, 46], c) || (c >= 48 && c <= 57) || (c >= 96 && c <= 105);
         });
 
         /**

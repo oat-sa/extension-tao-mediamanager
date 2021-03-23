@@ -60,31 +60,31 @@
                                 <div class="reset-group">
                                     <div class="clearfix">
                                         <label for="initial-bg" class="truncate">{{__ 'Background color'}}</label>
-                                        <span class="icon-eraser reset-button" data-value="background-color"
-                                              title="{{__ 'Remove custom background color'}}"></span>
-                                        <span class="color-trigger" id="initial-bg" data-value="background-color"
-                                              data-target="body .hashClass" data-additional="padding:20px"></span>
+                                        <button class="icon-eraser reset-button" data-value="background-color"
+                                            aria-label="{{__ 'Remove custom background color'}}"></button>
+                                        <button class="color-trigger" id="initial-bg" data-value="background-color"
+                                            data-target="body .hashClass" data-additional="padding:20px"></button>
                                     </div>
                                     <div class="clearfix">
                                         <label for="initial-color" class="truncate">{{__ 'Text color'}}</label>
-                                        <span class="icon-eraser reset-button" data-value="color"
-                                              title="{{__ 'Remove custom text color'}}"></span>
-                                        <span class="color-trigger" id="initial-color" data-value="color"
-                                              data-target="body .hashClass"></span>
+                                        <button class="icon-eraser reset-button" data-value="color"
+                                              aria-label="{{__ 'Remove custom text color'}}"></button>
+                                        <button class="color-trigger" id="initial-color" data-value="color"
+                                              data-target="body .hashClass"></button>
                                     </div>
                                     <div class="clearfix">
                                         <label for="initial-color" class="truncate">{{__ 'Border color'}}</label>
-                                        <span class="icon-eraser reset-button" data-value="color"
-                                              title="{{__ 'Remove custom border color'}}"></span>
-                                        <span class="color-trigger" id="initial-color" data-value="border-color"
-                                              data-target="body .hashClass" data-additional="border-width:4px;border-style:solid;padding:20px"></span>
+                                        <button class="icon-eraser reset-button" data-value="color"
+                                              aria-label="{{__ 'Remove custom border color'}}"></button>
+                                        <button class="color-trigger" id="initial-color" data-value="border-color"
+                                              data-target="body .hashClass" data-additional="border-width:4px;border-style:solid;padding:20px"></button>
                                     </div>
                                     <div class="clearfix">
                                         <label for="initial-color" class="truncate">{{__ 'Table headings'}}</label>
-                                        <span class="icon-eraser reset-button" data-value="color"
-                                              title="{{__ 'Remove custom background color'}}"></span>
-                                        <span class="color-trigger" id="initial-color" data-value="background-color"
-                                              data-target="body .hashClass table.qti-table th"></span>
+                                        <button class="icon-eraser reset-button" data-value="color"
+                                              aria-label="{{__ 'Remove custom background color'}}"></button>
+                                        <button class="color-trigger" id="initial-color" data-value="background-color"
+                                              data-target="body .hashClass table.qti-table th"></button>
                                     </div>
                                 </div>
                             </div>
@@ -102,8 +102,8 @@
                                     data-placeholder="{{__ 'Default'}}"
                                     class="select2 has-icon"
                                     data-role="font-selector"></select>
-                                <span class="icon-eraser reset-button" data-role="font-selector-reset"
-                                      title="{{__ 'Remove custom font family'}}"></span>
+                                <button class="icon-eraser reset-button" data-role="font-selector-reset"
+                                      aria-label="{{__ 'Remove custom font family'}}"></button>
                             </div>
 
                         </div>
@@ -122,8 +122,8 @@
                                                    placeholder="{{__ 'e.g. 13'}}">
                                                 <span class="unit-indicator">px</span>
                                         </span>
-                                <span class="icon-eraser reset-button" data-role="font-size-reset"
-                                      title="{{__ 'Remove custom font size'}}"></span>
+                                <button class="icon-eraser reset-button" data-role="font-size-reset"
+                                      aria-label="{{__ 'Remove custom font size'}}"></button>
                             </div>
 
                         </div>
@@ -150,31 +150,31 @@
                                 <div class="reset-group">
                                     <div class="clearfix">
                                         <label for="initial-bg" class="truncate">{{__ 'Background color'}}</label>
-                                        <span class="icon-eraser reset-button" data-value="background-color"
-                                              title="{{__ 'Remove custom background color'}}"></span>
-                                        <span class="color-trigger" id="initial-bg" data-value="background-color"
-                                              data-target="body .custom-text-box.hashClass" data-additional="padding:20px"></span>
+                                        <button class="icon-eraser reset-button" data-value="background-color"
+                                              aria-label="{{__ 'Remove custom background color'}}"></button>
+                                        <button class="color-trigger" id="initial-bg" data-value="background-color"
+                                              data-target="body .custom-text-box.hashClass" data-additional="padding:20px"></button>
                                     </div>
                                     <div class="clearfix">
                                         <label for="initial-color" class="truncate">{{__ 'Text color'}}</label>
-                                        <span class="icon-eraser reset-button" data-value="color"
-                                              title="{{__ 'Remove custom text color'}}"></span>
-                                        <span class="color-trigger" id="initial-color" data-value="color"
-                                              data-target="body .custom-text-box.hashClass"></span>
+                                        <button class="icon-eraser reset-button" data-value="color"
+                                              aria-label="{{__ 'Remove custom text color'}}"></button>
+                                        <button class="color-trigger" id="initial-color" data-value="color"
+                                              data-target="body .custom-text-box.hashClass"></button>
                                     </div>
                                     <div class="clearfix">
                                         <label for="initial-color" class="truncate">{{__ 'Border color'}}</label>
-                                        <span class="icon-eraser reset-button" data-value="color"
-                                              title="{{__ 'Remove custom border color'}}"></span>
-                                        <span class="color-trigger" id="initial-color" data-value="border-color"
-                                              data-target="body .custom-text-box.hashClass" data-additional="border-width:4px;border-style:solid;padding:20px"></span>
+                                        <button class="icon-eraser reset-button" data-value="color"
+                                              aria-label="{{__ 'Remove custom border color'}}"></button>
+                                        <button class="color-trigger" id="initial-color" data-value="border-color"
+                                              data-target="body .custom-text-box.hashClass" data-additional="border-width:4px;border-style:solid;padding:20px"></button>
                                     </div>
                                     <div class="clearfix">
                                         <label for="initial-color" class="truncate">{{__ 'Table headings'}}</label>
-                                        <span class="icon-eraser reset-button" data-value="color"
-                                              title="{{__ 'Remove custom background color'}}"></span>
-                                        <span class="color-trigger" id="initial-color" data-value="background-color"
-                                              data-target="body .custom-text-box.hashClass table.qti-table th"></span>
+                                        <button class="icon-eraser reset-button" data-value="color"
+                                              aria-label="{{__ 'Remove custom background color'}}"></button>
+                                        <button class="color-trigger" id="initial-color" data-value="background-color"
+                                              data-target="body .custom-text-box.hashClass table.qti-table th"></button>
                                     </div>
                                 </div>
                             </div>
@@ -192,8 +192,8 @@
                                     data-placeholder="{{__ 'Default'}}"
                                     class="select2 has-icon"
                                     data-role="font-selector"></select>
-                                <span class="icon-eraser reset-button" data-role="font-selector-reset"
-                                      title="{{__ 'Remove custom font family'}}"></span>
+                                <button class="icon-eraser reset-button" data-role="font-selector-reset"
+                                      aria-label="{{__ 'Remove custom font family'}}"></button>
                             </div>
 
                         </div>
@@ -212,8 +212,8 @@
                                                    placeholder="{{__ 'e.g. 13'}}">
                                                 <span class="unit-indicator">px</span>
                                         </span>
-                                <span class="icon-eraser reset-button" data-role="font-size-reset"
-                                      title="{{__ 'Remove custom font size'}}"></span>
+                                <button class="icon-eraser reset-button" data-role="font-size-reset"
+                                      aria-label="{{__ 'Remove custom font size'}}"></button>
                             </div>
 
                         </div>

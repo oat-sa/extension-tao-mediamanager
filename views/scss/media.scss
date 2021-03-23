@@ -47,6 +47,22 @@
             }
         }
     }
+    .item-editor-sidebar {
+        .item-editor-color-picker {
+            .color-trigger {
+                background: none;
+            }
+            .reset-button {
+                top: 0;
+            }
+        }
+        .reset-group {
+            .reset-button {
+                background: none;
+                color: black;
+            }
+        }
+    }
 }
 
 div.item-editor-item {

@@ -39,7 +39,16 @@
     .qti-item {
         padding: 20px;
     }
+    .item-editor-sidebar {
+        #item-editor-font-size-changer {
+            .icon-smaller, .icon-larger {
+                background: none;
+                color: black;
+            }
+        }
+    }
 }
+
 div.item-editor-item {
     border-color: transparent;
 }

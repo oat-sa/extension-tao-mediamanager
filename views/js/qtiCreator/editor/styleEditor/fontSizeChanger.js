@@ -48,7 +48,7 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
          * Handle input field
          */
         $fontSizeChanger
-            .find('a')
+            .find('button')
             .off('click')
             .on('click', function (e) {
                 e.preventDefault();

@@ -111,10 +111,10 @@
                             <div>{{__ 'Font size'}}</div>
                             <div class="reset-group">
                                         <span id="item-editor-font-size-changer" data-target="body .hashClass">
-                                            <a href="#" data-action="reduce" title="{{__ 'Reduce font size'}}"
-                                               class="icon-smaller"></a>
-                                            <a href="#" data-action="enlarge" title="{{__ 'Enlarge font size'}}"
-                                               class="icon-larger"></a>
+                                            <button data-action="reduce" aria-label="{{__ 'Reduce font size'}}"
+                                               class="icon-smaller"></button>
+                                            <button data-action="enlarge" aria-label="{{__ 'Enlarge font size'}}"
+                                               class="icon-larger"></button>
                                         </span>
 
                                 <span id="item-editor-font-size-manual-input" class="item-editor-unit-input-box">
@@ -201,10 +201,10 @@
                             <div>{{__ 'Font size'}}</div>
                             <div class="reset-group">
                                         <span id="item-editor-font-size-changer" data-target="body .custom-text-box.hashClass">
-                                            <a href="#" data-action="reduce" title="{{__ 'Reduce font size'}}"
-                                               class="icon-smaller"></a>
-                                            <a href="#" data-action="enlarge" title="{{__ 'Enlarge font size'}}"
-                                               class="icon-larger"></a>
+                                            <button data-action="reduce" aria-label="{{__ 'Reduce font size'}}"
+                                               class="icon-smaller"></button>
+                                            <button data-action="enlarge" aria-label="{{__ 'Enlarge font size'}}"
+                                               class="icon-larger"></button>
                                         </span>
 
                                 <span id="item-editor-font-size-manual-input" class="item-editor-unit-input-box">

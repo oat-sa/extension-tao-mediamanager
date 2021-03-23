@@ -203,7 +203,6 @@ class SharedStimulusPackageImporterTest extends TestCase
             [$sampleDir . 'encodedImage.zip', 'zip', true],
             [$sampleDir . 'stimulusPackage.zip', 'xml', false],
             [$sampleDir . 'interactions.xml', '', false],
-            [$sampleDir . 'Й_wrongFilename.txt', 'css', false],
             ['php://stdout', 'extension', false]
         ];
     }

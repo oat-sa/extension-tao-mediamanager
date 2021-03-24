@@ -157,13 +157,13 @@ define([
                     media = nMedia;
                     media.$container.css('min-height', $img.height() + 16 + 'px');
                     inlineHelper.positionFloat(widget, media.align);
-                    if (media.align === 'right') {
+                    if (nMedia.align === 'right') {
                         widget.$container.removeClass('wrap-left');
                         widget.$container.addClass('wrap-right');
-                    } else if (media.align === 'left') {
+                    } else if (nMedia.align === 'left') {
                         widget.$container.removeClass('wrap-right');
                         widget.$container.addClass('wrap-left');
-                    } else {
+                    } else if (nMedia.align === 'default') {
                         widget.$container.removeClass('wrap-right');
                         widget.$container.removeClass('wrap-left');
                     }

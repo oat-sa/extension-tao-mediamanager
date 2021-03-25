@@ -40,31 +40,38 @@ define([
 ) {
     'use strict';
 
-    const defaultPlugins = [{
-        module: 'taoQtiItem/qtiCreator/plugins/content/title',
-        bundle: 'taoQtiItem/loader/taoQtiItem.min',
-        category: 'content'
-    }, {
-        module: 'taoMediaManager/qtiCreator/plugins/navigation/back',
-        bundle: 'taoMediaManager/loader/taoMediaManager.min',
-        category: 'menu'
-    }, {
-        module: 'taoMediaManager/qtiCreator/plugins/menu/save',
-        bundle: 'taoMediaManager/loader/taoMediaManager.min',
-        category: 'menu'
-    }, {
-        module: 'taoMediaManager/qtiCreator/plugins/menu/preview',
-        bundle: 'taoMediaManager/loader/taoMediaManager.min',
-        category: 'menu'
-    }, {
-        module: 'taoQtiItem/qtiCreator/plugins/content/changeTracker',
-        bundle: 'taoQtiItem/loader/taoQtiItem.min',
-        category: 'content'
-    }, {
-        module: 'taoMediaManager/qtiCreator/plugins/content/blockAdder',
-        bundle: 'taoMediaManager/loader/taoMediaManager.min',
-        category: 'content'
-    }];
+    const defaultPlugins = [
+        {
+            module: 'taoQtiItem/qtiCreator/plugins/content/title',
+            bundle: 'taoQtiItem/loader/taoQtiItem.min',
+            category: 'content'
+        },
+        {
+            module: 'taoMediaManager/qtiCreator/plugins/navigation/back',
+            bundle: 'taoMediaManager/loader/taoMediaManager.min',
+            category: 'menu'
+        },
+        {
+            module: 'taoMediaManager/qtiCreator/plugins/menu/save',
+            bundle: 'taoMediaManager/loader/taoMediaManager.min',
+            category: 'menu'
+        },
+        {
+            module: 'taoMediaManager/qtiCreator/plugins/menu/preview',
+            bundle: 'taoMediaManager/loader/taoMediaManager.min',
+            category: 'menu'
+        },
+        {
+            module: 'taoQtiItem/qtiCreator/plugins/content/changeTracker',
+            bundle: 'taoQtiItem/loader/taoQtiItem.min',
+            category: 'content'
+        },
+        {
+            module: 'taoMediaManager/qtiCreator/plugins/content/blockAdder',
+            bundle: 'taoMediaManager/loader/taoMediaManager.min',
+            category: 'content'
+        }
+    ];
     /**
      * Embeds the assets creator UI in a component
      *
@@ -131,7 +138,8 @@ define([
                 });
 
                 // load the plugins, then render the sharedStimulus creator
-                pluginLoader.load(!!context.bundle)
+                pluginLoader
+                    .load(!!context.bundle)
                     .then(() => this.render(container))
                     .catch(err => this.trigger('error', err));
             })
@@ -140,23 +148,27 @@ define([
             .on('render', function () {
                 const $container = this.getElement();
                 areaBroker = areaBrokerFactory($container, {
-                    'menu': $container.find('.menu'),
-                    'menuLeft': $container.find('.menu-left'),
-                    'menuRight': $container.find('.menu-right'),
-                    'contentCreatorPanel': $container.find('#item-editor-panel'),
-                    'editorBar': $container.find('#item-editor-panel .item-editor-bar'),
-                    'title': $container.find('#item-editor-panel .item-editor-bar h1'),
-                    'toolbar': $container.find('#item-editor-panel .item-editor-bar #toolbar-top'),
-                    'interactionPanel': $container.find('#item-editor-interaction-bar'),
-                    'propertyPanel': $container.find('#item-editor-item-widget-bar'),
-                    'itemPanel': $container.find('#item-editor-scroll-inner'),
-                    'itemPropertyPanel': $container.find('#sidebar-right-item-properties'),
-                    'itemStylePanel': $container.find('#item-style-editor-bar'),
-                    'modalContainer': $container.find('#modal-container'),
-                    'elementPropertyPanel': $container.find('#item-editor-body-element-property-bar .panel')
+                    menu: $container.find('.menu'),
+                    menuLeft: $container.find('.menu-left'),
+                    menuRight: $container.find('.menu-right'),
+                    contentCreatorPanel: $container.find('#item-editor-panel'),
+                    editorBar: $container.find('#item-editor-panel .item-editor-bar'),
+                    title: $container.find('#item-editor-panel .item-editor-bar h1'),
+                    toolbar: $container.find('#item-editor-panel .item-editor-bar #toolbar-top'),
+                    interactionPanel: $container.find('#item-editor-interaction-bar'),
+                    propertyPanel: $container.find('#item-editor-item-widget-bar'),
+                    itemPanel: $container.find('#item-editor-scroll-inner'),
+                    itemPropertyPanel: $container.find('#sidebar-right-item-properties'),
+                    itemStylePanel: $container.find('#item-style-editor-bar'),
+                    modalContainer: $container.find('#modal-container'),
+                    elementPropertyPanel: $container.find('#item-editor-body-element-property-bar .panel')
                 });
 
-                sharedStimulusCreator = sharedStimulusCreatorFactory(this.getConfig(), areaBroker, pluginLoader.getPlugins())
+                sharedStimulusCreator = sharedStimulusCreatorFactory(
+                    this.getConfig(),
+                    areaBroker,
+                    pluginLoader.getPlugins()
+                )
                     .spread(this, 'error success ready')
                     .on('init', function () {
                         this.render();

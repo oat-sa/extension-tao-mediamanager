@@ -373,8 +373,7 @@ define([
         //prepare config object
         itemConfig = {
             uri: config.id,
-            lang: config.lang,
-            baseUrl: config.baseUrl
+            lang: config.lang
         };
 
         removeOrphanedStylesheets();
@@ -411,7 +410,7 @@ define([
     };
 
     const generateHashClass = function () {
-        hashClass = `${taoHashClassPrefix}${Math.random().toString(36).substr(2, 9)}`;
+        return (hashClass = `${taoHashClassPrefix}${Math.random().toString(36).substr(2, 9)}`);
     };
 
     const replaceHashClass = function (selector) {

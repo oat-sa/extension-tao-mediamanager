@@ -33,6 +33,8 @@ class MediaManager extends \tao_actions_SaSModule
 {
     /**
      * Show the form to edit an instance, show also a preview of the media
+     *
+     * @requiresRight id READ
      */
     public function editInstance()
     {

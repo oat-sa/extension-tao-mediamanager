@@ -39,8 +39,9 @@ class editInstanceForm extends \tao_actions_form_Instance
 
         $edit = \tao_helpers_form_FormFactory::getElement('edit', 'Free');
         $value = '';
-        if ($edit) {
-            $value .=  '<button type="button" id="edit-media" data-classuri="' . $this->getClazz()->getUri() . '" data-uri="' . $this->getInstance()->getUri() . '" class="edit-instance btn-success small"><span class="icon-loop"></span> ' . __('Replace Asset') . '</button>';
+
+        if ($edit && $this->isEnabled()) {
+            $value .= '<button type="button" id="edit-media" data-classuri="' . $this->getClazz()->getUri() . '" data-uri="' . $this->getInstance()->getUri() . '" class="edit-instance btn-success small"><span class="icon-loop"></span> ' . __('Replace Asset') . '</button>';
         }
 
         $edit->setValue($value);
@@ -49,5 +50,10 @@ class editInstanceForm extends \tao_actions_form_Instance
 
         $this->form->setActions($bottom, 'bottom');
         $this->form->setActions($top, 'top');
+    }
+
+    private function isEnabled()
+    {
+        return empty($this->options[self::IS_DISABLED] ?? false);
     }
 }

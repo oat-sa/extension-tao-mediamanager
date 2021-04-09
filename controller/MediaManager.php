@@ -42,10 +42,19 @@ class MediaManager extends \tao_actions_SaSModule
 
         $clazz = $this->getCurrentClass();
         $instance = $this->getCurrentInstance();
-        $myFormContainer = new editInstanceForm($clazz, $instance, [FormContainer::CSRF_PROTECTION_OPTION => true]);
+        $hasWriteAccess = $this->hasWriteAccess($instance->getUri());
+        $myFormContainer = new editInstanceForm(
+            $clazz,
+            $instance,
+            [
+                FormContainer::CSRF_PROTECTION_OPTION => true,
+                FormContainer::IS_DISABLED => !$hasWriteAccess,
+            ]
+        );
 
         $myForm = $myFormContainer->getForm();
-        if ($myForm->isSubmited() && $myForm->isValid()) {
+
+        if ($hasWriteAccess && $myForm->isSubmited() && $myForm->isValid()) {
             $values = $myForm->getValues();
             // save properties
             $binder = new \tao_models_classes_dataBinding_GenerisFormDataBinder($instance);
@@ -58,28 +67,32 @@ class MediaManager extends \tao_actions_SaSModule
 
         $this->setData('formTitle', __('Edit Instance'));
         $this->setData('myForm', $myForm->render());
-        $uri = ($this->hasRequestParameter('id')) ? $this->getRequestParameter('id') : $this->getRequestParameter('uri');
 
-        try {
-            $mediaSource = new MediaSource([]);
-            $fileInfo = $mediaSource->getFileInfo($uri);
+        if ($hasWriteAccess) {
+            try {
+                $uri = ($this->hasRequestParameter('id')) ? $this->getRequestParameter('id') : $this->getRequestParameter('uri');
 
-            $mimeType = $fileInfo['mime'];
-            $xml = in_array($mimeType, ['application/xml', 'text/xml', MediaService::SHARED_STIMULUS_MIME_TYPE]);
-            $url = \tao_helpers_Uri::url(
-                'getFile',
-                'MediaManager',
-                'taoMediaManager',
-                [
-                    'uri' => $uri,
-                ]
-            );
-            $this->setData('xml', $xml);
-            $this->setData('fileurl', $url);
-            $this->setData('mimeType', $mimeType);
-        } catch (\tao_models_classes_FileNotFoundException $e) {
-            $this->setData('error', __('No file found for this media'));
+                $mediaSource = new MediaSource([]);
+                $fileInfo = $mediaSource->getFileInfo($uri);
+
+                $mimeType = $fileInfo['mime'];
+                $xml = in_array($mimeType, ['application/xml', 'text/xml', MediaService::SHARED_STIMULUS_MIME_TYPE]);
+                $url = \tao_helpers_Uri::url(
+                    'getFile',
+                    'MediaManager',
+                    'taoMediaManager',
+                    [
+                        'uri' => $uri,
+                    ]
+                );
+                $this->setData('xml', $xml);
+                $this->setData('fileurl', $url);
+                $this->setData('mimeType', $mimeType);
+            } catch (\tao_models_classes_FileNotFoundException $e) {
+                $this->setData('error', __('No file found for this media'));
+            }
         }
+
         $this->setView('form.tpl');
     }
 

@@ -40,8 +40,10 @@ class editInstanceForm extends \tao_actions_form_Instance
         $edit = \tao_helpers_form_FormFactory::getElement('edit', 'Free');
         $value = '';
 
-        if ($edit && $this->isEnabled()) {
-            $value .= '<button type="button" id="edit-media" data-classuri="' . $this->getClazz()->getUri() . '" data-uri="' . $this->getInstance()->getUri() . '" class="edit-instance btn-success small"><span class="icon-loop"></span> ' . __('Replace Asset') . '</button>';
+        if ($edit) {
+            $value .= '<button type="button" id="edit-media" '
+                . ($this->isEnabled() ? '' : 'disabled="disabled" ')
+                . ' data-classuri="' . $this->getClazz()->getUri() . '" data-uri="' . $this->getInstance()->getUri() . '" class="edit-instance btn-success small"><span class="icon-loop"></span> ' . __('Replace Asset') . '</button>';
         }
 
         $edit->setValue($value);

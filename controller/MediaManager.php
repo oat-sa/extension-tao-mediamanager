@@ -137,6 +137,14 @@ class MediaManager extends \tao_actions_SaSModule
         return parent::delete();
     }
 
+    /**
+     * @requiresRight id READ
+     */
+    public function editClassLabel()
+    {
+        parent::editClassLabel();
+    }
+
     protected function getClassService()
     {
         return $this->getServiceLocator()->get(MediaService::class);

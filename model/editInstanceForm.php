@@ -15,10 +15,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
- *
+ * Copyright (c) 2014-2021 (original work) Open Assessment Technologies SA;
  *
  */
+
+declare(strict_types=1);
 
 namespace oat\taoMediaManager\model;
 
@@ -30,7 +31,6 @@ namespace oat\taoMediaManager\model;
  */
 class editInstanceForm extends \tao_actions_form_Instance
 {
-
     protected function initForm()
     {
         parent::initForm();
@@ -38,13 +38,7 @@ class editInstanceForm extends \tao_actions_form_Instance
         $top = $this->form->getActions('top');
 
         $edit = \tao_helpers_form_FormFactory::getElement('edit', 'Free');
-        $value = '';
-
-        if ($edit) {
-            $value .= '<button type="button" id="edit-media" '
-                . ($this->isEnabled() ? '' : 'disabled="disabled" ')
-                . ' data-classuri="' . $this->getClazz()->getUri() . '" data-uri="' . $this->getInstance()->getUri() . '" class="edit-instance btn-success small"><span class="icon-loop"></span> ' . __('Replace Asset') . '</button>';
-        }
+        $value = $edit ? $this->getReplaceAssetButtonTemplate() : '';
 
         $edit->setValue($value);
         $top[] = $edit;
@@ -54,8 +48,27 @@ class editInstanceForm extends \tao_actions_form_Instance
         $this->form->setActions($top, 'top');
     }
 
-    private function isEnabled()
+    private function isEnabled(): bool
     {
         return empty($this->options[self::IS_DISABLED] ?? false);
+    }
+
+    private function getReplaceAssetButtonTemplate(): string
+    {
+        return sprintf(
+            '<button 
+            type="button" 
+            id="edit-media" %s 
+            data-classuri="%s" 
+            data-uri="%s" 
+            class="edit-instance btn-success small">
+                <span class="icon-loop"></span>
+                %s
+            </button>',
+            ($this->isEnabled() ? '' : 'disabled="disabled" '),
+            $this->getClazz()->getUri(),
+            $this->getInstance()->getUri(),
+            __('Replace Asset')
+        );
     }
 }

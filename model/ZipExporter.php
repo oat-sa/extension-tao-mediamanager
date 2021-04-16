@@ -94,30 +94,18 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
         $exportClasses = [];
         $exportData = [];
 
-        if ($hasReadPermission) {
-            $exportData = [
-                $class->getLabel() => [
-                    $class
-                ]
-            ];
-        }
-
-        if ($hasReadPermission && $class->isClass()) {
+        if ($class->isClass() && $hasReadPermission) {
             $subClasses = $class->getSubClasses(true);
-
-            $exportData = [
-                $class->getLabel() => $this->getClassResources($class)
-            ];
+            $exportData = [$class->getLabel() => $this->getClassResources($class)];
 
             foreach ($subClasses as $subClass) {
-                if (!$this->getPermissionChecker()->hasReadAccess($subClass->getUri())) {
-                    continue;
-                }
-
-                $exportData[$subClass->getLabel()] = $this->getClassResources($subClass);
+                $instances = $this->getClassResources($subClass);
+                $exportData[$subClass->getLabel()] = $instances;
 
                 $exportClasses[$subClass->getLabel()] = $this->normalizeClassName($subClass, $exportClasses);
             }
+        } elseif ($hasReadPermission) {
+            $exportData = [$class->getLabel() => [$class]];
         }
 
         $safePath = $this->getSavePath($formValues['filename']);
@@ -220,7 +208,7 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
         $instances = [];
 
         foreach ($class->getInstances() as $instance) {
-            if (!$this->getPermissionChecker()->hasReadAccess($class->getUri())) {
+            if (!$this->getPermissionChecker()->hasReadAccess($instance->getUri())) {
                 continue;
             }
 

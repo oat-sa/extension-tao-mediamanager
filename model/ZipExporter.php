@@ -31,6 +31,8 @@ use core_kernel_classes_Literal;
 use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
 use oat\oatbox\service\ServiceManager;
+use oat\tao\model\accessControl\PermissionChecker;
+use oat\tao\model\accessControl\PermissionCheckerInterface;
 use oat\taoMediaManager\model\export\service\MediaResourcePreparer;
 use oat\taoMediaManager\model\export\service\SharedStimulusCSSExporter;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
@@ -79,39 +81,58 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
 
         $report = Report::createSuccess();
 
-        $class = new core_kernel_classes_Class($formValues['id']);
+        $report->setData($this->processExport($formValues));
+        $report->setMessage(__('Media successfully exported.'));
 
+        return $report;
+    }
+
+    private function processExport(array $formValues): string
+    {
+        $class = new core_kernel_classes_Class($formValues['id']);
+        $hasReadPermission = $this->getPermissionChecker()->hasReadAccess($class->getUri());
         $exportClasses = [];
-        if ($class->isClass()) {
+        $exportData = [];
+
+        if ($hasReadPermission) {
+            $exportData = [
+                $class->getLabel() => [
+                    $class
+                ]
+            ];
+        }
+
+        if ($hasReadPermission && $class->isClass()) {
             $subClasses = $class->getSubClasses(true);
-            $exportData = [$class->getLabel() => $class->getInstances()];
+
+            $exportData = [
+                $class->getLabel() => $this->getClassResources($class)
+            ];
 
             foreach ($subClasses as $subClass) {
-                $instances = $subClass->getInstances();
-                $exportData[$subClass->getLabel()] = $instances;
-
-                //get Class path
-                $parents = $subClass->getParentClasses();
-                $parent = array_shift($parents);
-
-                if (array_key_exists($parent->getLabel(), $exportClasses)) {
-                    $exportClasses[$subClass->getLabel()] = $exportClasses[$parent->getLabel()] . '/' . $subClass->getLabel();
-                } else {
-                    $exportClasses[$subClass->getLabel()] = $subClass->getLabel();
+                if (!$this->getPermissionChecker()->hasReadAccess($subClass->getUri())) {
+                    continue;
                 }
+
+                $exportData[$subClass->getLabel()] = $this->getClassResources($subClass);
+
+                $exportClasses[$subClass->getLabel()] = $this->normalizeClassName($subClass, $exportClasses);
             }
-        } else {
-            $exportData = [$class->getLabel() => [$class]];
         }
 
         $safePath = $this->getSavePath($formValues['filename']);
 
-        $file = $this->createZipFile($safePath, $exportClasses, $exportData);
+        return $this->createZipFile($safePath, $exportClasses, $exportData);
+    }
 
-        $report->setData($file);
-        $report->setMessage(__('Media successfully exported.'));
+    private function normalizeClassName(core_kernel_classes_Class $class, array $exportClasses): string
+    {
+        $parents = $class->getParentClasses();
+        $parent = array_shift($parents);
 
-        return $report;
+        return array_key_exists($parent->getLabel(), $exportClasses)
+            ? $exportClasses[$parent->getLabel()] . '/' . $class->getLabel()
+            : $class->getLabel();
     }
 
     private function getSavePath(string $unsafePath): string
@@ -187,6 +208,26 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
     private function getSharedStimulusCSSExporter(): SharedStimulusCSSExporter
     {
         return $this->getServiceManager()->get(SharedStimulusCSSExporter::class);
+    }
+
+    private function getPermissionChecker(): PermissionCheckerInterface
+    {
+        return $this->getServiceManager()->get(PermissionChecker::class);
+    }
+
+    private function getClassResources(core_kernel_classes_Class $class): array
+    {
+        $instances = [];
+
+        foreach ($class->getInstances() as $instance) {
+            if (!$this->getPermissionChecker()->hasReadAccess($class->getUri())) {
+                continue;
+            }
+
+            $instances[] = $instance;
+        }
+
+        return $instances;
     }
 
     /**

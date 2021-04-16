@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2014-2021 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
@@ -28,6 +28,7 @@ use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use tao_helpers_form_FormContainer as FormContainer;
+use tao_models_classes_FileNotFoundException;
 
 class MediaManager extends \tao_actions_SaSModule
 {
@@ -68,41 +69,39 @@ class MediaManager extends \tao_actions_SaSModule
         $this->setData('formTitle', __('Edit Instance'));
         $this->setData('myForm', $myForm->render());
 
-        if ($hasWriteAccess) {
-            try {
-                $uri = $this->hasRequestParameter('id')
-                    ? $this->getRequestParameter('id')
-                    : $this->getRequestParameter('uri');
+        try {
+            $uri = $this->hasRequestParameter('id')
+                ? $this->getRequestParameter('id')
+                : $this->getRequestParameter('uri');
 
-                $mediaSource = new MediaSource([]);
-                $fileInfo = $mediaSource->getFileInfo($uri);
+            $mediaSource = new MediaSource([]);
+            $fileInfo = $mediaSource->getFileInfo($uri);
 
-                $mimeType = $fileInfo['mime'];
-                $xml = in_array(
-                    $mimeType,
-                    [
-                        'application/xml',
-                        'text/xml',
-                        MediaService::SHARED_STIMULUS_MIME_TYPE
-                    ],
-                    true
-                );
-                $url = \tao_helpers_Uri::url(
-                    'getFile',
-                    'MediaManager',
-                    'taoMediaManager',
-                    [
-                        'uri' => $uri,
-                    ]
-                );
-                $this->setData('xml', $xml);
-                $this->setData('fileurl', $url);
-                $this->setData('mimeType', $mimeType);
-            } catch (\tao_models_classes_FileNotFoundException $e) {
-                $this->setData('error', __('No file found for this media'));
-            }
+            $mimeType = $fileInfo['mime'];
+            $xml = in_array(
+                $mimeType,
+                [
+                    'application/xml',
+                    'text/xml',
+                    MediaService::SHARED_STIMULUS_MIME_TYPE
+                ],
+                true
+            );
+            $url = \tao_helpers_Uri::url(
+                'getFile',
+                'MediaManager',
+                'taoMediaManager',
+                [
+                    'uri' => $uri,
+                ]
+            );
+        } catch (tao_models_classes_FileNotFoundException $e) {
+            $this->setData('error', __('No file found for this media'));
         }
 
+        $this->setData('xml', $xml);
+        $this->setData('fileurl', $url);
+        $this->setData('mimeType', $mimeType);
         $this->setView('form.tpl');
     }
 
@@ -110,7 +109,7 @@ class MediaManager extends \tao_actions_SaSModule
      * Get the file stream associated to given uri GET parameter
      *
      * @throws \common_exception_Error
-     * @throws \tao_models_classes_FileNotFoundException
+     * @throws tao_models_classes_FileNotFoundException
      */
     public function getFile()
     {

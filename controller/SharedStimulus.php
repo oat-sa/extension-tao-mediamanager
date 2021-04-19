@@ -74,6 +74,9 @@ class SharedStimulus extends tao_actions_SaSModule
         $this->setResponse($formatter->format($this->getPsrResponse()));
     }
 
+    /**
+     * @requiresRight id READ
+     */
     public function get(): void
     {
         $formatter = $this->getResponseFormatter()
@@ -99,6 +102,9 @@ class SharedStimulus extends tao_actions_SaSModule
         $this->setResponse($formatter->format($this->getPsrResponse()));
     }
 
+    /**
+     * @requiresRight id WRITE
+     */
     public function patch(): void
     {
         $formatter = $this->getResponseFormatter()

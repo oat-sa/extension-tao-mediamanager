@@ -154,6 +154,14 @@ class MediaManager extends \tao_actions_SaSModule
         parent::editClassLabel();
     }
 
+    /**
+     * @requiresRight id WRITE
+     */
+    public function authoring()
+    {
+        //This method is required to hide button on FE based on ACL
+    }
+
     protected function getClassService()
     {
         return $this->getServiceLocator()->get(MediaService::class);

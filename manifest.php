@@ -36,6 +36,15 @@ return [
     'acl' => [
         ['grant', 'http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole', ['ext' => 'taoMediaManager']],
         ['grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemAuthor', ['ext' => 'taoMediaManager']],
+        [
+            'grant',
+            'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemAuthor',
+            [
+                'ext' => 'taoMediaManager',
+                'mod' => 'SharedStimulus',
+                'act' => 'create'
+            ]
+        ],
     ],
     'install' => [
         'rdf' => [

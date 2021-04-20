@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2019 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2014-2021 (original work) Open Assessment Technologies SA;
  *
  */
 
@@ -28,6 +28,16 @@ use oat\taoMediaManager\model\ZipExporter;
  */
 class MediaExport extends \tao_actions_Export
 {
+    /**
+     * @inheritDoc
+     *
+     * @requiresRight id READ
+     */
+    public function index()
+    {
+        parent::index();
+    }
+
     protected function getAvailableExportHandlers()
     {
         return [

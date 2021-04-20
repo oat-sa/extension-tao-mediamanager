@@ -34,6 +34,8 @@ class MediaImport extends tao_actions_Import
 
     /**
      * @inheritDoc
+     *
+     * @requiresRight id WRITE
      */
     public function index()
     {

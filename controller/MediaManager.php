@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2014-2021 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
@@ -28,11 +28,14 @@ use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use tao_helpers_form_FormContainer as FormContainer;
+use tao_models_classes_FileNotFoundException;
 
 class MediaManager extends \tao_actions_SaSModule
 {
     /**
      * Show the form to edit an instance, show also a preview of the media
+     *
+     * @requiresRight id READ
      */
     public function editInstance()
     {
@@ -40,10 +43,19 @@ class MediaManager extends \tao_actions_SaSModule
 
         $clazz = $this->getCurrentClass();
         $instance = $this->getCurrentInstance();
-        $myFormContainer = new editInstanceForm($clazz, $instance, [FormContainer::CSRF_PROTECTION_OPTION => true]);
+        $hasWriteAccess = $this->hasWriteAccess($instance->getUri());
+        $myFormContainer = new editInstanceForm(
+            $clazz,
+            $instance,
+            [
+                FormContainer::CSRF_PROTECTION_OPTION => true,
+                FormContainer::IS_DISABLED => !$hasWriteAccess,
+            ]
+        );
 
         $myForm = $myFormContainer->getForm();
-        if ($myForm->isSubmited() && $myForm->isValid()) {
+
+        if ($hasWriteAccess && $myForm->isSubmited() && $myForm->isValid()) {
             $values = $myForm->getValues();
             // save properties
             $binder = new \tao_models_classes_dataBinding_GenerisFormDataBinder($instance);
@@ -56,14 +68,25 @@ class MediaManager extends \tao_actions_SaSModule
 
         $this->setData('formTitle', __('Edit Instance'));
         $this->setData('myForm', $myForm->render());
-        $uri = ($this->hasRequestParameter('id')) ? $this->getRequestParameter('id') : $this->getRequestParameter('uri');
 
         try {
+            $uri = $this->hasRequestParameter('id')
+                ? $this->getRequestParameter('id')
+                : $this->getRequestParameter('uri');
+
             $mediaSource = new MediaSource([]);
             $fileInfo = $mediaSource->getFileInfo($uri);
 
             $mimeType = $fileInfo['mime'];
-            $xml = in_array($mimeType, ['application/xml', 'text/xml', MediaService::SHARED_STIMULUS_MIME_TYPE]);
+            $xml = in_array(
+                $mimeType,
+                [
+                    'application/xml',
+                    'text/xml',
+                    MediaService::SHARED_STIMULUS_MIME_TYPE
+                ],
+                true
+            );
             $url = \tao_helpers_Uri::url(
                 'getFile',
                 'MediaManager',
@@ -72,12 +95,13 @@ class MediaManager extends \tao_actions_SaSModule
                     'uri' => $uri,
                 ]
             );
-            $this->setData('xml', $xml);
-            $this->setData('fileurl', $url);
-            $this->setData('mimeType', $mimeType);
-        } catch (\tao_models_classes_FileNotFoundException $e) {
+        } catch (tao_models_classes_FileNotFoundException $e) {
             $this->setData('error', __('No file found for this media'));
         }
+
+        $this->setData('xml', $xml);
+        $this->setData('fileurl', $url);
+        $this->setData('mimeType', $mimeType);
         $this->setView('form.tpl');
     }
 
@@ -85,7 +109,7 @@ class MediaManager extends \tao_actions_SaSModule
      * Get the file stream associated to given uri GET parameter
      *
      * @throws \common_exception_Error
-     * @throws \tao_models_classes_FileNotFoundException
+     * @throws tao_models_classes_FileNotFoundException
      */
     public function getFile()
     {
@@ -110,6 +134,32 @@ class MediaManager extends \tao_actions_SaSModule
             }
             $this->response = $this->getPsrResponse()->withBody($stream);
         }
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @requiresRight id WRITE
+     */
+    public function delete()
+    {
+        return parent::delete();
+    }
+
+    /**
+     * @requiresRight id READ
+     */
+    public function editClassLabel()
+    {
+        parent::editClassLabel();
+    }
+
+    /**
+     * @requiresRight id WRITE
+     */
+    public function authoring()
+    {
+        //This method is required to hide button on FE based on ACL
     }
 
     protected function getClassService()

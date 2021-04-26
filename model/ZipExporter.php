@@ -90,16 +90,27 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
     private function processExport(array $formValues): string
     {
         $class = new core_kernel_classes_Class($formValues['id']);
-        $hasReadPermission = $this->getPermissionChecker()->hasReadAccess($class->getUri());
+        $permissionChecker = $this->getPermissionChecker();
+        $hasReadPermission = $permissionChecker->hasReadAccess($class->getUri());
         $exportClasses = [];
         $exportData = [];
 
         if ($class->isClass() && $hasReadPermission) {
-            $subClasses = $class->getSubClasses(true);
-            $exportData = [$class->getLabel() => $this->getClassResources($class)];
+            $exportData = [
+                $class->getLabel() => $this->getClassResources($permissionChecker, $class)
+            ];
 
-            foreach ($subClasses as $subClass) {
-                $instances = $this->getClassResources($subClass);
+            foreach ($class->getSubClasses(true) as $subClass) {
+                if (!$permissionChecker->hasReadAccess($subClass->getUri())) {
+                    continue;
+                }
+
+                $instances = $this->getClassResources($permissionChecker, $subClass);
+
+                if (count($instances) === 0) {
+                    continue;
+                }
+
                 $exportData[$subClass->getLabel()] = $instances;
 
                 $exportClasses[$subClass->getLabel()] = $this->normalizeClassName($subClass, $exportClasses);
@@ -203,12 +214,14 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
         return $this->getServiceManager()->get(PermissionChecker::class);
     }
 
-    private function getClassResources(core_kernel_classes_Class $class): array
-    {
+    private function getClassResources(
+        PermissionCheckerInterface $permissionChecker,
+        core_kernel_classes_Class $class
+    ): array {
         $instances = [];
 
         foreach ($class->getInstances() as $instance) {
-            if (!$this->getPermissionChecker()->hasReadAccess($instance->getUri())) {
+            if (!$permissionChecker->hasReadAccess($instance->getUri())) {
                 continue;
             }
 

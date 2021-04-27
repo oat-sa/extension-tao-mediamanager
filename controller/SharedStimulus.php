@@ -47,7 +47,7 @@ class SharedStimulus extends tao_actions_SaSModule
     use LoggerAwareTrait;
 
     /**
-     * @requiresRight classId WRITE
+     * @requiresRight classUri WRITE
      */
     public function create(): void
     {

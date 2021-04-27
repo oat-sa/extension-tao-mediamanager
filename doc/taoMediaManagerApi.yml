@@ -119,9 +119,14 @@ components:
     SharedStimulus:
       type: object
       properties:
+        classUri:
+          type: string
+          example: 'http://tao.docker.localhost/tao.rdf#i5e89a2063326711164b1a816b433b1ec'
         classId:
           type: string
           example: 'http://tao.docker.localhost/tao.rdf#i5e89a2063326711164b1a816b433b1ec'
+          description: 'Use classUri instead'
+          deprecated: true
         languageId:
           type: string
           example: 'http://www.tao.lu/Ontologies/TAO.rdf#Langen-US'

@@ -24,6 +24,8 @@ use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\Configurable;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ServiceManager;
+use oat\tao\model\accessControl\PermissionChecker;
+use oat\tao\model\accessControl\PermissionCheckerInterface;
 use oat\tao\model\media\MediaManagement;
 use oat\tao\model\media\mediaSource\DirectorySearchQuery;
 use oat\tao\model\media\ProcessedFileStreamAware;
@@ -358,9 +360,15 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
             'childrenLimit' => $childrenLimit,
         ];
 
+        $permissionChecker = $this->getPermissionChecker();
+
         if ($depth > 0) {
             $children = [];
             foreach ($class->getSubClasses() as $subclass) {
+                if (!$permissionChecker->hasReadAccess($subclass->getUri())) {
+                    continue;
+                }
+
                 $children[] = $this->searchDirectories(
                     $subclass->getUri(),
                     $acceptableMime,
@@ -383,6 +391,10 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
 
             foreach ($class->searchInstances($filter, $options) as $instance) {
                 try {
+                    if (!$permissionChecker->hasReadAccess($instance->getUri())) {
+                        continue;
+                    }
+
                     $children[] = $this->getFileInfo($instance->getUri());
                 } catch (tao_models_classes_FileNotFoundException $e) {
                     $this->logEmergency(
@@ -401,5 +413,10 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
         }
 
         return $data;
+    }
+
+    private function getPermissionChecker(): PermissionCheckerInterface
+    {
+        return $this->getServiceLocator()->get(PermissionChecker::class);
     }
 }

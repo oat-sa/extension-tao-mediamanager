@@ -31,8 +31,6 @@ use core_kernel_classes_Literal;
 use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
 use oat\oatbox\service\ServiceManager;
-use oat\tao\model\accessControl\PermissionChecker;
-use oat\tao\model\accessControl\PermissionCheckerInterface;
 use oat\taoMediaManager\model\export\service\MediaResourcePreparer;
 use oat\taoMediaManager\model\export\service\SharedStimulusCSSExporter;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
@@ -90,22 +88,15 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
     private function processExport(array $formValues): string
     {
         $class = new core_kernel_classes_Class($formValues['id']);
-        $permissionChecker = $this->getPermissionChecker();
-        $hasReadPermission = $permissionChecker->hasReadAccess($class->getUri());
         $exportClasses = [];
-        $exportData = [];
 
-        if ($class->isClass() && $hasReadPermission) {
+        if ($class->isClass()) {
             $exportData = [
-                $class->getLabel() => $this->getClassResources($permissionChecker, $class)
+                $class->getLabel() => $this->getClassResources($class)
             ];
 
             foreach ($class->getSubClasses(true) as $subClass) {
-                if (!$permissionChecker->hasReadAccess($subClass->getUri())) {
-                    continue;
-                }
-
-                $instances = $this->getClassResources($permissionChecker, $subClass);
+                $instances = $this->getClassResources($subClass);
 
                 if (count($instances) === 0) {
                     continue;
@@ -115,7 +106,7 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
 
                 $exportClasses[$subClass->getLabel()] = $this->normalizeClassName($subClass, $exportClasses);
             }
-        } elseif ($hasReadPermission) {
+        } else {
             $exportData = [$class->getLabel() => [$class]];
         }
 
@@ -209,26 +200,9 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
         return $this->getServiceManager()->get(SharedStimulusCSSExporter::class);
     }
 
-    private function getPermissionChecker(): PermissionCheckerInterface
+    private function getClassResources(core_kernel_classes_Class $class): array
     {
-        return $this->getServiceManager()->get(PermissionChecker::class);
-    }
-
-    private function getClassResources(
-        PermissionCheckerInterface $permissionChecker,
-        core_kernel_classes_Class $class
-    ): array {
-        $instances = [];
-
-        foreach ($class->getInstances() as $instance) {
-            if (!$permissionChecker->hasReadAccess($instance->getUri())) {
-                continue;
-            }
-
-            $instances[] = $instance;
-        }
-
-        return $instances;
+        return $class->getInstances();
     }
 
     /**

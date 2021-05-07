@@ -24,8 +24,8 @@ use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\Configurable;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ServiceManager;
-use oat\tao\model\accessControl\PermissionChecker;
-use oat\tao\model\accessControl\PermissionCheckerInterface;
+use oat\tao\model\accessControl\AccessControlEnablerInterface;
+use oat\tao\model\media\mapper\MediaBrowserPermissionsMapper;
 use oat\tao\model\media\MediaManagement;
 use oat\tao\model\media\mediaSource\DirectorySearchQuery;
 use oat\tao\model\media\ProcessedFileStreamAware;
@@ -38,7 +38,7 @@ use tao_models_classes_FileNotFoundException;
 
 use function GuzzleHttp\Psr7\stream_for;
 
-class MediaSource extends Configurable implements MediaManagement, ProcessedFileStreamAware
+class MediaSource extends Configurable implements MediaManagement, ProcessedFileStreamAware, AccessControlEnablerInterface
 {
     use LoggerAwareTrait;
     use OntologyAwareTrait;
@@ -51,6 +51,16 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
     /** @var FileManagement */
     protected $fileManagementService;
 
+    /** @var MediaBrowserPermissionsMapper */
+    private $permissionsMapper;
+
+    public function enableAccessControl(): AccessControlEnablerInterface
+    {
+        $this->getPermissionsMapper()->enableAccessControl();
+
+        return $this;
+    }
+
     /**
      * Returns the language URI to be used
      * @return string
@@ -59,8 +69,7 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
     {
         return $this->hasOption('lang')
             ? $this->getOption('lang')
-            : ''
-        ;
+            : '';
     }
 
     public function getRootClass()
@@ -149,14 +158,17 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
             $alt = (string)$altArray[0];
         }
 
-        return [
-            'name' => $resource->getLabel(),
-            'uri' => self::SCHEME_NAME . tao_helpers_Uri::encode($link),
-            'mime' => (string)$mime,
-            'size' => $this->getFileManagement()->getFileSize($fileLink),
-            'alt' => $alt,
-            'link' => $fileLink
-        ];
+        return $this->getPermissionsMapper()->map(
+            [
+                'name' => $resource->getLabel(),
+                'uri' => self::SCHEME_NAME . tao_helpers_Uri::encode($link),
+                'mime' => (string)$mime,
+                'size' => $this->getFileManagement()->getFileSize($fileLink),
+                'alt' => $alt,
+                'link' => $fileLink
+            ],
+            $resource->getUri()
+        );
     }
 
     /**
@@ -354,21 +366,18 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
 
         $class = $this->getClass($parentLink == '' ? $this->getRootClassUri() : tao_helpers_Uri::decode($parentLink));
 
-        $data = [
-            'path' => self::SCHEME_NAME . tao_helpers_Uri::encode($class->getUri()),
-            'label' => $class->getLabel(),
-            'childrenLimit' => $childrenLimit,
-        ];
-
-        $permissionChecker = $this->getPermissionChecker();
+        $data = $this->getPermissionsMapper()->map(
+            [
+                'path' => self::SCHEME_NAME . tao_helpers_Uri::encode($class->getUri()),
+                'label' => $class->getLabel(),
+                'childrenLimit' => $childrenLimit,
+            ],
+            $class->getUri()
+        );
 
         if ($depth > 0) {
             $children = [];
             foreach ($class->getSubClasses() as $subclass) {
-                if (!$permissionChecker->hasReadAccess($subclass->getUri())) {
-                    continue;
-                }
-
                 $children[] = $this->searchDirectories(
                     $subclass->getUri(),
                     $acceptableMime,
@@ -391,10 +400,6 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
 
             foreach ($class->searchInstances($filter, $options) as $instance) {
                 try {
-                    if (!$permissionChecker->hasReadAccess($instance->getUri())) {
-                        continue;
-                    }
-
                     $children[] = $this->getFileInfo($instance->getUri());
                 } catch (tao_models_classes_FileNotFoundException $e) {
                     $this->logEmergency(
@@ -415,8 +420,12 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
         return $data;
     }
 
-    private function getPermissionChecker(): PermissionCheckerInterface
+    private function getPermissionsMapper(): MediaBrowserPermissionsMapper
     {
-        return $this->getServiceLocator()->get(PermissionChecker::class);
+        if (!$this->permissionsMapper) {
+            $this->permissionsMapper = $this->getServiceLocator()->get(MediaBrowserPermissionsMapper::class);
+        }
+
+        return $this->permissionsMapper;
     }
 }

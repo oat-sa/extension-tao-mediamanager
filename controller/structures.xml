@@ -18,7 +18,7 @@
                           delete="media-delete"
                             />
                 </trees>
-                <actions>
+                <actions allowClassActions="true">
                     <action id="media-class-properties" name="Properties" url="/taoMediaManager/MediaManager/editClassLabel" group="content" context="class">
                         <icon id="icon-edit"/>
                     </action>

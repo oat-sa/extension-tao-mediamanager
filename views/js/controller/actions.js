@@ -66,7 +66,7 @@ define([
 
         return request({
             url: self.url,
-            data: JSON.stringify({ classId: classUri }),
+            data: JSON.stringify({ classUri: classUri }),
             method: 'POST'
         })
             .then(function (response) {

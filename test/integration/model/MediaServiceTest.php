@@ -28,6 +28,7 @@ use oat\taoMediaManager\model\MediaService;
 use oat\generis\test\TestCase;
 use core_kernel_classes_Resource as RdfResource;
 use core_kernel_classes_Property as RdfProperty;
+use oat\taoRevision\model\RepositoryService;
 
 include_once dirname(__FILE__) . '/../../../includes/raw_start.php';
 
@@ -42,7 +43,11 @@ class MediaServiceTest extends TestCase
     {
         $this->testClass = (MediaService::singleton())->getRootClass()->createSubClass('test class');
 
-        (MediaService::singleton())->deleteClass($this->testClass); //FIXME
+        $revisionService = $this->createMock(RepositoryService::class);
+        $revisionService->method('commit');
+
+        $serviceManager = ServiceManager::getServiceManager();
+        $serviceManager->overload(RepositoryService::SERVICE_ID, $revisionService);
     }
 
     public function tearDown(): void

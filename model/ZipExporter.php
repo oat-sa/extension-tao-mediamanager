@@ -79,26 +79,32 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
 
         $report = Report::createSuccess();
 
+        $report->setData($this->processExport($formValues));
+        $report->setMessage(__('Media successfully exported.'));
+
+        return $report;
+    }
+
+    private function processExport(array $formValues): string
+    {
         $class = new core_kernel_classes_Class($formValues['id']);
-
         $exportClasses = [];
-        if ($class->isClass()) {
-            $subClasses = $class->getSubClasses(true);
-            $exportData = [$class->getLabel() => $class->getInstances()];
 
-            foreach ($subClasses as $subClass) {
-                $instances = $subClass->getInstances();
+        if ($class->isClass()) {
+            $exportData = [
+                $class->getLabel() => $this->getClassResources($class)
+            ];
+
+            foreach ($class->getSubClasses(true) as $subClass) {
+                $instances = $this->getClassResources($subClass);
+
+                if (count($instances) === 0) {
+                    continue;
+                }
+
                 $exportData[$subClass->getLabel()] = $instances;
 
-                //get Class path
-                $parents = $subClass->getParentClasses();
-                $parent = array_shift($parents);
-
-                if (array_key_exists($parent->getLabel(), $exportClasses)) {
-                    $exportClasses[$subClass->getLabel()] = $exportClasses[$parent->getLabel()] . '/' . $subClass->getLabel();
-                } else {
-                    $exportClasses[$subClass->getLabel()] = $subClass->getLabel();
-                }
+                $exportClasses[$subClass->getLabel()] = $this->normalizeClassName($subClass, $exportClasses);
             }
         } else {
             $exportData = [$class->getLabel() => [$class]];
@@ -106,12 +112,17 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
 
         $safePath = $this->getSavePath($formValues['filename']);
 
-        $file = $this->createZipFile($safePath, $exportClasses, $exportData);
+        return $this->createZipFile($safePath, $exportClasses, $exportData);
+    }
 
-        $report->setData($file);
-        $report->setMessage(__('Media successfully exported.'));
+    private function normalizeClassName(core_kernel_classes_Class $class, array $exportClasses): string
+    {
+        $parents = $class->getParentClasses();
+        $parent = array_shift($parents);
 
-        return $report;
+        return array_key_exists($parent->getLabel(), $exportClasses)
+            ? $exportClasses[$parent->getLabel()] . '/' . $class->getLabel()
+            : $class->getLabel();
     }
 
     private function getSavePath(string $unsafePath): string
@@ -187,6 +198,11 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
     private function getSharedStimulusCSSExporter(): SharedStimulusCSSExporter
     {
         return $this->getServiceManager()->get(SharedStimulusCSSExporter::class);
+    }
+
+    private function getClassResources(core_kernel_classes_Class $class): array
+    {
+        return $class->getInstances();
     }
 
     /**

@@ -158,14 +158,14 @@ define([
                     media.$container.css('min-height', $img.height() + 16 + 'px');
                     inlineHelper.positionFloat(widget, media.align);
                     if (nMedia.align === 'right') {
-                        widget.$container.removeClass('wrap-left');
+                        widget.$container.removeClass('wrap-left wrap-inline');
                         widget.$container.addClass('wrap-right');
                     } else if (nMedia.align === 'left') {
-                        widget.$container.removeClass('wrap-right');
+                        widget.$container.removeClass('wrap-right wrap-inline');
                         widget.$container.addClass('wrap-left');
                     } else if (nMedia.align === 'default') {
-                        widget.$container.removeClass('wrap-right');
-                        widget.$container.removeClass('wrap-left');
+                        widget.$container.removeClass('wrap-right wrap-left');
+                        widget.$container.addClass('wrap-inline');
                     }
                     $img.prop('style', null); // not allowed by qti
                     $img.removeAttr('style');

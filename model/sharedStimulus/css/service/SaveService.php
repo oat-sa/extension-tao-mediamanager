@@ -22,34 +22,26 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus\css\service;
 
-use League\Flysystem\FileNotFoundException;
-use League\Flysystem\FilesystemInterface;
-use oat\generis\model\data\Ontology;
-use oat\oatbox\filesystem\FileSystemService;
-use oat\oatbox\service\ConfigurableService;
-use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
-use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
-use oat\taoMediaManager\model\MediaService;
-use oat\taoMediaManager\model\sharedStimulus\css\SaveCommand;
+use Exception;
 use common_Logger as Logger;
+use League\Flysystem\FileNotFoundException;
+use oat\taoMediaManager\model\sharedStimulus\css\SaveCommand;
 
-class SaveService extends ConfigurableService
+class SaveService extends ConfigurableCssService
 {
     public const STYLESHEET_WARNING_HEADER = " /* Do not edit */" . "\n";
 
     public function save(SaveCommand $command): void
     {
-        $passageResource = $this->getOntology()->getResource($command->getUri());
-        $link = $passageResource->getUniquePropertyValue($passageResource->getProperty(MediaService::PROPERTY_LINK));
-        $link = $this->getFileSourceUnserializer()->unserialize((string)$link);
+        $path = $this->getPath($command);
 
-        $path = dirname((string)$link);
-        if ($path == '.') {
-            throw new \Exception ('Shared stimulus stored as single file');
+        if ($path === '.') {
+            throw new Exception ('Shared stimulus stored as single file');
         }
 
         $cssClassesArray = $command->getCssClassesArray();
-        if (!count($cssClassesArray)) {
+
+        if (empty($cssClassesArray)) {
             $this->removeStoredStylesheet($path . DIRECTORY_SEPARATOR . $command->getStylesheetUri());
 
             return;
@@ -95,31 +87,5 @@ class SaveService extends ConfigurableService
             $css .= "}\n";
         }
         return $css;
-    }
-
-    private function getOntology(): Ontology
-    {
-        return $this->getServiceLocator()->get(Ontology::SERVICE_ID);
-    }
-
-    private function getFileSystem(): FilesystemInterface
-    {
-        return $this->getFileSystemService()
-            ->getFileSystem($this->getFlySystemManagement()->getOption(FlySystemManagement::OPTION_FS));
-    }
-
-    private function getFileSystemService(): FileSystemService
-    {
-        return $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
-    }
-
-    private function getFlySystemManagement(): FlySystemManagement
-    {
-        return $this->getServiceLocator()->get(FlySystemManagement::SERVICE_ID);
-    }
-
-    private function getFileSourceUnserializer(): FileSourceUnserializer
-    {
-        return $this->getServiceLocator()->get(FileSourceUnserializer::class);
     }
 }

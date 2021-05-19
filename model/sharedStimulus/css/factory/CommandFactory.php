@@ -22,42 +22,27 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus\css\factory;
 
+use tao_helpers_File;
 use oat\oatbox\service\ConfigurableService;
+use Psr\Http\Message\ServerRequestInterface;
+use common_exception_Error as ErrorException;
 use oat\taoMediaManager\model\sharedStimulus\css\LoadCommand;
 use oat\taoMediaManager\model\sharedStimulus\css\SaveCommand;
-use Psr\Http\Message\ServerRequestInterface;
-use common_exception_InvalidArgumentType as InvalidParameterException;
 use common_exception_MissingParameter as MissingParameterException;
-use common_exception_Error as ErrorException;
-use tao_helpers_File;
+use common_exception_InvalidArgumentType as InvalidParameterException;
+use oat\taoMediaManager\model\sharedStimulus\css\GetStylesheetsCommand;
+use oat\taoMediaManager\model\sharedStimulus\css\LoadStylesheetCommand;
 
 class CommandFactory extends ConfigurableService
 {
-
-    /**
-     * @throws ErrorException
-     * @throws InvalidParameterException
-     * @throws MissingParameterException
-     */
     public function makeSaveCommandByRequest(ServerRequestInterface $request): SaveCommand
     {
-        $parsedBody = $request->getParsedBody();
+        $params = $request->getParsedBody();
+        $this->validateParams($params, ['uri', 'stylesheetUri', 'cssJson'],__METHOD__);
+        $this->securityCheckStylesheetPath($params['stylesheetUri']);
 
-        if (!isset($parsedBody['uri'])) {
-            throw new MissingParameterException('uri', __METHOD__);
-        }
+        $css = json_decode($params['cssJson'], true);
 
-        if (!isset($parsedBody['stylesheetUri'])) {
-            throw new MissingParameterException('stylesheetUri', __METHOD__);
-        }
-
-        if (!isset($parsedBody['cssJson'])) {
-            throw new MissingParameterException('cssJson', __METHOD__);
-        }
-
-        $this->securityCheckStylesheetPath($parsedBody['stylesheetUri']);
-
-        $css = json_decode($parsedBody['cssJson'], true);
         if (!is_array($css)) {
             throw new InvalidParameterException(
                 __CLASS__,
@@ -68,43 +53,54 @@ class CommandFactory extends ConfigurableService
         }
 
         return new SaveCommand(
-            $parsedBody['uri'],
-            $parsedBody['stylesheetUri'],
+            $params['uri'],
+            $params['stylesheetUri'],
             $css
         );
     }
 
-    /**
-     * @throws ErrorException
-     * @throws MissingParameterException
-     */
     public function makeLoadCommandByRequest(ServerRequestInterface $request): LoadCommand
     {
-        $parsedBody = $request->getQueryParams();
-
-        if (!isset($parsedBody['uri'])) {
-            throw new MissingParameterException('uri', __METHOD__);
-        }
-
-        if (!isset($parsedBody['stylesheetUri'])) {
-            throw new MissingParameterException('stylesheetUri', __METHOD__);
-        }
-
-        $this->securityCheckStylesheetPath($parsedBody['stylesheetUri']);
+        $params = $request->getQueryParams();
+        $this->validateParams($params, ['uri', 'stylesheetUri'],__METHOD__);
+        $this->securityCheckStylesheetPath($params['stylesheetUri']);
 
         return new LoadCommand(
-            $parsedBody['uri'],
-            $parsedBody['stylesheetUri']
+            $params['uri'],
+            $params['stylesheetUri']
         );
     }
 
-    /**
-     * @throws ErrorException
-     */
+    public function makeGetStylesheetsCommandByRequest(ServerRequestInterface $request): GetStylesheetsCommand
+    {
+        $params = $request->getQueryParams();
+        $this->validateParams($params, ['uri'], __METHOD__);
+
+        return new GetStylesheetsCommand($params['uri']);
+    }
+
+    public function makeLoadStylesheetCommandByRequest(ServerRequestInterface $request): LoadStylesheetCommand
+    {
+        $params = $request->getQueryParams();
+        $this->validateParams($params, ['uri', 'stylesheet'],__METHOD__);
+        $this->securityCheckStylesheetPath($params['stylesheet']);
+
+        return new LoadStylesheetCommand($params['uri'], $params['stylesheet']);
+    }
+
+    private function validateParams(array $params, array $requiredParams, string $method): void
+    {
+        foreach ($requiredParams as $paramName) {
+            if (!isset($params[$paramName])) {
+                throw new MissingParameterException($paramName, $method);
+            }
+        }
+    }
+
     private function securityCheckStylesheetPath(string $stylesheetUri): void
     {
         if (!tao_helpers_File::securityCheck($stylesheetUri, true)) {
-            throw new ErrorException('invalid stylesheet path "' . $stylesheetUri . '"');
+            throw new ErrorException(sprintf('Invalid stylesheet path "%s"', $stylesheetUri));
         }
     }
 }

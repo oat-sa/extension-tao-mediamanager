@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus\css;
 
-class LoadCommand
+class LoadCommand implements CommandInterface
 {
     /** @var string */
     private $uri;

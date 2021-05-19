@@ -16,90 +16,116 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2021 (original work) Open Assessment Technologies SA;
- *
  */
 
 declare(strict_types=1);
 
 namespace oat\taoMediaManager\controller;
 
+use Throwable;
+use tao_helpers_Http as HttpHelper;
 use oat\oatbox\log\LoggerAwareTrait;
+use tao_actions_CommonModule as CommonModule;
 use oat\tao\model\http\formatter\ResponseFormatter;
 use oat\tao\model\http\response\ErrorJsonResponse;
 use oat\tao\model\http\response\SuccessJsonResponse;
-use oat\taoMediaManager\model\sharedStimulus\css\factory\CommandFactory;
 use oat\taoMediaManager\model\sharedStimulus\css\service\LoadService;
 use oat\taoMediaManager\model\sharedStimulus\css\service\SaveService;
-use tao_actions_CommonModule;
-use Throwable;
+use oat\taoMediaManager\model\sharedStimulus\css\factory\CommandFactory;
+use oat\taoMediaManager\model\sharedStimulus\css\service\StylesheetService;
 
-class SharedStimulusStyling extends tao_actions_CommonModule
+class SharedStimulusStyling extends CommonModule
 {
     use LoggerAwareTrait;
 
-    public function save(): void
-    {
-        $formatter = $this->getResponseFormatter()
-            ->withJsonHeader();
+    public function save(
+        ResponseFormatter $responseFormatter,
+        CommandFactory $commandFactory,
+        SaveService $saveService
+    ): void {
+        $formatter = $responseFormatter->withJsonHeader();
 
         try {
-            $command = $this->getCommandFactory()
-                ->makeSaveCommandByRequest($this->getPsrRequest());
-
-            $this->getSaveService()
-                ->save($command);
+            $command = $commandFactory->makeSaveCommandByRequest($this->getPsrRequest());
+            $saveService->save($command);
 
             $formatter->withBody(new SuccessJsonResponse([]));
         } catch (Throwable $exception) {
             $this->logError(sprintf('Error saving passage styles: %s', $exception->getMessage()));
 
-            $formatter->withStatusCode(400)
+            $formatter
+                ->withStatusCode(400)
                 ->withBody(new ErrorJsonResponse($exception->getCode(), $exception->getMessage()));
         }
 
         $this->setResponse($formatter->format($this->getPsrResponse()));
     }
 
-    public function load(): void
-    {
-        $formatter = $this->getResponseFormatter()
-            ->withJsonHeader();
+    public function load(
+        ResponseFormatter $responseFormatter,
+        CommandFactory $commandFactory,
+        LoadService $loadService
+    ): void {
+        $formatter = $responseFormatter->withJsonHeader();
 
         try {
-            $command = $this->getCommandFactory()
-                ->makeLoadCommandByRequest($this->getPsrRequest());
-
-            $data = $this->getLoadService()
-                ->load($command);
+            $command = $commandFactory->makeLoadCommandByRequest($this->getPsrRequest());
+            $data = $loadService->load($command);
 
             $formatter->withBody(new SuccessJsonResponse($data));
         } catch (Throwable $exception) {
             $this->logError(sprintf('Error loading passage styles: %s', $exception->getMessage()));
 
-            $formatter->withStatusCode(400)
+            $formatter
+                ->withStatusCode(400)
                 ->withBody(new ErrorJsonResponse($exception->getCode(), $exception->getMessage()));
         }
 
         $this->setResponse($formatter->format($this->getPsrResponse()));
     }
 
-    private function getResponseFormatter(): ResponseFormatter
-    {
-        return $this->getServiceLocator()->get(ResponseFormatter::class);
+    public function getStylesheets(
+        ResponseFormatter $responseFormatter,
+        CommandFactory $commandFactory,
+        StylesheetService $stylesheetsService
+    ): void {
+        $formatter = $responseFormatter->withJsonHeader();
+
+        try {
+            $command = $commandFactory->makeGetStylesheetsCommandByRequest($this->getPsrRequest());
+            $data = $stylesheetsService->getList($command);
+
+            $formatter->withBody(new SuccessJsonResponse($data));
+        } catch (Throwable $exception) {
+            $this->logError(sprintf('Error loading passage stylesheets: %s', $exception->getMessage()));
+
+            $formatter
+                ->withStatusCode(400)
+                ->withBody(new ErrorJsonResponse($exception->getCode(), $exception->getMessage()));
+        }
+
+        $this->setResponse($formatter->format($this->getPsrResponse()));
     }
 
-    private function getCommandFactory(): CommandFactory
-    {
-        return $this->getServiceLocator()->get(CommandFactory::class);
-    }
+    public function loadStylesheet(
+        ResponseFormatter $responseFormatter,
+        CommandFactory $commandFactory,
+        StylesheetService $stylesheetsService
+    ): void {
+        try {
+            $command = $commandFactory->makeLoadStylesheetCommandByRequest($this->getPsrRequest());
+            $stream = $stylesheetsService->load($command);
 
-    private function getSaveService(): SaveService
-    {
-        return $this->getServiceLocator()->get(SaveService::class);
-    }
+            HttpHelper::returnStream($stream, 'text/css');
+        } catch (Throwable $exception) {
+            $this->logError(sprintf('Error loading passage stylesheet: %s', $exception->getMessage()));
 
-    private function getLoadService(): LoadService
-    {
-        return $this->getServiceLocator()->get(LoadService::class);
+            $formatter = $responseFormatter->withJsonHeader();
+            $formatter
+                ->withStatusCode(400)
+                ->withBody(new ErrorJsonResponse($exception->getCode(), $exception->getMessage()));
+
+            $this->setResponse($formatter->format($this->getPsrResponse()));
+        }
     }
 }

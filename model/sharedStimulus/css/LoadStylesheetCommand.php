@@ -22,26 +22,18 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus\css;
 
-class SaveCommand implements CommandInterface
+class LoadStylesheetCommand implements CommandInterface
 {
     /** @var string */
     private $uri;
 
     /** @var string */
-    private $stylesheetUri;
+    private $stylesheet;
 
-    /* @var array */
-    private $cssClassesArray;
-
-    /** @var string */
-    private $lang;
-
-    public function __construct(string $uri, string $stylesheetUri, array $cssClassesArray, string $lang = null)
+    public function __construct(string $uri, string $stylesheet)
     {
         $this->uri = $uri;
-        $this->stylesheetUri = $stylesheetUri;
-        $this->cssClassesArray = $cssClassesArray;
-        $this->lang = $lang;
+        $this->stylesheet = $stylesheet;
     }
 
     public function getUri(): string
@@ -49,18 +41,8 @@ class SaveCommand implements CommandInterface
         return $this->uri;
     }
 
-    public function getStylesheetUri(): string
+    public function getStylesheet(): string
     {
-        return $this->stylesheetUri;
-    }
-
-    public function getLang(): ?string
-    {
-        return $this->lang;
-    }
-
-    public function getCssClassesArray(): array
-    {
-        return $this->cssClassesArray;
+        return $this->stylesheet;
     }
 }

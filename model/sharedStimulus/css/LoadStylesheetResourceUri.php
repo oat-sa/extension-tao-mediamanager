@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus\css;
 
-class LoadStylesheetCommand implements CommandInterface
+class LoadStylesheetResourceUri implements ResourceUriInterface
 {
     /** @var string */
     private $uri;

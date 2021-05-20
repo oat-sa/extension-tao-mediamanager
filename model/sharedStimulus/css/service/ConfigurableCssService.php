@@ -27,30 +27,19 @@ use League\Flysystem\FilesystemInterface;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\MediaService;
 use oat\oatbox\filesystem\FileSystemService;
-use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
-use oat\taoMediaManager\model\sharedStimulus\css\CommandInterface;
 use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
+use oat\taoMediaManager\model\sharedStimulus\css\ResourceUriInterface;
 
 abstract class ConfigurableCssService extends ConfigurableService
 {
-    protected function getPath(CommandInterface $command): string
+    protected function getPath(ResourceUriInterface $command): string
     {
         $passageResource = $this->getOntology()->getResource($command->getUri());
         $link = $passageResource->getUniquePropertyValue($passageResource->getProperty(MediaService::PROPERTY_LINK));
         $link = $this->getFileSourceUnserializer()->unserialize((string) $link);
 
         return dirname((string) $link);
-    }
-
-    protected function getOntology(): Ontology
-    {
-        return $this->getServiceLocator()->get(Ontology::SERVICE_ID);
-    }
-
-    protected function getFileSourceUnserializer(): FileSourceUnserializer
-    {
-        return $this->getServiceLocator()->get(FileSourceUnserializer::class);
     }
 
     protected function getFileSystem(): FilesystemInterface
@@ -60,18 +49,23 @@ abstract class ConfigurableCssService extends ConfigurableService
         return $this->getFileSystemService()->getFileSystem($flySystemManagementFs);
     }
 
-    protected function getFileSystemService(): FileSystemService
+    private function getOntology(): Ontology
+    {
+        return $this->getServiceLocator()->get(Ontology::SERVICE_ID);
+    }
+
+    private function getFileSourceUnserializer(): FileSourceUnserializer
+    {
+        return $this->getServiceLocator()->get(FileSourceUnserializer::class);
+    }
+
+    private function getFileSystemService(): FileSystemService
     {
         return $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
     }
 
-    protected function getFlySystemManagement(): FlySystemManagement
+    private function getFlySystemManagement(): FlySystemManagement
     {
         return $this->getServiceLocator()->get(FlySystemManagement::SERVICE_ID);
-    }
-
-    protected function getFileManagement(): FileManagement
-    {
-        return $this->getServiceLocator()->get(FileManagement::SERVICE_ID);
     }
 }

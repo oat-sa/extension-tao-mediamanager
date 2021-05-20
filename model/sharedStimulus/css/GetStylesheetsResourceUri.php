@@ -22,7 +22,18 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus\css;
 
-interface CommandInterface
+class GetStylesheetsResourceUri implements ResourceUriInterface
 {
-    public function getUri(): string;
+    /** @var string */
+    private $uri;
+
+    public function __construct(string $uri)
+    {
+        $this->uri = $uri;
+    }
+
+    public function getUri(): string
+    {
+        return $this->uri;
+    }
 }

@@ -22,13 +22,12 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus\css\service;
 
-use common_Logger as Logger;
 use League\Flysystem\FileNotFoundException;
-use oat\taoMediaManager\model\sharedStimulus\css\LoadCommand;
+use oat\taoMediaManager\model\sharedStimulus\css\LoadResourceUri;
 
 class LoadService extends ConfigurableCssService
 {
-    public function load(LoadCommand $command): array
+    public function load(LoadResourceUri $command): array
     {
         $path = $this->getPath($command);
 
@@ -43,9 +42,10 @@ class LoadService extends ConfigurableCssService
 
             return $this->cssToArray($content);
         } catch (FileNotFoundException $e) {
-            Logger::d(
+            $this->logDebug(
                 sprintf(
-                    'Stylesheet %s does not exist yet, returning empty array',
+                    'Passage %s does not contain stylesheet %s. An empty array will be returned.',
+                    $command->getUri(),
                     $command->getStylesheetUri()
                 )
             );

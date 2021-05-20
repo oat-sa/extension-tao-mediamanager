@@ -23,15 +23,14 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\sharedStimulus\css\service;
 
 use Exception;
-use common_Logger as Logger;
 use League\Flysystem\FileNotFoundException;
-use oat\taoMediaManager\model\sharedStimulus\css\SaveCommand;
+use oat\taoMediaManager\model\sharedStimulus\css\SaveResourceUri;
 
 class SaveService extends ConfigurableCssService
 {
     public const STYLESHEET_WARNING_HEADER = " /* Do not edit */" . "\n";
 
-    public function save(SaveCommand $command): void
+    public function save(SaveResourceUri $command): void
     {
         $path = $this->getPath($command);
 
@@ -56,7 +55,7 @@ class SaveService extends ConfigurableCssService
         try {
             $this->getFileSystem()->delete($path);
         } catch (FileNotFoundException $exception) {
-            Logger::d('Stylesheet ' . $path . ' to delete was not found when trying to clear styles');
+            $this->logDebug(sprintf('Stylesheet %s to delete was not found when trying to clear styles', $path));
         }
     }
 

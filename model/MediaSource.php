@@ -55,7 +55,7 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
     private $permissionsMapper;
 
     /** @var string[] */
-    private $tmpFiles;
+    private $tmpFiles = [];
 
     public function enableAccessControl(): AccessControlEnablerInterface
     {
@@ -438,7 +438,7 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
     public function __destruct()
     {
         foreach ($this->tmpFiles as $tmpFile) {
-            if (file_exists($tmpFile) && is_writable($tmpFile)) {
+            if (is_writable($tmpFile)) {
                 unlink($tmpFile);
             }
         }

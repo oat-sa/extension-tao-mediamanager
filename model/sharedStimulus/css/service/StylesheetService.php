@@ -24,14 +24,14 @@ namespace oat\taoMediaManager\model\sharedStimulus\css\service;
 
 use Psr\Http\Message\StreamInterface;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
-use oat\taoMediaManager\model\sharedStimulus\css\GetStylesheetsResourceUri;
-use oat\taoMediaManager\model\sharedStimulus\css\LoadStylesheetResourceUri;
+use oat\taoMediaManager\model\sharedStimulus\css\GetStylesheetsCommand;
+use oat\taoMediaManager\model\sharedStimulus\css\LoadStylesheetCommand;
 
 class StylesheetService extends ConfigurableCssService
 {
     private const STYLESHEETS_DIRECTORY = 'css';
 
-    public function getList(GetStylesheetsResourceUri $command): array
+    public function getList(GetStylesheetsCommand $command): array
     {
         $path = $this->getPath($command);
         $list = $this->getFileSystem()->listContents($path . DIRECTORY_SEPARATOR . self::STYLESHEETS_DIRECTORY);
@@ -39,7 +39,7 @@ class StylesheetService extends ConfigurableCssService
         return array_column($list, 'basename');
     }
 
-    public function load(LoadStylesheetResourceUri $command): StreamInterface
+    public function load(LoadStylesheetCommand $command): StreamInterface
     {
         $path = $this->getPath($command);
         $stylesheet = $command->getStylesheet();

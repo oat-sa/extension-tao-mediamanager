@@ -24,13 +24,13 @@ namespace oat\taoMediaManager\model\sharedStimulus\css\service;
 
 use Exception;
 use League\Flysystem\FileNotFoundException;
-use oat\taoMediaManager\model\sharedStimulus\css\SaveResourceUri;
+use oat\taoMediaManager\model\sharedStimulus\css\SaveCommand;
 
 class SaveService extends ConfigurableCssService
 {
     public const STYLESHEET_WARNING_HEADER = " /* Do not edit */" . "\n";
 
-    public function save(SaveResourceUri $command): void
+    public function save(SaveCommand $command): void
     {
         $path = $this->getPath($command);
 

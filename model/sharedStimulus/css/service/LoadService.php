@@ -23,11 +23,11 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\sharedStimulus\css\service;
 
 use League\Flysystem\FileNotFoundException;
-use oat\taoMediaManager\model\sharedStimulus\css\LoadResourceUri;
+use oat\taoMediaManager\model\sharedStimulus\css\LoadCommand;
 
 class LoadService extends ConfigurableCssService
 {
-    public function load(LoadResourceUri $command): array
+    public function load(LoadCommand $command): array
     {
         $path = $this->getPath($command);
 

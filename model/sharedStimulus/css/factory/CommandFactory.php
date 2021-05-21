@@ -26,16 +26,16 @@ use tao_helpers_File;
 use oat\oatbox\service\ConfigurableService;
 use Psr\Http\Message\ServerRequestInterface;
 use common_exception_Error as ErrorException;
-use oat\taoMediaManager\model\sharedStimulus\css\LoadResourceUri;
-use oat\taoMediaManager\model\sharedStimulus\css\SaveResourceUri;
+use oat\taoMediaManager\model\sharedStimulus\css\LoadCommand;
+use oat\taoMediaManager\model\sharedStimulus\css\SaveCommand;
 use common_exception_MissingParameter as MissingParameterException;
 use common_exception_InvalidArgumentType as InvalidParameterException;
-use oat\taoMediaManager\model\sharedStimulus\css\GetStylesheetsResourceUri;
-use oat\taoMediaManager\model\sharedStimulus\css\LoadStylesheetResourceUri;
+use oat\taoMediaManager\model\sharedStimulus\css\GetStylesheetsCommand;
+use oat\taoMediaManager\model\sharedStimulus\css\LoadStylesheetCommand;
 
 class CommandFactory extends ConfigurableService
 {
-    public function makeSaveCommandByRequest(ServerRequestInterface $request): SaveResourceUri
+    public function makeSaveCommandByRequest(ServerRequestInterface $request): SaveCommand
     {
         $params = $request->getParsedBody();
         $this->validateParams($params, ['uri', 'stylesheetUri', 'cssJson'],__METHOD__);
@@ -52,40 +52,40 @@ class CommandFactory extends ConfigurableService
             );
         }
 
-        return new SaveResourceUri(
+        return new SaveCommand(
             $params['uri'],
             $params['stylesheetUri'],
             $css
         );
     }
 
-    public function makeLoadCommandByRequest(ServerRequestInterface $request): LoadResourceUri
+    public function makeLoadCommandByRequest(ServerRequestInterface $request): LoadCommand
     {
         $params = $request->getQueryParams();
         $this->validateParams($params, ['uri', 'stylesheetUri'],__METHOD__);
         $this->securityCheckStylesheetPath($params['stylesheetUri']);
 
-        return new LoadResourceUri(
+        return new LoadCommand(
             $params['uri'],
             $params['stylesheetUri']
         );
     }
 
-    public function makeGetStylesheetsCommandByRequest(ServerRequestInterface $request): GetStylesheetsResourceUri
+    public function makeGetStylesheetsCommandByRequest(ServerRequestInterface $request): GetStylesheetsCommand
     {
         $params = $request->getQueryParams();
         $this->validateParams($params, ['uri'], __METHOD__);
 
-        return new GetStylesheetsResourceUri($params['uri']);
+        return new GetStylesheetsCommand($params['uri']);
     }
 
-    public function makeLoadStylesheetCommandByRequest(ServerRequestInterface $request): LoadStylesheetResourceUri
+    public function makeLoadStylesheetCommandByRequest(ServerRequestInterface $request): LoadStylesheetCommand
     {
         $params = $request->getQueryParams();
         $this->validateParams($params, ['uri', 'stylesheet'],__METHOD__);
         $this->securityCheckStylesheetPath($params['stylesheet']);
 
-        return new LoadStylesheetResourceUri($params['uri'], $params['stylesheet']);
+        return new LoadStylesheetCommand($params['uri'], $params['stylesheet']);
     }
 
     private function validateParams(array $params, array $requiredParams, string $method): void

@@ -20,9 +20,9 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\sharedStimulus\css;
+namespace oat\taoMediaManager\model\sharedStimulus\css\dto;
 
-class GetStylesheetsCommand implements ResourceUriInterface
+class ListStylesheets
 {
     /** @var string */
     private $uri;

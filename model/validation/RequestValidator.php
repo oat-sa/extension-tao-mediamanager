@@ -20,9 +20,27 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\sharedStimulus\css;
+namespace oat\taoMediaManager\model\validation;
 
-interface ResourceUriInterface
+use tao_helpers_File as FileHelper;
+use common_exception_Error as ErrorException;
+use common_exception_MissingParameter as MissingParameterException;
+
+class RequestValidator
 {
-    public function getUri(): string;
+    public static function validateRequiredParameters(array $params, array $requiredParams): void
+    {
+        foreach ($requiredParams as $paramName) {
+            if (!isset($params[$paramName])) {
+                throw new MissingParameterException($paramName);
+            }
+        }
+    }
+
+    public static function securityCheckPath(string $path): void
+    {
+        if (!FileHelper::securityCheck($path, true)) {
+            throw new ErrorException(sprintf('Invalid path "%s"', $path));
+        }
+    }
 }

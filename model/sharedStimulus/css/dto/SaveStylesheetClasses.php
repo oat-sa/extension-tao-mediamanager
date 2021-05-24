@@ -20,9 +20,9 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\sharedStimulus\css;
+namespace oat\taoMediaManager\model\sharedStimulus\css\dto;
 
-class LoadCommand implements ResourceUriInterface
+class SaveStylesheetClasses
 {
     /** @var string */
     private $uri;
@@ -30,14 +30,14 @@ class LoadCommand implements ResourceUriInterface
     /** @var string */
     private $stylesheetUri;
 
-    /** @var string|null */
-    private $lang;
+    /* @var array */
+    private $cssClassesArray;
 
-    public function __construct(string $uri, string $stylesheetUri, string $lang = null)
+    public function __construct(string $uri, string $stylesheetUri, array $cssClassesArray)
     {
         $this->uri = $uri;
         $this->stylesheetUri = $stylesheetUri;
-        $this->lang = $lang;
+        $this->cssClassesArray = $cssClassesArray;
     }
 
     public function getUri(): string
@@ -50,8 +50,8 @@ class LoadCommand implements ResourceUriInterface
         return $this->stylesheetUri;
     }
 
-    public function getLang(): ?string
+    public function getCssClassesArray(): array
     {
-        return $this->lang;
+        return $this->cssClassesArray;
     }
 }

@@ -23,27 +23,22 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\sharedStimulus\css\service;
 
 use Psr\Http\Message\StreamInterface;
+use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
-use oat\taoMediaManager\model\sharedStimulus\css\GetStylesheetsCommand;
-use oat\taoMediaManager\model\sharedStimulus\css\LoadStylesheetCommand;
+use oat\taoMediaManager\model\sharedStimulus\css\dto\LoadStylesheet;
+use oat\taoMediaManager\model\sharedStimulus\css\repository\StylesheetRepository;
 
-class StylesheetService extends ConfigurableCssService
+class LoadStylesheetService extends ConfigurableService
 {
-    private const STYLESHEETS_DIRECTORY = 'css';
-
-    public function getList(GetStylesheetsCommand $command): array
+    public function load(LoadStylesheet $loadStylesheetRequest): StreamInterface
     {
-        $path = $this->getPath($command);
-        $list = $this->getFileSystem()->listContents($path . DIRECTORY_SEPARATOR . self::STYLESHEETS_DIRECTORY);
-
-        return array_column($list, 'basename');
-    }
-
-    public function load(LoadStylesheetCommand $command): StreamInterface
-    {
-        $path = $this->getPath($command);
-        $stylesheet = $command->getStylesheet();
-        $link = $path . DIRECTORY_SEPARATOR . self::STYLESHEETS_DIRECTORY . DIRECTORY_SEPARATOR . $stylesheet;
+        $path = $this->getStylesheetRepository()->getPath($loadStylesheetRequest->getUri());
+        $stylesheet = $loadStylesheetRequest->getStylesheetUri();
+        $link = $path
+            . DIRECTORY_SEPARATOR
+            . StylesheetRepository::STYLESHEETS_DIRECTORY
+            . DIRECTORY_SEPARATOR
+            . $stylesheet;
 
         return $this->getFileManagement()->getFileStream($link);
     }
@@ -51,5 +46,10 @@ class StylesheetService extends ConfigurableCssService
     private function getFileManagement(): FileManagement
     {
         return $this->getServiceLocator()->get(FileManagement::SERVICE_ID);
+    }
+
+    private function getStylesheetRepository(): StylesheetRepository
+    {
+        return $this->getServiceLocator()->get(StylesheetRepository::class);
     }
 }

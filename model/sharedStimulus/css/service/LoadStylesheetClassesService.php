@@ -23,30 +23,34 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\sharedStimulus\css\service;
 
 use League\Flysystem\FileNotFoundException;
-use oat\taoMediaManager\model\sharedStimulus\css\LoadCommand;
+use oat\oatbox\service\ConfigurableService;
+use oat\taoMediaManager\model\sharedStimulus\css\dto\LoadStylesheet;
+use oat\taoMediaManager\model\sharedStimulus\css\repository\StylesheetRepository;
 
-class LoadService extends ConfigurableCssService
+class LoadStylesheetClassesService extends ConfigurableService
 {
-    public function load(LoadCommand $command): array
+    public function load(LoadStylesheet $loadStylesheetRequest): array
     {
-        $path = $this->getPath($command);
+        $stylesheetRepository = $this->getStylesheetRepository();
+
+        $path = $stylesheetRepository->getPath($loadStylesheetRequest->getUri());
 
         if ($path === '.') {
             throw new \Exception ('Shared stimulus stored as single file');
         }
 
-        $fs = $this->getFileSystem();
-
         try {
-            $content = $fs->read($path . DIRECTORY_SEPARATOR . $command->getStylesheetUri());
+            $content = $stylesheetRepository->read(
+                $path . DIRECTORY_SEPARATOR . $loadStylesheetRequest->getStylesheetUri()
+            );
 
             return $this->cssToArray($content);
         } catch (FileNotFoundException $e) {
             $this->logDebug(
                 sprintf(
                     'Passage %s does not contain stylesheet %s. An empty array will be returned.',
-                    $command->getUri(),
-                    $command->getStylesheetUri()
+                    $loadStylesheetRequest->getUri(),
+                    $loadStylesheetRequest->getStylesheetUri()
                 )
             );
         }
@@ -85,5 +89,10 @@ class LoadService extends ConfigurableCssService
             $newCssArr[$matches['selector']] = $matches['rules'];
         }
         return $newCssArr;
+    }
+
+    private function getStylesheetRepository(): StylesheetRepository
+    {
+        return $this->getServiceLocator()->get(StylesheetRepository::class);
     }
 }

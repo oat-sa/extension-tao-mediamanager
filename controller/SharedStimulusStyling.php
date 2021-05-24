@@ -29,10 +29,14 @@ use tao_actions_CommonModule as CommonModule;
 use oat\tao\model\http\formatter\ResponseFormatter;
 use oat\tao\model\http\response\ErrorJsonResponse;
 use oat\tao\model\http\response\SuccessJsonResponse;
-use oat\taoMediaManager\model\sharedStimulus\css\service\LoadService;
-use oat\taoMediaManager\model\sharedStimulus\css\service\SaveService;
-use oat\taoMediaManager\model\sharedStimulus\css\factory\CommandFactory;
-use oat\taoMediaManager\model\sharedStimulus\css\service\StylesheetService;
+use oat\taoMediaManager\model\sharedStimulus\css\service\LoadStylesheetService;
+use oat\taoMediaManager\model\sharedStimulus\css\handler\LoadStylesheetHandler;
+use oat\taoMediaManager\model\sharedStimulus\css\service\ListStylesheetsService;
+use oat\taoMediaManager\model\sharedStimulus\css\handler\ListStylesheetsHandler;
+use oat\taoMediaManager\model\sharedStimulus\css\service\LoadStylesheetClassesService;
+use oat\taoMediaManager\model\sharedStimulus\css\service\SaveStylesheetClassesService;
+use oat\taoMediaManager\model\sharedStimulus\css\handler\SaveStylesheetClassesHandler;
+use oat\taoMediaManager\model\sharedStimulus\css\handler\LoadStylesheetClassesHandler;
 
 class SharedStimulusStyling extends CommonModule
 {
@@ -40,14 +44,14 @@ class SharedStimulusStyling extends CommonModule
 
     public function save(
         ResponseFormatter $responseFormatter,
-        CommandFactory $commandFactory,
-        SaveService $saveService
+        SaveStylesheetClassesHandler $saveStylesheetClassesHandler,
+        SaveStylesheetClassesService $saveStylesheetClassesService
     ): void {
         $formatter = $responseFormatter->withJsonHeader();
 
         try {
-            $command = $commandFactory->makeSaveCommandByRequest($this->getPsrRequest());
-            $saveService->save($command);
+            $saveStylesheetClassesDTO = $saveStylesheetClassesHandler($this->getPsrRequest());
+            $saveStylesheetClassesService->save($saveStylesheetClassesDTO);
 
             $formatter->withBody(new SuccessJsonResponse([]));
         } catch (Throwable $exception) {
@@ -63,14 +67,14 @@ class SharedStimulusStyling extends CommonModule
 
     public function load(
         ResponseFormatter $responseFormatter,
-        CommandFactory $commandFactory,
-        LoadService $loadService
+        LoadStylesheetClassesHandler $loadStylesheetClassesHandler,
+        LoadStylesheetClassesService $loadStylesheetClassesService
     ): void {
         $formatter = $responseFormatter->withJsonHeader();
 
         try {
-            $command = $commandFactory->makeLoadCommandByRequest($this->getPsrRequest());
-            $data = $loadService->load($command);
+            $loadStylesheetClassesDTO = $loadStylesheetClassesHandler($this->getPsrRequest());
+            $data = $loadStylesheetClassesService->load($loadStylesheetClassesDTO);
 
             $formatter->withBody(new SuccessJsonResponse($data));
         } catch (Throwable $exception) {
@@ -86,14 +90,14 @@ class SharedStimulusStyling extends CommonModule
 
     public function getStylesheets(
         ResponseFormatter $responseFormatter,
-        CommandFactory $commandFactory,
-        StylesheetService $stylesheetsService
+        ListStylesheetsHandler $listStylesheetsHandler,
+        ListStylesheetsService $listStylesheetsService
     ): void {
         $formatter = $responseFormatter->withJsonHeader();
 
         try {
-            $command = $commandFactory->makeGetStylesheetsCommandByRequest($this->getPsrRequest());
-            $data = $stylesheetsService->getList($command);
+            $listStylesheetsDTO = $listStylesheetsHandler($this->getPsrRequest());
+            $data = $listStylesheetsService->getList($listStylesheetsDTO);
 
             $formatter->withBody(new SuccessJsonResponse($data));
         } catch (Throwable $exception) {
@@ -109,12 +113,12 @@ class SharedStimulusStyling extends CommonModule
 
     public function loadStylesheet(
         ResponseFormatter $responseFormatter,
-        CommandFactory $commandFactory,
-        StylesheetService $stylesheetsService
+        LoadStylesheetHandler $loadStylesheetHandler,
+        LoadStylesheetService $loadStylesheetService
     ): void {
         try {
-            $command = $commandFactory->makeLoadStylesheetCommandByRequest($this->getPsrRequest());
-            $stream = $stylesheetsService->load($command);
+            $loadStylesheetDTO = $loadStylesheetHandler($this->getPsrRequest());
+            $stream = $loadStylesheetService->load($loadStylesheetDTO);
 
             HttpHelper::returnStream($stream, 'text/css');
         } catch (Throwable $exception) {

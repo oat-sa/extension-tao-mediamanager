@@ -24,36 +24,44 @@ namespace oat\taoMediaManager\model\sharedStimulus\css\service;
 
 use Exception;
 use League\Flysystem\FileNotFoundException;
-use oat\taoMediaManager\model\sharedStimulus\css\SaveCommand;
+use oat\oatbox\service\ConfigurableService;
+use oat\taoMediaManager\model\sharedStimulus\css\dto\SaveStylesheetClasses;
+use oat\taoMediaManager\model\sharedStimulus\css\repository\StylesheetRepository;
 
-class SaveService extends ConfigurableCssService
+class SaveStylesheetClassesService extends ConfigurableService
 {
     public const STYLESHEET_WARNING_HEADER = " /* Do not edit */" . "\n";
 
-    public function save(SaveCommand $command): void
+    /** @var StylesheetRepository */
+    private $stylesheetRepository;
+
+    public function save(SaveStylesheetClasses $saveStylesheetClassesRequest): void
     {
-        $path = $this->getPath($command);
+        $path = $this->getStylesheetRepository()->getPath($saveStylesheetClassesRequest->getUri());
 
         if ($path === '.') {
             throw new Exception ('Shared stimulus stored as single file');
         }
 
-        $cssClassesArray = $command->getCssClassesArray();
+        $cssClassesArray = $saveStylesheetClassesRequest->getCssClassesArray();
 
         if (empty($cssClassesArray)) {
-            $this->removeStoredStylesheet($path . DIRECTORY_SEPARATOR . $command->getStylesheetUri());
+            $this->removeStoredStylesheet($path . DIRECTORY_SEPARATOR . $saveStylesheetClassesRequest->getStylesheetUri());
 
             return;
         }
 
         $content = $this->getCssContentFromArray($cssClassesArray);
-        $this->getFileSystem()->put($path . DIRECTORY_SEPARATOR . $command->getStylesheetUri(), $content);
+        $this->getStylesheetRepository()->put(
+            $path . DIRECTORY_SEPARATOR . $saveStylesheetClassesRequest->getStylesheetUri(),
+            $content
+        );
     }
 
     private function removeStoredStylesheet(string $path): void
     {
         try {
-            $this->getFileSystem()->delete($path);
+            $this->getStylesheetRepository()->delete($path);
         } catch (FileNotFoundException $exception) {
             $this->logDebug(sprintf('Stylesheet %s to delete was not found when trying to clear styles', $path));
         }
@@ -86,5 +94,14 @@ class SaveService extends ConfigurableCssService
             $css .= "}\n";
         }
         return $css;
+    }
+
+    private function getStylesheetRepository(): StylesheetRepository
+    {
+        if (!isset($this->stylesheetRepository)) {
+            $this->stylesheetRepository = $this->getServiceLocator()->get(StylesheetRepository::class);
+        }
+
+        return $this->stylesheetRepository;
     }
 }

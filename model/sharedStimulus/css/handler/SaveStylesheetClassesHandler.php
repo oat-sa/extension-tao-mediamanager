@@ -39,18 +39,10 @@ class SaveStylesheetClassesHandler extends ConfigurableService
     public function __invoke(ServerRequestInterface $request): SaveStylesheetClasses
     {
         $params = $request->getParsedBody();
-        $this->validate($params);
+        $this->validateParams($params);
 
         $css = json_decode($params['cssJson'], true);
-
-        if (!is_array($css)) {
-            throw new InvalidParameterException(
-                __CLASS__,
-                \Context::getInstance()->getActionName(),
-                3,
-                'json encoded array'
-            );
-        }
+        $this->validateCSS($css);
 
         return new SaveStylesheetClasses(
             $params['uri'],
@@ -63,9 +55,21 @@ class SaveStylesheetClassesHandler extends ConfigurableService
      * @throws ErrorException
      * @throws MissingParameterException
      */
-    private function validate(array $params): void
+    private function validateParams(array $params): void
     {
         RequestValidator::validateRequiredParameters($params, ['uri', 'stylesheetUri', 'cssJson']);
         RequestValidator::securityCheckPath($params['stylesheetUri']);
+    }
+
+    private function validateCSS(string $css): void
+    {
+        if (!is_array($css)) {
+            throw new InvalidParameterException(
+                __CLASS__,
+                \Context::getInstance()->getActionName(),
+                3,
+                'json encoded array'
+            );
+        }
     }
 }

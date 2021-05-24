@@ -28,11 +28,11 @@ use oat\taoMediaManager\model\sharedStimulus\css\repository\StylesheetRepository
 
 class ListStylesheetsService extends ConfigurableService
 {
-    public function getList(ListStylesheets $listStylesheetsRequest): array
+    public function getList(ListStylesheets $listStylesheetsDTO): array
     {
         $stylesheetRepository = $this->getStylesheetRepository();
 
-        $path = $stylesheetRepository->getPath($listStylesheetsRequest->getUri());
+        $path = $stylesheetRepository->getPath($listStylesheetsDTO->getUri());
         $list = $stylesheetRepository->listContents(
             $path . DIRECTORY_SEPARATOR . StylesheetRepository::STYLESHEETS_DIRECTORY
         );

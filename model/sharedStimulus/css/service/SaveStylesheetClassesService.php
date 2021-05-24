@@ -35,25 +35,25 @@ class SaveStylesheetClassesService extends ConfigurableService
     /** @var StylesheetRepository */
     private $stylesheetRepository;
 
-    public function save(SaveStylesheetClasses $saveStylesheetClassesRequest): void
+    public function save(SaveStylesheetClasses $saveStylesheetClassesDTO): void
     {
-        $path = $this->getStylesheetRepository()->getPath($saveStylesheetClassesRequest->getUri());
+        $path = $this->getStylesheetRepository()->getPath($saveStylesheetClassesDTO->getUri());
 
         if ($path === '.') {
             throw new Exception ('Shared stimulus stored as single file');
         }
 
-        $cssClassesArray = $saveStylesheetClassesRequest->getCssClassesArray();
+        $cssClassesArray = $saveStylesheetClassesDTO->getCssClassesArray();
 
         if (empty($cssClassesArray)) {
-            $this->removeStoredStylesheet($path . DIRECTORY_SEPARATOR . $saveStylesheetClassesRequest->getStylesheetUri());
+            $this->removeStoredStylesheet($path . DIRECTORY_SEPARATOR . $saveStylesheetClassesDTO->getStylesheetUri());
 
             return;
         }
 
         $content = $this->getCssContentFromArray($cssClassesArray);
         $this->getStylesheetRepository()->put(
-            $path . DIRECTORY_SEPARATOR . $saveStylesheetClassesRequest->getStylesheetUri(),
+            $path . DIRECTORY_SEPARATOR . $saveStylesheetClassesDTO->getStylesheetUri(),
             $content
         );
     }

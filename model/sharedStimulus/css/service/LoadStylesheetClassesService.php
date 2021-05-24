@@ -29,11 +29,11 @@ use oat\taoMediaManager\model\sharedStimulus\css\repository\StylesheetRepository
 
 class LoadStylesheetClassesService extends ConfigurableService
 {
-    public function load(LoadStylesheet $loadStylesheetRequest): array
+    public function load(LoadStylesheet $loadStylesheetDTO): array
     {
         $stylesheetRepository = $this->getStylesheetRepository();
 
-        $path = $stylesheetRepository->getPath($loadStylesheetRequest->getUri());
+        $path = $stylesheetRepository->getPath($loadStylesheetDTO->getUri());
 
         if ($path === '.') {
             throw new \Exception ('Shared stimulus stored as single file');
@@ -41,7 +41,7 @@ class LoadStylesheetClassesService extends ConfigurableService
 
         try {
             $content = $stylesheetRepository->read(
-                $path . DIRECTORY_SEPARATOR . $loadStylesheetRequest->getStylesheetUri()
+                $path . DIRECTORY_SEPARATOR . $loadStylesheetDTO->getStylesheetUri()
             );
 
             return $this->cssToArray($content);
@@ -49,8 +49,8 @@ class LoadStylesheetClassesService extends ConfigurableService
             $this->logDebug(
                 sprintf(
                     'Passage %s does not contain stylesheet %s. An empty array will be returned.',
-                    $loadStylesheetRequest->getUri(),
-                    $loadStylesheetRequest->getStylesheetUri()
+                    $loadStylesheetDTO->getUri(),
+                    $loadStylesheetDTO->getStylesheetUri()
                 )
             );
         }

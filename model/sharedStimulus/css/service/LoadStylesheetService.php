@@ -30,10 +30,10 @@ use oat\taoMediaManager\model\sharedStimulus\css\repository\StylesheetRepository
 
 class LoadStylesheetService extends ConfigurableService
 {
-    public function load(LoadStylesheet $loadStylesheetRequest): StreamInterface
+    public function load(LoadStylesheet $loadStylesheetDTO): StreamInterface
     {
-        $path = $this->getStylesheetRepository()->getPath($loadStylesheetRequest->getUri());
-        $stylesheet = $loadStylesheetRequest->getStylesheetUri();
+        $path = $this->getStylesheetRepository()->getPath($loadStylesheetDTO->getUri());
+        $stylesheet = $loadStylesheetDTO->getStylesheetUri();
         $link = $path
             . DIRECTORY_SEPARATOR
             . StylesheetRepository::STYLESHEETS_DIRECTORY

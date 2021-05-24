@@ -22,49 +22,48 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus\css\service;
 
+use Exception;
 use League\Flysystem\FileNotFoundException;
-use League\Flysystem\FilesystemInterface;
-use oat\generis\model\data\Ontology;
-use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
-use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
-use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
-use oat\taoMediaManager\model\MediaService;
-use oat\taoMediaManager\model\sharedStimulus\css\SaveCommand;
-use common_Logger as Logger;
+use oat\taoMediaManager\model\sharedStimulus\css\dto\SaveStylesheetClasses;
+use oat\taoMediaManager\model\sharedStimulus\css\repository\StylesheetRepository;
 
-class SaveService extends ConfigurableService
+class SaveStylesheetClassesService extends ConfigurableService
 {
     public const STYLESHEET_WARNING_HEADER = " /* Do not edit */" . "\n";
 
-    public function save(SaveCommand $command): void
-    {
-        $passageResource = $this->getOntology()->getResource($command->getUri());
-        $link = $passageResource->getUniquePropertyValue($passageResource->getProperty(MediaService::PROPERTY_LINK));
-        $link = $this->getFileSourceUnserializer()->unserialize((string)$link);
+    /** @var StylesheetRepository */
+    private $stylesheetRepository;
 
-        $path = dirname((string)$link);
-        if ($path == '.') {
-            throw new \Exception ('Shared stimulus stored as single file');
+    public function save(SaveStylesheetClasses $saveStylesheetClassesDTO): void
+    {
+        $path = $this->getStylesheetRepository()->getPath($saveStylesheetClassesDTO->getUri());
+
+        if ($path === '.') {
+            throw new Exception ('Shared stimulus stored as single file');
         }
 
-        $cssClassesArray = $command->getCssClassesArray();
-        if (!count($cssClassesArray)) {
-            $this->removeStoredStylesheet($path . DIRECTORY_SEPARATOR . $command->getStylesheetUri());
+        $cssClassesArray = $saveStylesheetClassesDTO->getCssClassesArray();
+
+        if (empty($cssClassesArray)) {
+            $this->removeStoredStylesheet($path . DIRECTORY_SEPARATOR . $saveStylesheetClassesDTO->getStylesheetUri());
 
             return;
         }
 
         $content = $this->getCssContentFromArray($cssClassesArray);
-        $this->getFileSystem()->put($path . DIRECTORY_SEPARATOR . $command->getStylesheetUri(), $content);
+        $this->getStylesheetRepository()->put(
+            $path . DIRECTORY_SEPARATOR . $saveStylesheetClassesDTO->getStylesheetUri(),
+            $content
+        );
     }
 
     private function removeStoredStylesheet(string $path): void
     {
         try {
-            $this->getFileSystem()->delete($path);
+            $this->getStylesheetRepository()->delete($path);
         } catch (FileNotFoundException $exception) {
-            Logger::d('Stylesheet ' . $path . ' to delete was not found when trying to clear styles');
+            $this->logDebug(sprintf('Stylesheet %s to delete was not found when trying to clear styles', $path));
         }
     }
 
@@ -97,29 +96,12 @@ class SaveService extends ConfigurableService
         return $css;
     }
 
-    private function getOntology(): Ontology
+    private function getStylesheetRepository(): StylesheetRepository
     {
-        return $this->getServiceLocator()->get(Ontology::SERVICE_ID);
-    }
+        if (!isset($this->stylesheetRepository)) {
+            $this->stylesheetRepository = $this->getServiceLocator()->get(StylesheetRepository::class);
+        }
 
-    private function getFileSystem(): FilesystemInterface
-    {
-        return $this->getFileSystemService()
-            ->getFileSystem($this->getFlySystemManagement()->getOption(FlySystemManagement::OPTION_FS));
-    }
-
-    private function getFileSystemService(): FileSystemService
-    {
-        return $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
-    }
-
-    private function getFlySystemManagement(): FlySystemManagement
-    {
-        return $this->getServiceLocator()->get(FlySystemManagement::SERVICE_ID);
-    }
-
-    private function getFileSourceUnserializer(): FileSourceUnserializer
-    {
-        return $this->getServiceLocator()->get(FileSourceUnserializer::class);
+        return $this->stylesheetRepository;
     }
 }

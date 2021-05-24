@@ -23,38 +23,36 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\sharedStimulus\css\service;
 
 use League\Flysystem\FileNotFoundException;
-use League\Flysystem\FilesystemInterface;
-use oat\generis\model\data\Ontology;
-use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
-use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
-use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
-use oat\taoMediaManager\model\MediaService;
-use oat\taoMediaManager\model\sharedStimulus\css\LoadCommand;
-use common_Logger as Logger;
+use oat\taoMediaManager\model\sharedStimulus\css\dto\LoadStylesheet;
+use oat\taoMediaManager\model\sharedStimulus\css\repository\StylesheetRepository;
 
-class LoadService extends ConfigurableService
+class LoadStylesheetClassesService extends ConfigurableService
 {
-    public const STYLESHEET_WARNING_HEADER = " /* Do not edit */";
-
-    public function load(LoadCommand $command): array
+    public function load(LoadStylesheet $loadStylesheetDTO): array
     {
-        $passageResource = $this->getOntology()->getResource($command->getUri());
-        $link = $passageResource->getUniquePropertyValue($passageResource->getProperty(MediaService::PROPERTY_LINK));
-        $link = $this->getFileSourceUnserializer()->unserialize((string)$link);
+        $stylesheetRepository = $this->getStylesheetRepository();
 
-        $path = dirname((string)$link);
-        if ($path == '.') {
+        $path = $stylesheetRepository->getPath($loadStylesheetDTO->getUri());
+
+        if ($path === '.') {
             throw new \Exception ('Shared stimulus stored as single file');
         }
 
-        $fs = $this->getFileSystem();
         try {
-            $content = $fs->read($path . DIRECTORY_SEPARATOR . $command->getStylesheetUri());
+            $content = $stylesheetRepository->read(
+                $path . DIRECTORY_SEPARATOR . $loadStylesheetDTO->getStylesheetUri()
+            );
 
             return $this->cssToArray($content);
         } catch (FileNotFoundException $e) {
-            Logger::d('Stylesheet ' . $command->getStylesheetUri() . ' does not exist yet, returning empty array');
+            $this->logDebug(
+                sprintf(
+                    'Passage %s does not contain stylesheet %s. An empty array will be returned.',
+                    $loadStylesheetDTO->getUri(),
+                    $loadStylesheetDTO->getStylesheetUri()
+                )
+            );
         }
 
         return [];
@@ -93,29 +91,8 @@ class LoadService extends ConfigurableService
         return $newCssArr;
     }
 
-    private function getOntology(): Ontology
+    private function getStylesheetRepository(): StylesheetRepository
     {
-        return $this->getServiceLocator()->get(Ontology::SERVICE_ID);
-    }
-
-    private function getFileSystem(): FilesystemInterface
-    {
-        return $this->getFileSystemService()
-            ->getFileSystem($this->getFlySystemManagement()->getOption(FlySystemManagement::OPTION_FS));
-    }
-
-    private function getFileSystemService(): FileSystemService
-    {
-        return $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
-    }
-
-    private function getFlySystemManagement(): FlySystemManagement
-    {
-        return $this->getServiceLocator()->get(FlySystemManagement::SERVICE_ID);
-    }
-
-    private function getFileSourceUnserializer(): FileSourceUnserializer
-    {
-        return $this->getServiceLocator()->get(FileSourceUnserializer::class);
+        return $this->getServiceLocator()->get(StylesheetRepository::class);
     }
 }

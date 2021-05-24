@@ -20,9 +20,9 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\sharedStimulus\css;
+namespace oat\taoMediaManager\model\sharedStimulus\css\dto;
 
-class SaveCommand
+class SaveStylesheetClasses
 {
     /** @var string */
     private $uri;
@@ -33,15 +33,11 @@ class SaveCommand
     /* @var array */
     private $cssClassesArray;
 
-    /** @var string */
-    private $lang;
-
-    public function __construct(string $uri, string $stylesheetUri, array $cssClassesArray, string $lang = null)
+    public function __construct(string $uri, string $stylesheetUri, array $cssClassesArray)
     {
         $this->uri = $uri;
         $this->stylesheetUri = $stylesheetUri;
         $this->cssClassesArray = $cssClassesArray;
-        $this->lang = $lang;
     }
 
     public function getUri(): string
@@ -52,11 +48,6 @@ class SaveCommand
     public function getStylesheetUri(): string
     {
         return $this->stylesheetUri;
-    }
-
-    public function getLang(): ?string
-    {
-        return $this->lang;
     }
 
     public function getCssClassesArray(): array

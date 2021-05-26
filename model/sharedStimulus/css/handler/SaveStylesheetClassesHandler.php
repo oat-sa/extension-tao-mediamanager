@@ -61,7 +61,7 @@ class SaveStylesheetClassesHandler extends ConfigurableService
         RequestValidator::securityCheckPath($params['stylesheetUri']);
     }
 
-    private function validateCSS(string $css): void
+    private function validateCSS(array $css): void
     {
         if (!is_array($css)) {
             throw new InvalidParameterException(

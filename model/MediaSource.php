@@ -85,6 +85,22 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
         return $this->getFileInfo($instanceUri);
     }
 
+    public function addSharedStimulus(string $source, string $parent, string $absolutePath): array
+    {
+        if (!file_exists($source)) {
+            throw new tao_models_classes_FileNotFoundException($source);
+        }
+
+        $sharedStimulusPackageImporter = new SharedStimulusPackageImporter();
+        $sharedStimulusPackageImporter->setServiceLocator($this->getServiceLocator());
+
+        $parentClass = $this->getOrCreatePath($parent);
+        $css = $sharedStimulusPackageImporter->getSharedStimulusStylesheets(dirname($absolutePath));
+        $report = $sharedStimulusPackageImporter->storeSharedStimulus($parentClass, $this->getLang(), $source, $css);
+
+        return $this->getFileInfo($report->getData()['uriResource']);
+    }
+
     /**
      * (non-PHPdoc)
      *

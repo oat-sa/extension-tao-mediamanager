@@ -225,7 +225,7 @@ class SharedStimulusPackageImporter extends ZipImporter
      *
      * @return array path to the CSS or false if not found
      */
-    private function getSharedStimulusStylesheets(string $extractPath): array
+    public function getSharedStimulusStylesheets(string $extractPath): array
     {
         $iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($extractPath),
@@ -258,7 +258,7 @@ class SharedStimulusPackageImporter extends ZipImporter
      *
      * @throws common_exception_Error
      */
-    private function storeSharedStimulus(
+    public function storeSharedStimulus(
         Resource $class,
         string $lang,
         string $xmlFile,

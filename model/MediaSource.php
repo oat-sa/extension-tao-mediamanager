@@ -54,6 +54,9 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
     /** @var MediaBrowserPermissionsMapper */
     private $permissionsMapper;
 
+    /** @var string[] */
+    private $tmpFiles = [];
+
     public function enableAccessControl(): AccessControlEnablerInterface
     {
         $this->getPermissionsMapper()->enableAccessControl();
@@ -206,6 +209,9 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
             fwrite($fh, $stream->read(1048576));
         }
         fclose($fh);
+
+        $this->tmpFiles[] = $filename;
+
         return $filename;
     }
 
@@ -427,5 +433,14 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
         }
 
         return $this->permissionsMapper;
+    }
+
+    public function __destruct()
+    {
+        foreach ($this->tmpFiles as $tmpFile) {
+            if (is_writable($tmpFile)) {
+                unlink($tmpFile);
+            }
+        }
     }
 }

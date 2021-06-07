@@ -28,6 +28,7 @@ define([
     'lodash',
     'util/image',
     'ui/mediaEditor/mediaEditorComponent',
+    'ui/mediaEditor/plugins/mediaAlignment/helper',
     'core/mimetype',
     'ui/resourcemgr',
     'nouislider',
@@ -44,6 +45,7 @@ define([
     _,
     imageUtil,
     mediaEditorComponent,
+    alignmentHelper,
     mimeType
 ) {
     'use strict';
@@ -75,20 +77,6 @@ define([
             .replace(/^(.*)\//, '')
             .replace(/\W/, ' ')
             .substr(0, 255);
-    };
-
-    const _initAlign = function (widget) {
-        let align = 'default';
-
-        //init float positioning:
-        if (widget.element.hasClass('rgt')) {
-            align = 'right';
-        } else if (widget.element.hasClass('lft')) {
-            align = 'left';
-        }
-
-        inlineHelper.positionFloat(widget, align);
-        widget.$form.find('select[name=align]').val(align);
     };
 
     const _getMedia = function (imgQtiElement, $imgNode, cb) {
@@ -132,6 +120,7 @@ define([
         }
     };
 
+    // TODO: refactor this as in views/js/qtiCreator/widgets/static/img/states/Active.js, reuse logic if possible
     const _initMediaSizer = function (widget) {
         const img = widget.element,
             $src = widget.$form.find('input[name=src]'),
@@ -148,6 +137,9 @@ define([
                 const options = {
                     mediaDimension: {
                         active: true
+                    },
+                    mediaAlignment: {
+                        active: true
                     }
                 };
                 media.$container = $mediaSpan.parents('.widget-box');
@@ -155,6 +147,7 @@ define([
                     media = nMedia;
                     $img.prop('style', null); // not allowed by qti
                     $img.removeAttr('style');
+                    alignmentHelper.positionFloat(widget, media.align)
                     img.data('responsive', media.responsive);
                     _(['width', 'height']).each(function (sizeAttr) {
                         let val;
@@ -308,7 +301,6 @@ define([
         //init slider and set align value before ...
         _initAdvanced(_widget);
         _initMediaSizer(_widget);
-        _initAlign(_widget);
         _initUpload(_widget);
 
         //... init standard ui widget

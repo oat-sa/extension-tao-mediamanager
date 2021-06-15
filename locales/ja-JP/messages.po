@@ -1,0 +1,164 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO 3.4.0-sprint117\n"
+"PO-Revision-Date: 2020-09-22T16:02:17\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: ja-JP\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: ja-JP\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid "%s media on this environment"
+msgstr "この環境の %s メディア"
+
+msgid "%s media successfully modified"
+msgstr "メディアが正常に修正されました：%s "
+
+msgid "%s media to modify"
+msgstr "メディアを変更します：%s "
+
+msgid "Add a media file"
+msgstr "メディアファイル追加"
+
+msgid "An error has occurred. Please contact your administrator."
+msgstr "エラーが発生しました。管理者にお問合せください。"
+
+#, tao-public
+msgid "Delete"
+msgstr "削除"
+
+msgid "Edit Instance"
+msgstr "インスタンス編集"
+
+msgid "Edited %s"
+msgstr "％sを編集しました"
+
+#, tao-public
+msgid "Export"
+msgstr "エクスポート"
+
+msgid "Export Media as Zip file"
+msgstr "メディアをZIPファイルにエクスポート"
+
+msgid "Fail to edit Shared Stimulus"
+msgstr "シェアードスティミュラスの編集に失敗しました。"
+
+msgid "Fail to edit shared stimulus"
+msgstr "シェアードスティミュラスの編集に失敗しました。"
+
+msgid "Fail to import media"
+msgstr "メディアのインポートに失敗"
+
+msgid "Fail to import Shared Stimulus"
+msgstr "シェアードスティミュラスのインポートに失敗しました。"
+
+msgid "File"
+msgstr "ファイル"
+
+msgid "File name"
+msgstr "ファイル名"
+
+#, tao-public
+msgid "Import"
+msgstr "インポート"
+
+msgid "Imported %s"
+msgstr "%s をインポート"
+
+msgid "Imported new file"
+msgstr "新規ファイルをインポート"
+
+msgid "Initial import"
+msgstr "初期インポート"
+
+msgid "Instance saved"
+msgstr "インスタンスが保存されました"
+
+msgid "Issue while modifying %s"
+msgstr "%s の変更中に問題が発生しました"
+
+#, tao-public
+msgid "Manage Media"
+msgstr "メディア管理"
+
+#, tao-public
+msgid "Manage Schema"
+msgstr "スキーマ管理"
+
+#, tao-public
+msgid "Media"
+msgstr "メディア"
+
+msgid "Media imported"
+msgstr "メディアがインポートされました"
+
+msgid "Media imported successfully"
+msgstr "メディアのインポートが完了しました"
+
+#, tao-public
+msgid "Media Manager"
+msgstr "メディア管理"
+
+#, tao-public
+msgid "Media Manager extension"
+msgstr "メディア管理拡張機能"
+
+msgid "Media Options"
+msgstr "メディアオプション"
+
+msgid "Media successfully exported."
+msgstr "メディアのエクスポートが完了しました"
+
+#, tao-public
+msgid "Move"
+msgstr "移動"
+
+#, tao-public
+msgid "New class"
+msgstr "新規クラス"
+
+msgid "No file found for this media"
+msgstr "メディアファイルが見つかりません"
+
+msgid "Preview"
+msgstr "プレビュー"
+
+#, tao-public
+msgid "Properties"
+msgstr "プロパティ"
+
+msgid "Shared Stimulus"
+msgstr "シェアードスティミュラス"
+
+msgid "Shared Stimulus edited successfully"
+msgstr "シェアードスティミュラスの編集が完了しました"
+
+msgid "Shared Stimulus imported successfully"
+msgstr "シェアードスティミュラスのインポートが完了しました"
+
+msgid "Unable to extract the archive"
+msgstr "アーカイブから抽出できません"
+
+msgid "Unable to import"
+msgstr "インポートできません"
+
+msgid "Upload Media"
+msgstr "メディアのアップロード"
+
+msgid "Upload new media"
+msgstr "メディアを入替える"
+
+msgid "Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
+msgstr "Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
+
+msgid "You can\'t upload a zip file as a media"
+msgstr "zipファイルはアップロードできません"
+
+msgid "Zip"
+msgstr "ZIP"
+

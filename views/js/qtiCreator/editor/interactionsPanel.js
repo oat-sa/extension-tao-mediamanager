@@ -56,9 +56,6 @@ define([
 
         // init accordions
         panel.initSidebarAccordion($container);
-        panel.closeSections($container.find('section'));
-        panel.openSections($container.find('#sidebar-left-section-inline-interactions'), false);
-
         // init special subgroup
         panel.toggleInlineInteractionGroup();
     };

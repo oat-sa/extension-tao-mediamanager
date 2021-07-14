@@ -83,7 +83,7 @@ class MediaToMediaUnitProcessorTest extends TestCase
         $property = $this->createMock(core_kernel_classes_Property::class);
 
         $uri = 'abc123';
-        $fileUri = ['ref'];
+        $fileUri = 'fileUri';
         $mediaIds = ['id'];
         $fileContent = 'abc123';
 

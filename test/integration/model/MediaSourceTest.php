@@ -91,6 +91,7 @@ class MediaSourceTest extends TestCase
             ]
         );
         $resourceProphecy->getLabel()->willReturn($label);
+        $resourceProphecy->getUri()->willReturn('uri');
 
         $linkPropertyProphecy = $this->prophesize(\core_kernel_classes_Property::class);
         $mimePropertyProphecy = $this->prophesize(\core_kernel_classes_Property::class);
@@ -159,6 +160,7 @@ class MediaSourceTest extends TestCase
             ]
         );
         $resourceProphecy->getLabel()->willReturn($label);
+        $resourceProphecy->getUri()->willReturn('uri');
 
         $linkPropertyProphecy = $this->prophesize(\core_kernel_classes_Property::class);
         $mimePropertyProphecy = $this->prophesize(\core_kernel_classes_Property::class);

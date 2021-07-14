@@ -27,9 +27,11 @@ use common_session_SessionManager;
 use League\OpenAPIValidation\PSR7\ServerRequestValidator;
 use League\OpenAPIValidation\PSR7\ValidatorBuilder;
 use oat\oatbox\log\LoggerAwareTrait;
+use oat\tao\model\accessControl\data\DataAccessControl;
 use oat\tao\model\http\formatter\ResponseFormatter;
 use oat\tao\model\http\response\ErrorJsonResponse;
 use oat\tao\model\http\response\SuccessJsonResponse;
+use oat\tao\model\resources\ResourceAccessDeniedException;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
 use oat\taoMediaManager\model\sharedStimulus\factory\QueryFactory;
 use oat\taoMediaManager\model\sharedStimulus\parser\JsonQtiAttributeParser;
@@ -37,13 +39,16 @@ use oat\taoMediaManager\model\sharedStimulus\repository\SharedStimulusRepository
 use oat\taoMediaManager\model\sharedStimulus\service\CreateService;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus as SharedStimulusObject;
 use oat\taoMediaManager\model\sharedStimulus\service\PatchService;
-use tao_actions_CommonModule;
+use tao_actions_SaSModule;
 use Throwable;
 
-class SharedStimulus extends tao_actions_CommonModule
+class SharedStimulus extends tao_actions_SaSModule
 {
     use LoggerAwareTrait;
 
+    /**
+     * @requiresRight classUri WRITE
+     */
     public function create(): void
     {
         $formatter = $this->getResponseFormatter()
@@ -52,6 +57,8 @@ class SharedStimulus extends tao_actions_CommonModule
         try {
             $command = $this->getCommandFactory()
                 ->makeCreateCommandByRequest($this->getPsrRequest());
+
+            $this->validateWritePermission($command->getClassId());
 
             $sharedStimulus = $this->getCreateService()
                 ->create($command);
@@ -67,6 +74,9 @@ class SharedStimulus extends tao_actions_CommonModule
         $this->setResponse($formatter->format($this->getPsrResponse()));
     }
 
+    /**
+     * @requiresRight id READ
+     */
     public function get(): void
     {
         $formatter = $this->getResponseFormatter()
@@ -75,6 +85,8 @@ class SharedStimulus extends tao_actions_CommonModule
         try {
             $command = $this->getQueryFactory()
                 ->makeFindQueryByRequest($this->getPsrRequest());
+
+            $this->validateReadPermission($command->getId());
 
             $sharedStimulus = $this->getSharedStimulusRepository()
                 ->find($command);
@@ -90,6 +102,9 @@ class SharedStimulus extends tao_actions_CommonModule
         $this->setResponse($formatter->format($this->getPsrResponse()));
     }
 
+    /**
+     * @requiresRight id WRITE
+     */
     public function patch(): void
     {
         $formatter = $this->getResponseFormatter()
@@ -102,6 +117,8 @@ class SharedStimulus extends tao_actions_CommonModule
             $user = common_session_SessionManager::getSession()->getUser();
             $id = $request->getQueryParams()['id'];
             $body = json_decode((string)$request->getBody(), true)['body'];
+
+            $this->validateWritePermission($id);
 
             $command = $this->getCommandFactory()->makePatchCommand($id, $body, $user);
 
@@ -167,5 +184,23 @@ class SharedStimulus extends tao_actions_CommonModule
         return (new ValidatorBuilder())->fromYamlFile(
             ROOT_PATH . '/taoMediaManager/doc/taoMediaManagerApi.yml'
         )->getServerRequestValidator();
+    }
+
+    private function validateWritePermission(string $resourceId): void
+    {
+        if (!$this->hasWriteAccess($resourceId)) {
+            throw new ResourceAccessDeniedException($resourceId);
+        }
+    }
+
+    private function validateReadPermission(string $resourceId): void
+    {
+        $user = $this->getSession()->getUser();
+
+        $hasReadAccess = (new DataAccessControl())->hasPrivileges($user, [$resourceId => 'READ']);
+
+        if (!$hasReadAccess) {
+            throw new ResourceAccessDeniedException($resourceId);
+        }
     }
 }

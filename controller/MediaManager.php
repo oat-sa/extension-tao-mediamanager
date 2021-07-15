@@ -147,6 +147,15 @@ class MediaManager extends \tao_actions_SaSModule
     }
 
     /**
+     * overwrite the parent moveAllInstances to add the requiresRight only in Items
+     * @see tao_actions_TaoModule::moveResource()
+     */
+    public function moveResource()
+    {
+        return parent::moveResource();
+    }
+
+    /**
      * @requiresRight id READ
      */
     public function editClassLabel()

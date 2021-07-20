@@ -34,7 +34,7 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
             styleSelector = `${itemSelector} *`,
             $resetBtn = $fontSizeChanger.parents('.reset-group').find('[data-role="font-size-reset"]'),
             $input = $container.find('.item-editor-font-size-text');
-        let itemFontSize = parseInt($(itemSelector).children().first().css('font-size'), 10);
+        let itemFontSize = parseInt($(itemSelector).children().first().css('font-size') || $(itemSelector).css('font-size'), 10);
         $input.val(itemFontSize);
 
         /**

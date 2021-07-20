@@ -27,6 +27,7 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
 
     /**
      * Changes the font size in the Style Editor
+     * @param {JQuery} $container
      */
     const fontSizeChanger = function ($container) {
         const $fontSizeChanger = $container.find('#item-editor-font-size-changer'),

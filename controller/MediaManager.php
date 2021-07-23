@@ -29,6 +29,7 @@ use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use tao_helpers_form_FormContainer as FormContainer;
 use tao_models_classes_FileNotFoundException;
+use oat\taoMediaManager\model\classes\user\TaoAssetRoles;
 
 class MediaManager extends \tao_actions_SaSModule
 {
@@ -43,13 +44,29 @@ class MediaManager extends \tao_actions_SaSModule
 
         $clazz = $this->getCurrentClass();
         $instance = $this->getCurrentInstance();
-        $hasWriteAccess = $this->hasWriteAccess($instance->getUri());
+        $userRoles = $this->getUserRoles();
+        $hasWriteAccess = $this->hasWriteAccess($instance->getUri()) && $this->hasWriteAccessToAction(__FUNCTION__);
+        $replaceAssetButtonDisabled = !$hasWriteAccess;
+
+        if (in_array(TaoAssetRoles::ASSET_CONTENT_CREATOR, $userRoles, true)) {
+            $replaceAssetButtonDisabled = false;
+        } elseif (in_array(TaoAssetRoles::ASSET_PROPERTIES_EDITOR, $userRoles, true)) {
+            $replaceAssetButtonDisabled = true;
+        } elseif (in_array(TaoAssetRoles::ASSET_PREVIEWER, $userRoles, true)) {
+            $this->setData('previewEnabled', 1);
+            $this->setData('EditFormDisabled', 1);
+        } elseif (in_array(TaoAssetRoles::ASSET_VIEWER, $userRoles, true)) {
+            $replaceAssetButtonDisabled = true;
+        } else {
+            $this->setData('previewEnabled', 1);
+        }
+
         $myFormContainer = new editInstanceForm(
             $clazz,
             $instance,
             [
                 FormContainer::CSRF_PROTECTION_OPTION => true,
-                FormContainer::IS_DISABLED => !$hasWriteAccess,
+                FormContainer::IS_DISABLED => $replaceAssetButtonDisabled
             ]
         );
 

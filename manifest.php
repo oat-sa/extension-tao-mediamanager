@@ -19,6 +19,9 @@
  */
 
 use oat\taoMediaManager\scripts\install\SetMediaManager;
+use oat\taoMediaManager\model\classes\user\TaoAssetRoles;
+use oat\tao\model\accessControl\func\AccessRule;
+use oat\taoMediaManager\scripts\install\SetRolesPermissions;
 
 $extpath = __DIR__ . DIRECTORY_SEPARATOR;
 $taopath = __DIR__ . DIRECTORY_SEPARATOR . 'tao' . DIRECTORY_SEPARATOR;
@@ -32,18 +35,72 @@ return [
     'models' => [
         'http://www.tao.lu/Ontologies/TAOMedia.rdf'
     ],
-    'managementRole' => 'http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole',
+    'managementRole' => TaoAssetRoles::MEDIA_MANAGER,
     'acl' => [
-        ['grant', 'http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole', ['ext' => 'taoMediaManager']],
-        ['grant', 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemAuthor', ['ext' => 'taoMediaManager']],
         [
-            'grant',
-            'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemAuthor',
-            [
-                'ext' => 'taoMediaManager',
-                'mod' => 'SharedStimulus',
-                'act' => 'create'
-            ]
+            AccessRule::GRANT,
+            TaoAssetRoles::MEDIA_MANAGER,
+            ['ext' => 'taoMediaManager'],
+        ],
+        [
+            AccessRule::GRANT,
+            TaoAssetRoles::ITEM_AUTHOR,
+            ['ext' => 'taoMediaManager'],
+        ],
+        [
+            AccessRule::GRANT,
+            TaoAssetRoles::ITEM_AUTHOR,
+            ['ext' => 'taoMediaManager', 'mod' => 'SharedStimulus', 'act' => 'create'],
+        ],
+        [
+            AccessRule::GRANT,
+            TaoAssetRoles::ASSET_CLASS_NAVIGATOR,
+            ['ext' => 'taoMediaManager', 'mod' => 'MediaManager', 'act' => 'editClassLabel'],
+        ],
+        [
+            AccessRule::GRANT,
+            TaoAssetRoles::ASSET_CLASS_NAVIGATOR,
+            ['ext' => 'taoMediaManager', 'mod' => 'MediaManager', 'act' => 'index'],
+        ],
+        [
+            AccessRule::GRANT,
+            TaoAssetRoles::ASSET_CLASS_NAVIGATOR,
+            ['ext' => 'taoMediaManager', 'mod' => 'MediaManager', 'act' => 'getOntologyData']
+        ],
+        [
+            AccessRule::GRANT,
+            TaoAssetRoles::ASSET_VIEWER,
+            ['ext' => 'taoMediaManager', 'mod' => 'MediaManager', 'act' => 'editInstance']
+        ],
+        [
+            AccessRule::GRANT,
+            TaoAssetRoles::ASSET_VIEWER,
+            ['ext' => 'taoMediaManager', 'mod' => 'SharedStimulus', 'act' => 'get']
+        ],
+        [
+            AccessRule::GRANT,
+            TaoAssetRoles::ASSET_PREVIEWER,
+            ['ext' => 'taoMediaManager', 'mod' => 'MediaManager', 'act' => 'getFile']
+        ],
+        [
+            AccessRule::GRANT,
+            TaoAssetRoles::ASSET_EXPORTER,
+            ['ext' => 'taoMediaManager', 'mod' => 'MediaExport', 'act' => 'index']
+        ],
+        [
+            AccessRule::GRANT,
+            TaoAssetRoles::ASSET_CONTENT_CREATOR,
+            ['ext' => 'taoMediaManager', 'mod' => 'MediaManager', 'act' => 'authoring']
+        ],
+        [
+            AccessRule::GRANT,
+            TaoAssetRoles::ASSET_CONTENT_CREATOR,
+            ['ext' => 'taoMediaManager', 'mod' => 'MediaImport', 'act' => 'editMedia']
+        ],
+        [
+            AccessRule::GRANT,
+            TaoAssetRoles::ASSET_CONTENT_CREATOR,
+            ['ext' => 'taoMediaManager', 'mod' => 'MediaManager', 'act' => 'editInstance'],
         ],
     ],
     'install' => [
@@ -52,6 +109,7 @@ return [
         ],
         'php' => [
             SetMediaManager::class,
+            SetRolesPermissions::class,
         ]
     ],
     'update' => 'oat\\taoMediaManager\\scripts\\update\\Updater',

@@ -54,8 +54,8 @@ class MediaManager extends \tao_actions_SaSModule
             $instance,
             [
                 FormContainer::CSRF_PROTECTION_OPTION => true,
-                FormContainer::IS_REPLACE_ASSET_DISABLED => $isReplaceAssetDisabled,
                 FormContainer::IS_DISABLED => !$hasWriteAccess,
+                'is_replace_asset_disabled' => $isReplaceAssetDisabled,
             ]
         );
 
@@ -120,7 +120,7 @@ class MediaManager extends \tao_actions_SaSModule
         if (in_array(TaoAssetRoles::ASSET_PREVIEWER, $userRoles, true)) {
             $this->setData('isPreviewEnabled', 1);
             $this->setData('isEditFormDisabled', 1);
-            return;
+            return !$hasWriteAccess;
         }
 
         if (

@@ -46,19 +46,20 @@ class MediaManager extends \tao_actions_SaSModule
         $instance = $this->getCurrentInstance();
         $userRoles = $this->getUserRoles();
         $hasWriteAccess = $this->hasWriteAccess($instance->getUri()) && $this->hasWriteAccessToAction(__FUNCTION__);
-        $replaceAssetButtonDisabled = !$hasWriteAccess;
+        $isReplaceAssetDisabled = !$hasWriteAccess;
 
         if (in_array(TaoAssetRoles::ASSET_CONTENT_CREATOR, $userRoles, true)) {
-            $replaceAssetButtonDisabled = false;
+            $isReplaceAssetDisabled = false;
+            $hasWriteAccess = false;
         } elseif (in_array(TaoAssetRoles::ASSET_PROPERTIES_EDITOR, $userRoles, true)) {
-            $replaceAssetButtonDisabled = true;
+            $isReplaceAssetDisabled = true;
         } elseif (in_array(TaoAssetRoles::ASSET_PREVIEWER, $userRoles, true)) {
-            $this->setData('previewEnabled', 1);
-            $this->setData('EditFormDisabled', 1);
+            $this->setData('isPreviewEnabled', 1);
+            $this->setData('isEditFormDisabled', 1);
         } elseif (in_array(TaoAssetRoles::ASSET_VIEWER, $userRoles, true)) {
-            $replaceAssetButtonDisabled = true;
+            $isReplaceAssetDisabled = true;
         } else {
-            $this->setData('previewEnabled', 1);
+            $this->setData('isPreviewEnabled', 1);
         }
 
         $myFormContainer = new editInstanceForm(
@@ -66,7 +67,8 @@ class MediaManager extends \tao_actions_SaSModule
             $instance,
             [
                 FormContainer::CSRF_PROTECTION_OPTION => true,
-                FormContainer::IS_DISABLED => $replaceAssetButtonDisabled
+                FormContainer::IS_REPLACE_ASSET_DISABLED => $isReplaceAssetDisabled,
+                FormContainer::IS_DISABLED => !$hasWriteAccess,
             ]
         );
 

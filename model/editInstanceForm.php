@@ -50,7 +50,7 @@ class editInstanceForm extends \tao_actions_form_Instance
 
     private function isEnabled(): bool
     {
-        return empty($this->options[self::IS_DISABLED] ?? false);
+        return empty($this->options[self::IS_REPLACE_ASSET_DISABLED] ?? false);
     }
 
     private function getReplaceAssetButtonTemplate(): string

@@ -47,7 +47,7 @@ describe('Assets', () => {
         });
 
         it('can create and rename a new asset', function () {
-            cy.selectNode(selectors.root, selectors.AssetClassForm, className);
+            cy.selectNode(selectors.root, selectors.assetClassForm, className);
             cy.addNode(selectors.assetForm, selectors.addAsset);
             cy.renameSelected(selectors.assetForm, 'Asset E2E asset 1');
         });
@@ -70,10 +70,10 @@ describe('Assets', () => {
         });
 
         it('can delete empty asset class', function () {
-            cy.addClassToRoot(selectors.root, selectors.itemClassForm, className);
+            cy.addClassToRoot(selectors.root, selectors.assetClassForm, className);
             cy.deleteClassFromRoot(
                 selectors.root,
-                selectors.itemClassForm,
+                selectors.assetClassForm,
                 selectors.deleteClass,
                 selectors.deleteConfirm,
                 className
@@ -83,7 +83,7 @@ describe('Assets', () => {
         it('can move asset class', function () {
             cy.moveClassFromRoot(
                 selectors.root,
-                selectors.itemClassForm,
+                selectors.assetClassForm,
                 selectors.moveClass,
                 selectors.moveConfirmSelector,
                 className,

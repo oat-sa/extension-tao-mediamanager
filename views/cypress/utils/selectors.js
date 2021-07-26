@@ -7,5 +7,5 @@ export default {
     assetForm: 'form[action="/taoMediaManager/MediaManager/editInstance"]',
     assetClassForm: 'form[action="/taoMediaManager/MediaManager/editClassLabel"]',
     deleteConfirm: '[data-control="delete"]',
-    root: '[data-uri="http://www.tao.lu/Ontologies/TAOItem.rdf#Media"]'
+    root: '[data-uri="http://www.tao.lu/Ontologies/TAOMedia.rdf#Media"]'
 };

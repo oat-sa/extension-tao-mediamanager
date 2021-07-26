@@ -111,7 +111,7 @@ class MediaManager extends \tao_actions_SaSModule
         $this->setView('form.tpl');
     }
 
-    protected function getReplaceButtonStatus($hasWriteAccess, $userRoles)
+    protected function getReplaceButtonStatus($hasWriteAccess, $userRoles): bool
     {
         if (in_array(TaoAssetRoles::ASSET_CONTENT_CREATOR, $userRoles, true)) {
             return false;

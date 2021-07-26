@@ -20,35 +20,31 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\scripts\install;
+namespace oat\taoMediaManager\migrations;
 
-use taoItems_actions_ItemContent;
-use oat\oatbox\extension\InstallAction;
+use Doctrine\DBAL\Schema\Schema;
+use oat\tao\scripts\update\OntologyUpdater;
 use oat\taoMediaManager\controller\MediaImport;
-use oat\taoMediaManager\controller\MediaManager;
 use oat\taoMediaManager\model\user\TaoAssetRoles;
 use oat\tao\model\accessControl\ActionAccessControl;
+use oat\tao\scripts\tools\migrations\AbstractMigration;
 use oat\tao\scripts\tools\accessControl\SetRolesAccess;
 
-class SetRolesPermissions extends InstallAction
+final class Version202107261845541888_taoMediaManager extends AbstractMigration
 {
     private const CONFIG = [
+        SetRolesAccess::CONFIG_RULES => [
+            TaoAssetRoles::ASSET_RESOURCE_CREATOR => [
+                ['ext' => 'taoMediaManager', 'mod' => 'SharedStimulus', 'act' => 'create'],
+            ],
+            TaoAssetRoles::ASSET_IMPORTER => [
+                ['ext' => 'taoMediaManager', 'mod' => 'MediaImport', 'act' => 'index'],
+            ],
+            TaoAssetRoles::ASSET_DELETER => [
+                ['ext' => 'taoMediaManager', 'mod' => 'MediaManager', 'act' => 'deleteResource'],
+            ],
+        ],
         SetRolesAccess::CONFIG_PERMISSIONS => [
-            MediaManager::class => [
-                'editClassLabel' => [
-                    TaoAssetRoles::ASSET_CLASS_NAVIGATOR => ActionAccessControl::READ
-                ],
-                'editInstance' => [
-                    TaoAssetRoles::ASSET_VIEWER => ActionAccessControl::READ,
-                    TaoAssetRoles::ASSET_PROPERTIES_EDITOR => ActionAccessControl::WRITE,
-                ],
-            ],
-            taoItems_actions_ItemContent::class => [
-                'files' => [
-                    TaoAssetRoles::ASSET_CLASS_NAVIGATOR => ActionAccessControl::DENY,
-                    TaoAssetRoles::ASSET_PREVIEWER => ActionAccessControl::READ,
-                ],
-            ],
             MediaImport::class => [
                 'editMedia' => [
                     TaoAssetRoles::ASSET_VIEWER => ActionAccessControl::READ,
@@ -58,10 +54,26 @@ class SetRolesPermissions extends InstallAction
         ],
     ];
 
-    public function __invoke($params = [])
+    public function getDescription(): string
+    {
+        return 'Create new asset management roles and assign permissions to them';
+    }
+
+    public function up(Schema $schema): void
+    {
+        OntologyUpdater::syncModels();
+
+        $setRolesAccess = $this->propagate(new SetRolesAccess());
+        $setRolesAccess([
+            '--' . SetRolesAccess::OPTION_CONFIG, self::CONFIG,
+        ]);
+    }
+
+    public function down(Schema $schema): void
     {
         $setRolesAccess = $this->propagate(new SetRolesAccess());
         $setRolesAccess([
+            '--' . SetRolesAccess::OPTION_REVOKE,
             '--' . SetRolesAccess::OPTION_CONFIG, self::CONFIG,
         ]);
     }

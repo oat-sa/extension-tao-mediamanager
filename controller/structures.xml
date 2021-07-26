@@ -16,7 +16,7 @@
                           selectInstance="media-properties"
                           moveInstance="media-move"
                           delete="media-delete"
-                            />
+                    />
                 </trees>
                 <actions allowClassActions="true">
                     <action id="media-class-properties" name="Properties" url="/taoMediaManager/MediaManager/editClassLabel" group="content" context="class">
@@ -34,7 +34,10 @@
                     <action id="media-class-new" name="New class" url="/taoMediaManager/MediaManager/addSubClass" context="resource" group="tree" binding="subClass">
                         <icon id="icon-folder-open"/>
                     </action>
-                    <action id="media-delete" name="Delete" binding="deleteSharedStimulus" url="/taoMediaManager/MediaManager/delete" context="resource" group="tree">
+                    <action id="media-delete" name="Delete" binding="deleteSharedStimulus" url="/taoMediaManager/MediaManager/deleteResource" context="instance" group="tree">
+                        <icon id="icon-bin"/>
+                    </action>
+                    <action id="media-class-delete" name="Delete" binding="deleteSharedStimulus" url="/taoMediaManager/MediaManager/deleteClass" context="class" group="tree">
                         <icon id="icon-bin"/>
                     </action>
                     <action id="media-delete-all" name="Delete" binding="removeNodes" multiple="true" url="/taoMediaManager/MediaManager/deleteAll" context="resource" group="tree">

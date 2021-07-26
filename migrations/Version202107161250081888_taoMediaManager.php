@@ -8,7 +8,7 @@ use taoItems_actions_ItemContent;
 use oat\taoMediaManager\controller\MediaManager;
 use Doctrine\DBAL\Schema\Schema;
 use oat\tao\scripts\tools\migrations\AbstractMigration;
-use oat\taoMediaManager\model\classes\user\TaoAssetRoles;
+use oat\taoMediaManager\model\user\TaoAssetRoles;
 use oat\tao\scripts\tools\accessControl\SetRolesAccess;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\tao\model\accessControl\ActionAccessControl;

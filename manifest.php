@@ -18,11 +18,11 @@
  * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
  */
 
+use oat\taoItems\model\user\TaoItemsRoles;
 use oat\taoMediaManager\scripts\install\SetMediaManager;
-use oat\taoMediaManager\model\classes\user\TaoAssetRoles;
+use oat\taoMediaManager\model\user\TaoAssetRoles;
 use oat\tao\model\accessControl\func\AccessRule;
 use oat\taoMediaManager\scripts\install\SetRolesPermissions;
-use oat\taoItems\model\user\TaoItemsRoles;
 
 $extpath = __DIR__ . DIRECTORY_SEPARATOR;
 $taopath = __DIR__ . DIRECTORY_SEPARATOR . 'tao' . DIRECTORY_SEPARATOR;
@@ -47,11 +47,6 @@ return [
             AccessRule::GRANT,
             TaoItemsRoles::ITEM_AUTHOR,
             ['ext' => 'taoMediaManager'],
-        ],
-        [
-            AccessRule::GRANT,
-            TaoItemsRoles::ITEM_AUTHOR,
-            ['ext' => 'taoMediaManager', 'mod' => 'SharedStimulus', 'act' => 'create'],
         ],
         [
             AccessRule::GRANT,
@@ -112,6 +107,21 @@ return [
             AccessRule::GRANT,
             TaoAssetRoles::ASSET_CONTENT_CREATOR,
             ['ext' => 'taoMediaManager', 'mod' => 'SharedStimulus', 'act' => 'patch'],
+        ],
+        [
+            AccessRule::GRANT,
+            TaoAssetRoles::ASSET_RESOURCE_CREATOR,
+            ['ext' => 'taoMediaManager', 'mod' => 'SharedStimulus', 'act' => 'create'],
+        ],
+        [
+            AccessRule::GRANT,
+            TaoAssetRoles::ASSET_IMPORTER,
+            ['ext' => 'taoMediaManager', 'mod' => 'MediaImport', 'act' => 'index'],
+        ],
+        [
+            AccessRule::GRANT,
+            TaoAssetRoles::ASSET_DELETER,
+            ['ext' => 'taoMediaManager', 'mod' => 'MediaManager', 'act' => 'deleteResource'],
         ],
     ],
     'install' => [

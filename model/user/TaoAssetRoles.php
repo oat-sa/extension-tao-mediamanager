@@ -20,7 +20,7 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\classes\user;
+namespace oat\taoMediaManager\model\user;
 
 interface TaoAssetRoles
 {
@@ -31,4 +31,7 @@ interface TaoAssetRoles
     public const ASSET_PREVIEWER = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetPreviewerRole';
     public const ASSET_PROPERTIES_EDITOR = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetPropertiesEditorRole';
     public const ASSET_CONTENT_CREATOR = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetContentCreatorRole';
+    public const ASSET_RESOURCE_CREATOR = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetResourceCreatorRole';
+    public const ASSET_IMPORTER = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetImporterRole';
+    public const ASSET_DELETER = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetDeleterRole';
 }

@@ -46,21 +46,8 @@ class MediaManager extends \tao_actions_SaSModule
         $instance = $this->getCurrentInstance();
         $userRoles = $this->getUserRoles();
         $hasWriteAccess = $this->hasWriteAccess($instance->getUri()) && $this->hasWriteAccessToAction(__FUNCTION__);
-        $isReplaceAssetDisabled = !$hasWriteAccess;
 
-        if (in_array(TaoAssetRoles::ASSET_CONTENT_CREATOR, $userRoles, true)) {
-            $isReplaceAssetDisabled = false;
-            $hasWriteAccess = false;
-        } elseif (in_array(TaoAssetRoles::ASSET_PROPERTIES_EDITOR, $userRoles, true)) {
-            $isReplaceAssetDisabled = true;
-        } elseif (in_array(TaoAssetRoles::ASSET_PREVIEWER, $userRoles, true)) {
-            $this->setData('isPreviewEnabled', 1);
-            $this->setData('isEditFormDisabled', 1);
-        } elseif (in_array(TaoAssetRoles::ASSET_VIEWER, $userRoles, true)) {
-            $isReplaceAssetDisabled = true;
-        } else {
-            $this->setData('isPreviewEnabled', 1);
-        }
+        $isReplaceAssetDisabled = $this->getReplaceButtonStatus($hasWriteAccess, $userRoles);
 
         $myFormContainer = new editInstanceForm(
             $clazz,
@@ -124,6 +111,28 @@ class MediaManager extends \tao_actions_SaSModule
         $this->setView('form.tpl');
     }
 
+    protected function getReplaceButtonStatus($hasWriteAccess, $userRoles)
+    {
+        if (in_array(TaoAssetRoles::ASSET_CONTENT_CREATOR, $userRoles, true)) {
+            return false;
+        }
+
+        if (in_array(TaoAssetRoles::ASSET_PREVIEWER, $userRoles, true)) {
+            $this->setData('isPreviewEnabled', 1);
+            $this->setData('isEditFormDisabled', 1);
+            return;
+        }
+
+        if (
+            in_array(TaoAssetRoles::ASSET_PROPERTIES_EDITOR, $userRoles, true) ||
+            in_array(TaoAssetRoles::ASSET_VIEWER, $userRoles, true)
+        ) {
+            return true;
+        }
+        
+        $this->setData('isPreviewEnabled', 1);
+        return !$hasWriteAccess;
+    }
     /**
      * Get the file stream associated to given uri GET parameter
      *

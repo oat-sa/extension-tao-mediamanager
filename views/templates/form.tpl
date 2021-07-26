@@ -13,11 +13,7 @@ Template::inc('form_context.tpl', 'tao');
         </div>
     </div>
     <?php endif; ?>
-    <?php if(has_data('isPreviewEnabled')):?>
-    <div class="data-container-wrapper flex-container-remaining" style="display:block">
-    <?php else: ?>
-    <div class="data-container-wrapper flex-container-remaining" style="display:none">
-    <?php endif; ?>
+    <div class="data-container-wrapper flex-container-remaining" style="display:<?php echo has_data('isPreviewEnabled') ? 'block' : 'none'; ?>">
         <header class="section-header flex-container-full">
             <h2><?=__('Preview')?></h2>
         </header>

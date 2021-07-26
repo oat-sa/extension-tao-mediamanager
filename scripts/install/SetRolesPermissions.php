@@ -40,7 +40,7 @@ class SetRolesPermissions extends InstallAction
                     TaoAssetRoles::ASSET_VIEWER => ActionAccessControl::READ,
                     TaoAssetRoles::ASSET_PREVIEWER => ActionAccessControl::READ,
                     TaoAssetRoles::ASSET_PROPERTIES_EDITOR => ActionAccessControl::WRITE,
-                    TaoAssetRoles::ASSET_CONTENT_CREATOR => ActionAccessControl::WRITE,
+                    TaoAssetRoles::ASSET_CONTENT_CREATOR => ActionAccessControl::READ,
                 ],
             ],
         ],

@@ -50,6 +50,11 @@ class editInstanceForm extends \tao_actions_form_Instance
 
     private function isEnabled(): bool
     {
+        return empty($this->options[self::IS_DISABLED] ?? false);
+    }
+
+    private function isReplaceEnabled(): bool
+    {
         return empty($this->options[self::IS_REPLACE_ASSET_DISABLED] ?? false);
     }
 
@@ -65,7 +70,7 @@ class editInstanceForm extends \tao_actions_form_Instance
                 <span class="icon-loop"></span>
                 %s
             </button>',
-            ($this->isEnabled() ? '' : 'disabled="disabled" '),
+            ($this->isReplaceEnabled() ? '' : 'disabled="disabled" '),
             $this->getClazz()->getUri(),
             $this->getInstance()->getUri(),
             __('Replace Asset')

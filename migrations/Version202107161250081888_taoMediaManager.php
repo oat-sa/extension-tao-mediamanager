@@ -12,9 +12,6 @@ use oat\tao\scripts\tools\accessControl\SetRolesAccess;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\tao\model\accessControl\ActionAccessControl;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
 final class Version202107161250081888_taoMediaManager extends AbstractMigration
 {
     private const CONFIG = [
@@ -50,12 +47,11 @@ final class Version202107161250081888_taoMediaManager extends AbstractMigration
                     TaoAssetRoles::ASSET_VIEWER => ActionAccessControl::READ,
                     TaoAssetRoles::ASSET_PREVIEWER => ActionAccessControl::READ,
                     TaoAssetRoles::ASSET_PROPERTIES_EDITOR => ActionAccessControl::WRITE,
-                    TaoAssetRoles::ASSET_CONTENT_CREATOR => ActionAccessControl::WRITE,
+                    TaoAssetRoles::ASSET_CONTENT_CREATOR => ActionAccessControl::READ,
                 ]
             ],
         ],
     ];
-
 
     public function getDescription(): string
     {

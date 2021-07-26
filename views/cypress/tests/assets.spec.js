@@ -20,15 +20,15 @@ import urls from '../utils/urls';
 import selectors from '../utils/selectors';
 
 
-describe('Tests', () => {
-    const className = 'Test E2E class';
-    const classMovedName = 'Test E2E class Moved';
+describe('Assets', () => {
+    const className = 'Asset E2E class';
+    const classMovedName = 'Asset E2E class Moved';
 
     /**
      * Visit the page
      */
     beforeEach(() => {
-        cy.visit(urls.tests);
+        cy.visit(urls.assets);
     });
 
     /**
@@ -39,30 +39,30 @@ describe('Tests', () => {
     });
 
     /**
-     * Tests
+     * Assets
      */
-    describe('Test creation, editing and deletion', () => {
+    describe('Asset creation, editing and deletion', () => {
         it('can create a new asset class', function () {
-            cy.addClassToRoot(selectors.root, selectors.testClassForm, className);
+            cy.addClassToRoot(selectors.root, selectors.assetClassForm, className);
         });
 
         it('can create and rename a new asset', function () {
-            cy.selectNode(selectors.root, selectors.testClassForm, className);
-            cy.addNode(selectors.testForm, selectors.addTest);
-            cy.renameSelected(selectors.testForm, 'Test E2E test 1');
+            cy.selectNode(selectors.root, selectors.AssetClassForm, className);
+            cy.addNode(selectors.assetForm, selectors.addAsset);
+            cy.renameSelected(selectors.assetForm, 'Asset E2E asset 1');
         });
 
         it('can delete asset', function () {
-            cy.selectNode(selectors.root, selectors.testClassForm, className);
-            cy.addNode(selectors.testForm, selectors.addTest);
-            cy.renameSelected(selectors.testForm, 'Test E2E test 2');
-            cy.deleteNode(selectors.deleteTest, 'Test E2E test 2');
+            cy.selectNode(selectors.root, selectors.assetClassForm, className);
+            cy.addNode(selectors.assetForm, selectors.addAsset);
+            cy.renameSelected(selectors.assetForm, 'Asset E2E asset 2');
+            cy.deleteNode(selectors.deleteAsset, 'Asset E2E asset 2');
         });
 
         it('can delete asset class', function () {
             cy.deleteClassFromRoot(
                 selectors.root,
-                selectors.testClassForm,
+                selectors.assetClassForm,
                 selectors.deleteClass,
                 selectors.deleteConfirm,
                 className

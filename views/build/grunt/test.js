@@ -20,7 +20,7 @@ module.exports = function(grunt) {
 
     const watch       = grunt.config('watch') || {};
     const qunit       = grunt.config('qunit') || {};
-    const testUrl     = `http://127.0.0.1:${  grunt.option('testPort')}`;
+    const testUrl     = `http://127.0.0.1:${grunt.option('testPort')}`;
     const root        = grunt.option('root');
 
     const testRunners = `${root}/taoMediaManager/views/js/test/**/test.html`;

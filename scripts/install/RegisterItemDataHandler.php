@@ -23,7 +23,7 @@ namespace oat\taoMediaManager\scripts\install;
 use oat\oatbox\extension\InstallAction;
 use oat\tao\model\ClientLibConfigRegistry;
 
-class RegisterXinludeHandler extends InstallAction
+class RegisterItemDataHandler extends InstallAction
 {
     /**
      * @param $params
@@ -32,15 +32,15 @@ class RegisterXinludeHandler extends InstallAction
     public function __invoke($params)
     {
         ClientLibConfigRegistry::getRegistry()
-            ->register('taoQtiItem/qtiCreator/helper/xincludeRenderer', [
+            ->register('taoQtiTestPreviewer/previewer/proxy/itemDataHandlers', [
                 'handlers' => [
-                    'xincludeRendererAddStyles' => [
-                        'id' => 'xincludeRendererAddStyles',
-                        'module' => 'taoMediaManager/richPassage/xincludeRendererAddStyles',
-                        'bundle' => 'taoMediaManager/loader/xincludeRendererAddStyles.min',
+                    'injectStylesInItemData' => [
+                        'id' => 'injectStylesInItemData',
+                        'module' => 'taoMediaManager/richPassage/injectStylesInItemData',
+                        'bundle' => 'taoMediaManager/loader/injectStylesInItemData.min',
                         'position' => null,
-                        'name' => 'xincludeRendererAddStyles',
-                        'description' => 'Rich passage handler add passage custom styles to head',
+                        'name' => 'injectStylesInItemData',
+                        'description' => 'Rich passage handler add passage custom styles to itemData',
                         'category' => 'handler',
                         'active' => true,
                         'tags' => []
@@ -48,6 +48,6 @@ class RegisterXinludeHandler extends InstallAction
                 ]
             ]);
 
-        return \common_report_Report::createSuccess('Rich passage handler registered for taoQtiItem');
+        return \common_report_Report::createSuccess('Rich passage handler registered for taoQtiTestPreviewer');
     }
 }

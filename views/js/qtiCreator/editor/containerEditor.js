@@ -29,10 +29,9 @@ define([
     'taoQtiItem/qtiCreator/helper/xmlRenderer',
     'taoQtiItem/qtiItem/helper/simpleParser',
     'taoMediaManager/qtiCreator/helper/creatorRenderer',
-    'taoQtiItem/qtiCreator/helper/xincludeRenderer',
     'taoQtiItem/qtiCreator/editor/gridEditor/content',
     'taoQtiItem/qtiCreator/editor/ckEditor/htmlEditor'
-], function(_, $, Promise, Loader, Container, Item, event, allQtiClasses, commonRenderer, xmlRenderer, simpleParser, creatorRenderer, xincludeRenderer, content, htmlEditor) {
+], function(_, $, Promise, Loader, Container, Item, event, allQtiClasses, commonRenderer, xmlRenderer, simpleParser, creatorRenderer, content, htmlEditor) {
     'use strict';
     // all files that use qtiCreator/helper/creatorRenderer should be copied from taoQtiItem
     // because they should use proper locations that are binded in Renderer
@@ -144,18 +143,9 @@ define([
             //apply common renderer :
             renderer = creatorRenderer.get(options.resetRenderer, {}, options.areaBroker);
             renderer.load(function() {
-
-                const baseUrl = this.getOption('baseUrl');
                 container.setRenderer(this);
                 $container.html(container.render());
                 container.postRender();
-
-                //resolve xinclude
-                _.each(container.getComposingElements(), function(element){
-                    if(element.qtiClass === 'include'){
-                        xincludeRenderer.render(element.data('widget'), baseUrl);
-                    }
-                });
 
                 buildContainer($container);
                 buildEditor($container, container, {

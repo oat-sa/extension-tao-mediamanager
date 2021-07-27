@@ -46,29 +46,6 @@ describe('Assets', () => {
             cy.addClassToRoot(selectors.root, selectors.assetClassForm, className);
         });
 
-        it('can create and rename a new asset', function () {
-            cy.selectNode(selectors.root, selectors.assetClassForm, className);
-            cy.addNode(selectors.assetForm, selectors.addAsset);
-            cy.renameSelected(selectors.assetForm, 'Asset E2E asset 1');
-        });
-
-        it('can delete asset', function () {
-            cy.selectNode(selectors.root, selectors.assetClassForm, className);
-            cy.addNode(selectors.assetForm, selectors.addAsset);
-            cy.renameSelected(selectors.assetForm, 'Asset E2E asset 2');
-            cy.deleteNode(selectors.deleteAsset, 'Asset E2E asset 2');
-        });
-
-        it('can delete asset class', function () {
-            cy.deleteClassFromRoot(
-                selectors.root,
-                selectors.assetClassForm,
-                selectors.deleteClass,
-                selectors.deleteConfirm,
-                className
-            );
-        });
-
         it('can delete empty asset class', function () {
             cy.addClassToRoot(selectors.root, selectors.assetClassForm, className);
             cy.deleteClassFromRoot(

@@ -74,10 +74,13 @@ define([
         //extra context config
         testRunnerConfig.loadFromBundle = !!context.bundle;
 
-        return previewerFactory(container, testRunnerConfig, template).on('ready', runner => {
-            if (config.itemState) {
-                runner.on('renderitem', () => runner.itemRunner.setState(config.itemState));
-            }
+        return previewerFactory(container, testRunnerConfig, template).on('ready', function(runner) {
+            runner.on('renderitem', () => {
+                if (config.itemState) {
+                    runner.itemRunner.setState(config.itemState);
+                }
+                this.trigger('preview-loaded');
+            });
             if (config.itemUri) {
                 return runner.loadItem(config.itemUri);
             }

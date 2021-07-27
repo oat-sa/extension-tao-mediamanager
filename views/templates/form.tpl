@@ -3,7 +3,6 @@ use oat\tao\helpers\Template;
 Template::inc('form_context.tpl', 'tao');
 ?>
 <link rel="stylesheet" href="<?= Template::css('media.css') ?>"/>
-    <?php if(!has_data('isEditFormDisabled')):?>
     <div class="main-container flex-container-main-form">
         <header class="section-header flex-container-full">
             <h2><?=get_data('formTitle')?></h2>
@@ -12,7 +11,6 @@ Template::inc('form_context.tpl', 'tao');
             <?=get_data('myForm')?>
         </div>
     </div>
-    <?php endif; ?>
     <div class="data-container-wrapper flex-container-remaining" style="display:<?php echo has_data('isPreviewEnabled') ? 'block' : 'none'; ?>">
         <header class="section-header flex-container-full">
             <h2><?=__('Preview')?></h2>

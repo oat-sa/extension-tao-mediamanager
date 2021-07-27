@@ -111,7 +111,7 @@ class MediaManager extends \tao_actions_SaSModule
         $this->setView('form.tpl');
     }
 
-    protected function getReplaceButtonStatus($hasWriteAccess, $userRoles): bool
+    private function getReplaceButtonStatus($hasWriteAccess, $userRoles): bool
     {
         if (in_array(TaoAssetRoles::ASSET_CONTENT_CREATOR, $userRoles, true)) {
             return false;
@@ -119,7 +119,6 @@ class MediaManager extends \tao_actions_SaSModule
 
         if (in_array(TaoAssetRoles::ASSET_PREVIEWER, $userRoles, true)) {
             $this->setData('isPreviewEnabled', 1);
-            $this->setData('isEditFormDisabled', 1);
             return !$hasWriteAccess;
         }
 

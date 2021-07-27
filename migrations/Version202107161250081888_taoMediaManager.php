@@ -36,6 +36,7 @@ final class Version202107161250081888_taoMediaManager extends AbstractMigration
                 ['ext' => 'taoMediaManager', 'mod' => 'MediaManager', 'act' => 'authoring'],
                 ['ext' => 'taoMediaManager', 'mod' => 'MediaImport', 'act' => 'editMedia'],
                 ['ext' => 'taoMediaManager', 'mod' => 'MediaManager', 'act' => 'editInstance'],
+                ['ext' => 'taoMediaManager', 'mod' => 'SharedStimulus', 'act' => 'patch'],
             ],
         ],
         SetRolesAccess::CONFIG_PERMISSIONS => [

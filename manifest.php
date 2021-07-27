@@ -102,6 +102,11 @@ return [
             TaoAssetRoles::ASSET_CONTENT_CREATOR,
             ['ext' => 'taoMediaManager', 'mod' => 'MediaManager', 'act' => 'editInstance'],
         ],
+        [
+            AccessRule::GRANT,
+            TaoAssetRoles::ASSET_CONTENT_CREATOR,
+            ['ext' => 'taoMediaManager', 'mod' => 'SharedStimulus', 'act' => 'patch'],
+        ],
     ],
     'install' => [
         'rdf' => [

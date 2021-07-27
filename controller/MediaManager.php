@@ -73,7 +73,7 @@ class MediaManager extends \tao_actions_SaSModule
             $this->setData('reload', true);
         }
 
-        $this->toggleAssetPreviewVisibility();
+        $this->setData('isPreviewEnabled', $this->hasReadAccessToAction('isPreviewEnabled'));
         $this->setData('formTitle', __('Edit Instance'));
         $this->setData('myForm', $myForm->render());
 
@@ -111,18 +111,6 @@ class MediaManager extends \tao_actions_SaSModule
         $this->setData('fileurl', $url);
         $this->setData('mimeType', $mimeType);
         $this->setView('form.tpl');
-    }
-
-    private function toggleAssetPreviewVisibility(): void
-    {
-        $userRoles = $this->getUserRoles();
-
-        if (
-            !in_array(TaoAssetRoles::ASSET_PREVIEWER, $userRoles, true)
-            && in_array(TaoAssetRoles::ASSET_VIEWER, $userRoles, true)
-        ) {
-            $this->setData('isPreviewDisabled', false);
-        }
     }
 
     /**

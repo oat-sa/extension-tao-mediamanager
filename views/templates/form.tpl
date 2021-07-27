@@ -11,7 +11,7 @@ Template::inc('form_context.tpl', 'tao');
             <?=get_data('myForm')?>
         </div>
     </div>
-    <div class="data-container-wrapper flex-container-remaining" style="display:<?php echo get_data('isPreviewDisabled') === false ? 'none' : 'block'; ?>">
+    <div class="data-container-wrapper flex-container-remaining" style="display:<?php echo get_data('isPreviewEnabled') === true ? 'block' : 'none'; ?>">
         <header class="section-header flex-container-full">
             <h2><?=__('Preview')?></h2>
         </header>

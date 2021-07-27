@@ -25,6 +25,7 @@ namespace oat\taoMediaManager\migrations;
 use Doctrine\DBAL\Schema\Schema;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\taoMediaManager\controller\MediaImport;
+use oat\taoMediaManager\controller\MediaManager;
 use oat\taoMediaManager\model\user\TaoAssetRoles;
 use oat\tao\model\accessControl\ActionAccessControl;
 use oat\tao\scripts\tools\migrations\AbstractMigration;
@@ -45,6 +46,12 @@ final class Version202107261845541888_taoMediaManager extends AbstractMigration
             ],
         ],
         SetRolesAccess::CONFIG_PERMISSIONS => [
+            MediaManager::class => [
+                'isPreviewEnabled' => [
+                    TaoAssetRoles::ASSET_VIEWER => ActionAccessControl::DENY,
+                    TaoAssetRoles::ASSET_PREVIEWER => ActionAccessControl::READ,
+                ],
+            ],
             MediaImport::class => [
                 'editMedia' => [
                     TaoAssetRoles::ASSET_VIEWER => ActionAccessControl::READ,

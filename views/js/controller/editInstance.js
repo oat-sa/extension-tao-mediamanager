@@ -41,34 +41,34 @@ define([
         start() {
 
             const $previewer = $('.previewer');
-            const file = {};
+            let file = {};
             file.url = $previewer.data('url');
             file.mime = $previewer.data('type');
 
-            if (file.mime !== 'application/qti+xml') {
-                // to hide the loading icon, inherited from the .previewer
-                file.containerClass = 'no-background';
-                $previewer.previewer(file);
-            } else {
-                qtiItemPreviewerFactory($previewer, {itemUri:  $('#edit-media').data('uri')})
-                    .on('error', function (err) {
-                        if (!_.isUndefined(err.message)) {
-                            feedback().error(err.message);
-                        }
-                        logger.error(err);
-                    });
-            }
+            const isPreviewEnabled = $previewer.data('enabled');
 
-            if (file.mime !== 'application/qti+xml') {
-                $('#media-authoring').hide();
-            } else {
-                $('#media-authoring').show();
+            if (isPreviewEnabled) {
+                if (file.mime !== 'application/qti+xml') {
+                    // to hide the loading icon, inherited from the .previewer
+                    file.containerClass = 'no-background';
+                    $previewer.previewer(file);
+                    $('#media-authoring').hide();
+                } else {
+                    qtiItemPreviewerFactory($previewer, {itemUri:  $('#edit-media').data('uri')})
+                        .on('error', function (err) {
+                            if (!_.isUndefined(err.message)) {
+                                feedback().error(err.message);
+                            }
+                            logger.error(err);
+                        });
+                    $('#media-authoring').show();
+                }
             }
 
             $('#edit-media').off()
                 .on('click', function() {
-                    const action = {binding : "load", url: urlUtil.route('editMedia', 'MediaImport', 'taoMediaManager')};
-                    binder.exec(action, {classUri : this.dataset.classuri , id : this.dataset.uri} || this._resourceContext);
+                    const action = { binding : 'load' , url: urlUtil.route('editMedia', 'MediaImport', 'taoMediaManager') };
+                    binder.exec(action, { classUri : this.dataset.classuri , id : this.dataset.uri } || this._resourceContext);
                 });
         }
     };

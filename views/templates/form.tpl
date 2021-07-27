@@ -16,7 +16,7 @@ Template::inc('form_context.tpl', 'tao');
             <h2><?=__('Preview')?></h2>
         </header>
         <?php if(has_data('fileurl')):?>
-        <div class="previewer" data-url="<?=get_data('fileurl')?>" data-type="<?=get_data('mimeType')?>" data-xml="<?=get_data('xml')?>"></div>
+        <div class="previewer" data-enabled="<?php echo has_data('isPreviewEnabled') ? 1 : 0; ?>" data-url="<?=get_data('fileurl')?>" data-type="<?=get_data('mimeType')?>" data-xml="<?=get_data('xml')?>"></div>
         <?php endif;?>
         <?php if(has_data('data')):?>
         <pre><?=get_data('data')?></pre>

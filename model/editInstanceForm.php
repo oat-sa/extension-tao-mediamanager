@@ -31,6 +31,8 @@ namespace oat\taoMediaManager\model;
  */
 class editInstanceForm extends \tao_actions_form_Instance
 {
+    public const IS_REPLACE_ASSET_DISABLED = 'is_replace_asset_disabled';
+
     protected function initForm()
     {
         parent::initForm();
@@ -55,7 +57,7 @@ class editInstanceForm extends \tao_actions_form_Instance
 
     private function isReplaceEnabled(): bool
     {
-        return empty($this->options['is_replace_asset_disabled'] ?? false);
+        return empty($this->options[self::IS_REPLACE_ASSET_DISABLED] ?? false);
     }
 
     private function getReplaceAssetButtonTemplate(): string

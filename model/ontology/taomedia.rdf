@@ -63,8 +63,6 @@
     <generis:Multiple rdf:resource="http://www.tao.lu/Ontologies/generis.rdf#True"/>
   </rdf:Description>
 
-  
-
   <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRole">
     <rdfs:subClassOf rdf:resource="http://www.tao.lu/Ontologies/generis.rdf#UserRole"/>
     <rdfs:label xml:lang="en-US"><![CDATA[Asset Role]]></rdfs:label>

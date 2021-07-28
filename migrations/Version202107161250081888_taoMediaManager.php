@@ -29,13 +29,11 @@ final class Version202107161250081888_taoMediaManager extends AbstractMigration
                 ['ext' => 'taoMediaManager', 'mod' => 'MediaExport', 'act' => 'index'],
             ],
             TaoAssetRoles::ASSET_PREVIEWER => [
-                ['ext' => 'taoMediaManager', 'mod' => 'MediaManager', 'act' => 'editInstance'],
                 ['ext' => 'taoMediaManager', 'mod' => 'MediaManager', 'act' => 'getFile'],
             ],
             TaoAssetRoles::ASSET_CONTENT_CREATOR => [
                 ['ext' => 'taoMediaManager', 'mod' => 'MediaManager', 'act' => 'authoring'],
                 ['ext' => 'taoMediaManager', 'mod' => 'MediaImport', 'act' => 'editMedia'],
-                ['ext' => 'taoMediaManager', 'mod' => 'MediaManager', 'act' => 'editInstance'],
                 ['ext' => 'taoMediaManager', 'mod' => 'SharedStimulus', 'act' => 'patch'],
             ],
         ],
@@ -46,9 +44,7 @@ final class Version202107161250081888_taoMediaManager extends AbstractMigration
                 ],
                 'editInstance' => [
                     TaoAssetRoles::ASSET_VIEWER => ActionAccessControl::READ,
-                    TaoAssetRoles::ASSET_PREVIEWER => ActionAccessControl::READ,
-                    TaoAssetRoles::ASSET_PROPERTIES_EDITOR => ActionAccessControl::WRITE,
-                    TaoAssetRoles::ASSET_CONTENT_CREATOR => ActionAccessControl::READ,
+                    TaoAssetRoles::ASSET_PROPERTIES_EDITOR => ActionAccessControl::WRITE
                 ]
             ],
         ],

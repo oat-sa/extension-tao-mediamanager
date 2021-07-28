@@ -25,7 +25,6 @@ namespace oat\taoMediaManager\model\classes\user;
 interface TaoAssetRoles
 {
     public const MEDIA_MANAGER = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole';
-    public const ITEM_AUTHOR = 'http://www.tao.lu/Ontologies/TAOItem.rdf#ItemAuthor';
     public const ASSET_CLASS_NAVIGATOR = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetClassNavigatorRole';
     public const ASSET_VIEWER = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetViewerRole';
     public const ASSET_EXPORTER = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetExporterRole';

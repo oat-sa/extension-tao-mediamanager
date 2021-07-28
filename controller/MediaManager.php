@@ -55,7 +55,7 @@ class MediaManager extends \tao_actions_SaSModule
             [
                 FormContainer::CSRF_PROTECTION_OPTION => true,
                 FormContainer::IS_DISABLED => !$hasWriteAccess,
-                'is_replace_asset_disabled' => $isReplaceAssetDisabled,
+                editInstanceForm::IS_REPLACE_ASSET_DISABLED => $isReplaceAssetDisabled,
             ]
         );
 

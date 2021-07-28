@@ -22,6 +22,7 @@ use oat\taoMediaManager\scripts\install\SetMediaManager;
 use oat\taoMediaManager\model\classes\user\TaoAssetRoles;
 use oat\tao\model\accessControl\func\AccessRule;
 use oat\taoMediaManager\scripts\install\SetRolesPermissions;
+use oat\taoItems\model\user\TaoItemsRoles;
 
 $extpath = __DIR__ . DIRECTORY_SEPARATOR;
 $taopath = __DIR__ . DIRECTORY_SEPARATOR . 'tao' . DIRECTORY_SEPARATOR;
@@ -44,12 +45,12 @@ return [
         ],
         [
             AccessRule::GRANT,
-            TaoAssetRoles::ITEM_AUTHOR,
+            TaoItemsRoles::ITEM_AUTHOR,
             ['ext' => 'taoMediaManager'],
         ],
         [
             AccessRule::GRANT,
-            TaoAssetRoles::ITEM_AUTHOR,
+            TaoItemsRoles::ITEM_AUTHOR,
             ['ext' => 'taoMediaManager', 'mod' => 'SharedStimulus', 'act' => 'create'],
         ],
         [
@@ -96,11 +97,6 @@ return [
             AccessRule::GRANT,
             TaoAssetRoles::ASSET_CONTENT_CREATOR,
             ['ext' => 'taoMediaManager', 'mod' => 'MediaImport', 'act' => 'editMedia']
-        ],
-        [
-            AccessRule::GRANT,
-            TaoAssetRoles::ASSET_CONTENT_CREATOR,
-            ['ext' => 'taoMediaManager', 'mod' => 'MediaManager', 'act' => 'editInstance'],
         ],
         [
             AccessRule::GRANT,

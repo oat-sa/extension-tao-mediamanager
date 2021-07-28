@@ -46,13 +46,13 @@ define([
             file.mime = $previewer.data('type');
 
             const isPreviewEnabled = $previewer.data('enabled');
+            const isPassage = file.mime === 'application/qti+xml';
 
             if (isPreviewEnabled) {
-                if (file.mime !== 'application/qti+xml') {
+                if (!isPassage) {
                     // to hide the loading icon, inherited from the .previewer
                     file.containerClass = 'no-background';
                     $previewer.previewer(file);
-                    $('#media-authoring').hide();
                 } else {
                     qtiItemPreviewerFactory($previewer, {itemUri:  $('#edit-media').data('uri')})
                         .on('error', function (err) {
@@ -61,8 +61,13 @@ define([
                             }
                             logger.error(err);
                         });
-                    $('#media-authoring').show();
                 }
+            }
+
+            if (isPassage) {
+                $('#media-authoring').show();
+            } else {
+                $('#media-authoring').hide();
             }
 
             $('#edit-media').off()

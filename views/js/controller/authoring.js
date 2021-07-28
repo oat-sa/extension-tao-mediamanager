@@ -27,8 +27,9 @@ define([
     'taoMediaManager/qtiCreator/component/sharedStimulusAuthoring',
     'ui/feedback',
     'util/url',
+    'core/dataProvider/request',
     'core/logger'
-], function (__, _, $, uri, sharedStimulusAuthoringFactory, feedback, urlUtil, loggerFactory) {
+], function (__, _, $, uri, sharedStimulusAuthoringFactory, feedback, urlUtil, request, loggerFactory) {
     'use strict';
 
     const logger = loggerFactory('taoMediaManager/authoring');
@@ -40,10 +41,20 @@ define([
         start() {
             const $panel = $('#panel-authoring');
             const assetDataUrl = urlUtil.route('get', 'SharedStimulus', 'taoMediaManager');
+            const assetId = uri.decode($panel.attr('data-id'));
+            let previewEnabled = false;
+
+            request(assetDataUrl, { id : assetId })
+                .then(response => {
+                    if (response.data.permissions.contains('WRITE')) {
+                        previewEnabled = true;
+                    }
+                });
+
             sharedStimulusAuthoringFactory($panel, {
                 properties: {
                     uri: $panel.attr('data-uri'),
-                    id: uri.decode($panel.attr('data-id')),
+                    id: assetId,
                     assetDataUrl,
                     fileUploadUrl: urlUtil.route('upload', 'ItemContent', 'taoItems'),
                     fileDeleteUrl: urlUtil.route('delete', 'ItemContent', 'taoItems'),
@@ -53,7 +64,8 @@ define([
                     baseUrl: urlUtil.route('getFile', 'MediaManager', 'taoMediaManager', { uri: '' }),
                     path: 'taomedia://mediamanager/',
                     root: 'mediamanager',
-                    lang: 'en-US'
+                    lang: 'en-US',
+                    previewEnabled: previewEnabled
                 }
             })
                 .on('success', () => {

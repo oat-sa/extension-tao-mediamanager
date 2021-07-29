@@ -52,7 +52,7 @@ final class Version202107161250081888_taoMediaManager extends AbstractMigration
             ],
             taoItems_actions_ItemContent::class => [
                 'files' => [
-                    TaoAssetRoles::ASSET_VIEWER => ActionAccessControl::DENY,
+                    TaoAssetRoles::ASSET_CLASS_NAVIGATOR => ActionAccessControl::DENY,
                     TaoAssetRoles::ASSET_PREVIEWER => ActionAccessControl::READ,
                 ],
             ],

@@ -80,17 +80,17 @@
     <rdfs:comment xml:lang="en-US"><![CDATA[Asset Viewer Role]]></rdfs:comment>
     <generis:includesRole rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetClassNavigatorRole"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetExporterRole">
-    <rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRole"/>
-    <rdfs:label xml:lang="en-US"><![CDATA[Asset Exporter]]></rdfs:label>
-    <rdfs:comment xml:lang="en-US"><![CDATA[Asset Exporter Role]]></rdfs:comment>
-    <generis:includesRole rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetViewerRole"/>
-  </rdf:Description>
   <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetPreviewerRole">
     <rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRole"/>
     <rdfs:label xml:lang="en-US"><![CDATA[Asset Previewer]]></rdfs:label>
     <rdfs:comment xml:lang="en-US"><![CDATA[Asset Previewer Role]]></rdfs:comment>
     <generis:includesRole rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetViewerRole"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetExporterRole">
+    <rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRole"/>
+    <rdfs:label xml:lang="en-US"><![CDATA[Asset Exporter]]></rdfs:label>
+    <rdfs:comment xml:lang="en-US"><![CDATA[Asset Exporter Role]]></rdfs:comment>
+    <generis:includesRole rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetPreviewerRole"/>
   </rdf:Description>
   <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetPropertiesEditorRole">
     <rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRole"/>
@@ -102,7 +102,7 @@
     <rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRole"/>
     <rdfs:label xml:lang="en-US"><![CDATA[Asset Content Creator]]></rdfs:label>
     <rdfs:comment xml:lang="en-US"><![CDATA[Asset Content Creator Role]]></rdfs:comment>
-    <generis:includesRole rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetViewerRole"/>
+    <generis:includesRole rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetPreviewerRole"/>
   </rdf:Description>
 
 </rdf:RDF>

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\migrations;
 
+use taoItems_actions_ItemContent;
 use oat\taoMediaManager\controller\MediaManager;
 use Doctrine\DBAL\Schema\Schema;
 use oat\tao\scripts\tools\migrations\AbstractMigration;
@@ -30,6 +31,8 @@ final class Version202107161250081888_taoMediaManager extends AbstractMigration
             ],
             TaoAssetRoles::ASSET_PREVIEWER => [
                 ['ext' => 'taoMediaManager', 'mod' => 'MediaManager', 'act' => 'getFile'],
+                ['ext' => 'taoItems', 'mod' => 'ItemContent', 'act' => 'files'],
+                ['ext' => 'taoItems', 'mod' => 'ItemContent', 'act' => 'download'],
             ],
             TaoAssetRoles::ASSET_CONTENT_CREATOR => [
                 ['ext' => 'taoMediaManager', 'mod' => 'MediaManager', 'act' => 'authoring'],
@@ -44,8 +47,14 @@ final class Version202107161250081888_taoMediaManager extends AbstractMigration
                 ],
                 'editInstance' => [
                     TaoAssetRoles::ASSET_VIEWER => ActionAccessControl::READ,
-                    TaoAssetRoles::ASSET_PROPERTIES_EDITOR => ActionAccessControl::WRITE
-                ]
+                    TaoAssetRoles::ASSET_PROPERTIES_EDITOR => ActionAccessControl::WRITE,
+                ],
+            ],
+            taoItems_actions_ItemContent::class => [
+                'files' => [
+                    TaoAssetRoles::ASSET_VIEWER => ActionAccessControl::DENY,
+                    TaoAssetRoles::ASSET_PREVIEWER => ActionAccessControl::READ,
+                ],
             ],
         ],
     ];

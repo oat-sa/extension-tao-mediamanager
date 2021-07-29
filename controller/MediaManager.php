@@ -114,7 +114,7 @@ class MediaManager extends \tao_actions_SaSModule
     private function getReplaceButtonStatus($hasWriteAccess, $userRoles): bool
     {
         if (in_array(TaoAssetRoles::ASSET_CONTENT_CREATOR, $userRoles, true)) {
-            return false;
+            $hasWriteAccess = true;
         }
 
         if (in_array(TaoAssetRoles::ASSET_PREVIEWER, $userRoles, true)) {
@@ -123,12 +123,12 @@ class MediaManager extends \tao_actions_SaSModule
         }
 
         if (
-            in_array(TaoAssetRoles::ASSET_PROPERTIES_EDITOR, $userRoles, true) ||
-            in_array(TaoAssetRoles::ASSET_VIEWER, $userRoles, true)
+            in_array(TaoAssetRoles::ASSET_PROPERTIES_EDITOR, $userRoles, true)
+            || in_array(TaoAssetRoles::ASSET_VIEWER, $userRoles, true)
         ) {
             return true;
         }
-        
+
         $this->setData('isPreviewEnabled', 1);
         return !$hasWriteAccess;
     }

@@ -85,6 +85,16 @@ return [
         ],
         [
             AccessRule::GRANT,
+            TaoAssetRoles::ASSET_PREVIEWER,
+            ['ext' => 'taoItems', 'mod' => 'ItemContent', 'act' => 'files']
+        ],
+        [
+            AccessRule::GRANT,
+            TaoAssetRoles::ASSET_PREVIEWER,
+            ['ext' => 'taoItems', 'mod' => 'ItemContent', 'act' => 'download']
+        ],
+        [
+            AccessRule::GRANT,
             TaoAssetRoles::ASSET_EXPORTER,
             ['ext' => 'taoMediaManager', 'mod' => 'MediaExport', 'act' => 'index']
         ],

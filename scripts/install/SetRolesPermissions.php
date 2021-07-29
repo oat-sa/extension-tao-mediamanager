@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\scripts\install;
 
+use taoItems_actions_ItemContent;
 use oat\taoMediaManager\controller\MediaManager;
 use oat\oatbox\extension\InstallAction;
 use oat\taoMediaManager\model\classes\user\TaoAssetRoles;
@@ -39,6 +40,12 @@ class SetRolesPermissions extends InstallAction
                 'editInstance' => [
                     TaoAssetRoles::ASSET_VIEWER => ActionAccessControl::READ,
                     TaoAssetRoles::ASSET_PROPERTIES_EDITOR => ActionAccessControl::WRITE,
+                ],
+            ],
+            taoItems_actions_ItemContent::class => [
+                'files' => [
+                    TaoAssetRoles::ASSET_VIEWER => ActionAccessControl::DENY,
+                    TaoAssetRoles::ASSET_PREVIEWER => ActionAccessControl::READ,
                 ],
             ],
         ],

@@ -38,6 +38,8 @@ final class Version202107261845541888_taoMediaManager extends AbstractMigration
         SetRolesAccess::CONFIG_RULES => [
             TaoAssetRoles::ASSET_RESOURCE_CREATOR => [
                 ['ext' => 'taoMediaManager', 'mod' => 'SharedStimulus', 'act' => 'create'],
+                ['ext' => 'taoItems', 'mod' => 'ItemContent', 'act' => 'fileExists'],
+                ['ext' => 'taoItems', 'mod' => 'ItemContent', 'act' => 'upload'],
             ],
             TaoAssetRoles::ASSET_IMPORTER => [
                 ['ext' => 'taoMediaManager', 'mod' => 'MediaImport', 'act' => 'index'],
@@ -63,7 +65,11 @@ final class Version202107261845541888_taoMediaManager extends AbstractMigration
             taoItems_actions_ItemContent::class => [
                 'delete' => [
                     TaoAssetRoles::ASSET_CLASS_NAVIGATOR => ActionAccessControl::DENY,
-                    TaoAssetRoles::ASSET_DELETER => ActionAccessControl::READ,
+                    TaoAssetRoles::ASSET_DELETER => ActionAccessControl::WRITE,
+                ],
+                'upload' => [
+                    TaoAssetRoles::ASSET_CLASS_NAVIGATOR => ActionAccessControl::DENY,
+                    TaoAssetRoles::ASSET_RESOURCE_CREATOR => ActionAccessControl::WRITE,
                 ],
             ],
         ],

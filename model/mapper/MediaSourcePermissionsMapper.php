@@ -40,13 +40,21 @@ class MediaSourcePermissionsMapper extends MediaBrowserPermissionsMapper
             );
     }
 
+    /*
+     *  TODO split permissions to upload and delete assets
+     */
     protected function hasWriteAccess(string $uri): bool
     {
-        return parent::hasWriteAccess($uri)
-            && $this->getActionAccessControl()->hasWriteAccess(
-                taoItems_actions_ItemContent::class,
-                'delete'
-            );
+        $canDelete = $this->getActionAccessControl()->hasWriteAccess(
+            taoItems_actions_ItemContent::class,
+            'delete'
+        );
+        $canUpload = $this->getActionAccessControl()->hasWriteAccess(
+            taoItems_actions_ItemContent::class,
+            'upload'
+        );
+
+        return parent::hasWriteAccess($uri)&& ($canDelete || $canUpload);
     }
 
     private function getActionAccessControl(): ActionAccessControl

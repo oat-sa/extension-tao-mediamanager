@@ -54,7 +54,11 @@ class SetRolesPermissions extends InstallAction
                 ],
                 'delete' => [
                     TaoAssetRoles::ASSET_CLASS_NAVIGATOR => ActionAccessControl::DENY,
-                    TaoAssetRoles::ASSET_DELETER => ActionAccessControl::READ,
+                    TaoAssetRoles::ASSET_DELETER => ActionAccessControl::WRITE,
+                ],
+                'upload' => [
+                    TaoAssetRoles::ASSET_CLASS_NAVIGATOR => ActionAccessControl::DENY,
+                    TaoAssetRoles::ASSET_RESOURCE_CREATOR => ActionAccessControl::WRITE,
                 ],
             ],
             MediaImport::class => [

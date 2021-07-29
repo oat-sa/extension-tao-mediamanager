@@ -115,6 +115,16 @@ return [
         ],
         [
             AccessRule::GRANT,
+            TaoAssetRoles::ASSET_RESOURCE_CREATOR,
+            ['ext' => 'taoItems', 'mod' => 'ItemContent', 'act' => 'fileExists'],
+        ],
+        [
+            AccessRule::GRANT,
+            TaoAssetRoles::ASSET_RESOURCE_CREATOR,
+            ['ext' => 'taoItems', 'mod' => 'ItemContent', 'act' => 'upload'],
+        ],
+        [
+            AccessRule::GRANT,
             TaoAssetRoles::ASSET_IMPORTER,
             ['ext' => 'taoMediaManager', 'mod' => 'MediaImport', 'act' => 'index'],
         ],

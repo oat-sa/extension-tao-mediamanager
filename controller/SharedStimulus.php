@@ -45,6 +45,7 @@ use Throwable;
 class SharedStimulus extends tao_actions_SaSModule
 {
     use LoggerAwareTrait;
+    private const PERMISSION_WRITE = 'WRITE';
 
     /**
      * @requiresRight classUri WRITE
@@ -141,7 +142,16 @@ class SharedStimulus extends tao_actions_SaSModule
         if (isset($data['body'])) {
             $data['body'] = $this->getSharedStimulusAttributesParser()->parse($sharedStimulus);
         }
+        $data['permissions'] = $this->getPreviewPermission();
         $formatter->withBody(new SuccessJsonResponse($data));
+    }
+
+    private function getPreviewPermission(): array
+    {
+        if ($this->hasAccess(MediaManager::class, 'getFile')) {
+            return [self::PERMISSION_WRITE];
+        }
+        return [];
     }
 
     private function getResponseFormatter(): ResponseFormatter

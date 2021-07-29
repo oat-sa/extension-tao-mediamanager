@@ -13,7 +13,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2020 (original work) Open Assessment Technologies SA ;
+ * Copyright (c) 2020-2021 (original work) Open Assessment Technologies SA ;
  */
 
 /**
@@ -49,33 +49,33 @@ define([
                     if (response.permissions == 'READ') {
                         previewEnabled = true;
                     }
-                });
-
-            sharedStimulusAuthoringFactory($panel, {
-                properties: {
-                    uri: $panel.attr('data-uri'),
-                    id: assetId,
-                    assetDataUrl,
-                    fileUploadUrl: urlUtil.route('upload', 'ItemContent', 'taoItems'),
-                    fileDeleteUrl: urlUtil.route('delete', 'ItemContent', 'taoItems'),
-                    fileDownloadUrl: urlUtil.route('download', 'ItemContent', 'taoItems'),
-                    fileExistsUrl: urlUtil.route('fileExists', 'ItemContent', 'taoItems'),
-                    getFilesUrl: urlUtil.route('files', 'ItemContent', 'taoItems'),
-                    baseUrl: urlUtil.route('getFile', 'MediaManager', 'taoMediaManager', { uri: '' }),
-                    path: 'taomedia://mediamanager/',
-                    root: 'mediamanager',
-                    lang: 'en-US',
-                    previewEnabled: previewEnabled
-                }
-            })
-                .on('success', () => {
-                    feedback().success(__('Your passage is saved'));
-                })
-                .on('error', err => {
-                    if (!_.isUndefined(err.message)) {
-                        feedback().error(err.message);
-                    }
-                    logger.error(err);
+                }).then(response => {
+                    sharedStimulusAuthoringFactory($panel, {
+                        properties: {
+                            uri: $panel.attr('data-uri'),
+                            id: assetId,
+                            assetDataUrl,
+                            fileUploadUrl: urlUtil.route('upload', 'ItemContent', 'taoItems'),
+                            fileDeleteUrl: urlUtil.route('delete', 'ItemContent', 'taoItems'),
+                            fileDownloadUrl: urlUtil.route('download', 'ItemContent', 'taoItems'),
+                            fileExistsUrl: urlUtil.route('fileExists', 'ItemContent', 'taoItems'),
+                            getFilesUrl: urlUtil.route('files', 'ItemContent', 'taoItems'),
+                            baseUrl: urlUtil.route('getFile', 'MediaManager', 'taoMediaManager', { uri: '' }),
+                            path: 'taomedia://mediamanager/',
+                            root: 'mediamanager',
+                            lang: 'en-US',
+                            previewEnabled: previewEnabled
+                        }
+                    })
+                        .on('success', () => {
+                            feedback().success(__('Your passage is saved'));
+                        })
+                        .on('error', err => {
+                            if (!_.isUndefined(err.message)) {
+                                feedback().error(err.message);
+                            }
+                            logger.error(err);
+                        });
                 });
         }
     };

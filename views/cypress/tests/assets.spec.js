@@ -66,13 +66,16 @@ describe('Assets', () => {
                 className,
                 classMovedName
             );
-            cy.deleteClassFromRoot(
-                selectors.root,
-                selectors.assetClassForm,
-                selectors.deleteClass,
-                selectors.deleteConfirm,
-                classMovedName
-            );
         });
+    });
+
+    after(() => {
+        cy.deleteClassFromRoot(
+            selectors.root,
+            selectors.assetClassForm,
+            selectors.deleteClass,
+            selectors.deleteConfirm,
+            classMovedName
+        );
     });
 });

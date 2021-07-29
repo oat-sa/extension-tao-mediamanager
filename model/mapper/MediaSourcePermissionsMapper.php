@@ -6,6 +6,7 @@ namespace oat\taoMediaManager\model\mapper;
 
 use oat\tao\model\accessControl\ActionAccessControl;
 use oat\tao\model\media\mapper\MediaBrowserPermissionsMapper;
+use taoItems_actions_ItemContent;
 
 class MediaSourcePermissionsMapper extends MediaBrowserPermissionsMapper
 {
@@ -16,7 +17,7 @@ class MediaSourcePermissionsMapper extends MediaBrowserPermissionsMapper
     {
         return parent::hasReadAccess($uri)
             && $this->getActionAccessControl()->hasReadAccess(
-                \taoItems_actions_ItemContent::class,
+                taoItems_actions_ItemContent::class,
                 'files'
             );
     }
@@ -25,7 +26,7 @@ class MediaSourcePermissionsMapper extends MediaBrowserPermissionsMapper
     {
         return parent::hasWriteAccess($uri)
             && $this->getActionAccessControl()->hasWriteAccess(
-                \taoItems_actions_ItemContent::class,
+                taoItems_actions_ItemContent::class,
                 'files'
             );
     }

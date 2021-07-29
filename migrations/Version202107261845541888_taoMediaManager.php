@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\migrations;
 
 use Doctrine\DBAL\Schema\Schema;
+use taoItems_actions_ItemContent;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\taoMediaManager\controller\MediaImport;
 use oat\taoMediaManager\controller\MediaManager;
@@ -43,6 +44,7 @@ final class Version202107261845541888_taoMediaManager extends AbstractMigration
             ],
             TaoAssetRoles::ASSET_DELETER => [
                 ['ext' => 'taoMediaManager', 'mod' => 'MediaManager', 'act' => 'deleteResource'],
+                ['ext' => 'taoItems', 'mod' => 'ItemContent', 'act' => 'delete'],
             ],
         ],
         SetRolesAccess::CONFIG_PERMISSIONS => [
@@ -56,6 +58,12 @@ final class Version202107261845541888_taoMediaManager extends AbstractMigration
                 'editMedia' => [
                     TaoAssetRoles::ASSET_VIEWER => ActionAccessControl::READ,
                     TaoAssetRoles::ASSET_CONTENT_CREATOR => ActionAccessControl::WRITE,
+                ],
+            ],
+            taoItems_actions_ItemContent::class => [
+                'delete' => [
+                    TaoAssetRoles::ASSET_CLASS_NAVIGATOR => ActionAccessControl::DENY,
+                    TaoAssetRoles::ASSET_DELETER => ActionAccessControl::READ,
                 ],
             ],
         ],

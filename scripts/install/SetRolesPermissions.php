@@ -42,15 +42,19 @@ class SetRolesPermissions extends InstallAction
                     TaoAssetRoles::ASSET_VIEWER => ActionAccessControl::READ,
                     TaoAssetRoles::ASSET_PROPERTIES_EDITOR => ActionAccessControl::WRITE,
                 ],
+                'isPreviewEnabled' => [
+                    TaoAssetRoles::ASSET_VIEWER => ActionAccessControl::DENY,
+                    TaoAssetRoles::ASSET_PREVIEWER => ActionAccessControl::READ,
+                ],
             ],
             taoItems_actions_ItemContent::class => [
                 'files' => [
                     TaoAssetRoles::ASSET_CLASS_NAVIGATOR => ActionAccessControl::DENY,
                     TaoAssetRoles::ASSET_PREVIEWER => ActionAccessControl::READ,
                 ],
-                'isPreviewEnabled' => [
-                    TaoAssetRoles::ASSET_VIEWER => ActionAccessControl::DENY,
-                    TaoAssetRoles::ASSET_PREVIEWER => ActionAccessControl::READ,
+                'delete' => [
+                    TaoAssetRoles::ASSET_CLASS_NAVIGATOR => ActionAccessControl::DENY,
+                    TaoAssetRoles::ASSET_DELETER => ActionAccessControl::READ,
                 ],
             ],
             MediaImport::class => [

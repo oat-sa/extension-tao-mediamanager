@@ -28,7 +28,8 @@ define([
     'taoMediaManager/previewer/component/qtiSharedStimulusItem',
     'core/logger',
     'ui/feedback',
-], function($, _, binder, previewer, urlUtil, qtiItemPreviewerFactory, loggerFactory, feedback) {
+    'layout/loading-bar'
+], function($, _, binder, previewer, urlUtil, qtiItemPreviewerFactory, loggerFactory, feedback, loadingBar) {
     'use strict';
 
     const logger = loggerFactory('taoMediaManager/editInstance');
@@ -50,13 +51,15 @@ define([
                 file.containerClass = 'no-background';
                 $previewer.previewer(file);
             } else {
+                loadingBar.start();
                 qtiItemPreviewerFactory($previewer, {itemUri:  $('#edit-media').data('uri')})
                     .on('error', function (err) {
                         if (!_.isUndefined(err.message)) {
                             feedback().error(err.message);
                         }
                         logger.error(err);
-                    });
+                    })
+                    .on('preview-loaded', loadingBar.stop);
             }
 
             if (file.mime !== 'application/qti+xml') {

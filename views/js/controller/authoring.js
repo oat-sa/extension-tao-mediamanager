@@ -46,7 +46,7 @@ define([
 
             request(assetDataUrl, { id : assetId })
                 .then(response => {
-                    if (response.data.permissions.contains('WRITE')) {
+                    if (response.permissions == 'READ') {
                         previewEnabled = true;
                     }
                 });

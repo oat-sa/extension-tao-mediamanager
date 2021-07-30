@@ -23,13 +23,13 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\controller;
 
 use oat\tao\model\http\ContentDetector;
+use oat\tao\model\accessControl\Context;
 use oat\taoMediaManager\model\editInstanceForm;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use tao_helpers_form_FormContainer as FormContainer;
 use tao_models_classes_FileNotFoundException;
-use oat\taoMediaManager\model\classes\user\TaoAssetRoles;
 
 class MediaManager extends \tao_actions_SaSModule
 {
@@ -44,10 +44,12 @@ class MediaManager extends \tao_actions_SaSModule
 
         $clazz = $this->getCurrentClass();
         $instance = $this->getCurrentInstance();
-        $userRoles = $this->getUserRoles();
-        $hasWriteAccess = $this->hasWriteAccess($instance->getUri()) && $this->hasWriteAccessToAction(__FUNCTION__);
 
-        $isReplaceAssetDisabled = $this->getReplaceButtonStatus($hasWriteAccess, $userRoles);
+        $hasWriteAccess = $this->hasWriteAccess($instance->getUri())
+            && $this->hasWriteAccessByContext(new Context([
+                Context::PARAM_CONTROLLER => self::class,
+                Context::PARAM_ACTION => __FUNCTION__,
+            ]));
 
         $myFormContainer = new editInstanceForm(
             $clazz,
@@ -55,7 +57,12 @@ class MediaManager extends \tao_actions_SaSModule
             [
                 FormContainer::CSRF_PROTECTION_OPTION => true,
                 FormContainer::IS_DISABLED => !$hasWriteAccess,
-                editInstanceForm::IS_REPLACE_ASSET_DISABLED => $isReplaceAssetDisabled,
+                editInstanceForm::IS_REPLACE_ASSET_DISABLED => !$this->hasWriteAccessByContext(
+                    new Context([
+                        Context::PARAM_CONTROLLER => MediaImport::class,
+                        Context::PARAM_ACTION => 'editMedia',
+                    ])
+                ),
             ]
         );
 
@@ -72,6 +79,15 @@ class MediaManager extends \tao_actions_SaSModule
             $this->setData('reload', true);
         }
 
+        $this->setData(
+            'isPreviewEnabled',
+            $this->hasReadAccessByContext(
+                new Context([
+                    Context::PARAM_CONTROLLER => self::class,
+                    Context::PARAM_ACTION => 'isPreviewEnabled',
+                ])
+            )
+        );
         $this->setData('formTitle', __('Edit Instance'));
         $this->setData('myForm', $myForm->render());
 
@@ -111,27 +127,6 @@ class MediaManager extends \tao_actions_SaSModule
         $this->setView('form.tpl');
     }
 
-    private function getReplaceButtonStatus($hasWriteAccess, $userRoles): bool
-    {
-        if (in_array(TaoAssetRoles::ASSET_CONTENT_CREATOR, $userRoles, true)) {
-            $hasWriteAccess = true;
-        }
-
-        if (in_array(TaoAssetRoles::ASSET_PREVIEWER, $userRoles, true)) {
-            $this->setData('isPreviewEnabled', 1);
-            return !$hasWriteAccess;
-        }
-
-        if (
-            in_array(TaoAssetRoles::ASSET_PROPERTIES_EDITOR, $userRoles, true)
-            || in_array(TaoAssetRoles::ASSET_VIEWER, $userRoles, true)
-        ) {
-            return true;
-        }
-
-        $this->setData('isPreviewEnabled', 1);
-        return !$hasWriteAccess;
-    }
     /**
      * Get the file stream associated to given uri GET parameter
      *

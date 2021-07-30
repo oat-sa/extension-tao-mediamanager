@@ -317,9 +317,7 @@ define([
                                     : styleEditor.generateHashClass();
                                 sharedStimulusCreator.hashClass = styleEditor.getHashClass();
                                 // set class on container for style editor
-                                widget.$container.addClass(sharedStimulusCreator.hashClass);
-                                // remove class from itemBody
-                                widget.$container.find('.qti-itemBody').removeClass(sharedStimulusCreator.hashClass);
+                                widget.$container.find('.qti-itemBody').addClass(sharedStimulusCreator.hashClass);
 
                                 propertiesPanel(areaBroker.getPropertyPanelArea(), widget, config.properties);
 

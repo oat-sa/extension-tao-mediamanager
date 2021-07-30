@@ -19,6 +19,8 @@
  */
 
 use oat\taoMediaManager\scripts\install\SetMediaManager;
+use oat\taoMediaManager\scripts\install\RegisterXinludeHandler;
+use oat\taoMediaManager\scripts\install\RegisterItemDataHandler;
 
 $extpath = __DIR__ . DIRECTORY_SEPARATOR;
 $taopath = __DIR__ . DIRECTORY_SEPARATOR . 'tao' . DIRECTORY_SEPARATOR;
@@ -52,6 +54,8 @@ return [
         ],
         'php' => [
             SetMediaManager::class,
+            RegisterXinludeHandler::class,
+            RegisterItemDataHandler::class
         ]
     ],
     'update' => 'oat\\taoMediaManager\\scripts\\update\\Updater',

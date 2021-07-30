@@ -13,7 +13,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2020 (original work) Open Assessment Technologies SA ;
+ * Copyright (c) 2020-2021 (original work) Open Assessment Technologies SA ;
  */
 
 /**
@@ -27,8 +27,9 @@ define([
     'taoMediaManager/qtiCreator/component/sharedStimulusAuthoring',
     'ui/feedback',
     'util/url',
+    'core/dataProvider/request',
     'core/logger'
-], function (__, _, $, uri, sharedStimulusAuthoringFactory, feedback, urlUtil, loggerFactory) {
+], function (__, _, $, uri, sharedStimulusAuthoringFactory, feedback, urlUtil, request, loggerFactory) {
     'use strict';
 
     const logger = loggerFactory('taoMediaManager/authoring');
@@ -40,30 +41,41 @@ define([
         start() {
             const $panel = $('#panel-authoring');
             const assetDataUrl = urlUtil.route('get', 'SharedStimulus', 'taoMediaManager');
-            sharedStimulusAuthoringFactory($panel, {
-                properties: {
-                    uri: $panel.attr('data-uri'),
-                    id: uri.decode($panel.attr('data-id')),
-                    assetDataUrl,
-                    fileUploadUrl: urlUtil.route('upload', 'ItemContent', 'taoItems'),
-                    fileDeleteUrl: urlUtil.route('delete', 'ItemContent', 'taoItems'),
-                    fileDownloadUrl: urlUtil.route('download', 'ItemContent', 'taoItems'),
-                    fileExistsUrl: urlUtil.route('fileExists', 'ItemContent', 'taoItems'),
-                    getFilesUrl: urlUtil.route('files', 'ItemContent', 'taoItems'),
-                    baseUrl: urlUtil.route('getFile', 'MediaManager', 'taoMediaManager', { uri: '' }),
-                    path: 'taomedia://mediamanager/',
-                    root: 'mediamanager',
-                    lang: 'en-US'
-                }
-            })
-                .on('success', () => {
-                    feedback().success(__('Your passage is saved'));
-                })
-                .on('error', err => {
-                    if (!_.isUndefined(err.message)) {
-                        feedback().error(err.message);
+            const assetId = uri.decode($panel.attr('data-id'));
+            let previewEnabled = false;
+
+            request(assetDataUrl, { id : assetId })
+                .then(response => {
+                    if (response.permissions == 'READ') {
+                        previewEnabled = true;
                     }
-                    logger.error(err);
+                }).then(response => {
+                    sharedStimulusAuthoringFactory($panel, {
+                        properties: {
+                            uri: $panel.attr('data-uri'),
+                            id: assetId,
+                            assetDataUrl,
+                            fileUploadUrl: urlUtil.route('upload', 'ItemContent', 'taoItems'),
+                            fileDeleteUrl: urlUtil.route('delete', 'ItemContent', 'taoItems'),
+                            fileDownloadUrl: urlUtil.route('download', 'ItemContent', 'taoItems'),
+                            fileExistsUrl: urlUtil.route('fileExists', 'ItemContent', 'taoItems'),
+                            getFilesUrl: urlUtil.route('files', 'ItemContent', 'taoItems'),
+                            baseUrl: urlUtil.route('getFile', 'MediaManager', 'taoMediaManager', { uri: '' }),
+                            path: 'taomedia://mediamanager/',
+                            root: 'mediamanager',
+                            lang: 'en-US',
+                            previewEnabled: previewEnabled
+                        }
+                    })
+                        .on('success', () => {
+                            feedback().success(__('Your passage is saved'));
+                        })
+                        .on('error', err => {
+                            if (!_.isUndefined(err.message)) {
+                                feedback().error(err.message);
+                            }
+                            logger.error(err);
+                        });
                 });
         }
     };

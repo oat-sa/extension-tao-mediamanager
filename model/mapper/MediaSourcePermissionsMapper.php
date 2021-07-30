@@ -54,7 +54,7 @@ class MediaSourcePermissionsMapper extends MediaBrowserPermissionsMapper
             'upload'
         );
 
-        return parent::hasWriteAccess($uri)&& ($canDelete || $canUpload);
+        return parent::hasWriteAccess($uri) && ($canDelete || $canUpload);
     }
 
     private function getActionAccessControl(): ActionAccessControl

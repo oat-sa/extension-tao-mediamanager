@@ -23,13 +23,13 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\controller;
 
 use oat\tao\model\http\ContentDetector;
+use oat\tao\model\accessControl\Context;
 use oat\taoMediaManager\model\editInstanceForm;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use tao_helpers_form_FormContainer as FormContainer;
 use tao_models_classes_FileNotFoundException;
-use oat\taoMediaManager\model\user\TaoAssetRoles;
 
 class MediaManager extends \tao_actions_SaSModule
 {
@@ -45,7 +45,8 @@ class MediaManager extends \tao_actions_SaSModule
         $clazz = $this->getCurrentClass();
         $instance = $this->getCurrentInstance();
 
-        $hasWriteAccess = $this->hasWriteAccess($instance->getUri()) && $this->hasWriteAccessToAction(__FUNCTION__);
+        $hasWriteAccess = $this->hasWriteAccess($instance->getUri())
+            && $this->hasWriteAccessByContext(new Context(self::class, __FUNCTION__));
 
         $myFormContainer = new editInstanceForm(
             $clazz,
@@ -53,9 +54,8 @@ class MediaManager extends \tao_actions_SaSModule
             [
                 FormContainer::CSRF_PROTECTION_OPTION => true,
                 FormContainer::IS_DISABLED => !$hasWriteAccess,
-                editInstanceForm::IS_REPLACE_ASSET_DISABLED => !$this->hasWriteAccessToAction(
-                    'editMedia',
-                    MediaImport::class
+                editInstanceForm::IS_REPLACE_ASSET_DISABLED => !$this->hasWriteAccessByContext(
+                    new Context(MediaImport::class, 'editMedia')
                 ),
             ]
         );
@@ -73,7 +73,12 @@ class MediaManager extends \tao_actions_SaSModule
             $this->setData('reload', true);
         }
 
-        $this->setData('isPreviewEnabled', $this->hasReadAccessToAction('isPreviewEnabled'));
+        $this->setData(
+            'isPreviewEnabled',
+            $this->hasReadAccessByContext(
+                new Context(self::class, 'isPreviewEnabled')
+            )
+        );
         $this->setData('formTitle', __('Edit Instance'));
         $this->setData('myForm', $myForm->render());
 

@@ -46,7 +46,10 @@ class MediaManager extends \tao_actions_SaSModule
         $instance = $this->getCurrentInstance();
 
         $hasWriteAccess = $this->hasWriteAccess($instance->getUri())
-            && $this->hasWriteAccessByContext(new Context(self::class, __FUNCTION__));
+            && $this->hasWriteAccessByContext(new Context([
+                Context::PARAM_CONTROLLER => self::class,
+                Context::PARAM_ACTION => __FUNCTION__,
+            ]));
 
         $myFormContainer = new editInstanceForm(
             $clazz,
@@ -55,7 +58,10 @@ class MediaManager extends \tao_actions_SaSModule
                 FormContainer::CSRF_PROTECTION_OPTION => true,
                 FormContainer::IS_DISABLED => !$hasWriteAccess,
                 editInstanceForm::IS_REPLACE_ASSET_DISABLED => !$this->hasWriteAccessByContext(
-                    new Context(MediaImport::class, 'editMedia')
+                    new Context([
+                        Context::PARAM_CONTROLLER => MediaImport::class,
+                        Context::PARAM_ACTION => 'editMedia',
+                    ])
                 ),
             ]
         );
@@ -76,7 +82,10 @@ class MediaManager extends \tao_actions_SaSModule
         $this->setData(
             'isPreviewEnabled',
             $this->hasReadAccessByContext(
-                new Context(self::class, 'isPreviewEnabled')
+                new Context([
+                    Context::PARAM_CONTROLLER => self::class,
+                    Context::PARAM_ACTION => 'isPreviewEnabled',
+                ])
             )
         );
         $this->setData('formTitle', __('Edit Instance'));

@@ -18,8 +18,7 @@
 define(['jquery', 'uri', 'util/url', 'core/dataProvider/request'], function ($, uri, urlUtil, request) {
     'use strict';
 
-    return function xincludeRendererAddStyles(xinclude) {
-        const passageHref = xinclude.attr('href');
+    return function xincludeRendererAddStyles(passageHref, head = $('head')) {
         if (/taomedia:\/\/mediamanager\//.test(passageHref)) {
             // check rich passage styles and inject them to item
             const passageUri = uri.decode(passageHref.replace('taomedia://mediamanager/', ''));
@@ -36,7 +35,7 @@ define(['jquery', 'uri', 'util/url', 'core/dataProvider/request'], function ($, 
                                 stylesheet: element
                             })
                         });
-                        $('head').append(styleElem);
+                        head.append(styleElem);
                     });
                 })
                 .catch();

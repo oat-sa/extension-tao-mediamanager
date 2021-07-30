@@ -136,6 +136,11 @@ return [
         [
             AccessRule::GRANT,
             TaoAssetRoles::ASSET_DELETER,
+            ['ext' => 'taoMediaManager', 'mod' => 'MediaManager', 'act' => 'moveInstance'],
+        ],
+        [
+            AccessRule::GRANT,
+            TaoAssetRoles::ASSET_DELETER,
             ['ext' => 'taoItems', 'mod' => 'ItemContent', 'act' => 'delete'],
         ],
     ],

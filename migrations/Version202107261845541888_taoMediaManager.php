@@ -46,6 +46,7 @@ final class Version202107261845541888_taoMediaManager extends AbstractMigration
             ],
             TaoAssetRoles::ASSET_DELETER => [
                 ['ext' => 'taoMediaManager', 'mod' => 'MediaManager', 'act' => 'deleteResource'],
+                ['ext' => 'taoMediaManager', 'mod' => 'MediaManager', 'act' => 'moveInstance'],
                 ['ext' => 'taoItems', 'mod' => 'ItemContent', 'act' => 'delete'],
             ],
         ],

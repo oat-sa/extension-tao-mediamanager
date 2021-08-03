@@ -25,10 +25,10 @@ use oat\oatbox\Configurable;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ServiceManager;
 use oat\tao\model\accessControl\AccessControlEnablerInterface;
-use oat\tao\model\media\mapper\MediaBrowserPermissionsMapper;
 use oat\tao\model\media\MediaManagement;
 use oat\tao\model\media\mediaSource\DirectorySearchQuery;
 use oat\tao\model\media\ProcessedFileStreamAware;
+use oat\taoMediaManager\model\mapper\MediaSourcePermissionsMapper;
 use oat\taoMediaManager\model\export\service\MediaResourcePreparer;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
@@ -51,7 +51,7 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
     /** @var FileManagement */
     protected $fileManagementService;
 
-    /** @var MediaBrowserPermissionsMapper */
+    /** @var MediaSourcePermissionsMapper */
     private $permissionsMapper;
 
     /** @var string[] */
@@ -426,10 +426,10 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
         return $data;
     }
 
-    private function getPermissionsMapper(): MediaBrowserPermissionsMapper
+    private function getPermissionsMapper(): MediaSourcePermissionsMapper
     {
         if (!$this->permissionsMapper) {
-            $this->permissionsMapper = $this->getServiceLocator()->get(MediaBrowserPermissionsMapper::class);
+            $this->permissionsMapper = $this->getServiceLocator()->get(MediaSourcePermissionsMapper::class);
         }
 
         return $this->permissionsMapper;

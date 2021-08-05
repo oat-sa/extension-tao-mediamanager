@@ -47,14 +47,14 @@ describe('Assets', () => {
         });
 
         it('can delete empty asset class', function () {
-            cy.addClassToRoot(selectors.root, selectors.assetClassForm, className);
-            cy.deleteClassFromRoot(
-                selectors.root,
-                selectors.assetClassForm,
-                selectors.deleteClass,
-                selectors.deleteConfirm,
-                className
-            );
+            cy.addClassToRoot(selectors.root, selectors.assetClassForm, className)
+                .deleteClassFromRoot(
+                    selectors.root,
+                    selectors.assetClassForm,
+                    selectors.deleteClass,
+                    selectors.deleteConfirm,
+                    className
+                );
         });
 
         it('can move asset class', function () {
@@ -63,19 +63,11 @@ describe('Assets', () => {
                 selectors.assetClassForm,
                 selectors.moveClass,
                 selectors.moveConfirmSelector,
+                selectors.deleteClass,
+                selectors.deleteConfirm,
                 className,
                 classMovedName
             );
         });
-    });
-
-    after(() => {
-        cy.deleteClassFromRoot(
-            selectors.root,
-            selectors.assetClassForm,
-            selectors.deleteClass,
-            selectors.deleteConfirm,
-            classMovedName
-        );
     });
 });

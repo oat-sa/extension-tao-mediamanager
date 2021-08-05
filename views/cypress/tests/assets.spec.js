@@ -19,7 +19,6 @@
 import urls from '../utils/urls';
 import selectors from '../utils/selectors';
 
-
 describe('Assets', () => {
     const className = 'Asset E2E class';
     const classMovedName = 'Asset E2E class Moved';
@@ -43,17 +42,33 @@ describe('Assets', () => {
      */
     describe('Asset creation, editing and deletion', () => {
         it('can create a new asset class', function () {
-            cy.addClassToRoot(selectors.root, selectors.assetClassForm, className);
+            cy.addClassToRoot(
+                selectors.root,
+                selectors.assetClassForm,
+                className,
+                selectors.editClassLabelUrl,
+                selectors.treeRenderUrl,
+                selectors.addSubClassUrl
+            );
         });
 
         it('can delete empty asset class', function () {
-            cy.addClassToRoot(selectors.root, selectors.assetClassForm, className)
+            cy.addClassToRoot(
+                selectors.root,
+                selectors.assetClassForm,
+                className,
+                selectors.editClassLabelUrl,
+                selectors.treeRenderUrl,
+                selectors.addSubClassUrl
+            )
                 .deleteClassFromRoot(
                     selectors.root,
                     selectors.assetClassForm,
                     selectors.deleteClass,
                     selectors.deleteConfirm,
-                    className
+                    className,
+                    selectors.treeRenderUrl,
+                    selectors.resourceRelations
                 );
         });
 
@@ -66,7 +81,12 @@ describe('Assets', () => {
                 selectors.deleteClass,
                 selectors.deleteConfirm,
                 className,
-                classMovedName
+                classMovedName,
+                selectors.treeRenderUrl,
+                selectors.editClassLabelUrl,
+                selectors.restResourceGetAll,
+                selectors.resourceRelations,
+                selectors.addSubClassUrl
             );
         });
     });

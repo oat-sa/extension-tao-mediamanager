@@ -49,7 +49,16 @@ describe('Assets', () => {
                 selectors.editClassLabelUrl,
                 selectors.treeRenderUrl,
                 selectors.addSubClassUrl
-            );
+            )
+                .deleteClassFromRoot(
+                    selectors.root,
+                    selectors.assetClassForm,
+                    selectors.deleteClass,
+                    selectors.deleteConfirm,
+                    className,
+                    selectors.treeRenderUrl,
+                    selectors.resourceRelations
+                );
         });
 
         it('can delete empty asset class', function () {

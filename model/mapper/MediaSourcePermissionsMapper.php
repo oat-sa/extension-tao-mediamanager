@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\mapper;
 
+use oat\tao\model\accessControl\Context;
+use oat\taoMediaManager\controller\MediaManager;
 use taoItems_actions_ItemContent;
 use oat\tao\model\accessControl\ActionAccessControl;
 use oat\tao\model\media\mapper\MediaBrowserPermissionsMapper;
@@ -30,6 +32,25 @@ class MediaSourcePermissionsMapper extends MediaBrowserPermissionsMapper
 {
     /** @var ActionAccessControl */
     private $actionAccessControl;
+
+    public function map(array $data, string $resourceUri): array
+    {
+        $data = parent::map($data, $resourceUri);
+
+        if ($this->hasReadAccessByContext(taoItems_actions_ItemContent::class, 'isDownloadEnabled')) {
+            $data['permissions'][] = 'DOWNLOAD';
+        }
+
+        if ($this->hasWriteAccessByContext(taoItems_actions_ItemContent::class, 'delete')) {
+            $data['permissions'][] = 'DELETE';
+        }
+
+        if ($this->hasWriteAccessByContext(taoItems_actions_ItemContent::class, 'upload')) {
+            $data['permissions'][] = 'UPLOAD';
+        }
+
+        return $data;
+    }
 
     protected function hasReadAccess(string $uri): bool
     {
@@ -64,5 +85,29 @@ class MediaSourcePermissionsMapper extends MediaBrowserPermissionsMapper
         }
 
         return $this->actionAccessControl;
+    }
+
+    private function hasReadAccessByContext(string $controller, string $action): bool
+    {
+        return $this->getActionAccessControl()->contextHasReadAccess(
+            new Context(
+                [
+                    Context::PARAM_CONTROLLER => $controller,
+                    Context::PARAM_ACTION => $action,
+                ]
+            )
+        );
+    }
+
+    private function hasWriteAccessByContext(string $controller, string $action): bool
+    {
+        return $this->getActionAccessControl()->contextHasWriteAccess(
+            new Context(
+                [
+                    Context::PARAM_CONTROLLER => $controller,
+                    Context::PARAM_ACTION => $action,
+                ]
+            )
+        );
     }
 }

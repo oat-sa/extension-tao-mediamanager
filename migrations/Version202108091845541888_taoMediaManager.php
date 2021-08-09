@@ -24,11 +24,11 @@ namespace oat\taoMediaManager\migrations;
 
 use Doctrine\DBAL\Schema\Schema;
 use oat\tao\scripts\update\OntologyUpdater;
-use oat\taoMediaManager\controller\MediaManager;
 use oat\taoMediaManager\model\user\TaoAssetRoles;
 use oat\tao\model\accessControl\ActionAccessControl;
 use oat\tao\scripts\tools\migrations\AbstractMigration;
 use oat\tao\scripts\tools\accessControl\SetRolesAccess;
+use taoItems_actions_ItemContent;
 
 final class Version202108091845541888_taoMediaManager extends AbstractMigration
 {
@@ -43,8 +43,8 @@ final class Version202108091845541888_taoMediaManager extends AbstractMigration
             ],
         ],
         SetRolesAccess::CONFIG_PERMISSIONS => [
-            MediaManager::class => [
-                'isDownloadEnabled' => [
+            taoItems_actions_ItemContent::class => [
+                'download' => [
                     TaoAssetRoles::ASSET_VIEWER => ActionAccessControl::DENY,
                     TaoAssetRoles::ASSET_EXPORTER => ActionAccessControl::READ,
                 ],

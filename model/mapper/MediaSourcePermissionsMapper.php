@@ -23,13 +23,16 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\mapper;
 
 use oat\tao\model\accessControl\Context;
-use oat\taoMediaManager\controller\MediaManager;
 use taoItems_actions_ItemContent;
 use oat\tao\model\accessControl\ActionAccessControl;
 use oat\tao\model\media\mapper\MediaBrowserPermissionsMapper;
 
 class MediaSourcePermissionsMapper extends MediaBrowserPermissionsMapper
 {
+    private const PERMISSION_DOWNLOAD = 'DOWNLOAD';
+    private const PERMISSION_UPLOAD = 'UPLOAD';
+    private const PERMISSION_DELETE = 'DELETE';
+
     /** @var ActionAccessControl */
     private $actionAccessControl;
 
@@ -37,16 +40,19 @@ class MediaSourcePermissionsMapper extends MediaBrowserPermissionsMapper
     {
         $data = parent::map($data, $resourceUri);
 
-        if ($this->hasReadAccessByContext(taoItems_actions_ItemContent::class, 'isDownloadEnabled')) {
-            $data['permissions'][] = 'DOWNLOAD';
+        if ($this->hasReadAccessByContext(taoItems_actions_ItemContent::class, 'download')
+            && $this->hasReadAccess($resourceUri)) {
+            $data[parent::DATA_PERMISSIONS][] = self::PERMISSION_DOWNLOAD;
         }
 
-        if ($this->hasWriteAccessByContext(taoItems_actions_ItemContent::class, 'delete')) {
-            $data['permissions'][] = 'DELETE';
+        if ($this->hasWriteAccessByContext(taoItems_actions_ItemContent::class, 'delete')
+            && $this->hasWriteAccess($resourceUri)) {
+            $data[parent::DATA_PERMISSIONS][] = self::PERMISSION_DELETE;
         }
 
-        if ($this->hasWriteAccessByContext(taoItems_actions_ItemContent::class, 'upload')) {
-            $data['permissions'][] = 'UPLOAD';
+        if ($this->hasWriteAccessByContext(taoItems_actions_ItemContent::class, 'upload')
+            && $this->hasWriteAccess($resourceUri)) {
+            $data[parent::DATA_PERMISSIONS][] = self::PERMISSION_UPLOAD;
         }
 
         return $data;

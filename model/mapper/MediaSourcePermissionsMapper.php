@@ -40,19 +40,25 @@ class MediaSourcePermissionsMapper extends MediaBrowserPermissionsMapper
     {
         $data = parent::map($data, $resourceUri);
 
-        if ($this->hasReadAccessByContext(taoItems_actions_ItemContent::class, 'download')
-            && $this->hasReadAccess($resourceUri)) {
-            $data[parent::DATA_PERMISSIONS][] = self::PERMISSION_DOWNLOAD;
+        if (
+            $this->hasReadAccessByContext(taoItems_actions_ItemContent::class, 'download')
+            && $this->hasReadAccess($resourceUri)
+        ) {
+            $data[self::DATA_PERMISSIONS][] = self::PERMISSION_DOWNLOAD;
         }
 
-        if ($this->hasWriteAccessByContext(taoItems_actions_ItemContent::class, 'delete')
-            && $this->hasWriteAccess($resourceUri)) {
-            $data[parent::DATA_PERMISSIONS][] = self::PERMISSION_DELETE;
+        if (
+            $this->hasWriteAccessByContext(taoItems_actions_ItemContent::class, 'delete')
+            && $this->hasWriteAccess($resourceUri)
+        ) {
+            $data[self::DATA_PERMISSIONS][] = self::PERMISSION_DELETE;
         }
 
-        if ($this->hasWriteAccessByContext(taoItems_actions_ItemContent::class, 'upload')
-            && $this->hasWriteAccess($resourceUri)) {
-            $data[parent::DATA_PERMISSIONS][] = self::PERMISSION_UPLOAD;
+        if (
+            $this->hasWriteAccessByContext(taoItems_actions_ItemContent::class, 'upload')
+            && $this->hasWriteAccess($resourceUri)
+        ) {
+            $data[self::DATA_PERMISSIONS][] = self::PERMISSION_UPLOAD;
         }
 
         return $data;
@@ -67,9 +73,6 @@ class MediaSourcePermissionsMapper extends MediaBrowserPermissionsMapper
             );
     }
 
-    /*
-     *  TODO split permissions to upload and delete assets
-     */
     protected function hasWriteAccess(string $uri): bool
     {
         $canDelete = $this->getActionAccessControl()->hasWriteAccess(

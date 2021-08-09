@@ -60,6 +60,10 @@ class SetRolesPermissions extends InstallAction
                     TaoAssetRoles::ASSET_CLASS_NAVIGATOR => ActionAccessControl::DENY,
                     TaoAssetRoles::ASSET_RESOURCE_CREATOR => ActionAccessControl::WRITE,
                 ],
+                'download' => [
+                    TaoAssetRoles::ASSET_VIEWER => ActionAccessControl::DENY,
+                    TaoAssetRoles::ASSET_EXPORTER => ActionAccessControl::READ,
+                ],
             ],
             MediaImport::class => [
                 'editMedia' => [

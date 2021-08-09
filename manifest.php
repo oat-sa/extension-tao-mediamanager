@@ -95,6 +95,11 @@ return [
         ],
         [
             AccessRule::GRANT,
+            TaoAssetRoles::ASSET_EXPORTER,
+            ['ext' => 'taoItems', 'mod' => 'ItemContent', 'act' => 'download'],
+        ],
+        [
+            AccessRule::GRANT,
             TaoAssetRoles::ASSET_CONTENT_CREATOR,
             ['ext' => 'taoMediaManager', 'mod' => 'MediaManager', 'act' => 'authoring']
         ],

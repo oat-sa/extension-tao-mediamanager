@@ -22,12 +22,10 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\test\unit\model\mapper;
 
-use JsonSerializable;
 use oat\generis\test\TestCase;
 use oat\tao\model\accessControl\ActionAccessControl;
 use oat\tao\model\accessControl\PermissionChecker;
 use oat\taoMediaManager\model\mapper\MediaSourcePermissionsMapper;
-use oat\taoMediaManager\model\relation\MediaRelation;
 use PHPUnit\Framework\MockObject\MockObject;
 
 class MediaSourcePermissionsMapperTest extends TestCase
@@ -56,7 +54,7 @@ class MediaSourcePermissionsMapperTest extends TestCase
         );
     }
 
-    public function testMap(): void
+    public function testMapWithAllPermissions(): void
     {
         $data = [];
         $resourceUri = 'resourceUri';
@@ -85,6 +83,38 @@ class MediaSourcePermissionsMapperTest extends TestCase
                     'DOWNLOAD',
                     'DELETE',
                     'UPLOAD',
+                ]
+            ],
+            $this->subject->map($data, $resourceUri)
+        );
+    }
+
+    public function testMapWithOnlyReadAndWritePermissions(): void
+    {
+        $data = [];
+        $resourceUri = 'resourceUri';
+
+        $this->actionAccessControl
+            ->method('contextHasReadAccess')
+            ->willReturn(false);
+
+        $this->actionAccessControl
+            ->method('hasReadAccess')
+            ->willReturn(true);
+
+        $this->actionAccessControl
+            ->method('contextHasWriteAccess')
+            ->willReturn(false);
+
+        $this->actionAccessControl
+            ->method('hasWriteAccess')
+            ->willReturn(true);
+
+        $this->assertEquals(
+            [
+                'permissions' => [
+                    'READ',
+                    'WRITE',
                 ]
             ],
             $this->subject->map($data, $resourceUri)

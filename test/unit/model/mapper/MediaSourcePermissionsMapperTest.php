@@ -80,6 +80,7 @@ class MediaSourcePermissionsMapperTest extends TestCase
                 'permissions' => [
                     'READ',
                     'WRITE',
+                    'PREVIEW',
                     'DOWNLOAD',
                     'DELETE',
                     'UPLOAD',

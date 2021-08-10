@@ -23,7 +23,6 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\migrations;
 
 use Doctrine\DBAL\Schema\Schema;
-use oat\tao\scripts\update\OntologyUpdater;
 use oat\taoMediaManager\model\user\TaoAssetRoles;
 use oat\tao\model\accessControl\ActionAccessControl;
 use oat\tao\scripts\tools\migrations\AbstractMigration;
@@ -33,20 +32,23 @@ use taoItems_actions_ItemContent;
 final class Version202108091845541888_taoMediaManager extends AbstractMigration
 {
     private const CONFIG = [
-        SetRolesAccess::CONFIG_RULES => [
-            TaoAssetRoles::ASSET_EXPORTER => [
-                [
-                    'ext' => 'taoItems',
-                    'mod' => 'ItemContent',
-                    'act' => 'download'
-                ],
-            ],
-        ],
         SetRolesAccess::CONFIG_PERMISSIONS => [
             taoItems_actions_ItemContent::class => [
-                'download' => [
-                    TaoAssetRoles::ASSET_VIEWER => ActionAccessControl::DENY,
+                'previewAsset' => [
+                    TaoAssetRoles::ASSET_CLASS_NAVIGATOR => ActionAccessControl::DENY,
+                    TaoAssetRoles::ASSET_PREVIEWER => ActionAccessControl::READ,
+                ],
+                'downloadAsset' => [
+                    TaoAssetRoles::ASSET_CLASS_NAVIGATOR => ActionAccessControl::DENY,
                     TaoAssetRoles::ASSET_EXPORTER => ActionAccessControl::READ,
+                ],
+                'uploadAsset' => [
+                    TaoAssetRoles::ASSET_CLASS_NAVIGATOR => ActionAccessControl::DENY,
+                    TaoAssetRoles::ASSET_IMPORTER => ActionAccessControl::WRITE,
+                ],
+                'deleteAsset' => [
+                    TaoAssetRoles::ASSET_CLASS_NAVIGATOR => ActionAccessControl::DENY,
+                    TaoAssetRoles::ASSET_DELETER => ActionAccessControl::WRITE,
                 ],
             ],
         ],
@@ -54,13 +56,11 @@ final class Version202108091845541888_taoMediaManager extends AbstractMigration
 
     public function getDescription(): string
     {
-        return 'Give proper permission for delete and download assets';
+        return 'Give proper permission for delete, upload and download assets';
     }
 
     public function up(Schema $schema): void
     {
-        OntologyUpdater::syncModels();
-
         $setRolesAccess = $this->propagate(new SetRolesAccess());
         $setRolesAccess(
             [

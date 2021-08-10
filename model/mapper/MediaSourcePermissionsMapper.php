@@ -29,6 +29,7 @@ use oat\tao\model\media\mapper\MediaBrowserPermissionsMapper;
 
 class MediaSourcePermissionsMapper extends MediaBrowserPermissionsMapper
 {
+    private const PERMISSION_PREVIEW = 'PREVIEW';
     private const PERMISSION_DOWNLOAD = 'DOWNLOAD';
     private const PERMISSION_UPLOAD = 'UPLOAD';
     private const PERMISSION_DELETE = 'DELETE';
@@ -41,21 +42,28 @@ class MediaSourcePermissionsMapper extends MediaBrowserPermissionsMapper
         $data = parent::map($data, $resourceUri);
 
         if (
-            $this->hasReadAccessByContext(taoItems_actions_ItemContent::class, 'download')
+            $this->hasReadAccessByContext(taoItems_actions_ItemContent::class, 'previewAsset')
+            && $this->hasReadAccess($resourceUri)
+        ) {
+            $data[self::DATA_PERMISSIONS][] = self::PERMISSION_PREVIEW;
+        }
+
+        if (
+            $this->hasReadAccessByContext(taoItems_actions_ItemContent::class, 'downloadAsset')
             && $this->hasReadAccess($resourceUri)
         ) {
             $data[self::DATA_PERMISSIONS][] = self::PERMISSION_DOWNLOAD;
         }
 
         if (
-            $this->hasWriteAccessByContext(taoItems_actions_ItemContent::class, 'delete')
+            $this->hasWriteAccessByContext(taoItems_actions_ItemContent::class, 'deleteAsset')
             && $this->hasWriteAccess($resourceUri)
         ) {
             $data[self::DATA_PERMISSIONS][] = self::PERMISSION_DELETE;
         }
 
         if (
-            $this->hasWriteAccessByContext(taoItems_actions_ItemContent::class, 'upload')
+            $this->hasWriteAccessByContext(taoItems_actions_ItemContent::class, 'uploadAsset')
             && $this->hasWriteAccess($resourceUri)
         ) {
             $data[self::DATA_PERMISSIONS][] = self::PERMISSION_UPLOAD;
@@ -77,11 +85,11 @@ class MediaSourcePermissionsMapper extends MediaBrowserPermissionsMapper
     {
         $canDelete = $this->getActionAccessControl()->hasWriteAccess(
             taoItems_actions_ItemContent::class,
-            'delete'
+            'deleteAsset'
         );
         $canUpload = $this->getActionAccessControl()->hasWriteAccess(
             taoItems_actions_ItemContent::class,
-            'upload'
+            'uploadAsset'
         );
 
         return parent::hasWriteAccess($uri) && ($canDelete || $canUpload);

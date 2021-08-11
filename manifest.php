@@ -65,6 +65,11 @@ return [
         ],
         [
             AccessRule::GRANT,
+            TaoAssetRoles::ASSET_CLASS_NAVIGATOR,
+            ['ext' => 'taoItems', 'mod' => 'ItemContent', 'act' => 'files'],
+        ],
+        [
+            AccessRule::GRANT,
             TaoAssetRoles::ASSET_VIEWER,
             ['ext' => 'taoMediaManager', 'mod' => 'MediaManager', 'act' => 'editInstance']
         ],

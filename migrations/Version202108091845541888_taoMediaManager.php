@@ -32,6 +32,11 @@ use taoItems_actions_ItemContent;
 final class Version202108091845541888_taoMediaManager extends AbstractMigration
 {
     private const CONFIG = [
+        SetRolesAccess::CONFIG_RULES => [
+            TaoAssetRoles::ASSET_CLASS_NAVIGATOR => [
+                ['ext' => 'taoItems', 'mod' => 'ItemContent', 'act' => 'files'],
+            ],
+        ],
         SetRolesAccess::CONFIG_PERMISSIONS => [
             taoItems_actions_ItemContent::class => [
                 'previewAsset' => [

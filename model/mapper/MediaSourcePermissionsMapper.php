@@ -72,15 +72,6 @@ class MediaSourcePermissionsMapper extends MediaBrowserPermissionsMapper
         return $data;
     }
 
-    protected function hasReadAccess(string $uri): bool
-    {
-        return parent::hasReadAccess($uri)
-            && $this->getActionAccessControl()->hasReadAccess(
-                taoItems_actions_ItemContent::class,
-                'files'
-            );
-    }
-
     protected function hasWriteAccess(string $uri): bool
     {
         $canDelete = $this->getActionAccessControl()->hasWriteAccess(

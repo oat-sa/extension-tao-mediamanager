@@ -11,5 +11,6 @@ export default {
     treeRenderUrl: 'taoMediaManager/MediaManager',
     addSubClassUrl: 'taoMediaManager/MediaManager/addSubClass',
     restResourceGetAll: 'tao/RestResource/getAll',
-    resourceRelations: 'tao/ResourceRelations'
+    resourceRelations: 'tao/ResourceRelations',
+    deleteClassUrl: 'taoMediaManager/MediaManager/deleteClass',
 };

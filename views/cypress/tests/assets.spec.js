@@ -56,7 +56,6 @@ describe('Assets', () => {
 
         it('can move asset class', function () {
             cy.intercept('POST', `**/${ selectors.editClassLabelUrl }`).as('editClassLabel');
-            cy.wait('@editClassLabel', { requestTimeout: 10000 });
 
             cy.getSettled(`${selectors.root} a:nth(0)`)
             .click()

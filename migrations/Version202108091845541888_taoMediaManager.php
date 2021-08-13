@@ -20,46 +20,25 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\scripts\install;
+namespace oat\taoMediaManager\migrations;
 
-use taoItems_actions_ItemContent;
-use oat\oatbox\extension\InstallAction;
-use oat\taoMediaManager\controller\MediaImport;
-use oat\taoMediaManager\controller\MediaManager;
+use Doctrine\DBAL\Schema\Schema;
 use oat\taoMediaManager\model\user\TaoAssetRoles;
 use oat\tao\model\accessControl\ActionAccessControl;
+use oat\tao\scripts\tools\migrations\AbstractMigration;
 use oat\tao\scripts\tools\accessControl\SetRolesAccess;
+use taoItems_actions_ItemContent;
 
-class SetRolesPermissions extends InstallAction
+final class Version202108091845541888_taoMediaManager extends AbstractMigration
 {
     private const CONFIG = [
-        SetRolesAccess::CONFIG_PERMISSIONS => [
-            MediaManager::class => [
-                'editClassLabel' => [
-                    TaoAssetRoles::ASSET_CLASS_NAVIGATOR => ActionAccessControl::READ
-                ],
-                'editInstance' => [
-                    TaoAssetRoles::ASSET_VIEWER => ActionAccessControl::READ,
-                    TaoAssetRoles::ASSET_PROPERTIES_EDITOR => ActionAccessControl::WRITE,
-                ],
-                'isPreviewEnabled' => [
-                    TaoAssetRoles::ASSET_VIEWER => ActionAccessControl::DENY,
-                    TaoAssetRoles::ASSET_PREVIEWER => ActionAccessControl::READ,
-                ],
+        SetRolesAccess::CONFIG_RULES => [
+            TaoAssetRoles::ASSET_CLASS_NAVIGATOR => [
+                ['ext' => 'taoItems', 'mod' => 'ItemContent', 'act' => 'files'],
             ],
+        ],
+        SetRolesAccess::CONFIG_PERMISSIONS => [
             taoItems_actions_ItemContent::class => [
-                'files' => [
-                    TaoAssetRoles::ASSET_CLASS_NAVIGATOR => ActionAccessControl::DENY,
-                    TaoAssetRoles::ASSET_PREVIEWER => ActionAccessControl::READ,
-                ],
-                'delete' => [
-                    TaoAssetRoles::ASSET_CLASS_NAVIGATOR => ActionAccessControl::DENY,
-                    TaoAssetRoles::ASSET_DELETER => ActionAccessControl::WRITE,
-                ],
-                'upload' => [
-                    TaoAssetRoles::ASSET_CLASS_NAVIGATOR => ActionAccessControl::DENY,
-                    TaoAssetRoles::ASSET_RESOURCE_CREATOR => ActionAccessControl::WRITE,
-                ],
                 'previewAsset' => [
                     TaoAssetRoles::ASSET_CLASS_NAVIGATOR => ActionAccessControl::DENY,
                     TaoAssetRoles::ASSET_PREVIEWER => ActionAccessControl::READ,
@@ -77,20 +56,32 @@ class SetRolesPermissions extends InstallAction
                     TaoAssetRoles::ASSET_DELETER => ActionAccessControl::WRITE,
                 ],
             ],
-            MediaImport::class => [
-                'editMedia' => [
-                    TaoAssetRoles::ASSET_VIEWER => ActionAccessControl::READ,
-                    TaoAssetRoles::ASSET_CONTENT_CREATOR => ActionAccessControl::WRITE,
-                ],
-            ],
         ],
     ];
 
-    public function __invoke($params = [])
+    public function getDescription(): string
+    {
+        return 'Give proper permission for delete, upload and download assets';
+    }
+
+    public function up(Schema $schema): void
     {
         $setRolesAccess = $this->propagate(new SetRolesAccess());
-        $setRolesAccess([
-            '--' . SetRolesAccess::OPTION_CONFIG, self::CONFIG,
-        ]);
+        $setRolesAccess(
+            [
+                '--' . SetRolesAccess::OPTION_CONFIG, self::CONFIG,
+            ]
+        );
+    }
+
+    public function down(Schema $schema): void
+    {
+        $setRolesAccess = $this->propagate(new SetRolesAccess());
+        $setRolesAccess(
+            [
+                '--' . SetRolesAccess::OPTION_REVOKE,
+                '--' . SetRolesAccess::OPTION_CONFIG, self::CONFIG,
+            ]
+        );
     }
 }

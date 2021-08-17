@@ -50,7 +50,8 @@ define([
                 icon: 'save',
                 title: __('Save the asset'),
                 text : __('Save'),
-                cssClass: 'save-trigger'
+                cssClass: 'save-trigger',
+                testId: 'save-the-asset'
             })).on('click', function saveHandler(e){
                 e.preventDefault();
                 self.disable();

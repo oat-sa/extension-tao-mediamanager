@@ -70,7 +70,8 @@ define([
                     icon: 'preview',
                     title: __('Preview the item'),
                     text: __('Preview'),
-                    cssClass: 'preview-trigger'
+                    cssClass: 'preview-trigger',
+                    testId: 'preview-the-asset'
                 })).on('click', e => {
                     $(document).trigger('open-preview.qti-item');
                     e.preventDefault();

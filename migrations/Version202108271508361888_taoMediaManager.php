@@ -20,69 +20,78 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\scripts\install;
+namespace oat\taoMediaManager\migrations;
 
+use Doctrine\DBAL\Schema\Schema;
 use taoItems_actions_ItemContent;
-use oat\oatbox\extension\InstallAction;
-use oat\taoMediaManager\controller\MediaImport;
-use oat\taoMediaManager\controller\MediaManager;
+use oat\tao\scripts\update\OntologyUpdater;
 use oat\taoMediaManager\model\user\TaoAssetRoles;
 use oat\tao\model\accessControl\ActionAccessControl;
+use oat\tao\scripts\tools\migrations\AbstractMigration;
 use oat\tao\scripts\tools\accessControl\SetRolesAccess;
 
-class SetRolesPermissions extends InstallAction
+final class Version202108271508361888_taoMediaManager extends AbstractMigration
 {
     private const CONFIG = [
         SetRolesAccess::CONFIG_PERMISSIONS => [
-            MediaManager::class => [
-                'editClassLabel' => [
-                    TaoAssetRoles::ASSET_CLASS_NAVIGATOR => ActionAccessControl::READ
-                ],
-                'editInstance' => [
-                    TaoAssetRoles::ASSET_VIEWER => ActionAccessControl::READ,
-                    TaoAssetRoles::ASSET_PROPERTIES_EDITOR => ActionAccessControl::WRITE,
-                ],
-                'isPreviewEnabled' => [
-                    TaoAssetRoles::ASSET_VIEWER => ActionAccessControl::DENY,
-                    TaoAssetRoles::ASSET_PREVIEWER => ActionAccessControl::READ,
-                ],
-            ],
             taoItems_actions_ItemContent::class => [
                 'viewAsset' => [
                     TaoAssetRoles::ASSET_CLASS_NAVIGATOR => ActionAccessControl::DENY,
                     TaoAssetRoles::ASSET_VIEWER => ActionAccessControl::READ,
                 ],
-                'previewAsset' => [
+            ],
+        ],
+    ];
+
+    private const REVOKE_CONFIG = [
+        SetRolesAccess::CONFIG_PERMISSIONS => [
+            taoItems_actions_ItemContent::class => [
+                'files' => [
                     TaoAssetRoles::ASSET_CLASS_NAVIGATOR => ActionAccessControl::DENY,
                     TaoAssetRoles::ASSET_PREVIEWER => ActionAccessControl::READ,
                 ],
-                'downloadAsset' => [
-                    TaoAssetRoles::ASSET_CLASS_NAVIGATOR => ActionAccessControl::DENY,
-                    TaoAssetRoles::ASSET_EXPORTER => ActionAccessControl::READ,
-                ],
-                'uploadAsset' => [
-                    TaoAssetRoles::ASSET_CLASS_NAVIGATOR => ActionAccessControl::DENY,
-                    TaoAssetRoles::ASSET_IMPORTER => ActionAccessControl::WRITE,
-                ],
-                'deleteAsset' => [
+                'delete' => [
                     TaoAssetRoles::ASSET_CLASS_NAVIGATOR => ActionAccessControl::DENY,
                     TaoAssetRoles::ASSET_DELETER => ActionAccessControl::WRITE,
                 ],
-            ],
-            MediaImport::class => [
-                'editMedia' => [
-                    TaoAssetRoles::ASSET_VIEWER => ActionAccessControl::READ,
-                    TaoAssetRoles::ASSET_CONTENT_CREATOR => ActionAccessControl::WRITE,
+                'upload' => [
+                    TaoAssetRoles::ASSET_CLASS_NAVIGATOR => ActionAccessControl::DENY,
+                    TaoAssetRoles::ASSET_RESOURCE_CREATOR => ActionAccessControl::WRITE,
                 ],
             ],
         ],
     ];
 
-    public function __invoke($params = [])
+    public function getDescription(): string
     {
+        return 'Configure Asset Content Creator role and remove old permissions.';
+    }
+
+    public function up(Schema $schema): void
+    {
+        OntologyUpdater::syncModels();
+
+        $setRolesAccess = $this->propagate(new SetRolesAccess());
+        $setRolesAccess([
+            '--' . SetRolesAccess::OPTION_REVOKE,
+            '--' . SetRolesAccess::OPTION_CONFIG, self::REVOKE_CONFIG,
+        ]);
         $setRolesAccess = $this->propagate(new SetRolesAccess());
         $setRolesAccess([
             '--' . SetRolesAccess::OPTION_CONFIG, self::CONFIG,
+        ]);
+    }
+
+    public function down(Schema $schema): void
+    {
+        $setRolesAccess = $this->propagate(new SetRolesAccess());
+        $setRolesAccess([
+            '--' . SetRolesAccess::OPTION_REVOKE,
+            '--' . SetRolesAccess::OPTION_CONFIG, self::CONFIG,
+        ]);
+        $setRolesAccess = $this->propagate(new SetRolesAccess());
+        $setRolesAccess([
+            '--' . SetRolesAccess::OPTION_CONFIG, self::REVOKE_CONFIG,
         ]);
     }
 }

@@ -22,6 +22,9 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\classes\user;
 
+/**
+ * @deprecated Use \oat\taoMediaManager\model\user\TaoAssetRoles
+ */
 interface TaoAssetRoles
 {
     public const MEDIA_MANAGER = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole';

@@ -65,6 +65,11 @@ return [
         ],
         [
             AccessRule::GRANT,
+            TaoAssetRoles::ASSET_CLASS_NAVIGATOR,
+            ['ext' => 'taoItems', 'mod' => 'ItemContent', 'act' => 'files'],
+        ],
+        [
+            AccessRule::GRANT,
             TaoAssetRoles::ASSET_VIEWER,
             ['ext' => 'taoMediaManager', 'mod' => 'MediaManager', 'act' => 'editInstance']
         ],
@@ -92,6 +97,11 @@ return [
             AccessRule::GRANT,
             TaoAssetRoles::ASSET_EXPORTER,
             ['ext' => 'taoMediaManager', 'mod' => 'MediaExport', 'act' => 'index']
+        ],
+        [
+            AccessRule::GRANT,
+            TaoAssetRoles::ASSET_EXPORTER,
+            ['ext' => 'taoItems', 'mod' => 'ItemContent', 'act' => 'download'],
         ],
         [
             AccessRule::GRANT,

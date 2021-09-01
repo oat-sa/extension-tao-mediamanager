@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\test\unit\model\mapper;
 
 use oat\generis\test\TestCase;
+use oat\tao\model\accessControl\Context;
 use oat\tao\model\accessControl\ActionAccessControl;
 use oat\tao\model\accessControl\PermissionChecker;
 use oat\taoMediaManager\model\mapper\MediaSourcePermissionsMapper;
@@ -92,30 +93,44 @@ class MediaSourcePermissionsMapperTest extends TestCase
 
     public function testMapWithOnlyReadAndWritePermissions(): void
     {
-        $data = [];
-        $resourceUri = 'resourceUri';
-
         $this->actionAccessControl
             ->method('contextHasReadAccess')
-            ->willReturn(false);
+            ->willReturnCallback(
+                function (Context $context) {
+                    if ($context->getParameter(Context::PARAM_ACTION) === 'viewAsset') {
+                        return true;
+                    }
 
-        $this->actionAccessControl
-            ->method('hasReadAccess')
-            ->willReturn(true);
+                    return false;
+                }
+            );
 
         $this->actionAccessControl
             ->method('contextHasWriteAccess')
-            ->willReturn(false);
+            ->willReturnCallback(
+                function (Context $context) {
+                    if ($context->getParameter(Context::PARAM_ACTION) === 'deleteAsset') {
+                        return true;
+                    }
 
-        $this->actionAccessControl
-            ->method('hasWriteAccess')
-            ->willReturn(true);
+                    if ($context->getParameter(Context::PARAM_ACTION) === 'uploadAsset') {
+                        return true;
+                    }
+
+                    return false;
+                }
+            );
 
         $this->assertEquals(
             [
-                'permissions' => [],
+                'permissions' => [
+                    'READ',
+                    'WRITE',
+                    'DELETE',
+                    'UPLOAD',
+                ],
             ],
-            $this->subject->map($data, $resourceUri)
+            $this->subject->map([], 'resourceUri')
         );
     }
 }

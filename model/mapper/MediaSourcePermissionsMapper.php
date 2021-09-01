@@ -40,31 +40,34 @@ class MediaSourcePermissionsMapper extends MediaBrowserPermissionsMapper
     public function map(array $data, string $resourceUri): array
     {
         $data = parent::map($data, $resourceUri);
+        $hasReadAccess = $this->hasReadAccess($resourceUri);
 
         if (
             $this->hasReadAccessByContext(taoItems_actions_ItemContent::class, 'previewAsset')
-            && $this->hasReadAccess($resourceUri)
+            && $hasReadAccess
         ) {
             $data[self::DATA_PERMISSIONS][] = self::PERMISSION_PREVIEW;
         }
 
         if (
             $this->hasReadAccessByContext(taoItems_actions_ItemContent::class, 'downloadAsset')
-            && $this->hasReadAccess($resourceUri)
+            && $hasReadAccess
         ) {
             $data[self::DATA_PERMISSIONS][] = self::PERMISSION_DOWNLOAD;
         }
 
+        $hasWriteAccess = $this->hasWriteAccess($resourceUri);
+
         if (
             $this->hasWriteAccessByContext(taoItems_actions_ItemContent::class, 'deleteAsset')
-            && $this->hasWriteAccess($resourceUri)
+            && $hasWriteAccess
         ) {
             $data[self::DATA_PERMISSIONS][] = self::PERMISSION_DELETE;
         }
 
         if (
             $this->hasWriteAccessByContext(taoItems_actions_ItemContent::class, 'uploadAsset')
-            && $this->hasWriteAccess($resourceUri)
+            && $hasWriteAccess
         ) {
             $data[self::DATA_PERMISSIONS][] = self::PERMISSION_UPLOAD;
         }

@@ -22,16 +22,11 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\classes\user;
 
+use oat\taoMediaManager\model\user\TaoAssetRoles as BaseTaoAssetRoles;
+
 /**
  * @deprecated Use \oat\taoMediaManager\model\user\TaoAssetRoles
  */
-interface TaoAssetRoles
+interface TaoAssetRoles extends BaseTaoAssetRoles
 {
-    public const MEDIA_MANAGER = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole';
-    public const ASSET_CLASS_NAVIGATOR = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetClassNavigatorRole';
-    public const ASSET_VIEWER = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetViewerRole';
-    public const ASSET_EXPORTER = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetExporterRole';
-    public const ASSET_PREVIEWER = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetPreviewerRole';
-    public const ASSET_PROPERTIES_EDITOR = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetPropertiesEditorRole';
-    public const ASSET_CONTENT_CREATOR = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetContentCreatorRole';
 }

@@ -84,7 +84,7 @@ class MediaSourcePermissionsMapperTest extends TestCase
                     'DOWNLOAD',
                     'DELETE',
                     'UPLOAD',
-                ]
+                ],
             ],
             $this->subject->map($data, $resourceUri)
         );
@@ -113,10 +113,7 @@ class MediaSourcePermissionsMapperTest extends TestCase
 
         $this->assertEquals(
             [
-                'permissions' => [
-                    'READ',
-                    'WRITE',
-                ]
+                'permissions' => [],
             ],
             $this->subject->map($data, $resourceUri)
         );

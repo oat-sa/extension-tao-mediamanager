@@ -22,8 +22,8 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\mapper;
 
-use oat\tao\model\accessControl\Context;
 use taoItems_actions_ItemContent;
+use oat\tao\model\accessControl\Context;
 use oat\tao\model\accessControl\ActionAccessControl;
 use oat\tao\model\media\mapper\MediaBrowserPermissionsMapper;
 
@@ -40,31 +40,34 @@ class MediaSourcePermissionsMapper extends MediaBrowserPermissionsMapper
     public function map(array $data, string $resourceUri): array
     {
         $data = parent::map($data, $resourceUri);
+        $hasReadAccess = $this->hasReadAccess($resourceUri);
 
         if (
             $this->hasReadAccessByContext(taoItems_actions_ItemContent::class, 'previewAsset')
-            && $this->hasReadAccess($resourceUri)
+            && $hasReadAccess
         ) {
             $data[self::DATA_PERMISSIONS][] = self::PERMISSION_PREVIEW;
         }
 
         if (
             $this->hasReadAccessByContext(taoItems_actions_ItemContent::class, 'downloadAsset')
-            && $this->hasReadAccess($resourceUri)
+            && $hasReadAccess
         ) {
             $data[self::DATA_PERMISSIONS][] = self::PERMISSION_DOWNLOAD;
         }
 
+        $hasWriteAccess = $this->hasWriteAccess($resourceUri);
+
         if (
             $this->hasWriteAccessByContext(taoItems_actions_ItemContent::class, 'deleteAsset')
-            && $this->hasWriteAccess($resourceUri)
+            && $hasWriteAccess
         ) {
             $data[self::DATA_PERMISSIONS][] = self::PERMISSION_DELETE;
         }
 
         if (
             $this->hasWriteAccessByContext(taoItems_actions_ItemContent::class, 'uploadAsset')
-            && $this->hasWriteAccess($resourceUri)
+            && $hasWriteAccess
         ) {
             $data[self::DATA_PERMISSIONS][] = self::PERMISSION_UPLOAD;
         }
@@ -72,13 +75,19 @@ class MediaSourcePermissionsMapper extends MediaBrowserPermissionsMapper
         return $data;
     }
 
+    protected function hasReadAccess(string $uri): bool
+    {
+        return parent::hasReadAccess($uri)
+            && $this->hasReadAccessByContext(taoItems_actions_ItemContent::class, 'viewAsset');
+    }
+
     protected function hasWriteAccess(string $uri): bool
     {
-        $canDelete = $this->getActionAccessControl()->hasWriteAccess(
+        $canDelete = $this->hasWriteAccessByContext(
             taoItems_actions_ItemContent::class,
             'deleteAsset'
         );
-        $canUpload = $this->getActionAccessControl()->hasWriteAccess(
+        $canUpload = $this->hasWriteAccessByContext(
             taoItems_actions_ItemContent::class,
             'uploadAsset'
         );
@@ -98,24 +107,20 @@ class MediaSourcePermissionsMapper extends MediaBrowserPermissionsMapper
     private function hasReadAccessByContext(string $controller, string $action): bool
     {
         return $this->getActionAccessControl()->contextHasReadAccess(
-            new Context(
-                [
-                    Context::PARAM_CONTROLLER => $controller,
-                    Context::PARAM_ACTION => $action,
-                ]
-            )
+            new Context([
+                Context::PARAM_CONTROLLER => $controller,
+                Context::PARAM_ACTION => $action,
+            ])
         );
     }
 
     private function hasWriteAccessByContext(string $controller, string $action): bool
     {
         return $this->getActionAccessControl()->contextHasWriteAccess(
-            new Context(
-                [
-                    Context::PARAM_CONTROLLER => $controller,
-                    Context::PARAM_ACTION => $action,
-                ]
-            )
+            new Context([
+                Context::PARAM_CONTROLLER => $controller,
+                Context::PARAM_ACTION => $action,
+            ])
         );
     }
 }

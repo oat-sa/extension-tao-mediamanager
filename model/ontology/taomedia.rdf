@@ -63,4 +63,63 @@
     <generis:Multiple rdf:resource="http://www.tao.lu/Ontologies/generis.rdf#True"/>
   </rdf:Description>
 
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRole">
+    <rdfs:subClassOf rdf:resource="http://www.tao.lu/Ontologies/generis.rdf#UserRole"/>
+    <rdfs:label xml:lang="en-US"><![CDATA[Asset Role]]></rdfs:label>
+    <rdfs:comment xml:lang="en-US"><![CDATA[Asset Role Class]]></rdfs:comment>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetClassNavigatorRole">
+    <rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRole"/>
+    <rdfs:label xml:lang="en-US"><![CDATA[Asset Class Navigator]]></rdfs:label>
+    <rdfs:comment xml:lang="en-US"><![CDATA[Asset Class Navigator Role]]></rdfs:comment>
+    <generis:includesRole rdf:resource="http://www.tao.lu/Ontologies/TAO.rdf#BackOfficeRole"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetViewerRole">
+    <rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRole"/>
+    <rdfs:label xml:lang="en-US"><![CDATA[Asset Viewer]]></rdfs:label>
+    <rdfs:comment xml:lang="en-US"><![CDATA[Asset Viewer Role]]></rdfs:comment>
+    <generis:includesRole rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetClassNavigatorRole"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetPreviewerRole">
+    <rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRole"/>
+    <rdfs:label xml:lang="en-US"><![CDATA[Asset Previewer]]></rdfs:label>
+    <rdfs:comment xml:lang="en-US"><![CDATA[Asset Previewer Role]]></rdfs:comment>
+    <generis:includesRole rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetViewerRole"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetExporterRole">
+    <rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRole"/>
+    <rdfs:label xml:lang="en-US"><![CDATA[Asset Exporter]]></rdfs:label>
+    <rdfs:comment xml:lang="en-US"><![CDATA[Asset Exporter Role]]></rdfs:comment>
+    <generis:includesRole rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetPreviewerRole"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetPropertiesEditorRole">
+    <rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRole"/>
+    <rdfs:label xml:lang="en-US"><![CDATA[Asset Properties Editor]]></rdfs:label>
+    <rdfs:comment xml:lang="en-US"><![CDATA[Asset Properties Editor Role]]></rdfs:comment>
+    <generis:includesRole rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetViewerRole"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetContentCreatorRole">
+    <rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRole"/>
+    <rdfs:label xml:lang="en-US"><![CDATA[Asset Content Creator]]></rdfs:label>
+    <rdfs:comment xml:lang="en-US"><![CDATA[Asset Content Creator Role]]></rdfs:comment>
+    <generis:includesRole rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetPreviewerRole"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetResourceCreatorRole">
+    <rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRole"/>
+    <rdfs:label xml:lang="en-US"><![CDATA[Asset Resource Creator]]></rdfs:label>
+    <rdfs:comment xml:lang="en-US"><![CDATA[Asset Resource Creator Role]]></rdfs:comment>
+    <generis:includesRole rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetPropertiesEditorRole"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetImporterRole">
+    <rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRole"/>
+    <rdfs:label xml:lang="en-US"><![CDATA[Asset Importer]]></rdfs:label>
+    <rdfs:comment xml:lang="en-US"><![CDATA[Asset Importer Role]]></rdfs:comment>
+    <generis:includesRole rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetResourceCreatorRole"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetDeleterRole">
+    <rdf:type rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRole"/>
+    <rdfs:label xml:lang="en-US"><![CDATA[Asset Deleter]]></rdfs:label>
+    <rdfs:comment xml:lang="en-US"><![CDATA[Asset Deleter Role]]></rdfs:comment>
+    <generis:includesRole rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetPreviewerRole"/>
+  </rdf:Description>
 </rdf:RDF>

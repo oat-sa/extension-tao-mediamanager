@@ -53,7 +53,8 @@ define([
                 icon: 'left',
                 title: __('Back to Manage Assets'),
                 text : __('Manage Assets'),
-                cssClass: 'back-action'
+                cssClass: 'back-action',
+                testId: 'manage-assets'
             })).on('click', function backHandler(e){
                 e.preventDefault();
                 sharedStimulusCreator.trigger('exit');

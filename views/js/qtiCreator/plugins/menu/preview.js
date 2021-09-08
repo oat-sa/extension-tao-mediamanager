@@ -63,19 +63,23 @@ define([
                 });
             });
 
-            //creates the preview button
-            this.$element = $(buttonTpl({
-                icon: 'preview',
-                title: __('Preview the item'),
-                text : __('Preview'),
-                cssClass: 'preview-trigger'
-            })).on('click', e => {
-                $(document).trigger('open-preview.qti-item');
-                e.preventDefault();
-                this.disable();
-                SharedStimulusCreator.trigger('preview', SharedStimulusCreator.getSharedStimulusId());
-                this.enable();
-            });
+            const sharedStimulusConfig = SharedStimulusCreator.getConfig();
+            if (sharedStimulusConfig.properties.previewEnabled) {
+                //creates the preview button
+                this.$element = $(buttonTpl({
+                    icon: 'preview',
+                    title: __('Preview the item'),
+                    text: __('Preview'),
+                    cssClass: 'preview-trigger',
+                    testId: 'preview-the-asset'
+                })).on('click', e => {
+                    $(document).trigger('open-preview.qti-item');
+                    e.preventDefault();
+                    this.disable();
+                    SharedStimulusCreator.trigger('preview', SharedStimulusCreator.getSharedStimulusId());
+                    this.enable();
+                });
+            }
         },
 
         /**

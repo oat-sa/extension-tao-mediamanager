@@ -21,14 +21,14 @@ final class Version202109081901591888_taoMediaManager extends AbstractMigration
     public function up(Schema $schema): void
     {
         $middleware = new ValidateRequestMiddleware();
-        $middleware->setOption(ValidateRequestMiddleware::SCHEMA_MAP, [self::OPENAPI_SPEC_PATH,]);
+        $middleware->setOption(ValidateRequestMiddleware::OPTION_SCHEMA_MAP, [self::OPENAPI_SPEC_PATH,]);
         $this->getServiceManager()->register(ValidateRequestMiddleware::SERVICE_ID, $middleware);
 
         $chainBuilder = $this->getServiceLocator()->get(MiddlewareRequestHandler::SERVICE_ID);
-        $map = $chainBuilder->getOption(MiddlewareRequestHandler::MAP);
+        $map = $chainBuilder->getOption(MiddlewareRequestHandler::OPTION_MAP);
 
         $chainBuilder->setOption(
-            MiddlewareRequestHandler::MAP,
+            MiddlewareRequestHandler::OPTION_MAP,
             array_merge_recursive($map, [
                 '/taoMediaManager/SharedStimulus/patch' => [ValidateRequestMiddleware::SERVICE_ID]
             ])
@@ -41,19 +41,19 @@ final class Version202109081901591888_taoMediaManager extends AbstractMigration
     {
         $middleware = $this->getServiceManager()->get(ValidateRequestMiddleware::SERVICE_ID);
 
-        $map = $middleware->getOption(ValidateRequestMiddleware::SCHEMA_MAP);
+        $map = $middleware->getOption(ValidateRequestMiddleware::OPTION_SCHEMA_MAP);
         if (($key = array_search(self::OPENAPI_SPEC_PATH, $map)) !== false) {
             unset($map[$key]);
         }
-        $middleware->setOption(ValidateRequestMiddleware::SCHEMA_MAP, $map);
+        $middleware->setOption(ValidateRequestMiddleware::OPTION_SCHEMA_MAP, $map);
 
         $this->getServiceManager()->register(ValidateRequestMiddleware::SERVICE_ID, $middleware);
 
         $chainBuilder = $this->getServiceLocator()->get(MiddlewareRequestHandler::SERVICE_ID);
-        $map = $chainBuilder->getOption(MiddlewareRequestHandler::MAP);
+        $map = $chainBuilder->getOption(MiddlewareRequestHandler::OPTION_MAP);
         unset($map['/taoMediaManager/SharedStimulus/patch']);
 
-        $chainBuilder->setOption(MiddlewareRequestHandler::MAP, $map);
+        $chainBuilder->setOption(MiddlewareRequestHandler::OPTION_MAP, $map);
 
         $this->getServiceManager()->register(MiddlewareRequestHandler::SERVICE_ID, $chainBuilder);
     }

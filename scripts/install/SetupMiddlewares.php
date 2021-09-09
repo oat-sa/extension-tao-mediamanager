@@ -1,27 +1,40 @@
 <?php
 
+/**
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; under version 2
+ * of the License (non-upgradable).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * Copyright (c) 2021 (original work) Open Assessment Technologies SA;
+ */
+
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\migrations;
+namespace oat\taoMediaManager\scripts\install;
 
-use Doctrine\DBAL\Schema\Schema;
+use oat\oatbox\extension\InstallAction;
+use oat\oatbox\reporting\Report;
 use oat\tao\model\Middleware\Context\MiddlewareContext;
 use oat\tao\model\Middleware\Context\OpenApiMiddlewareContext;
 use oat\tao\model\Middleware\MiddlewareManager;
 use oat\tao\model\Middleware\MiddlewareRequestHandler;
 use oat\tao\model\Middleware\OpenAPISchemaValidateRequestMiddleware;
-use oat\tao\scripts\tools\migrations\AbstractMigration;
 
-final class Version202109081901591888_taoMediaManager extends AbstractMigration
+class SetupMiddlewares extends InstallAction
 {
     private const OPENAPI_SPEC_PATH = ROOT_PATH . '/taoMediaManager/doc/taoMediaManagerApi.yml';
 
-    public function getDescription(): string
-    {
-        return 'OpenAPI Schema validation middleware registration for SharedStimulus API';
-    }
-
-    public function up(Schema $schema): void
+    public function __invoke($params)
     {
         $openApiMiddleware = $this->getServiceManager()->get(OpenAPISchemaValidateRequestMiddleware::SERVICE_ID)
             ->addSchema($this->getOpenApiMiddlewareContext());
@@ -31,20 +44,8 @@ final class Version202109081901591888_taoMediaManager extends AbstractMigration
 
         $this->getServiceManager()->register(OpenAPISchemaValidateRequestMiddleware::SERVICE_ID, $openApiMiddleware);
         $this->getServiceManager()->register(MiddlewareRequestHandler::SERVICE_ID, $middlewareHandler);
-    }
 
-    public function down(Schema $schema): void
-    {
-        /** @var OpenAPISchemaValidateRequestMiddleware $middleware */
-        $middleware = $this->getServiceManager()->get(OpenAPISchemaValidateRequestMiddleware::SERVICE_ID);
-        $middleware->removeSchema($this->getOpenApiMiddlewareContext());
-
-        /** @var MiddlewareManager $middlewareManager */
-        $middlewareManager = $this->getServiceManager()->get(MiddlewareManager::class);
-        $handler = $middlewareManager->detach($this->getMiddlewareContext())->getMiddlewareHandler();
-
-        $this->getServiceManager()->register(OpenAPISchemaValidateRequestMiddleware::SERVICE_ID, $middleware);
-        $this->getServiceManager()->register(MiddlewareRequestHandler::SERVICE_ID, $handler);
+        return Report::createSuccess('OpenAPIValidationMiddleware successfully installed');
     }
 
     private function getMiddlewareContext(): MiddlewareContext

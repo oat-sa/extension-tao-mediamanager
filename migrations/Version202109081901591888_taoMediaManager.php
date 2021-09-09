@@ -42,7 +42,7 @@ final class Version202109081901591888_taoMediaManager extends AbstractMigration
         $middleware = $this->getServiceManager()->get(ValidateRequestMiddleware::SERVICE_ID);
 
         $map = $middleware->getOption(ValidateRequestMiddleware::SCHEMA_MAP);
-        if (($key = array_search(self::OPENAPI_SPEC_PATH, $map)) !== false) {
+        if (($key = array_search(self::OPENAPI_SPEC_PATH, $map, true)) !== false) {
             unset($map[$key]);
         }
         $middleware->setOption(ValidateRequestMiddleware::SCHEMA_MAP, $map);

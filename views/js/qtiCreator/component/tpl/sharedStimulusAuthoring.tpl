@@ -84,7 +84,7 @@
                                         <button class="icon-eraser reset-button" data-value="color"
                                               aria-label="{{__ 'Remove custom background color'}}"></button>
                                         <button class="color-trigger" id="initial-color" data-value="background-color"
-                                              data-target="body div.qti-item .hashClass table.qti-table th"></button>
+                                              data-target="body div.qti-item .hashClass table th"></button>
                                     </div>
                                 </div>
                             </div>
@@ -174,7 +174,7 @@
                                         <button class="icon-eraser reset-button" data-value="color"
                                               aria-label="{{__ 'Remove custom background color'}}"></button>
                                         <button class="color-trigger" id="initial-color" data-value="background-color"
-                                              data-target="body div.qti-item .custom-text-box.hashClass table.qti-table th"></button>
+                                              data-target="body div.qti-item .custom-text-box.hashClass table th"></button>
                                     </div>
                                 </div>
                             </div>

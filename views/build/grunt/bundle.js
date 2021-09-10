@@ -53,17 +53,17 @@ module.exports = function (grunt) {
                         },
                         {
                             name: 'xincludeRendererAddStyles',
-                            default: true,
+                            bootstrap: true,
                             babel: true,
-                            dependencies: [],
-                            include: ['taoMediaManager/richPassage/xincludeRendererAddStyles']
+                            entryPoint: 'taoMediaManager/richPassage/xincludeRendererAddStyles',
+                            dependencies: []
                         },
                         {
                             name: 'injectStylesInItemData',
-                            default: true,
+                            bootstrap: true,
                             babel: true,
-                            dependencies: [],
-                            include: ['taoMediaManager/richPassage/injectStylesInItemData']
+                            entryPoint: 'taoMediaManager/richPassage/injectStylesInItemData',
+                            dependencies: []
                         }
                     ]
                 }

@@ -56,11 +56,11 @@ describe('Assets', () => {
 
             cy.getSettled(`${selectors.root} a:nth(0)`)
             .click()
-            .wait('@editClassLabel', { requestTimeout: 10000 })
+            .wait('@editClassLabel')
             .addClass(selectors.assetClassForm, selectors.treeRenderUrl, selectors.addSubClassUrl)
             .renameSelectedClass(selectors.assetClassForm, classMovedName);
 
-            cy.wait('@treeRender', { requestTimeout: 10000 });
+            cy.wait('@treeRender');
 
             cy.moveClassFromRoot(
                 selectors.root,

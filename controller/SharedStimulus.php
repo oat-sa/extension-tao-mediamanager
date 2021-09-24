@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2020-2021 (original work) Open Assessment Technologies SA;
  *
  */
 
@@ -24,8 +24,6 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\controller;
 
 use common_session_SessionManager;
-use League\OpenAPIValidation\PSR7\ServerRequestValidator;
-use League\OpenAPIValidation\PSR7\ValidatorBuilder;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\tao\model\accessControl\data\DataAccessControl;
 use oat\tao\model\http\formatter\ResponseFormatter;
@@ -113,7 +111,6 @@ class SharedStimulus extends tao_actions_SaSModule
 
         try {
             $request = $this->getPsrRequest();
-            $this->getValidator()->validate($request);
 
             $user = common_session_SessionManager::getSession()->getUser();
             $id = $request->getQueryParams()['id'];
@@ -187,13 +184,6 @@ class SharedStimulus extends tao_actions_SaSModule
     private function getSharedStimulusAttributesParser(): JsonQtiAttributeParser
     {
         return $this->getServiceLocator()->get(JsonQtiAttributeParser::class);
-    }
-
-    private function getValidator(): ServerRequestValidator
-    {
-        return (new ValidatorBuilder())->fromYamlFile(
-            ROOT_PATH . '/taoMediaManager/doc/taoMediaManagerApi.yml'
-        )->getServerRequestValidator();
     }
 
     private function validateWritePermission(string $resourceId): void

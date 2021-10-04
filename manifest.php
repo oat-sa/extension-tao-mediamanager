@@ -25,6 +25,7 @@ use oat\taoMediaManager\scripts\install\RegisterItemDataHandler;
 use oat\taoMediaManager\model\user\TaoAssetRoles;
 use oat\tao\model\accessControl\func\AccessRule;
 use oat\taoMediaManager\scripts\install\SetRolesPermissions;
+use oat\taoMediaManager\scripts\install\SetupMiddlewares;
 
 $extpath = __DIR__ . DIRECTORY_SEPARATOR;
 $taopath = __DIR__ . DIRECTORY_SEPARATOR . 'tao' . DIRECTORY_SEPARATOR;
@@ -165,6 +166,7 @@ return [
             RegisterXinludeHandler::class,
             RegisterItemDataHandler::class,
             SetRolesPermissions::class,
+            SetupMiddlewares::class,
         ]
     ],
     'update' => 'oat\\taoMediaManager\\scripts\\update\\Updater',

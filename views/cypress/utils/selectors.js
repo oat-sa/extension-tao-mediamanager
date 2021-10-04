@@ -1,16 +1,18 @@
 export default {
+    addSubClassUrl: 'taoMediaManager/MediaManager/addSubClass',
+    assetClassForm: 'form[action="/taoMediaManager/MediaManager/editClassLabel"]',
+
     deleteClass: '[data-context="class"][data-action="deleteSharedStimulus"]',
+    deleteConfirm: 'button[data-control="ok"]',
+    deleteClassUrl: 'taoMediaManager/MediaManager/deleteClass',
+
+    editClassLabelUrl: 'taoMediaManager/MediaManager/editClassLabel',
+
     moveClass: '[id="media-move-to"][data-context="resource"][data-action="moveTo"]',
     moveConfirmSelector: 'button[data-control="ok"]',
-    assetForm: 'form[action="/taoMediaManager/MediaManager/editInstance"]',
-    assetClassForm: 'form[action="/taoMediaManager/MediaManager/editClassLabel"]',
-    deleteConfirm: 'button[data-control="ok"]',
+
     root: '[data-uri="http://www.tao.lu/Ontologies/TAOMedia.rdf#Media"]',
-    editClassLabelUrl: 'taoMediaManager/MediaManager/editClassLabel',
-    editItemUrl: 'taoMediaManager/MediaManager/editItem',
-    treeRenderUrl: 'taoMediaManager/MediaManager',
-    addSubClassUrl: 'taoMediaManager/MediaManager/addSubClass',
     restResourceGetAll: 'tao/RestResource/getAll',
-    resourceRelations: 'tao/ResourceRelations',
-    deleteClassUrl: 'taoMediaManager/MediaManager/deleteClass',
+
+    treeRenderUrl: 'taoMediaManager/MediaManager',
 };

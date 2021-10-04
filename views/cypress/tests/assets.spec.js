@@ -28,15 +28,12 @@ describe('Assets', () => {
      * After @treeRender click root class
      */
     before(() => {
-        cy.loginAsAdmin();
-        cy.intercept('GET', `**/${ selectors.treeRenderUrl }/getOntologyData**`).as('treeRender');
-        cy.intercept('POST', `**/${ selectors.editClassLabelUrl }`).as('editClassLabel');
-        cy.visit(urls.assets);
-        cy.wait('@treeRender', { requestTimeout: 10000 });
-        cy.get(`${selectors.root} a`)
-            .first()
-            .click();
-        cy.wait('@editClassLabel', { requestTimeout: 10000 });
+        cy.setup(
+            selectors.treeRenderUrl,
+            selectors.editClassLabelUrl,
+            urls.assets,
+            selectors.root
+        );
     });
 
     /**
@@ -59,11 +56,9 @@ describe('Assets', () => {
 
             cy.getSettled(`${selectors.root} a:nth(0)`)
             .click()
-            .wait('@editClassLabel', { requestTimeout: 10000 })
+            .wait('@editClassLabel')
             .addClass(selectors.assetClassForm, selectors.treeRenderUrl, selectors.addSubClassUrl)
             .renameSelectedClass(selectors.assetClassForm, classMovedName);
-
-            cy.wait('@treeRender', { requestTimeout: 10000 });
 
             cy.moveClassFromRoot(
                 selectors.root,

@@ -47,7 +47,8 @@ define([
                 ),
                 short: __('Block'),
                 qtiClass: '_container',
-                tags: [tagTitles.inlineInteractions, 'text']
+                tags: [tagTitles.inlineInteractions, 'text'],
+                group:  __('inline-interactions')
             }
         };
 

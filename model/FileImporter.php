@@ -113,7 +113,7 @@ class FileImporter implements
                         $classUri,
                         \tao_helpers_Uri::decode($form instanceof Form ? $form->getValue('lang') : $form['lang']),
                         $fileInfo['name'],
-                        null,
+                        SharedStimulusImporter::isValidSharedStimulus($uploadedFile) ? 'application/qti+xml' : null,
                         $userId
                     );
 

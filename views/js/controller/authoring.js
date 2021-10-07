@@ -46,7 +46,7 @@ define([
 
             request(assetDataUrl, { id : assetId })
                 .then(response => {
-                    if (response.permissions === 'READ') {
+                    if (response.permissions.includes('READ')) {
                         previewEnabled = true;
                     }
                 }).then(() => {

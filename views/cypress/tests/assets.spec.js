@@ -56,7 +56,7 @@ describe('Assets', () => {
         it('can create and rename an Asset', function () {
             cy.selectNode(selectors.root, selectors.assetClassForm, className)
             .addNode(selectors.assetForm, selectors.addAsset)
-            .renameSelectedNode(selectors.assetForm, selectors.editAssetUrl,AssetRenamed );
+            .renameSelectedNode(selectors.assetForm, selectors.editAssetUrl, AssetRenamed );
         });
         it('can click passage Authoring & check all blocks present', function () {
             cy.get(selectors.authoringAsset).click();

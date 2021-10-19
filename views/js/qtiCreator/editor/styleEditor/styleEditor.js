@@ -64,6 +64,16 @@ define([
     const hashClassSelector = 'hashClass';
     const taoHashClassPrefix = 'tao-';
     let hashClass = '';
+    const defaultPassageStyles = {
+        'font-size': 'initial',
+        'font-family': 'initial',
+        'background-color': 'white',
+        padding: 'initial',
+        'border-color': 'initial',
+        'border-width': 'initial',
+        'border-style': 'initial',
+        color: 'initial'
+    };
 
     // stylesheet as object
     let style = {},
@@ -347,6 +357,8 @@ define([
      */
     const removeOrphanedStylesheets = function () {
         $('link[data-serial]').remove();
+        $('style#item-editor-user-styles').empty();
+        customStylesheet = null;
     };
 
     /**
@@ -417,6 +429,19 @@ define([
         return selector.replace(hashClassSelector, hashClass);
     };
 
+    /**
+     * Set default passage style to isolate passage from item's style if no custom styles
+     * @param {String} passageHashClass
+     */
+    const addDefaultPassageStyles = function (passageHashClass) {
+        const selector = `body div.qti-item .${passageHashClass}`;
+        _.forEach(defaultPassageStyles, (value1, key1) => {
+            if (!style[selector] || !style[selector][key1]) {
+                apply(selector, key1, value1);
+            }
+        });
+    };
+
     return {
         apply: apply,
         save: save,
@@ -430,6 +455,7 @@ define([
         getHashClass: getHashClass,
         setHashClass: setHashClass,
         generateHashClass: generateHashClass,
-        replaceHashClass: replaceHashClass
+        replaceHashClass: replaceHashClass,
+        addDefaultPassageStyles: addDefaultPassageStyles
     };
 });

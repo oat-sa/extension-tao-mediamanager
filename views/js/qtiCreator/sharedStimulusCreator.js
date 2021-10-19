@@ -168,10 +168,8 @@ define([
                  */
                 this.on('save', silent => {
                     const item = this.getItem();
-                    const styles = styleEditor.getStyle();
-                    if (_.size(styles) && !item.attributes.class) {
-                        item.attributes.class = this.hashClass;
-                    }
+                    item.attributes.class = this.hashClass;
+                    styleEditor.addDefaultPassageStyles(this.hashClass);
 
                     const xml = xmlNsHandler.restoreNs(xmlRenderer.render(item), item.getNamespaces());
 
@@ -312,10 +310,14 @@ define([
 
                                 widget = item.data('widget');
 
-                                item.attributes.class
-                                    ? styleEditor.setHashClass(item.attributes.class)
-                                    : styleEditor.generateHashClass();
-                                sharedStimulusCreator.hashClass = styleEditor.getHashClass();
+                                if(item.attributes.class) {
+                                    styleEditor.setHashClass(item.attributes.class);
+                                    sharedStimulusCreator.hashClass = item.attributes.class;
+                                } else {
+                                    styleEditor.generateHashClass();
+                                    sharedStimulusCreator.hashClass = styleEditor.getHashClass();
+                                    styleEditor.addDefaultPassageStyles(sharedStimulusCreator.hashClass);
+                                }
                                 // set class on container for style editor
                                 widget.$container.find('.qti-itemBody').addClass(sharedStimulusCreator.hashClass);
 

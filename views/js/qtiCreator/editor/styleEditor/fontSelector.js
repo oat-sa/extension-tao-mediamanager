@@ -43,7 +43,8 @@ define([
      * fontSelector();
      */
     const fontSelector = function ($container) {
-        const $selector = $container.find('select#item-editor-font-selector'),
+        const selector = 'select#item-editor-font-selector',
+            $selector = $container.find(selector),
             target = styleEditor.replaceHashClass($selector.data('target')),
             $target = $(target),
             normalize = function (font) {
@@ -68,7 +69,7 @@ define([
             },
             reset = function () {
                 styleEditor.apply(target, 'font-family');
-                $selector.select2('val', $target.css('font-family'));
+                $selector.select2('val', '');
             };
         let applyToStylesEditor = true;
 
@@ -114,9 +115,8 @@ define([
          */
         $(document).on('customcssloaded.styleeditor', function (e, style) {
             if (style[target] && style[target]['font-family']) {
-                $selector.val(style[target]['font-family']);
-            } else {
-                $selector.val($target.css('font-family'));
+                $selector.select2('val', style[target]['font-family']);
+                $(`${selector} option:selected`).first().attr('selected', 'selected');
             }
             applyToStylesEditor = false;
             $selector.trigger('change');

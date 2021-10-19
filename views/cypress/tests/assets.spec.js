@@ -22,6 +22,7 @@ import selectors from '../utils/selectors';
 describe('Assets', () => {
     const className = 'Asset E2E class';
     const classMovedName = 'Asset E2E class Moved';
+    const AssetRenamed = 'Renamed E2E Asset';
 
     /**
      * Log in and wait for render
@@ -39,7 +40,7 @@ describe('Assets', () => {
     /**
      * Assets
      */
-    describe('Asset creation, editing and deletion', () => {
+    describe('Asset class creation and editing', () => {
         it('can create a new asset class', function () {
             cy.addClassToRoot(
                 selectors.root,
@@ -50,15 +51,42 @@ describe('Assets', () => {
                 selectors.addSubClassUrl
             );
         });
+    });
+    describe('Asset creating, authoring and deletion', () => {
+        it('can create and rename an Asset', function () {
+            cy.selectNode(selectors.root, selectors.assetClassForm, className)
+            .addNode(selectors.assetForm, selectors.addAsset)
+            .renameSelectedNode(selectors.assetForm, selectors.editAssetUrl, AssetRenamed );
+        });
+        it('can click passage Authoring & check all blocks present', function () {
+            cy.get(selectors.authoringAsset).click();
+            cy.get(selectors.assetAuthoringPanel).find('li[data-qti-class="_container"]');
+            cy.getSettled(selectors.assetAuthoringCanvas).should('have.length', 1);
+        });
+        it('can go back', function () {
+            cy.get(selectors.manageAssets).click();
+            cy.getSettled(selectors.treeMediaManager).find(`li[title="${AssetRenamed}"]`);
+        });
+        it('can delete passage', function () {
+            cy.get(`li[title="${AssetRenamed}"]`)
+            .deleteNode(
+                selectors.root,
+                selectors.deleteAsset,
+                selectors.editAssetUrl,
+                AssetRenamed
+            );
+        });
+    });
 
+    describe('Moving and deleting asset class', function () {
         it('can move asset class', function () {
             cy.intercept('POST', `**/${ selectors.editClassLabelUrl }`).as('editClassLabel');
 
             cy.getSettled(`${selectors.root} a:nth(0)`)
-            .click()
-            .wait('@editClassLabel')
-            .addClass(selectors.assetClassForm, selectors.treeRenderUrl, selectors.addSubClassUrl)
-            .renameSelectedClass(selectors.assetClassForm, classMovedName);
+                .click()
+                .wait('@editClassLabel')
+                .addClass(selectors.assetClassForm, selectors.treeRenderUrl, selectors.addSubClassUrl)
+                .renameSelectedClass(selectors.assetClassForm, classMovedName);
 
             cy.moveClassFromRoot(
                 selectors.root,

@@ -1,4 +1,5 @@
 define([
+    'jquery',
     'taoQtiItem/qtiCreator/widgets/states/factory',
     'taoMediaManager/qtiCreator/widgets/static/states/Active',
     'taoMediaManager/qtiCreator/editor/ckEditor/htmlEditor',
@@ -10,6 +11,7 @@ define([
     'taoMediaManager/qtiCreator/editor/styleEditor/colorSelector',
     'taoMediaManager/qtiCreator/editor/styleEditor/fontSizeChanger'
 ], function (
+    $,
     stateFactory,
     Active,
     htmlEditor,

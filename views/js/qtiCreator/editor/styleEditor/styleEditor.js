@@ -65,14 +65,10 @@ define([
     const taoHashClassPrefix = 'tao-';
     let hashClass = '';
     const defaultPassageStyles = {
-        'font-size': 'initial',
-        'font-family': 'initial',
+        'font-size': null,
+        'font-family': null,
         'background-color': 'white',
-        padding: 'initial',
-        'border-color': 'initial',
-        'border-width': 'initial',
-        'border-style': 'initial',
-        color: 'initial'
+        color: null
     };
 
     // stylesheet as object
@@ -435,9 +431,13 @@ define([
      */
     const addDefaultPassageStyles = function (passageHashClass) {
         const selector = `body div.qti-item .${passageHashClass}`;
-        _.forEach(defaultPassageStyles, (value1, key1) => {
-            if (!style[selector] || !style[selector][key1]) {
-                apply(selector, key1, value1);
+        _.forEach(defaultPassageStyles, (value, key) => {
+            if (!value) {
+                const computedStyle = window.getComputedStyle(document.querySelector(selector), null);
+                value = computedStyle.getPropertyValue(key);
+            }
+            if (!style[selector] || !style[selector][key]) {
+                apply(selector, key, value);
             }
         });
     };

@@ -169,6 +169,7 @@ define([
                 this.on('save', silent => {
                     const item = this.getItem();
                     item.attributes.class = this.hashClass;
+                    // if some styles was reseted
                     styleEditor.addDefaultPassageStyles(this.hashClass);
 
                     const xml = xmlNsHandler.restoreNs(xmlRenderer.render(item), item.getNamespaces());
@@ -316,10 +317,11 @@ define([
                                 } else {
                                     styleEditor.generateHashClass();
                                     sharedStimulusCreator.hashClass = styleEditor.getHashClass();
-                                    styleEditor.addDefaultPassageStyles(sharedStimulusCreator.hashClass);
                                 }
                                 // set class on container for style editor
+                                // add default styles to scope passage styles
                                 widget.$container.find('.qti-itemBody').addClass(sharedStimulusCreator.hashClass);
+                                styleEditor.addDefaultPassageStyles(sharedStimulusCreator.hashClass);
 
                                 propertiesPanel(areaBroker.getPropertyPanelArea(), widget, config.properties);
 

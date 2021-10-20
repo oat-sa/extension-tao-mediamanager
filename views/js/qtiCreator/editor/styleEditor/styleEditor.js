@@ -64,12 +64,6 @@ define([
     const hashClassSelector = 'hashClass';
     const taoHashClassPrefix = 'tao-';
     let hashClass = '';
-    const defaultPassageStyles = {
-        'font-size': null,
-        'font-family': null,
-        'background-color': 'white',
-        color: null
-    };
 
     // stylesheet as object
     let style = {},
@@ -425,23 +419,6 @@ define([
         return selector.replace(hashClassSelector, hashClass);
     };
 
-    /**
-     * Set default passage style to isolate passage from item's style if no custom styles
-     * @param {String} passageHashClass
-     */
-    const addDefaultPassageStyles = function (passageHashClass) {
-        const selector = `body div.qti-item .${passageHashClass}`;
-        _.forEach(defaultPassageStyles, (value, key) => {
-            if (!value) {
-                const computedStyle = window.getComputedStyle(document.querySelector(selector), null);
-                value = computedStyle.getPropertyValue(key);
-            }
-            if (!style[selector] || !style[selector][key]) {
-                apply(selector, key, value);
-            }
-        });
-    };
-
     return {
         apply: apply,
         save: save,
@@ -455,7 +432,6 @@ define([
         getHashClass: getHashClass,
         setHashClass: setHashClass,
         generateHashClass: generateHashClass,
-        replaceHashClass: replaceHashClass,
-        addDefaultPassageStyles: addDefaultPassageStyles
+        replaceHashClass: replaceHashClass
     };
 });

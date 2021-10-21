@@ -344,6 +344,8 @@ define([
             destroy() {
                 $(document).off('.qti-widget');
 
+                styleEditor.clearCache();
+
                 pluginRun('destroy')
                     .then(() => qtiCreatorContext.destroy())
                     .then(() => {

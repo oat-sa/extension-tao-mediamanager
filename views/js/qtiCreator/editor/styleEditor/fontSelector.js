@@ -41,12 +41,13 @@ define([
      *
      * The function is called like this:
      * fontSelector();
+     *
+     * @param {JQuery} $container
      */
     const fontSelector = function ($container) {
         const selector = 'select#item-editor-font-selector',
             $selector = $container.find(selector),
             target = styleEditor.replaceHashClass($selector.data('target')),
-            $target = $(target),
             normalize = function (font) {
                 return font.replace(/"/g, "'").replace(/, /g, ',');
             },
@@ -76,6 +77,10 @@ define([
         $selector.empty();
         $selector.append(`<option value="">${__('Default')}</option>`);
 
+        // initiate font family for Block
+        const styles = styleEditor.getStyle() || {};
+        const selectedFontFamily = styles[target] && styles[target]['font-family'] && clean(styles[target]['font-family']);
+
         _.forEach(fontStacks, (value, key) => {
             const optGroup = $('<optgroup>', { label: toLabel(key) });
             _.forEach(value, font => {
@@ -86,7 +91,7 @@ define([
                 }).css({
                     fontFamily: normalizeFont
                 });
-                if (clean(normalizeFont) === clean($target.css('font-family'))) {
+                if (clean(normalizeFont) === selectedFontFamily) {
                     option.attr('selected', true);
                 }
                 optGroup.append(option);

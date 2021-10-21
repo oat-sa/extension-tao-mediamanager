@@ -34,9 +34,16 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
             itemSelector = styleEditor.replaceHashClass($fontSizeChanger.data('target')),
             $resetBtn = $fontSizeChanger.parents('.reset-group').find('[data-role="font-size-reset"]'),
             $input = $container.find('.item-editor-font-size-text');
-        let itemFontSize = parseInt($(itemSelector).children().first().css('font-size') || $(itemSelector).css('font-size'), 10);
-        $input.val(itemFontSize);
+        let itemFontSize = parseInt($(itemSelector).css('font-size'), 10);
 
+        // initiate font-size for Block
+        const styles = styleEditor.getStyle() || {};
+        if (styles[itemSelector] && styles[itemSelector]['font-size']) {
+            itemFontSize = parseInt(styles[itemSelector]['font-size'], 10);
+            $input.val(itemFontSize);
+        } else {
+            $input.val('');
+        }
         /**
          * Writes new font size to virtual style sheet
          */
@@ -94,8 +101,8 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
          */
         $resetBtn.off('click').on('click', function () {
             styleEditor.apply(itemSelector, 'font-size');
-            itemFontSize = parseInt($(itemSelector).children().first().css('font-size'), 10);
-            $input.val(itemFontSize);
+            $input.val('');
+            itemFontSize = parseInt($(itemSelector).css('font-size'), 10);
         });
 
         /**
@@ -103,8 +110,10 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
          */
         $(document).on('customcssloaded.styleeditor', function (e, style) {
             if (style[itemSelector] && style[itemSelector]['font-size']) {
-                $input.val(parseInt(style[itemSelector]['font-size'], 10));
                 itemFontSize = parseInt(style[itemSelector]['font-size'], 10);
+                $input.val(itemFontSize);
+            } else {
+                $input.val('');
             }
         });
     };

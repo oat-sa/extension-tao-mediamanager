@@ -24,12 +24,14 @@ namespace oat\taoMediaManager\controller;
 
 use oat\tao\model\http\ContentDetector;
 use oat\tao\model\accessControl\Context;
+use oat\oatbox\validator\ValidatorInterface;
 use oat\taoMediaManager\model\editInstanceForm;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use tao_helpers_form_FormContainer as FormContainer;
 use tao_models_classes_FileNotFoundException;
+use oat\tao\model\Lists\Business\Validation\DependsOnPropertyValidator;
 
 class MediaManager extends \tao_actions_SaSModule
 {
@@ -63,6 +65,11 @@ class MediaManager extends \tao_actions_SaSModule
                         Context::PARAM_ACTION => 'editMedia',
                     ])
                 ),
+                FormContainer::ATTRIBUTE_VALIDATORS => [
+                    'data-depends-on-property' => [
+                        $this->getDependsOnPropertyValidator(),
+                    ],
+                ],
             ]
         );
 
@@ -196,5 +203,10 @@ class MediaManager extends \tao_actions_SaSModule
     protected function getClassService()
     {
         return $this->getServiceLocator()->get(MediaService::class);
+    }
+
+    private function getDependsOnPropertyValidator(): ValidatorInterface
+    {
+        return $this->getPsrContainer()->get(DependsOnPropertyValidator::class);
     }
 }

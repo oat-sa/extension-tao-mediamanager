@@ -1,40 +1,41 @@
 {
-	"name": "oat-sa/extension-tao-mediamanager",
-		"description" : "extension to manage media in TAO",
-		"support": {
-			"forum": "http://forum.taotesting.com",
-			"issues": "http://forge.taotesting.com"
-		},
-		"type" : "tao-extension",
-		"authors" : [
-		{
-			"name": "Open Assessment Technologies"
-		}],
-		"keywords" : [
-			"tao",
-		"computer-based-assessment"
-			],
-		"homepage" : "http://www.taotesting.com",
-		"license" : [
-			"GPL-2.0-only"
-			],
-		"extra" : {
-			"tao-extension-name" : "taoMediaManager"
-		},
-		"minimum-stability" : "dev",
-		"require": {
-			"oat-sa/oatbox-extension-installer": "~1.1||dev-master",
-			"oat-sa/lib-generis-search": "2.1.2",
-			"oat-sa/generis" : ">=14.0.0",
-			"oat-sa/tao-core" : ">=48.35.0",
-			"oat-sa/extension-tao-item" : ">=11.13.4",
-			"oat-sa/extension-tao-itemqti" : ">=28.8.0",
-			"oat-sa/extension-tao-test" : ">=15.0.0",
-			"oat-sa/extension-tao-testqti-previewer" : "*"
-		},
-		"autoload" : {
-			"psr-4" : {
-				"oat\\taoMediaManager\\" : ""
-			}
-		}
+    "name": "oat-sa/extension-tao-mediamanager",
+    "description": "extension to manage media in TAO",
+    "support": {
+        "forum": "http://forum.taotesting.com",
+        "issues": "http://forge.taotesting.com"
+    },
+    "type": "tao-extension",
+    "authors": [
+        {
+            "name": "Open Assessment Technologies"
+        }
+    ],
+    "keywords": [
+        "tao",
+        "computer-based-assessment"
+    ],
+    "homepage": "http://www.taotesting.com",
+    "license": [
+        "GPL-2.0-only"
+    ],
+    "extra": {
+        "tao-extension-name": "taoMediaManager"
+    },
+    "minimum-stability": "dev",
+    "require": {
+        "oat-sa/oatbox-extension-installer": "~1.1||dev-master",
+        "oat-sa/lib-generis-search": "2.1.2",
+        "oat-sa/generis": ">=14.0.0",
+        "oat-sa/tao-core": ">=48.45.0",
+        "oat-sa/extension-tao-item": ">=11.13.4",
+        "oat-sa/extension-tao-itemqti": ">=28.8.0",
+        "oat-sa/extension-tao-test": ">=15.0.0",
+        "oat-sa/extension-tao-testqti-previewer": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "oat\\taoMediaManager\\": ""
+        }
+    }
 }

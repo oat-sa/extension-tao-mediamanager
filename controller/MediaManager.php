@@ -55,9 +55,12 @@ class MediaManager extends \tao_actions_SaSModule
         $editAllowed = $this->isAllowedToEdit($instance);
         $myFormContainer = $this->getFormInstance($instance, $editAllowed);
         $myForm = $myFormContainer->getForm();
-        $isSaving = ($myForm->isSubmited() && $myForm->isValid());
 
-        if ($this->isAllowedToReplaceMedia($editAllowed) && $isSaving) {
+        if (
+            $this->isAllowedToReplaceMedia($editAllowed)
+            && $myForm->isSubmited()
+            && $myForm->isValid()
+        ) {
             $binder = new \tao_models_classes_dataBinding_GenerisFormDataBinder($instance);
             $instance = $binder->bind($myForm->getValues());
 

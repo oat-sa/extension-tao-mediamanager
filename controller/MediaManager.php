@@ -89,7 +89,7 @@ class MediaManager extends \tao_actions_SaSModule
             $fileInfo = $mediaSource->getFileInfo($uri);
 
             $mimeType = $fileInfo['mime'];
-            $xml = in_array($mimeType, self::ALLOWED_TYPES,true);
+            $xml = in_array($mimeType, self::ALLOWED_TYPES, true);
         } catch (tao_models_classes_FileNotFoundException $e) {
             $this->setData('error', __('No file found for this media'));
         }

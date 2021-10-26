@@ -32,10 +32,11 @@ use oat\taoMediaManager\model\fileManagement\FileManagement;
 use tao_helpers_form_FormContainer as FormContainer;
 use tao_models_classes_FileNotFoundException;
 use oat\tao\model\Lists\Business\Validation\DependsOnPropertyValidator;
+use core_kernel_classes_Resource;
 
 class MediaManager extends \tao_actions_SaSModule
 {
-    private static $allowedTypes = [
+    private const allowedTypes = [
         'application/xml',
         'text/xml',
         MediaService::SHARED_STIMULUS_MIME_TYPE
@@ -85,7 +86,7 @@ class MediaManager extends \tao_actions_SaSModule
             $fileInfo = $mediaSource->getFileInfo($uri);
 
             $mimeType = $fileInfo['mime'];
-            $xml = in_array($mimeType, self::$allowedTypes,true);
+            $xml = in_array($mimeType, self::allowedTypes,true);
         } catch (tao_models_classes_FileNotFoundException $e) {
             $this->setData('error', __('No file found for this media'));
         }
@@ -168,7 +169,7 @@ class MediaManager extends \tao_actions_SaSModule
         return $this->getServiceLocator()->get(MediaService::class);
     }
 
-    protected function isAllowedToEdit(\core_kernel_classes_Resource $instance): bool
+    protected function isAllowedToEdit(core_kernel_classes_Resource $instance): bool
     {
         $editContext = new Context([
             Context::PARAM_CONTROLLER => self::class,

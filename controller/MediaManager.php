@@ -212,12 +212,12 @@ class MediaManager extends \tao_actions_SaSModule
         );
     }
 
-    protected function isAllowedToReplaceMedia(bool $editAllowed) : bool
+    protected function isAllowedToReplaceMedia(bool $editAllowed): bool
     {
         return $editAllowed && $this->isAllowedToEditMedia();
     }
 
-    protected function isAllowedToEditMedia() : bool
+    protected function isAllowedToEditMedia(): bool
     {
         $editContext = new Context([
             Context::PARAM_CONTROLLER => MediaImport::class,
@@ -227,7 +227,7 @@ class MediaManager extends \tao_actions_SaSModule
         return $this->hasWriteAccessByContext($editContext);
     }
 
-    protected function isAllowedToPreview() : bool
+    protected function isAllowedToPreview(): bool
     {
         $previewContext = new Context([
             Context::PARAM_CONTROLLER => self::class,

@@ -189,21 +189,24 @@ class MediaManager extends \tao_actions_SaSModule
         return $this->getRequest()->getParameter('uri');
     }
 
-    protected function getFormInstance(\core_kernel_classes_Resource $instance,
-                                       bool $editAllowed) : editInstanceForm
-    {
-        $options = [
-            FormContainer::CSRF_PROTECTION_OPTION => true,
-            FormContainer::IS_DISABLED => !$editAllowed,
-            editInstanceForm::IS_REPLACE_ASSET_DISABLED => !$this->isAllowedToReplaceMedia($editAllowed),
-            FormContainer::ATTRIBUTE_VALIDATORS => [
-                'data-depends-on-property' => [
-                    $this->getDependsOnPropertyValidator(),
+    protected function getFormInstance(
+        core_kernel_classes_Resource $instance,
+        bool $editAllowed
+    ) : editInstanceForm {
+        return new editInstanceForm(
+            $this->getCurrentClass(), 
+            $instance, 
+            [
+                FormContainer::CSRF_PROTECTION_OPTION => true,
+                FormContainer::IS_DISABLED => !$editAllowed,
+                editInstanceForm::IS_REPLACE_ASSET_DISABLED => !$this->isAllowedToReplaceMedia($editAllowed),
+                FormContainer::ATTRIBUTE_VALIDATORS => [
+                    'data-depends-on-property' => [
+                        $this->getDependsOnPropertyValidator(),
+                    ],
                 ],
-            ],
-        ];
-
-        return new editInstanceForm($this->getCurrentClass(), $instance, $options);
+            ]
+        );
     }
 
     protected function isAllowedToReplaceMedia(bool $editAllowed) : bool

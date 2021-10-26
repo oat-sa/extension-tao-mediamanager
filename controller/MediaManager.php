@@ -186,8 +186,8 @@ class MediaManager extends \tao_actions_SaSModule
 
     protected function getMediaUri()
     {
-        if($this->hasRequestParameter('id')) {
-            return  $this->getRequest()->getParameter('id');
+        if ($this->hasRequestParameter('id')) {
+            return $this->getRequest()->getParameter('id');
         }
 
         return $this->getRequest()->getParameter('uri');

@@ -171,7 +171,7 @@ class MediaManager extends \tao_actions_SaSModule
         return $this->getServiceLocator()->get(MediaService::class);
     }
 
-    protected function isAllowedToEdit(core_kernel_classes_Resource $instance): bool
+    private function isAllowedToEdit(core_kernel_classes_Resource $instance): bool
     {
         $editContext = new Context([
             Context::PARAM_CONTROLLER => self::class,
@@ -183,7 +183,7 @@ class MediaManager extends \tao_actions_SaSModule
             && $this->hasWriteAccessByContext($editContext);
     }
 
-    protected function getMediaUri()
+    private function getMediaUri()
     {
         if ($this->hasRequestParameter('id')) {
             return $this->getRequest()->getParameter('id');
@@ -192,7 +192,7 @@ class MediaManager extends \tao_actions_SaSModule
         return $this->getRequest()->getParameter('uri');
     }
 
-    protected function getFormInstance(
+    private function getFormInstance(
         core_kernel_classes_Resource $instance,
         bool $editAllowed
     ) : editInstanceForm {
@@ -212,12 +212,12 @@ class MediaManager extends \tao_actions_SaSModule
         );
     }
 
-    protected function isAllowedToReplaceMedia(bool $editAllowed): bool
+    private function isAllowedToReplaceMedia(bool $editAllowed): bool
     {
         return $editAllowed && $this->isAllowedToEditMedia();
     }
 
-    protected function isAllowedToEditMedia(): bool
+    private function isAllowedToEditMedia(): bool
     {
         $editContext = new Context([
             Context::PARAM_CONTROLLER => MediaImport::class,
@@ -227,7 +227,7 @@ class MediaManager extends \tao_actions_SaSModule
         return $this->hasWriteAccessByContext($editContext);
     }
 
-    protected function isAllowedToPreview(): bool
+    private function isAllowedToPreview(): bool
     {
         $previewContext = new Context([
             Context::PARAM_CONTROLLER => self::class,

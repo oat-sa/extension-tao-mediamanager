@@ -183,7 +183,7 @@ class MediaManager extends \tao_actions_SaSModule
             && $this->hasWriteAccessByContext($editContext);
     }
 
-    private function getMediaUri()
+    private function getMediaUri(): string
     {
         if ($this->hasRequestParameter('id')) {
             return $this->getRequest()->getParameter('id');

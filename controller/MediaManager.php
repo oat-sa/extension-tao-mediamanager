@@ -35,6 +35,12 @@ use oat\tao\model\Lists\Business\Validation\DependsOnPropertyValidator;
 
 class MediaManager extends \tao_actions_SaSModule
 {
+    private static $allowedTypes = [
+        'application/xml',
+        'text/xml',
+        MediaService::SHARED_STIMULUS_MIME_TYPE
+    ];
+
     /**
      * Show the form to edit an instance, show also a preview of the media
      *
@@ -44,93 +50,48 @@ class MediaManager extends \tao_actions_SaSModule
     {
         $this->defaultData();
 
-        $clazz = $this->getCurrentClass();
         $instance = $this->getCurrentInstance();
-
-        $hasWriteAccess = $this->hasWriteAccess($instance->getUri())
-            && $this->hasWriteAccessByContext(new Context([
-                Context::PARAM_CONTROLLER => self::class,
-                Context::PARAM_ACTION => __FUNCTION__,
-            ]));
-
-        $myFormContainer = new editInstanceForm(
-            $clazz,
-            $instance,
-            [
-                FormContainer::CSRF_PROTECTION_OPTION => true,
-                FormContainer::IS_DISABLED => !$hasWriteAccess,
-                editInstanceForm::IS_REPLACE_ASSET_DISABLED => !$this->hasWriteAccessByContext(
-                    new Context([
-                        Context::PARAM_CONTROLLER => MediaImport::class,
-                        Context::PARAM_ACTION => 'editMedia',
-                    ])
-                ),
-                FormContainer::ATTRIBUTE_VALIDATORS => [
-                    'data-depends-on-property' => [
-                        $this->getDependsOnPropertyValidator(),
-                    ],
-                ],
-            ]
-        );
-
+        $editAllowed = $this->isAllowedToEdit($instance);
+        $myFormContainer = $this->getFormInstance($instance, $editAllowed);
         $myForm = $myFormContainer->getForm();
+        $isSaving = ($myForm->isSubmited() && $myForm->isValid());
 
-        if ($hasWriteAccess && $myForm->isSubmited() && $myForm->isValid()) {
-            $values = $myForm->getValues();
-            // save properties
+        if ($this->isAllowedToReplaceMedia($editAllowed) && $isSaving) {
             $binder = new \tao_models_classes_dataBinding_GenerisFormDataBinder($instance);
-            $instance = $binder->bind($values);
-            $message = __('Instance saved');
+            $instance = $binder->bind($myForm->getValues());
 
-            $this->setData('message', $message);
+            $this->setData('message', __('Instance saved'));
             $this->setData('reload', true);
         }
 
-        $this->setData(
-            'isPreviewEnabled',
-            $this->hasReadAccessByContext(
-                new Context([
-                    Context::PARAM_CONTROLLER => self::class,
-                    Context::PARAM_ACTION => 'isPreviewEnabled',
-                ])
-            )
-        );
+        $this->setData('isPreviewEnabled', $this->isAllowedToPreview());
         $this->setData('formTitle', __('Edit Instance'));
         $this->setData('myForm', $myForm->render());
 
-        try {
-            $uri = $this->hasRequestParameter('id')
-                ? $this->getRequestParameter('id')
-                : $this->getRequestParameter('uri');
+        $uri = $this->getMediaUri();
+        $url = \tao_helpers_Uri::url(
+            'getFile',
+            'MediaManager',
+            'taoMediaManager',
+            [
+                'uri' => $uri,
+            ]
+        );
 
-            $mediaSource = new MediaSource([]);
+        $this->setData('fileurl', $url);
+
+        try {
+            $mediaSource = new MediaSource();
             $fileInfo = $mediaSource->getFileInfo($uri);
 
             $mimeType = $fileInfo['mime'];
-            $xml = in_array(
-                $mimeType,
-                [
-                    'application/xml',
-                    'text/xml',
-                    MediaService::SHARED_STIMULUS_MIME_TYPE
-                ],
-                true
-            );
-            $url = \tao_helpers_Uri::url(
-                'getFile',
-                'MediaManager',
-                'taoMediaManager',
-                [
-                    'uri' => $uri,
-                ]
-            );
+            $xml = in_array($mimeType, self::$allowedTypes,true);
         } catch (tao_models_classes_FileNotFoundException $e) {
             $this->setData('error', __('No file found for this media'));
         }
 
-        $this->setData('xml', $xml);
-        $this->setData('fileurl', $url);
-        $this->setData('mimeType', $mimeType);
+        $this->setData('xml', $xml ?? null);
+        $this->setData('mimeType', $mimeType ?? null);
         $this->setView('form.tpl');
     }
 
@@ -145,6 +106,7 @@ class MediaManager extends \tao_actions_SaSModule
         if (!$this->hasGetParameter('uri')) {
             throw new \common_exception_Error('invalid media identifier');
         }
+
         $uri = urldecode($this->getGetParameter('uri'));
 
         $mediaSource = new MediaSource([]);
@@ -152,6 +114,7 @@ class MediaManager extends \tao_actions_SaSModule
 
         $fileManagement = $this->getServiceLocator()->get(FileManagement::SERVICE_ID);
         $stream = $fileManagement->getFileStream($fileInfo['link']);
+
         if ($fileInfo['mime'] === MediaService::SHARED_STIMULUS_MIME_TYPE) {
             $this->response = $this->getPsrResponse()->withBody($stream);
         } elseif ($this->hasGetParameter('xml')) {
@@ -203,6 +166,69 @@ class MediaManager extends \tao_actions_SaSModule
     protected function getClassService()
     {
         return $this->getServiceLocator()->get(MediaService::class);
+    }
+
+    protected function isAllowedToEdit(\core_kernel_classes_Resource $instance): bool
+    {
+        $editContext = new Context([
+            Context::PARAM_CONTROLLER => self::class,
+            Context::PARAM_ACTION => 'editInstance',
+            Context::PARAM_USER => $this->getSession()->getUser()
+        ]);
+
+        return $this->hasWriteAccess($instance->getUri())
+            && $this->hasWriteAccessByContext($editContext);
+    }
+
+    protected function getMediaUri()
+    {
+        if($this->hasRequestParameter('id')) {
+            return  $this->getRequest()->getParameter('id');
+        }
+
+        return $this->getRequest()->getParameter('uri');
+    }
+
+    protected function getFormInstance(\core_kernel_classes_Resource $instance,
+                                       bool $editAllowed) : editInstanceForm
+    {
+        $options = [
+            FormContainer::CSRF_PROTECTION_OPTION => true,
+            FormContainer::IS_DISABLED => !$editAllowed,
+            editInstanceForm::IS_REPLACE_ASSET_DISABLED => !$this->isAllowedToReplaceMedia($editAllowed),
+            FormContainer::ATTRIBUTE_VALIDATORS => [
+                'data-depends-on-property' => [
+                    $this->getDependsOnPropertyValidator(),
+                ],
+            ],
+        ];
+
+        return new editInstanceForm($this->getCurrentClass(), $instance, $options);
+    }
+
+    protected function isAllowedToReplaceMedia(bool $editAllowed) : bool
+    {
+        return $editAllowed && $this->isAllowedToEditMedia();
+    }
+
+    protected function isAllowedToEditMedia() : bool
+    {
+        $editContext = new Context([
+            Context::PARAM_CONTROLLER => MediaImport::class,
+            Context::PARAM_ACTION => 'editMedia',
+        ]);
+
+        return $this->hasWriteAccessByContext($editContext);
+    }
+
+    protected function isAllowedToPreview() : bool
+    {
+        $previewContext = new Context([
+            Context::PARAM_CONTROLLER => self::class,
+            Context::PARAM_ACTION => 'isPreviewEnabled',
+        ]);
+
+        return $this->hasReadAccessByContext($previewContext);
     }
 
     private function getDependsOnPropertyValidator(): ValidatorInterface

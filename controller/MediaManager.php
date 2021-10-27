@@ -50,7 +50,6 @@ class MediaManager extends \tao_actions_SaSModule
         $user = $this->getSession()->getUser();
         $mediaService = $this->getClassService();
         $permissionService = $this->getPermissionsService();
-        assert($mediaService instanceof MediaService);
 
         $resource = $this->getCurrentInstance();
         $editAllowed = $permissionService->isAllowedToEdit($user, $resource);

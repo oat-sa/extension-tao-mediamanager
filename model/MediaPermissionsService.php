@@ -91,14 +91,12 @@ class MediaPermissionsService
         return $this->hasReadAccessByContext($previewContext);
     }
 
-    // Helpers
-
-    protected function hasReadAccessByContext(ContextInterface $context): bool
+    private function hasReadAccessByContext(ContextInterface $context): bool
     {
         return $this->actionAcl->contextHasReadAccess($context);
     }
 
-    protected function hasWriteAccessByContext(ContextInterface $context): bool
+    private function hasWriteAccessByContext(ContextInterface $context): bool
     {
         return $this->actionAcl->contextHasWriteAccess($context);
     }

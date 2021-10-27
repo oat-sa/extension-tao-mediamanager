@@ -36,12 +36,6 @@ use core_kernel_classes_Resource;
 
 class MediaManager extends \tao_actions_SaSModule
 {
-    private const ALLOWED_TYPES = [
-        'application/xml',
-        'text/xml',
-        MediaService::SHARED_STIMULUS_MIME_TYPE
-    ];
-
     /**
      * Show the form to edit an instance, show also a preview of the media
      *
@@ -88,7 +82,7 @@ class MediaManager extends \tao_actions_SaSModule
             $fileInfo = (new MediaSource())->getFileInfo($uri);
 
             $mimeType = $fileInfo['mime'];
-            $xml = in_array($mimeType, self::ALLOWED_TYPES, true);
+            $xml = in_array($mimeType, MediaService::MEDIA_ALLOWED_TYPES, true);
         } catch (tao_models_classes_FileNotFoundException $e) {
             $this->setData('error', __('No file found for this media'));
         }

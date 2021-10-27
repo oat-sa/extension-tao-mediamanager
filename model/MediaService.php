@@ -65,6 +65,12 @@ class MediaService extends ConfigurableService
 
     public const SHARED_STIMULUS_MIME_TYPE = 'application/qti+xml';
 
+    public const MEDIA_ALLOWED_TYPES = [
+        'application/xml',
+        'text/xml',
+        MediaService::SHARED_STIMULUS_MIME_TYPE
+    ];
+
     /**
      * @deprecated
      */

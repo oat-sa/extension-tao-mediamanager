@@ -53,16 +53,16 @@ class MediaManager extends \tao_actions_SaSModule
 
         $instance = $this->getCurrentInstance();
         $editAllowed = $this->isAllowedToEdit($instance);
-        $myFormContainer = $this->getFormInstance($instance, $editAllowed);
-        $myForm = $myFormContainer->getForm();
+        $editFormContainer = $this->getFormInstance($instance, $editAllowed);
+        $editForm = $editFormContainer->getForm();
 
         if (
-            $this->isAllowedToReplaceMedia($editAllowed)
-            && $myForm->isSubmited()
-            && $myForm->isValid()
+            $this->isAllowedToEdit($instance)
+            && $editForm->isSubmited()
+            && $editForm->isValid()
         ) {
             $binder = new \tao_models_classes_dataBinding_GenerisFormDataBinder($instance);
-            $instance = $binder->bind($myForm->getValues());
+            $instance = $binder->bind($editForm->getValues());
 
             $this->setData('message', __('Instance saved'));
             $this->setData('reload', true);
@@ -70,7 +70,7 @@ class MediaManager extends \tao_actions_SaSModule
 
         $this->setData('isPreviewEnabled', $this->isAllowedToPreview());
         $this->setData('formTitle', __('Edit Instance'));
-        $this->setData('myForm', $myForm->render());
+        $this->setData('myForm', $editForm->render());
 
         $uri = $this->getMediaUri();
         $url = \tao_helpers_Uri::url(
@@ -195,10 +195,10 @@ class MediaManager extends \tao_actions_SaSModule
     private function getFormInstance(
         core_kernel_classes_Resource $instance,
         bool $editAllowed
-    ) : editInstanceForm {
+    ): editInstanceForm {
         return new editInstanceForm(
-            $this->getCurrentClass(), 
-            $instance, 
+            $this->getCurrentClass(),
+            $instance,
             [
                 FormContainer::CSRF_PROTECTION_OPTION => true,
                 FormContainer::IS_DISABLED => !$editAllowed,

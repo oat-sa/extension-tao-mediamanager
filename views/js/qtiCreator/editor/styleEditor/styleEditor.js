@@ -347,6 +347,8 @@ define([
      */
     const removeOrphanedStylesheets = function () {
         $('link[data-serial]').remove();
+        customStylesheet = null;
+        erase();
     };
 
     /**
@@ -417,6 +419,11 @@ define([
         return selector.replace(hashClassSelector, hashClass);
     };
 
+    const clearCache = function() {
+        removeOrphanedStylesheets();
+        $(document).off('customcssloaded.styleeditor');
+    };
+
     return {
         apply: apply,
         save: save,
@@ -430,6 +437,7 @@ define([
         getHashClass: getHashClass,
         setHashClass: setHashClass,
         generateHashClass: generateHashClass,
-        replaceHashClass: replaceHashClass
+        replaceHashClass: replaceHashClass,
+        clearCache: clearCache
     };
 });

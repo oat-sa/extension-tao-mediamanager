@@ -41,11 +41,13 @@ define([
      *
      * The function is called like this:
      * fontSelector();
+     *
+     * @param {JQuery} $container
      */
     const fontSelector = function ($container) {
-        const $selector = $container.find('select#item-editor-font-selector'),
+        const selector = 'select#item-editor-font-selector',
+            $selector = $container.find(selector),
             target = styleEditor.replaceHashClass($selector.data('target')),
-            $target = $(target),
             normalize = function (font) {
                 return font.replace(/"/g, "'").replace(/, /g, ',');
             },
@@ -68,12 +70,16 @@ define([
             },
             reset = function () {
                 styleEditor.apply(target, 'font-family');
-                $selector.select2('val', $target.css('font-family'));
+                $selector.select2('val', '');
             };
         let applyToStylesEditor = true;
 
         $selector.empty();
         $selector.append(`<option value="">${__('Default')}</option>`);
+
+        // initiate font family for Block
+        const styles = styleEditor.getStyle() || {};
+        const selectedFontFamily = styles[target] && styles[target]['font-family'] && clean(styles[target]['font-family']);
 
         _.forEach(fontStacks, (value, key) => {
             const optGroup = $('<optgroup>', { label: toLabel(key) });
@@ -85,7 +91,7 @@ define([
                 }).css({
                     fontFamily: normalizeFont
                 });
-                if (clean(normalizeFont) === clean($target.css('font-family'))) {
+                if (clean(normalizeFont) === selectedFontFamily) {
                     option.attr('selected', true);
                 }
                 optGroup.append(option);
@@ -114,9 +120,8 @@ define([
          */
         $(document).on('customcssloaded.styleeditor', function (e, style) {
             if (style[target] && style[target]['font-family']) {
-                $selector.val(style[target]['font-family']);
-            } else {
-                $selector.val($target.css('font-family'));
+                $selector.select2('val', style[target]['font-family']);
+                $(`${selector} option:selected`).first().attr('selected', 'selected');
             }
             applyToStylesEditor = false;
             $selector.trigger('change');

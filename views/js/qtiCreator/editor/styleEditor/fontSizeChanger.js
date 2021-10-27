@@ -32,17 +32,23 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
     const fontSizeChanger = function ($container) {
         const $fontSizeChanger = $container.find('#item-editor-font-size-changer'),
             itemSelector = styleEditor.replaceHashClass($fontSizeChanger.data('target')),
-            styleSelector = `${itemSelector} *`,
             $resetBtn = $fontSizeChanger.parents('.reset-group').find('[data-role="font-size-reset"]'),
             $input = $container.find('.item-editor-font-size-text');
-        let itemFontSize = parseInt($(itemSelector).children().first().css('font-size') || $(itemSelector).css('font-size'), 10);
-        $input.val(itemFontSize);
+        let itemFontSize = parseInt($(itemSelector).css('font-size'), 10);
 
+        // initiate font-size for Block
+        const styles = styleEditor.getStyle() || {};
+        if (styles[itemSelector] && styles[itemSelector]['font-size']) {
+            itemFontSize = parseInt(styles[itemSelector]['font-size'], 10);
+            $input.val(itemFontSize);
+        } else {
+            $input.val('');
+        }
         /**
          * Writes new font size to virtual style sheet
          */
         const resizeFont = function () {
-            styleEditor.apply(styleSelector, 'font-size', `${itemFontSize.toString()}px`);
+            styleEditor.apply(itemSelector, 'font-size', `${itemFontSize.toString()}px`);
         };
 
         /**
@@ -74,7 +80,7 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
                 itemFontSize = parseInt(this.value, 10);
                 resizeFont();
             } else {
-                styleEditor.apply(`${itemSelector} *`, 'font-size');
+                styleEditor.apply(itemSelector, 'font-size');
             }
         });
 
@@ -94,18 +100,20 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
          * Remove font size from virtual style sheet
          */
         $resetBtn.off('click').on('click', function () {
-            styleEditor.apply(`${itemSelector} *`, 'font-size');
-            itemFontSize = parseInt($(itemSelector).children().first().css('font-size'), 10);
-            $input.val(itemFontSize);
+            styleEditor.apply(itemSelector, 'font-size');
+            $input.val('');
+            itemFontSize = parseInt($(itemSelector).css('font-size'), 10);
         });
 
         /**
          * style loaded from style sheet
          */
         $(document).on('customcssloaded.styleeditor', function (e, style) {
-            if (style[styleSelector] && style[styleSelector]['font-size']) {
-                $input.val(parseInt(style[styleSelector]['font-size'], 10));
-                itemFontSize = parseInt(style[styleSelector]['font-size'], 10);
+            if (style[itemSelector] && style[itemSelector]['font-size']) {
+                itemFontSize = parseInt(style[itemSelector]['font-size'], 10);
+                $input.val(itemFontSize);
+            } else {
+                $input.val('');
             }
         });
     };

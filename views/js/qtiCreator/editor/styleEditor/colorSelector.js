@@ -72,17 +72,11 @@ define([
             colorTriggers.each(function () {
                 const $trigger = $(this),
                     target = styleEditor.replaceHashClass($trigger.data('target')),
-                    $target = $(target),
                     style = styleEditor.getStyle() || {};
                 let value;
                 // elements have a color from usage of style editor
                 if (style[target] && style[target][$trigger.data('value')]) {
                     value = style[target][$trigger.data('value')];
-                    $trigger.css('background-color', value);
-                    $trigger.attr('title', rgbToHex(value));
-                } else if ($target.css($trigger.data('value'))) {
-                    // elements have a default color from tao css
-                    value = $target.css($trigger.data('value'));
                     $trigger.css('background-color', value);
                     $trigger.attr('title', rgbToHex(value));
                 } else {
@@ -139,9 +133,9 @@ define([
                 widget.on('colorchange.farbtastic', function (e, color) {
                     styleEditor.apply(widget.prop('target'), currentProperty, color);
                     if (widget.prop('additional')) {
-                        const additionalStyles = additionalStylesToObject(widget.prop('additional'));
-                        Object.keys(additionalStyles).forEach(key => {
-                            styleEditor.apply(widget.prop('target'), key, additionalStyles[key]);
+                        const styles = additionalStylesToObject(widget.prop('additional'));
+                        Object.keys(styles).forEach(key => {
+                            styleEditor.apply(widget.prop('target'), key, styles[key]);
                         });
                     }
                     setTriggerColor();

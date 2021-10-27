@@ -22,17 +22,19 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\controller;
 
+use oat\tao\model\accessControl\ActionAccessControl;
+use oat\tao\model\accessControl\PermissionChecker;
 use oat\tao\model\http\ContentDetector;
-use oat\tao\model\accessControl\Context;
 use oat\oatbox\validator\ValidatorInterface;
 use oat\taoMediaManager\model\editInstanceForm;
+use oat\taoMediaManager\model\MediaPermissionsService;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
-use tao_helpers_form_FormContainer as FormContainer;
-use tao_models_classes_FileNotFoundException;
 use oat\tao\model\Lists\Business\Validation\DependsOnPropertyValidator;
 use core_kernel_classes_Resource;
+use tao_helpers_form_FormContainer as FormContainer;
+use tao_models_classes_FileNotFoundException;
 
 class MediaManager extends \tao_actions_SaSModule
 {
@@ -45,28 +47,33 @@ class MediaManager extends \tao_actions_SaSModule
     {
         $this->defaultData();
 
-        $instance = $this->getCurrentInstance();
-        $editAllowed = $this->isAllowedToEdit($instance);
-        $editFormContainer = $this->getFormInstance($instance, $editAllowed);
+        $user = $this->getSession()->getUser();
+        $mediaService = $this->getClassService();
+        $permissionService = $this->getPermissionsService();
+        assert($mediaService instanceof MediaService);
+
+        $resource = $this->getCurrentInstance();
+        $editAllowed = $permissionService->isAllowedToEdit($user, $resource);
+        $editFormContainer = $this->getFormInstance($resource, $editAllowed);
         $editForm = $editFormContainer->getForm();
 
         if (
-            $this->isAllowedToEdit($instance)
+            $permissionService->isAllowedToEdit($user, $resource)
             && $editForm->isSubmited()
             && $editForm->isValid()
         ) {
-            $binder = new \tao_models_classes_dataBinding_GenerisFormDataBinder($instance);
+            $binder = new \tao_models_classes_dataBinding_GenerisFormDataBinder($resource);
             $binder->bind($editForm->getValues());
 
             $this->setData('message', __('Instance saved'));
             $this->setData('reload', true);
         }
 
-        $this->setData('isPreviewEnabled', $this->isAllowedToPreview());
+        $this->setData('isPreviewEnabled', $permissionService->isAllowedToPreview());
         $this->setData('formTitle', __('Edit Instance'));
         $this->setData('myForm', $editForm->render());
 
-        $uri = $this->getMediaUri();
+        $uri = $this->getRequestedMediaUri();
         $url = \tao_helpers_Uri::url(
             'getFile',
             'MediaManager',
@@ -80,12 +87,12 @@ class MediaManager extends \tao_actions_SaSModule
 
         try {
             $fileInfo = (new MediaSource())->getFileInfo($uri);
-
             $mimeType = $fileInfo['mime'];
-            $xml = in_array($mimeType, MediaService::MEDIA_ALLOWED_TYPES, true);
         } catch (tao_models_classes_FileNotFoundException $e) {
             $this->setData('error', __('No file found for this media'));
         }
+
+        $xml = $mediaService->isAllowedMimeType($mimeType ?? null);
 
         $this->setData('xml', $xml ?? null);
         $this->setData('mimeType', $mimeType ?? null);
@@ -162,22 +169,10 @@ class MediaManager extends \tao_actions_SaSModule
 
     protected function getClassService()
     {
-        return $this->getServiceLocator()->get(MediaService::class);
+        return $this->getMediaService();
     }
 
-    private function isAllowedToEdit(core_kernel_classes_Resource $instance): bool
-    {
-        $editContext = new Context([
-            Context::PARAM_CONTROLLER => self::class,
-            Context::PARAM_ACTION => 'editInstance',
-            Context::PARAM_USER => $this->getSession()->getUser()
-        ]);
-
-        return $this->hasWriteAccess($instance->getUri())
-            && $this->hasWriteAccessByContext($editContext);
-    }
-
-    private function getMediaUri(): string
+    private function getRequestedMediaUri(): string
     {
         if ($this->hasRequestParameter('id')) {
             return $this->getRequest()->getParameter('id');
@@ -196,7 +191,8 @@ class MediaManager extends \tao_actions_SaSModule
             [
                 FormContainer::CSRF_PROTECTION_OPTION => true,
                 FormContainer::IS_DISABLED => !$editAllowed,
-                editInstanceForm::IS_REPLACE_ASSET_DISABLED => !$this->isAllowedToReplaceMedia($editAllowed),
+                editInstanceForm::IS_REPLACE_ASSET_DISABLED =>
+                    !$this->getPermissionsService()->isAllowedToReplaceMedia($editAllowed),
                 FormContainer::ATTRIBUTE_VALIDATORS => [
                     'data-depends-on-property' => [
                         $this->getDependsOnPropertyValidator(),
@@ -206,29 +202,16 @@ class MediaManager extends \tao_actions_SaSModule
         );
     }
 
-    private function isAllowedToReplaceMedia(bool $editAllowed): bool
+    private function getMediaService(): MediaService
     {
-        return $editAllowed && $this->isAllowedToEditMedia();
+        return $this->getPsrContainer()->get(MediaService::class);
     }
 
-    private function isAllowedToEditMedia(): bool
+    private function getPermissionsService(): MediaPermissionsService
     {
-        $editContext = new Context([
-            Context::PARAM_CONTROLLER => MediaImport::class,
-            Context::PARAM_ACTION => 'editMedia',
-        ]);
-
-        return $this->hasWriteAccessByContext($editContext);
-    }
-
-    private function isAllowedToPreview(): bool
-    {
-        $previewContext = new Context([
-            Context::PARAM_CONTROLLER => self::class,
-            Context::PARAM_ACTION => 'isPreviewEnabled',
-        ]);
-
-        return $this->hasReadAccessByContext($previewContext);
+        $acl = $this->getPsrContainer()->get(ActionAccessControl::class);
+        $perm = $this->getPsrContainer()->get(PermissionChecker::class);
+        return new MediaPermissionsService($acl, $perm);
     }
 
     private function getDependsOnPropertyValidator(): ValidatorInterface

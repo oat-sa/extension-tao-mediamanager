@@ -243,6 +243,21 @@ class MediaService extends ConfigurableService
         }
     }
 
+    /**
+     * Checks if the given mime type is an allowed type for uploaded files.
+     *
+     * @param string|null $type The mime type to check
+     * @return bool
+     */
+    public function isAllowedMimeType(?string $type): bool
+    {
+        if (!isset($type)) {
+            return false;
+        }
+
+        return in_array($type, self::MEDIA_ALLOWED_TYPES, true);
+    }
+
     private function removeFromFilesystem($link): bool
     {
         $directory = dirname($link);

@@ -56,7 +56,7 @@ class MediaManager extends \tao_actions_SaSModule
             && $editForm->isValid()
         ) {
             $binder = new \tao_models_classes_dataBinding_GenerisFormDataBinder($instance);
-            $instance = $binder->bind($editForm->getValues());
+            $binder->bind($editForm->getValues());
 
             $this->setData('message', __('Instance saved'));
             $this->setData('reload', true);

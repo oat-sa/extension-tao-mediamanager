@@ -20,8 +20,6 @@
 
 namespace oat\taoMediaManager\controller;
 
-use oat\tao\model\accessControl\ActionAccessControl;
-use oat\tao\model\accessControl\PermissionChecker;
 use oat\taoMediaManager\model\ImportHandlerFactory;
 use oat\taoMediaManager\model\MediaPermissionsService;
 use tao_actions_Import;
@@ -87,8 +85,6 @@ class MediaImport extends tao_actions_Import
 
     private function getPermissionsService(): MediaPermissionsService
     {
-        $acl = $this->getPsrContainer()->get(ActionAccessControl::class);
-        $perm = $this->getPsrContainer()->get(PermissionChecker::class);
-        return new MediaPermissionsService($acl, $perm);
+        return $this->getPsrContainer()->get(MediaPermissionsService::class);
     }
 }

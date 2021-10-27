@@ -22,8 +22,6 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\controller;
 
-use oat\tao\model\accessControl\ActionAccessControl;
-use oat\tao\model\accessControl\PermissionChecker;
 use oat\tao\model\http\ContentDetector;
 use oat\oatbox\validator\ValidatorInterface;
 use oat\taoMediaManager\model\editInstanceForm;
@@ -208,9 +206,7 @@ class MediaManager extends \tao_actions_SaSModule
 
     private function getPermissionsService(): MediaPermissionsService
     {
-        $acl = $this->getPsrContainer()->get(ActionAccessControl::class);
-        $perm = $this->getPsrContainer()->get(PermissionChecker::class);
-        return new MediaPermissionsService($acl, $perm);
+        return $this->getPsrContainer()->get(MediaPermissionsService::class);
     }
 
     private function getDependsOnPropertyValidator(): ValidatorInterface

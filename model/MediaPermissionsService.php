@@ -38,10 +38,8 @@ class MediaPermissionsService
     /** @var PermissionChecker */
     private $permissionChecker;
 
-    public function __construct(
-        ActionAccessControl $actionAcl,
-        PermissionChecker $permissionChecker
-    ) {
+    public function __construct(ActionAccessControl $actionAcl, PermissionChecker $permissionChecker)
+    {
         $this->actionAcl = $actionAcl;
         $this->permissionChecker = $permissionChecker;
     }

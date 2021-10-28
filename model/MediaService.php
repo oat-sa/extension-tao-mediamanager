@@ -251,11 +251,7 @@ class MediaService extends ConfigurableService
      */
     public function isAllowedMimeType(?string $type): bool
     {
-        if (!isset($type)) {
-            return false;
-        }
-
-        return in_array($type, self::MEDIA_ALLOWED_TYPES, true);
+        return isset($type) && in_array($type, self::MEDIA_ALLOWED_TYPES, true);
     }
 
     private function removeFromFilesystem($link): bool

@@ -33,14 +33,14 @@ use core_kernel_classes_Resource as Resource;
 class MediaPermissionsService
 {
     /** @var ActionAccessControl */
-    private $actionAcl;
+    private $actionAccessControl;
 
     /** @var PermissionChecker */
     private $permissionChecker;
 
     public function __construct(ActionAccessControl $actionAcl, PermissionChecker $permissionChecker)
     {
-        $this->actionAcl = $actionAcl;
+        $this->actionAccessControl = $actionAcl;
         $this->permissionChecker = $permissionChecker;
     }
 
@@ -67,7 +67,7 @@ class MediaPermissionsService
         ]);
 
         return $this->permissionChecker->hasWriteAccess($resource->getUri())
-            && $this->actionAcl->contextHasWriteAccess($editContext);
+            && $this->actionAccessControl->contextHasWriteAccess($editContext);
     }
 
     public function isAllowedToEditMedia(): bool
@@ -77,7 +77,7 @@ class MediaPermissionsService
             Context::PARAM_ACTION => 'editMedia',
         ]);
 
-        return $this->actionAcl->contextHasWriteAccess($editContext);
+        return $this->actionAccessControl->contextHasWriteAccess($editContext);
     }
 
     public function isAllowedToPreview(): bool
@@ -87,6 +87,6 @@ class MediaPermissionsService
             Context::PARAM_ACTION => 'isPreviewEnabled',
         ]);
 
-        return $this->actionAcl->contextHasReadAccess($previewContext);
+        return $this->actionAccessControl->contextHasReadAccess($previewContext);
     }
 }

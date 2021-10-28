@@ -46,7 +46,7 @@ class MediaPermissionsService
 
     public function isAllowedToImportMedia(User $user, Resource $resource): bool
     {
-        if (!$this->isAllowedToEdit($user, $resource)) {
+        if (!$this->isAllowedToEditResource($resource, $user)) {
             return false;
         }
 
@@ -58,7 +58,7 @@ class MediaPermissionsService
         return $editAllowed && $this->isAllowedToEditMedia();
     }
 
-    public function isAllowedToEdit(User $user, Resource $resource): bool
+    public function isAllowedToEditResource(Resource $resource, User $user = null): bool
     {
         $editContext = new Context([
             Context::PARAM_CONTROLLER => MediaManager::class,

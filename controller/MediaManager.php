@@ -50,12 +50,12 @@ class MediaManager extends \tao_actions_SaSModule
         $permissionService = $this->getPermissionsService();
 
         $resource = $this->getCurrentInstance();
-        $editAllowed = $permissionService->isAllowedToEdit($user, $resource);
+        $editAllowed = $permissionService->isAllowedToEditResource($resource, $user);
         $editFormContainer = $this->getFormInstance($resource, $editAllowed);
         $editForm = $editFormContainer->getForm();
 
         if (
-            $permissionService->isAllowedToEdit($user, $resource)
+            $permissionService->isAllowedToEditResource($resource, $user)
             && $editForm->isSubmited()
             && $editForm->isValid()
         ) {

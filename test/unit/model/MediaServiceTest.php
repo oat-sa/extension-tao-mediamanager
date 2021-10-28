@@ -23,19 +23,13 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\test\unit\model;
 
 use oat\generis\test\TestCase;
-use oat\tao\model\accessControl\Context;
-use oat\tao\model\accessControl\ActionAccessControl;
-use oat\tao\model\accessControl\PermissionChecker;
-use oat\taoMediaManager\model\mapper\MediaSourcePermissionsMapper;
 use oat\taoMediaManager\model\MediaService;
-use PHPUnit\Framework\MockObject\MockObject;
 
 class MediaServiceTest extends TestCase
 {
     public function testNullIsNotAnAllowedType(): void
     {
-        $data = null;
-        $this->assertFalse((new MediaService())->isXmlAllowedMimeType($data));
+        $this->assertFalse((new MediaService())->isXmlAllowedMimeType(null));
     }
 
     public function testEmptyStringIsNotAnAllowedType(): void

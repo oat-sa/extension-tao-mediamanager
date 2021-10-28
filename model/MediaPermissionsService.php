@@ -66,7 +66,7 @@ class MediaPermissionsService
             Context::PARAM_USER => $user
         ]);
 
-        return $this->permissionChecker->hasWriteAccess($resource->getUri())
+        return $this->permissionChecker->hasWriteAccess($resource->getUri(), $user)
             && $this->actionAccessControl->contextHasWriteAccess($editContext);
     }
 

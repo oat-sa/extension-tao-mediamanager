@@ -182,14 +182,15 @@ class MediaManager extends \tao_actions_SaSModule
         core_kernel_classes_Resource $instance,
         bool $editAllowed
     ): editInstanceForm {
+        $canReplaceMedia = $this->getPermissionsService()->isAllowedToReplaceMedia($editAllowed);
+
         return new editInstanceForm(
             $this->getCurrentClass(),
             $instance,
             [
                 FormContainer::CSRF_PROTECTION_OPTION => true,
                 FormContainer::IS_DISABLED => !$editAllowed,
-                editInstanceForm::IS_REPLACE_ASSET_DISABLED =>
-                    !$this->getPermissionsService()->isAllowedToReplaceMedia($editAllowed),
+                editInstanceForm::IS_REPLACE_ASSET_DISABLED => !$canReplaceMedia,
                 FormContainer::ATTRIBUTE_VALIDATORS => [
                     'data-depends-on-property' => [
                         $this->getDependsOnPropertyValidator(),

@@ -27,23 +27,31 @@ use oat\taoMediaManager\model\MediaService;
 
 class MediaServiceTest extends TestCase
 {
+    /** @var MediaService */
+    private $sut;
+
+    public function setUp(): void
+    {
+        $this->sut = new MediaService();
+    }
+
     public function testNullIsNotAnAllowedType(): void
     {
-        $this->assertFalse((new MediaService())->isXmlAllowedMimeType(null));
+        $this->assertFalse($this->sut->isXmlAllowedMimeType(null));
     }
 
     public function testEmptyStringIsNotAnAllowedType(): void
     {
-        $this->assertFalse((new MediaService())->isXmlAllowedMimeType(''));
+        $this->assertFalse($this->sut->isXmlAllowedMimeType(''));
     }
 
     public function testXmlMimeTypeIsAnAllowedType(): void
     {
-        $this->assertTrue((new MediaService())->isXmlAllowedMimeType('application/xml'));
+        $this->assertTrue($this->sut->isXmlAllowedMimeType('application/xml'));
     }
 
     public function testSharedStimulusMimeTypeIsAnAllowedType(): void
     {
-        $this->assertTrue((new MediaService())->isXmlAllowedMimeType(MediaService::SHARED_STIMULUS_MIME_TYPE));
+        $this->assertTrue($this->sut->isXmlAllowedMimeType(MediaService::SHARED_STIMULUS_MIME_TYPE));
     }
 }

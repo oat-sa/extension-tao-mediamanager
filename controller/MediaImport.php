@@ -55,7 +55,7 @@ class MediaImport extends tao_actions_Import
             ? $this->getRequestParameter('instanceUri')
             : $this->getRequestParameter('id');
 
-        if (empty($id)) { // Fail fast if the ID is empty
+        if (empty($id)) {
             $this->returnError('Access denied', true, 403);
             return;
         }

@@ -50,12 +50,7 @@ class MediaPermissionsService
             return false;
         }
 
-        return $this->isAllowedToEditMedia();
-    }
-
-    public function isAllowedToReplaceMedia(bool $editAllowed): bool
-    {
-        return $editAllowed && $this->isAllowedToEditMedia();
+        return $this->isAllowedToEditMedia($user);
     }
 
     public function isAllowedToEditResource(Resource $resource, User $user = null): bool
@@ -70,21 +65,23 @@ class MediaPermissionsService
             && $this->actionAccessControl->contextHasWriteAccess($editContext);
     }
 
-    public function isAllowedToEditMedia(): bool
+    public function isAllowedToEditMedia(User $user = null): bool
     {
         $editContext = new Context([
             Context::PARAM_CONTROLLER => MediaImport::class,
             Context::PARAM_ACTION => 'editMedia',
+            Context::PARAM_USER => $user
         ]);
 
         return $this->actionAccessControl->contextHasWriteAccess($editContext);
     }
 
-    public function isAllowedToPreview(): bool
+    public function isAllowedToPreview(User $user = null): bool
     {
         $previewContext = new Context([
             Context::PARAM_CONTROLLER => MediaManager::class,
             Context::PARAM_ACTION => 'isPreviewEnabled',
+            Context::PARAM_USER => $user
         ]);
 
         return $this->actionAccessControl->contextHasReadAccess($previewContext);

@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\controller;
 
 use oat\tao\model\http\ContentDetector;
+use oat\oatbox\user\User;
 use oat\oatbox\validator\ValidatorInterface;
 use oat\taoMediaManager\model\editInstanceForm;
 use oat\taoMediaManager\model\MediaPermissionsService;
@@ -46,12 +47,10 @@ class MediaManager extends \tao_actions_SaSModule
         $this->defaultData();
 
         $user = $this->getSession()->getUser();
-        $mediaService = $this->getClassService();
         $permissionService = $this->getPermissionsService();
 
         $resource = $this->getCurrentInstance();
-        $editAllowed = $permissionService->isAllowedToEditResource($resource, $user);
-        $editFormContainer = $this->getFormInstance($resource, $editAllowed);
+        $editFormContainer = $this->getFormInstance($resource, $user);
         $editForm = $editFormContainer->getForm();
 
         if (
@@ -89,7 +88,7 @@ class MediaManager extends \tao_actions_SaSModule
             $this->setData('error', __('No file found for this media'));
         }
 
-        $xml = $mediaService->isXmlAllowedMimeType($mimeType ?? null);
+        $xml = $this->getClassService()->isXmlAllowedMimeType($mimeType ?? null);
 
         $this->setData('xml', $xml ?? null);
         $this->setData('mimeType', $mimeType ?? null);
@@ -180,9 +179,11 @@ class MediaManager extends \tao_actions_SaSModule
 
     private function getFormInstance(
         core_kernel_classes_Resource $instance,
-        bool $editAllowed
+        User $user
     ): editInstanceForm {
-        $canReplaceMedia = $this->getPermissionsService()->isAllowedToReplaceMedia($editAllowed);
+        $permissionService = $this->getPermissionsService();
+        $editAllowed = $permissionService->isAllowedToEditResource($instance, $user);
+        $canReplaceMedia = $editAllowed && $permissionService->isAllowedToEditMedia();
 
         return new editInstanceForm(
             $this->getCurrentClass(),

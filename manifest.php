@@ -24,9 +24,9 @@ use oat\taoMediaManager\scripts\install\RegisterXinludeHandler;
 use oat\taoMediaManager\scripts\install\RegisterItemDataHandler;
 use oat\taoMediaManager\model\classes\ServiceProvider\MediaPermissionServiceProvider;
 use oat\taoMediaManager\model\user\TaoAssetRoles;
-use oat\tao\model\accessControl\func\AccessRule;
 use oat\taoMediaManager\scripts\install\SetRolesPermissions;
 use oat\taoMediaManager\scripts\install\SetupMiddlewares;
+use oat\tao\model\accessControl\func\AccessRule;
 
 $extpath = __DIR__ . DIRECTORY_SEPARATOR;
 $taopath = __DIR__ . DIRECTORY_SEPARATOR . 'tao' . DIRECTORY_SEPARATOR;
@@ -215,6 +215,6 @@ return [
         'structures' => __DIR__ . DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'structures.xml',
     ],
     'containerServiceProviders' => [
-        MediaPermissionServiceProvider::class,
+        MediaServiceProvider::class,
     ],
 ];

@@ -29,7 +29,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
-class MediaPermissionServiceProvider
+class MediaServiceProvider
 {
     public function __invoke(ContainerConfigurator $configurator): void
     {

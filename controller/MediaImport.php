@@ -30,6 +30,9 @@ use tao_models_classes_import_ImportHandler;
  */
 class MediaImport extends tao_actions_Import
 {
+    const ERR_NO_MEDIA_ID
+        = 'Request should provide a media identifier as the id or instanceUri parameter';
+
     /** @var tao_models_classes_import_ImportHandler[] */
     private $importHandlers;
 
@@ -56,7 +59,7 @@ class MediaImport extends tao_actions_Import
             : $this->getRequestParameter('id');
 
         if (empty($id)) {
-            $this->returnError('Access denied', true, 403);
+            $this->returnError(self::ERR_NO_MEDIA_ID, true, 400);
             return;
         }
 

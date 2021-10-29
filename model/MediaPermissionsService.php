@@ -44,15 +44,6 @@ class MediaPermissionsService
         $this->permissionChecker = $permissionChecker;
     }
 
-    public function isAllowedToImportMedia(User $user, Resource $resource): bool
-    {
-        if (!$this->isAllowedToEditResource($resource, $user)) {
-            return false;
-        }
-
-        return $this->isAllowedToEditMedia($user);
-    }
-
     public function isAllowedToEditResource(Resource $resource, User $user = null): bool
     {
         $editContext = new Context([

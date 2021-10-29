@@ -64,7 +64,10 @@ class MediaImport extends tao_actions_Import
         $resource = $this->getResource($id);
         $user = $this->getSession()->getUser();
 
-        if (!$permissionService->isAllowedToImportMedia($user, $resource)) {
+        if (
+            !$permissionService->isAllowedToEditResource($user, $resource)
+            || !$permissionService->isAllowedToEditMedia($user)
+        ) {
             $this->returnError('Access denied', true, 403);
         } else {
             $this->importHandlers = [$this->getImportHandlerFactory()->createByMediaId($id)];

@@ -35,11 +35,6 @@ class MediaServiceTest extends TestCase
         $this->sut = new MediaService();
     }
 
-    public function testNullIsNotAnAllowedType(): void
-    {
-        $this->assertFalse($this->sut->isXmlAllowedMimeType(null));
-    }
-
     public function testEmptyStringIsNotAnAllowedType(): void
     {
         $this->assertFalse($this->sut->isXmlAllowedMimeType(''));

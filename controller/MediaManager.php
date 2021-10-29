@@ -47,7 +47,7 @@ class MediaManager extends \tao_actions_SaSModule
         $this->defaultData();
 
         $user = $this->getSession()->getUser();
-        $permissionService = $this->getPermissionsService();
+        $permissionService = $this->getPermissionService();
 
         $resource = $this->getCurrentInstance();
         $editFormContainer = $this->getFormInstance($resource, $user);
@@ -181,7 +181,7 @@ class MediaManager extends \tao_actions_SaSModule
         core_kernel_classes_Resource $instance,
         User $user
     ): editInstanceForm {
-        $permissionService = $this->getPermissionsService();
+        $permissionService = $this->getPermissionService();
         $editAllowed = $permissionService->isAllowedToEditResource($instance, $user);
         $canReplaceMedia = $editAllowed && $permissionService->isAllowedToEditMedia();
 
@@ -206,7 +206,7 @@ class MediaManager extends \tao_actions_SaSModule
         return $this->getPsrContainer()->get(MediaService::class);
     }
 
-    private function getPermissionsService(): MediaPermissionService
+    private function getPermissionService(): MediaPermissionService
     {
         return $this->getPsrContainer()->get(MediaPermissionService::class);
     }

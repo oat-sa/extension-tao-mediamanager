@@ -63,7 +63,7 @@ class MediaImport extends tao_actions_Import
             return;
         }
 
-        $permissionService = $this->getPermissionsService();
+        $permissionService = $this->getPermissionService();
         $resource = $this->getResource($id);
         $user = $this->getSession()->getUser();
 
@@ -90,7 +90,7 @@ class MediaImport extends tao_actions_Import
         return $this->getPsrContainer()->get(ImportHandlerFactory::class);
     }
 
-    private function getPermissionsService(): MediaPermissionService
+    private function getPermissionService(): MediaPermissionService
     {
         return $this->getPsrContainer()->get(MediaPermissionService::class);
     }

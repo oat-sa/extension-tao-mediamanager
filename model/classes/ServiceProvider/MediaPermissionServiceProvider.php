@@ -24,19 +24,19 @@ namespace oat\taoMediaManager\model\classes\ServiceProvider;
 
 use oat\tao\model\accessControl\ActionAccessControl;
 use oat\tao\model\accessControl\PermissionChecker;
-use oat\taoMediaManager\model\MediaPermissionsService;
+use oat\taoMediaManager\model\MediaPermissionService;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
-class MediaPermissionsServiceProvider
+class MediaPermissionServiceProvider
 {
     public function __invoke(ContainerConfigurator $configurator): void
     {
         $services = $configurator->services();
 
         $services
-            ->set(MediaPermissionsService::class, MediaPermissionsService::class)
+            ->set(MediaPermissionService::class, MediaPermissionService::class)
             ->public()
             ->args(
                 [

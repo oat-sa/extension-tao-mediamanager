@@ -30,7 +30,7 @@ use oat\taoMediaManager\controller\MediaImport;
 use oat\taoMediaManager\controller\MediaManager;
 use core_kernel_classes_Resource as Resource;
 
-class MediaPermissionsService
+class MediaPermissionService
 {
     /** @var ActionAccessControl */
     private $actionAccessControl;

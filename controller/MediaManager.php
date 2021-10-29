@@ -26,7 +26,7 @@ use oat\tao\model\http\ContentDetector;
 use oat\oatbox\user\User;
 use oat\oatbox\validator\ValidatorInterface;
 use oat\taoMediaManager\model\editInstanceForm;
-use oat\taoMediaManager\model\MediaPermissionsService;
+use oat\taoMediaManager\model\MediaPermissionService;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
@@ -206,9 +206,9 @@ class MediaManager extends \tao_actions_SaSModule
         return $this->getPsrContainer()->get(MediaService::class);
     }
 
-    private function getPermissionsService(): MediaPermissionsService
+    private function getPermissionsService(): MediaPermissionService
     {
-        return $this->getPsrContainer()->get(MediaPermissionsService::class);
+        return $this->getPsrContainer()->get(MediaPermissionService::class);
     }
 
     private function getDependsOnPropertyValidator(): ValidatorInterface

@@ -9,7 +9,7 @@ use oat\tao\model\accessControl\ActionAccessControl;
 use oat\tao\model\accessControl\Context;
 use oat\tao\model\accessControl\PermissionChecker;
 use oat\taoMediaManager\controller\MediaManager;
-use oat\taoMediaManager\model\MediaPermissionsService;
+use oat\taoMediaManager\model\MediaPermissionService;
 use PHPUnit\Framework\MockObject\MockObject;
 
 class MediaPermissionServiceTest extends TestCase
@@ -20,14 +20,14 @@ class MediaPermissionServiceTest extends TestCase
     /** @var PermissionChecker|MockObject */
     private $permissionChecker;
 
-    /** @var MediaPermissionsService */
+    /** @var MediaPermissionService */
     private $sut;
 
     public function setUp(): void
     {
         $this->actionAccessControl = $this->createMock(ActionAccessControl::class);
         $this->permissionChecker = $this->createMock(PermissionChecker::class);
-        $this->sut = new MediaPermissionsService($this->actionAccessControl, $this->permissionChecker);
+        $this->sut = new MediaPermissionService($this->actionAccessControl, $this->permissionChecker);
     }
 
     /**

@@ -21,7 +21,7 @@
 namespace oat\taoMediaManager\controller;
 
 use oat\taoMediaManager\model\ImportHandlerFactory;
-use oat\taoMediaManager\model\MediaPermissionsService;
+use oat\taoMediaManager\model\MediaPermissionService;
 use tao_actions_Import;
 use tao_models_classes_import_ImportHandler;
 
@@ -90,8 +90,8 @@ class MediaImport extends tao_actions_Import
         return $this->getPsrContainer()->get(ImportHandlerFactory::class);
     }
 
-    private function getPermissionsService(): MediaPermissionsService
+    private function getPermissionsService(): MediaPermissionService
     {
-        return $this->getPsrContainer()->get(MediaPermissionsService::class);
+        return $this->getPsrContainer()->get(MediaPermissionService::class);
     }
 }

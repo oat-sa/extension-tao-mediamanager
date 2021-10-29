@@ -79,6 +79,7 @@ class MediaPermissionServiceTest extends TestCase
         $user1->method('getIdentifier')->willReturn(self::user1Id);
 
         // THEN MediaPermissionsService allows that user to edit the resource
+        //
         $this->assertTrue($service->isAllowedToEditResource($resourceMock, $user1));
     }
 
@@ -102,6 +103,7 @@ class MediaPermissionServiceTest extends TestCase
         $user1->method('getIdentifier')->willReturn(self::user2Id);
 
         // THEN MediaPermissionsService does not allow that user to edit the resource
+        //
         $this->assertFalse($service->isAllowedToEditResource($resourceMock, $user1));
     }
 }

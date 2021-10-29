@@ -2,26 +2,123 @@
 
 namespace test\unit\model;
 
+use core_kernel_classes_Resource;
 use oat\generis\test\TestCase;
 use oat\oatbox\user\User;
 use oat\tao\model\accessControl\ActionAccessControl;
 use oat\tao\model\accessControl\Context;
 use oat\tao\model\accessControl\PermissionChecker;
+use oat\tao\model\Context\AbstractContext;
 use oat\tao\model\Context\ContextInterface;
 use oat\taoMediaManager\controller\MediaImport;
 use oat\taoMediaManager\controller\MediaManager;
 use oat\taoMediaManager\model\MediaPermissionsService;
+use PHPUnit\Framework\MockObject\MockObject;
 use Prophecy\Argument;
 
 class MediaPermissionServiceTest extends TestCase
 {
     private const RDF_ROOT = 'https://example.com/ontologies/tao.rdf';
 
-    private const user1Id = self::RDF_ROOT.'#i6176cbaf9c8b998698d2bf8ac45d7f';
+    private const user1Id = self::RDF_ROOT . '#i6176cbaf9c8b998698d2bf8ac45d7f';
 
     private const user2Id = self::RDF_ROOT.'#i6176cbaf9c8b998698d2bf8ac00000';
 
     private const resource1Id = self::RDF_ROOT.'#i6176ce834db789e71df6a26d578625';
+
+    /**
+     * @var ActionAccessControl|MockObject
+     */
+    private $actionAccessControl;
+
+    /** @var PermissionChecker|MockObject */
+    private $permissionChecker;
+
+    /** @var MediaPermissionsService */
+    private $sut;
+
+    public function setUp(): void
+    {
+        $this->actionAccessControl = $this->createMock(ActionAccessControl::class);
+        $this->permissionChecker = $this->createMock(PermissionChecker::class);
+        $this->sut = new MediaPermissionsService($this->actionAccessControl, $this->permissionChecker);
+    }
+
+    /**
+     * @dataProvider isAllowedToEditResourceDataProvider
+     */
+    public function testIsAllowedToEditResource(bool $expected, bool $hasWriteAccess, bool $contextHasWriteAccess): void
+    {
+        $resource = $this->createMock(core_kernel_classes_Resource::class);
+        $user = $this->createMock(User::class);
+
+        $this->permissionChecker
+            ->method('hasWriteAccess')
+            ->willReturn($hasWriteAccess);
+
+        $this->actionAccessControl
+            ->method('contextHasWriteAccess')
+            ->willReturn($contextHasWriteAccess);
+
+        self::assertSame($expected, $this->sut->isAllowedToEditResource($resource, $user));
+    }
+
+    public function isAllowedToEditResourceDataProvider(): array
+    {
+        return [
+            'Has write access' => [
+                'expected' => true,
+                'hasWriteAccess' => true,
+                'contextHasWriteAccess' => true,
+            ],
+            'Has no write access' => [
+                'expected' => false,
+                'hasWriteAccess' => false,
+                'contextHasWriteAccess' => true,
+            ],
+            'Has no context write access' => [
+                'expected' => false,
+                'hasWriteAccess' => true,
+                'contextHasWriteAccess' => false,
+            ],
+        ];
+    }
+
+    public function isAllowedToEditMedia(): void
+    {
+        $user = $this->createMock(User::class);
+
+        $this->actionAccessControl
+            ->method('contextHasWriteAccess')
+            ->with(
+                new Context([
+                    Context::PARAM_CONTROLLER => MediaImport::class,
+                    Context::PARAM_ACTION => 'editMedia',
+                    Context::PARAM_USER => $user
+                ])
+            )->willReturn(true);
+
+        self::assertTrue($this->sut->isAllowedToEditMedia($user));
+    }
+
+    public function isAllowedToPreview(): void
+    {
+        $user = $this->createMock(User::class);
+
+        $this->actionAccessControl
+            ->method('contextHasWriteAccess')
+            ->with(
+                new Context([
+                    Context::PARAM_CONTROLLER => MediaManager::class,
+                    Context::PARAM_ACTION => 'isPreviewEnabled',
+                    Context::PARAM_USER => $user
+                ])
+            )->willReturn(true);
+
+        self::assertTrue($this->sut->isAllowedToPreview($user));
+    }
+
+    //FIXME ================
 
     private function getActionAccessControlMock(
         string $controller,
@@ -96,7 +193,7 @@ class MediaPermissionServiceTest extends TestCase
         return $permissionCheckerProphecy->reveal();
     }
 
-    public function testIsAllowedToEditResource(): void
+    public function testIsAllowedToEditResource2(): void
     {
         // SETUP
         $permissionChecker = $this->getPermissionCheckerMock(self::user1Id);
@@ -107,7 +204,7 @@ class MediaPermissionServiceTest extends TestCase
 
         // GIVEN a resource for which PermissionChecker grants write access for a known user
         //
-        $resourceMock = $this->createMock(\core_kernel_classes_Resource::class);
+        $resourceMock = $this->createMock(core_kernel_classes_Resource::class);
         $resourceMock->method('getUri')->willReturn(self::resource1Id);
 
         // AND a user for which ACL grants editInstance access
@@ -131,7 +228,7 @@ class MediaPermissionServiceTest extends TestCase
 
         // GIVEN a resource for which PermissionChecker DOESN'T grant write access for a known user
         //
-        $resourceMock = $this->createMock(\core_kernel_classes_Resource::class);
+        $resourceMock = $this->createMock(core_kernel_classes_Resource::class);
         $resourceMock->method('getUri')->willReturn(self::resource1Id);
 
         // AND a user for which ACL grants editInstance access
@@ -156,7 +253,7 @@ class MediaPermissionServiceTest extends TestCase
 
         // GIVEN a resource for which PermissionChecker grants write access for a known user
         //
-        $resourceMock = $this->createMock(\core_kernel_classes_Resource::class);
+        $resourceMock = $this->createMock(core_kernel_classes_Resource::class);
         $resourceMock->method('getUri')->willReturn(self::resource1Id);
 
         // AND a user for which ACL grants editMedia access
@@ -191,7 +288,7 @@ class MediaPermissionServiceTest extends TestCase
 
         // GIVEN a resource for which PermissionChecker grants write access for a known user
         //
-        $resourceMock = $this->createMock(\core_kernel_classes_Resource::class);
+        $resourceMock = $this->createMock(core_kernel_classes_Resource::class);
         $resourceMock->method('getUri')->willReturn(self::resource1Id);
 
         // AND a user for which ACL grants access for an action other than editMedia
@@ -216,7 +313,7 @@ class MediaPermissionServiceTest extends TestCase
 
         // GIVEN a resource for which PermissionChecker grants read access for a known user
         //
-        $resourceMock = $this->createMock(\core_kernel_classes_Resource::class);
+        $resourceMock = $this->createMock(core_kernel_classes_Resource::class);
         $resourceMock->method('getUri')->willReturn(self::resource1Id);
 
         // AND a user for which ACL grants isPreviewEnabled access
@@ -251,7 +348,7 @@ class MediaPermissionServiceTest extends TestCase
 
         // GIVEN a resource for which PermissionChecker grants write access for a known user
         //
-        $resourceMock = $this->createMock(\core_kernel_classes_Resource::class);
+        $resourceMock = $this->createMock(core_kernel_classes_Resource::class);
         $resourceMock->method('getUri')->willReturn(self::resource1Id);
 
         // AND a user for which ACL grants access for an action other than editMedia

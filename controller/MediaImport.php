@@ -72,11 +72,12 @@ class MediaImport extends tao_actions_Import
             || !$permissionService->isAllowedToEditMedia($user)
         ) {
             $this->returnError('Access denied', true, 403);
-        } else {
-            $this->importHandlers = [$this->getImportHandlerFactory()->createByMediaId($id)];
-
-            parent::index();
+            return;
         }
+        
+        $this->importHandlers = [$this->getImportHandlerFactory()->createByMediaId($id)];
+
+        parent::index();
     }
 
     protected function getAvailableImportHandlers()

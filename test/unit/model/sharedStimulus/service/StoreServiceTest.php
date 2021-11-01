@@ -58,7 +58,7 @@ class StoreServiceTest extends TestCase
             ->with($fakeUniqueName);
 
         $fileSystemMock->expects(self::once())
-            ->method('writeStream')
+            ->method('putStream')
             ->willReturn(true);
 
         $stimulusStoreService = $this->getPreparedServiceInstance($fileSystemMock);
@@ -78,7 +78,7 @@ class StoreServiceTest extends TestCase
     {
         return $this->getMockBuilder(FileSystem::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['createDir', 'writeStream'])
+            ->onlyMethods(['createDir', 'putStream'])
             ->getMock();
     }
 

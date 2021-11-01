@@ -18,13 +18,11 @@
  */
 
 /**
- * The item creator factory let's you create (guess what...)
- *
- * The item creator is "unfinished" because all parts aren't yet independants and the loading is anarhic,
- * however the item creator does a 1st job of wrapping the item creator's bootstrap.
- *
+ * The Shared Stimulus creator factory let's you create Shared Stimulus
+ * The Shared Stimulus is wrapped in Item that allow reuse taoQtiItem modules
  *
  * @author Bertrand Chevrier <bertrand@taotesting.com>
+ * @author Hanna Dzmitryieva <hanna@taotesting.com>
  */
 define([
     'jquery',
@@ -35,14 +33,15 @@ define([
     'taoMediaManager/qtiCreator/helper/sharedStimulusLoader',
     'taoMediaManager/qtiCreator/helper/creatorRenderer',
     'taoQtiItem/qtiCreator/helper/commonRenderer', //for read-only element : preview + xinclude
-    'taoQtiItem/qtiCreator/helper/xincludeRenderer',
     'taoMediaManager/qtiCreator/editor/propertiesPanel',
     'taoQtiItem/qtiCreator/model/helper/event',
     'taoMediaManager/qtiCreator/helper/xmlRenderer',
     'taoQtiItem/qtiItem/helper/xmlNsHandler',
     'core/request',
     'util/url',
-    'taoMediaManager/qtiCreator/editor/interactionsPanel'
+    'taoMediaManager/qtiCreator/editor/interactionsPanel',
+    'taoMediaManager/qtiCreator/editor/styleEditor/styleEditor',
+    'taoQtiItem/qtiItem/core/Element'
 ], function (
     $,
     _,
@@ -52,21 +51,22 @@ define([
     sharedStimulusLoader,
     creatorRenderer,
     commonRenderer,
-    xincludeRenderer,
     propertiesPanel,
     eventHelper,
     xmlRenderer,
     xmlNsHandler,
     request,
     urlUtil,
-    interactionPanel
+    interactionPanel,
+    styleEditor,
+    Element
 ) {
     'use strict';
 
     /**
-     * Load an item
-     * @param {String} id - the item ID
-     * @param {String} uri - the item URI
+     * Load an Shared Stimulus
+     * @param {String} id - the Shared Stimulus ID
+     * @param {String} uri - the Shared Stimulus URI
      * @param {String} assetDataUrl - the data url
      *
      * @returns {Promise} that resolve with the loaded item model
@@ -86,20 +86,20 @@ define([
     };
 
     /**
-     * Build a new Item Creator
+     * Build a new Shared Stimulus Creator
      * @param {Object} config - the creator's configuration
-     * @param {String} config.properties.uri - the URI of the item to load (properties structure is kept as legacy)
-     * @param {String} config.properties.label - the label of the item to load (properties structure is kept as legacy)
+     * @param {String} config.properties.uri - the URI of the Shared Stimulus to load (properties structure is kept as legacy)
+     * @param {String} config.properties.label - the label of the Shared Stimulus to load (properties structure is kept as legacy)
      * @param {String} config.properties.baseUrl - the base URL used to resolve assets
      * @param {String[]} [config.interactions] - the list of additional interactions to load (PCI)
      * @param {String[]} [config.infoControls] - the list of info controls to load (PIC)
      * @param {areaBroker} areaBroker - a mapped areaBroker
      * @param {Function[]} pluginFactories - the plugin's factory, ready to be instantiated
-     * @returns {itemCreator} an event emitter object, with the usual lifecycle
+     * @returns {sharedStimulusCreator} an event emitter object, with the usual lifecycle
      * @throws {TypeError}
      */
     const sharedStimulusCreatorFactory = function sharedStimulusCreatorFactory(config, areaBroker, pluginFactories) {
-        let itemCreator;
+        let sharedStimulusCreator;
         const qtiCreatorContext = qtiCreatorContextFactory();
         const plugins = {};
 
@@ -123,7 +123,7 @@ define([
 
         //validate parameters
         if (!_.isPlainObject(config)) {
-            throw new TypeError('The item creator configuration is required');
+            throw new TypeError('The shared stimulus creator configuration is required');
         }
         if (!config.properties || _.isEmpty(config.properties.uri) || _.isEmpty(config.properties.baseUrl)) {
             throw new TypeError(
@@ -134,19 +134,19 @@ define([
             throw new TypeError('Without an areaBroker there are no chance to see something you know');
         }
 
-        //factor the new itemCreator
-        itemCreator = eventifier({
+        //factor the new sharedStimulusCreator
+        sharedStimulusCreator = eventifier({
             //lifecycle
 
             /**
-             * Initialize the item creator:
+             * Initialize the Shared Stimulus creator:
              *  - set up the registries for portable elements
-             *  - load the item
+             *  - load the Shared Stimulus
              *  - instantiate and initialize the plugins
              *
-             * @returns {itemCreator} chains
-             * @fires itemCreator#init - once initialized
-             * @fires itemCreator#error - if something went wrong
+             * @returns {sharedStimulusCreator} chains
+             * @fires sharedStimulusCreator#init - once initialized
+             * @fires sharedStimulusCreator#error - if something went wrong
              */
             init() {
                 //instantiate the plugins first
@@ -156,29 +156,40 @@ define([
                 });
 
                 // quick-fix: clear all ghost events listeners
-                // prevent ghosting of item states and other properties
+                // prevent ghosting of Shared Stimulus states and other properties
                 $(document).off('.qti-widget');
 
                 /**
-                 * Save the item on "save" event
-                 * @event itemCreator#save
+                 * Save the Shared Stimulus on "save" event
+                 * @event sharedStimulusCreator#save
                  * @param {Boolean} [silent] - true to not trigger the success feedback
-                 * @fires itemCreator#saved once the save is done
-                 * @fires itemCreator#error
+                 * @fires sharedStimulusCreator#saved once the save is done
+                 * @fires sharedStimulusCreator#error
                  */
                 this.on('save', silent => {
                     const item = this.getItem();
+                    const styles = styleEditor.getStyle();
+                    if (_.size(styles) && !item.attributes.class) {
+                        item.attributes.class = this.hashClass;
+                    }
 
                     const xml = xmlNsHandler.restoreNs(xmlRenderer.render(item), item.getNamespaces());
-                    request({
-                        url: urlUtil.route('patch', 'SharedStimulus', 'taoMediaManager', { id: config.properties.id }),
-                        type: 'POST',
-                        contentType: 'application/json',
-                        dataType: 'json',
-                        data: JSON.stringify({ body: xml }),
-                        method: 'PATCH',
-                        noToken: true
-                    })
+
+                    //do the save
+                    Promise.all([
+                        request({
+                            url: urlUtil.route('patch', 'SharedStimulus', 'taoMediaManager', {
+                                id: config.properties.id
+                            }),
+                            type: 'POST',
+                            contentType: 'application/json',
+                            dataType: 'json',
+                            data: JSON.stringify({ body: xml }),
+                            method: 'PATCH',
+                            noToken: true
+                        }),
+                        styleEditor.save()
+                    ])
                         .then(() => {
                             if (!silent) {
                                 this.trigger('success');
@@ -204,12 +215,11 @@ define([
                         }
 
                         this.item = item;
-                        return true;
                     })
                     .then(() => pluginRun('init'))
                     .then(() => {
                         /**
-                         * @event itemCreator#init the initialization is done
+                         * @event sharedStimulusCreator#init the initialization is done
                          * @param {Object} item - the loaded item
                          */
                         this.trigger('init', this.item);
@@ -232,10 +242,10 @@ define([
              * Renders the creator
              * Because of the actual structure, it also intialize some components (panels, toolbars, etc.).
              *
-             * @returns {itemCreator} chains
-             * @fires itemCreator#render - once everything is in place
-             * @fires itemCreator#ready - once the creator's components' are ready (not yet reliable)
-             * @fires itemCreator#error - if something went wrong
+             * @returns {sharedStimulusCreator} chains
+             * @fires sharedStimulusCreator#render - once everything is in place
+             * @fires sharedStimulusCreator#ready - once the creator's components' are ready (not yet reliable)
+             * @fires sharedStimulusCreator#error - if something went wrong
              */
             render() {
                 const self = this;
@@ -256,6 +266,26 @@ define([
                 $(document).on('ready.qti-widget', (e, elt) => {
                     if (elt.element.qtiClass === 'assessmentItem') {
                         this.trigger('ready');
+                    }
+                });
+                // highlite passage creator container when it's in focus
+                $(document).on('afterStateInit.qti-widget', function (e, element, state) {
+                    if (element.getRootElement().data('widget')) {
+                        const $itemContainer = element.getRootElement().data('widget').$container;
+                        switch (state.name) {
+                            case 'active':
+                                if (!Element.isA(element, 'assessmentItem')) {
+                                    $itemContainer.removeClass('focus-border');
+                                }
+                                break;
+
+                            case 'sleep':
+                                if (!$itemContainer.find('.widget-box.edit-active').length) {
+                                    $itemContainer.addClass('focus-border');
+                                    styleEditor.setHashClass(sharedStimulusCreator.hashClass);
+                                }
+                                break;
+                        }
                     }
                 });
 
@@ -281,11 +311,13 @@ define([
                                 areaBroker.getContainer().data('widget', item);
 
                                 widget = item.data('widget');
-                                _.each(item.getComposingElements(), function (element) {
-                                    if (element.qtiClass === 'include') {
-                                        xincludeRenderer.render(element.data('widget'), config.properties.baseUrl);
-                                    }
-                                });
+
+                                item.attributes.class
+                                    ? styleEditor.setHashClass(item.attributes.class)
+                                    : styleEditor.generateHashClass();
+                                sharedStimulusCreator.hashClass = styleEditor.getHashClass();
+                                // set class on container for style editor
+                                widget.$container.find('.qti-itemBody').addClass(sharedStimulusCreator.hashClass);
 
                                 propertiesPanel(areaBroker.getPropertyPanelArea(), widget, config.properties);
 
@@ -305,12 +337,14 @@ define([
             },
 
             /**
-             * Clean up everything and destroy the item creator
+             * Clean up everything and destroy the sharedStimulusCreator
              *
-             * @returns {itemCreator} chains
+             * @returns {sharedStimulusCreator} chains
              */
             destroy() {
                 $(document).off('.qti-widget');
+
+                styleEditor.clearCache();
 
                 pluginRun('destroy')
                     .then(() => qtiCreatorContext.destroy())
@@ -346,7 +380,7 @@ define([
             }
         });
 
-        return itemCreator;
+        return sharedStimulusCreator;
     };
 
     return sharedStimulusCreatorFactory;

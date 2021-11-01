@@ -51,9 +51,9 @@ define([
                     lang: '',
                     uri: '',
                     shuffleChoices: false,
-                    itemOptionForm: $('#item-editor-item-property-bar .panel'),
+                    itemOptionForm: $('#item-editor-item-property-bar #sidebar-right-passage-properties .panel'),
                     bodyElementOptionForm: areaBroker.getElementPropertyPanelArea(),
-                    textOptionForm: $('#item-editor-text-property-bar .panel'),
+                    textOptionForm: $('#item-editor-text-property-bar #sidebar-right-text-block-properties .panel'),
                     mediaManager: {
                         appendContainer: '#mediaManager',
                         browseUrl: config.properties.getFilesUrl,

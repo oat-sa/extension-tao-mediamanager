@@ -53,8 +53,7 @@ define([
         assert.equal($editorPanel.find('.add-block-element').length, 1, 'The plus button was added');
     });
     QUnit.test('click on plus button will add new block', function(assert) {
-        var done = assert.async();
-        assert.expect(4);
+        assert.expect(2);
         const mockItem = {
             body(body) {
                 this.body = body;
@@ -96,10 +95,5 @@ define([
         assert.equal($editorPanel.find('.colrow').length, 0, 'Initially 0 .colrow in item');
         $plusButton.click();
         assert.equal($editorPanel.find('.colrow').length, 2, 'Added new .colrow');
-        $editorPanel.on('ready.qti-widget', () => {
-            assert.equal($editorPanel.find('.widget-textBlock').length, 2, 'The textBlock was added');
-            assert.equal($editorPanel.find('.add-block-element').length, 2, 'The second plus button was added');
-            done();
-        });
     });
 });

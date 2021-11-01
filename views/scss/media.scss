@@ -23,9 +23,62 @@
 }
 
 #item-editor-scope {
-    .tool-group {
-        ._accordion {
-            display: none;
+    .left-bar {
+        .tool-group {
+            ._accordion {
+                display: none;
+            }
         }
     }
+    .focus-border {
+        box-shadow: 1px 1px 3px 2px whiten($info, .2);
+    }
+    .qti-itemBody.item-editor-drop-area  {
+        margin-top: 0;
+    }
+    .qti-item {
+        padding: 20px;
+    }
+    .item-editor-sidebar {
+        #item-editor-font-size-changer {
+            .icon-smaller, .icon-larger {
+                background: none;
+                color: black;
+                height: 21px;
+                width: 20px;
+            }
+            .icon-smaller {
+                margin-left: 30px;
+                &:before {
+                    font-size: 1.2rem;
+                }
+                
+            }
+            .icon-larger {
+                &:before {
+                    font-size: 1.8rem;
+                }
+            }
+        }
+    }
+    .item-editor-sidebar {
+        .item-editor-color-picker {
+            .color-trigger {
+                background: none;
+            }
+            .reset-button {
+                top: 0;
+            }
+        }
+        .reset-group {
+            .reset-button {
+                background: none;
+                color: black;
+            }
+        }
+    }
+}
+
+div.item-editor-item {
+    border-color: transparent;
 }

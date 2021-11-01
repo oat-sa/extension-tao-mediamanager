@@ -44,12 +44,26 @@ module.exports = function (grunt) {
                                 'taoQtiItem/loader/taoQtiItem.min',
                                 'taoQtiTestPreviewer/loader/qtiPreviewer.min'
                             ],
-                            include : [
-                              'taoMediaManager/controller/**/*',
-                              'taoMediaManager/previewer/**/*',
-                              'taoMediaManager/qtiCreator/**/*',
-                              'taoMediaManager/qtiXmlRenderer/**/*'
-                          ]
+                            include: [
+                                'taoMediaManager/controller/**/*',
+                                'taoMediaManager/previewer/**/*',
+                                'taoMediaManager/qtiCreator/**/*',
+                                'taoMediaManager/qtiXmlRenderer/**/*'
+                            ]
+                        },
+                        {
+                            name: 'xincludeRendererAddStyles',
+                            bootstrap: true,
+                            babel: true,
+                            entryPoint: 'taoMediaManager/richPassage/xincludeRendererAddStyles',
+                            dependencies: []
+                        },
+                        {
+                            name: 'injectStylesInItemData',
+                            bootstrap: true,
+                            babel: true,
+                            entryPoint: 'taoMediaManager/richPassage/injectStylesInItemData',
+                            dependencies: []
                         }
                     ]
                 }

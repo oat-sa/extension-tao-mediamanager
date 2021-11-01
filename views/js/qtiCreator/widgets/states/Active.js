@@ -20,62 +20,74 @@ define([
     'jquery',
     'taoQtiItem/qtiCreator/widgets/states/factory',
     'taoMediaManager/qtiCreator/widgets/helpers/content'
-], function($, stateFactory, contentHelper){
+], function ($, stateFactory, contentHelper) {
     'use strict';
 
-    return stateFactory.create('active', function(){
+    return stateFactory.create(
+        'active',
+        function () {
+            const _widget = this.widget,
+                container = _widget.$container[0],
+                item = _widget.element.getRootElement(),
+                areaBroker = _widget.getAreaBroker(),
+                $modalFeedbacksArea = $('#modalFeedbacks'),
+                outerContainer = document.querySelector('#item-editor-scroll-outer');
 
-        const _widget     = this.widget,
-            container   = _widget.$container[0],
-            item        = _widget.element.getRootElement(),
-            areaBroker  = _widget.getAreaBroker(),
-            $modalFeedbacksArea = $('#modalFeedbacks'),
-            outerContainer = document.querySelector("#item-editor-scroll-outer");
-
-        function checkIfWidgetShouldSleep(e) {
-            return container !== e.target
-                && !$.contains(container, e.target)
-                && $.contains(outerContainer, e.target) // in case click on scrollbar
-                && (!areaBroker || !areaBroker.getEditorBarArea || !$.contains(areaBroker.getEditorBarArea().get(0), e.target))
-                && (!$modalFeedbacksArea.length || !$.contains($modalFeedbacksArea[0], e.target)) //if click triggered inside the #modalFeedback then state must not be changed.
-                && ($(e.target).data('role') !== 'restore')
-                && !($(e.target).closest('.widget-popup').length);
-        }
-
-        //move to sleep state by clicking anywhere outside the interaction
-        areaBroker.getContentCreatorPanelArea().on(`mousedown.active.${_widget.serial}`, function(e){
-            if (checkIfWidgetShouldSleep(e)){
-                _widget.changeState('sleep');
+            function checkIfWidgetShouldSleep(e) {
+                return (
+                    container !== e.target &&
+                    !$.contains(container, e.target) &&
+                    $.contains(outerContainer, e.target) && // in case click on scrollbar
+                    (!areaBroker ||
+                        !areaBroker.getEditorBarArea ||
+                        !$.contains(areaBroker.getEditorBarArea().get(0), e.target)) &&
+                    (!$modalFeedbacksArea.length || !$.contains($modalFeedbacksArea[0], e.target)) && //if click triggered inside the #modalFeedback then state must not be changed.
+                    $(e.target).data('role') !== 'restore' &&
+                    !$(e.target).closest('.widget-popup').length
+                );
             }
-        }).on('beforesave.qti-creator.active', function(){
-            _widget.changeState('sleep');
-        }).on('styleedit.active', function(){
-            _widget.changeState('sleep');
-        });
 
-        $(document).on('open-preview.qti-item', function(){
-            _widget.changeState('sleep');
-        });
+            //move to sleep state by clicking anywhere outside the interaction
+            areaBroker
+                .getContentCreatorPanelArea()
+                .on(`mousedown.active.${_widget.serial}`, function (e) {
+                    if (checkIfWidgetShouldSleep(e)) {
+                        _widget.changeState('sleep');
+                    }
+                })
+                .on('beforesave.qti-creator.active', function () {
+                    _widget.changeState('sleep');
+                })
+                .on('styleedit.active', function () {
+                    _widget.changeState('sleep');
+                });
 
-        if(item && item.data('widget')){
-            //in item editing context:
-            item.data('widget').$container.on('resizestart.gridEdit.active beforedragoverstart.gridEdit.active', function(){
+            $(document).on('open-preview.qti-item', function () {
                 _widget.changeState('sleep');
             });
+
+            if (item && item.data('widget')) {
+                //in item editing context:
+                item.data('widget').$container.on(
+                    'resizestart.gridEdit.active beforedragoverstart.gridEdit.active',
+                    function () {
+                        _widget.changeState('sleep');
+                    }
+                );
+            }
+        },
+        function () {
+            const areaBroker = this.widget.getAreaBroker();
+
+            contentHelper.changeInnerWidgetState(this.widget, 'sleep');
+
+            this.widget.$container.off('.active');
+            areaBroker.getContentCreatorPanelArea().off(`.active.${this.widget.serial}`);
+
+            const item = this.widget.element.getRootElement();
+            if (item && item.data('widget')) {
+                item.data('widget').$container.off('.active');
+            }
         }
-
-    }, function(){
-        const areaBroker = this.widget.getAreaBroker();
-
-        contentHelper.changeInnerWidgetState(this.widget, 'sleep');
-
-        this.widget.$container.off('.active');
-        areaBroker.getContentCreatorPanelArea().off(`.active.${this.widget.serial}`);
-
-        const item = this.widget.element.getRootElement();
-        if(item && item.data('widget')){
-            item.data('widget').$container.off('.active');
-        }
-
-    });
+    );
 });

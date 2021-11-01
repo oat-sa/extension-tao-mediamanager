@@ -20,6 +20,8 @@
 
 use oat\taoItems\model\user\TaoItemsRoles;
 use oat\taoMediaManager\scripts\install\SetMediaManager;
+use oat\taoMediaManager\scripts\install\RegisterXinludeHandler;
+use oat\taoMediaManager\scripts\install\RegisterItemDataHandler;
 use oat\taoMediaManager\model\user\TaoAssetRoles;
 use oat\tao\model\accessControl\func\AccessRule;
 use oat\taoMediaManager\scripts\install\SetRolesPermissions;
@@ -161,6 +163,8 @@ return [
         ],
         'php' => [
             SetMediaManager::class,
+            RegisterXinludeHandler::class,
+            RegisterItemDataHandler::class,
             SetRolesPermissions::class,
             SetupMiddlewares::class,
         ]

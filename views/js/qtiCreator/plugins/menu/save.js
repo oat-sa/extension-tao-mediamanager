@@ -43,7 +43,6 @@ define([
          * Initialize the plugin (called during itemCreator's init)
          */
         init() {
-            const self = this;
             const sharedStimulusCreator = this.getHost();
 
             this.$element = $(buttonTpl({
@@ -52,17 +51,18 @@ define([
                 text : __('Save'),
                 cssClass: 'save-trigger',
                 testId: 'save-the-asset'
-            })).on('click', function saveHandler(e){
+            })).on('click', e => {
                 e.preventDefault();
-                self.disable();
+                this.disable();
+                $('#item-editor-panel').trigger('beforesave.qti-creator');
                 sharedStimulusCreator.trigger('save');
             });
 
             this.hide();
             this.disable();
 
-            sharedStimulusCreator.on('ready saved error', function(){
-                self.enable();
+            sharedStimulusCreator.on('ready saved error', () => {
+                this.enable();
             });
         },
 

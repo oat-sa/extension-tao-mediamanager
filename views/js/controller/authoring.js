@@ -46,10 +46,10 @@ define([
 
             request(assetDataUrl, { id : assetId })
                 .then(response => {
-                    if (response.permissions == 'READ') {
+                    if (response.permissions.includes('READ')) {
                         previewEnabled = true;
                     }
-                }).then(response => {
+                }).then(() => {
                     sharedStimulusAuthoringFactory($panel, {
                         properties: {
                             uri: $panel.attr('data-uri'),
@@ -64,7 +64,9 @@ define([
                             path: 'taomedia://mediamanager/',
                             root: 'mediamanager',
                             lang: 'en-US',
-                            previewEnabled: previewEnabled
+                            previewEnabled: previewEnabled,
+                            loadCssUrl: urlUtil.route('load', 'SharedStimulusStyling', 'taoMediaManager'),
+                            saveCssUrl: urlUtil.route('save', 'SharedStimulusStyling', 'taoMediaManager')
                         }
                     })
                         .on('success', () => {

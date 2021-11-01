@@ -81,17 +81,37 @@ define([
          *                      Any error will be provided if rejected.
          */
         getItem: function getItem(identifier) {
-            return request(urlUtil.route('get', serviceController, serviceExtension), { id: identifier }, 'GET').then(
-                function (data) {
-                    const itemData = creatorDummyItemData(data);
-                    data.baseUrl = urlUtil.route('getFile', 'MediaManager', 'taoMediaManager', { uri: '' });
-                    data.content = {
-                        type: 'qti',
-                        data: itemData
+            return Promise.all([
+                request(urlUtil.route('get', serviceController, serviceExtension), { id: identifier }, 'GET'),
+                request(urlUtil.route('getStylesheets', 'SharedStimulusStyling', serviceExtension), {
+                    uri: identifier
+                })
+            ]).then(([data, styles]) => {
+                const itemData = creatorDummyItemData(data);
+                data.baseUrl = urlUtil.route('getFile', 'MediaManager', 'taoMediaManager', { uri: '' });
+                data.content = {
+                    type: 'qti',
+                    data: itemData
+                };
+                styles.forEach((stylesheet, index) => {
+                    const serial = `stylesheet_${index}`;
+                    data.content.data.stylesheets[serial] = {
+                        qtiClass: 'stylesheet',
+                        attributes: {
+                            href: urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
+                                uri: identifier,
+                                stylesheet: stylesheet
+                            }),
+                            media: 'all',
+                            title: '',
+                            type: 'text/css'
+                        },
+                        serial,
+                        getComposingElements: () => ({})
                     };
-                    return data;
-                }
-            );
+                });
+                return data;
+            });
         }
     };
 });

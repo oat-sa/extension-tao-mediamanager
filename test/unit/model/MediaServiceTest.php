@@ -35,18 +35,57 @@ class MediaServiceTest extends TestCase
         $this->sut = new MediaService();
     }
 
-    public function testEmptyStringIsNotAnAllowedType(): void
+    /**
+     * @dataProvider isXmlAllowedMimeTypeDataProvider
+     */
+    public function testIsXmlAllowedMimeType(bool $expected, string $type): void
     {
-        $this->assertFalse($this->sut->isXmlAllowedMimeType(''));
+        $this->assertEquals($expected, $this->sut->isXmlAllowedMimeType($type));
     }
 
-    public function testXmlMimeTypeIsAnAllowedType(): void
+    public function isXmlAllowedMimeTypeDataProvider(): array
     {
-        $this->assertTrue($this->sut->isXmlAllowedMimeType('application/xml'));
-    }
-
-    public function testSharedStimulusMimeTypeIsAnAllowedType(): void
-    {
-        $this->assertTrue($this->sut->isXmlAllowedMimeType(MediaService::SHARED_STIMULUS_MIME_TYPE));
+        return [
+            'Empty string is not an allowed type' => [
+                'expected' => false,
+                'type' => ''
+            ],
+            'application/xml is an allowed type' => [
+                'expected' => true,
+                'type' => 'application/xml'
+            ],
+            'shared stimulus MIME type is an allowed type' => [
+                'expected' => true,
+                'type' => MediaService::SHARED_STIMULUS_MIME_TYPE
+            ],
+            'A string containing only whitespaces is not an allowed type' => [
+                'expected' => false,
+                'type' => ' '
+            ],
+            'application/json is not an allowed type' => [
+                'expected' => false,
+                'type' => 'application/json'
+            ],
+            'text/json is not an allowed type' => [
+                'expected' => false,
+                'type' => 'application/json'
+            ],
+            'application/xml;charset=utf-8 is an allowed type' => [
+                'expected' => true,
+                'type' => 'application/xml;charset=utf-8'
+            ],
+            'application/xml;property=value is an allowed type' => [
+                'expected' => true,
+                'type' => 'application/xml;property=value'
+            ],
+            'application/json;charset=utf-8 is not an allowed type' => [
+                'expected' => false,
+                'type' => 'application/json;property=value'
+            ],
+            'application/json;property=value is not an allowed type' => [
+                'expected' => false,
+                'type' => 'application/json;property=value'
+            ],
+        ];
     }
 }

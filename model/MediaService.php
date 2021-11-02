@@ -251,6 +251,11 @@ class MediaService extends ConfigurableService
      */
     public function isXmlAllowedMimeType(string $type): bool
     {
+        $paramsPos = strpos($type, ';');
+        if ($paramsPos > 0) {
+            $type = substr($type, 0, $paramsPos);
+        }
+
         return in_array($type, self::MEDIA_ALLOWED_TYPES, true);
     }
 

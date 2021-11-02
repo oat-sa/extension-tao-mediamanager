@@ -18,13 +18,14 @@
  */
 
 define([
+    'jquery',
     'taoQtiItem/qtiCreator/helper/panel',
     'taoMediaManager/qtiCreator/editor/styleEditor/styleEditor',
     'taoMediaManager/qtiCreator/editor/styleEditor/styleSheetToggler',
     'taoMediaManager/qtiCreator/editor/styleEditor/fontSelector',
     'taoMediaManager/qtiCreator/editor/styleEditor/colorSelector',
     'taoMediaManager/qtiCreator/editor/styleEditor/fontSizeChanger'
-], function (panel, styleEditor, styleSheetToggler, fontSelector, colorSelector, fontSizeChanger) {
+], function ($, panel, styleEditor, styleSheetToggler, fontSelector, colorSelector, fontSizeChanger) {
     'use strict';
 
     /**

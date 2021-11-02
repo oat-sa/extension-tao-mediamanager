@@ -20,7 +20,7 @@
 
 declare(strict_types=1);
 
-namespace test\unit\model\accessControl;
+namespace oat\taoMediaManager\test\unit\model\accessControl;
 
 use core_kernel_classes_Resource;
 use oat\generis\test\TestCase;

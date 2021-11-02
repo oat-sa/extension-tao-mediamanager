@@ -34,6 +34,7 @@ use oat\tao\model\Lists\Business\Validation\DependsOnPropertyValidator;
 use core_kernel_classes_Resource;
 use tao_helpers_form_FormContainer as FormContainer;
 use tao_models_classes_FileNotFoundException;
+use tao_models_classes_dataBinding_GenerisFormDataBinder;
 
 class MediaManager extends \tao_actions_SaSModule
 {
@@ -58,7 +59,7 @@ class MediaManager extends \tao_actions_SaSModule
             && $editForm->isSubmited()
             && $editForm->isValid()
         ) {
-            $binder = new \tao_models_classes_dataBinding_GenerisFormDataBinder($resource);
+            $binder = new tao_models_classes_dataBinding_GenerisFormDataBinder($resource);
             $binder->bind($editForm->getValues());
 
             $this->setData('message', __('Instance saved'));

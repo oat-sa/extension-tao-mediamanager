@@ -68,7 +68,7 @@ class MediaImport extends tao_actions_Import
         $user = $this->getSession()->getUser();
 
         if (
-            !$permissionService->isAllowedToEditResource($user, $resource)
+            !$permissionService->isAllowedToEditResource($resource, $user)
             || !$permissionService->isAllowedToEditMedia($user)
         ) {
             $this->returnError('Access denied', true, 403);

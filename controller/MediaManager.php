@@ -33,6 +33,7 @@ use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\tao\model\Lists\Business\Validation\DependsOnPropertyValidator;
 use core_kernel_classes_Resource;
 use tao_helpers_form_FormContainer as FormContainer;
+use tao_helpers_Uri;
 use tao_models_classes_FileNotFoundException;
 use tao_models_classes_dataBinding_GenerisFormDataBinder;
 
@@ -71,7 +72,7 @@ class MediaManager extends \tao_actions_SaSModule
         $this->setData('myForm', $editForm->render());
 
         $uri = $this->getRequestedMediaUri();
-        $url = \tao_helpers_Uri::url(
+        $url = tao_helpers_Uri::url(
             'getFile',
             'MediaManager',
             'taoMediaManager',

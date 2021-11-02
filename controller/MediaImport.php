@@ -30,9 +30,6 @@ use tao_models_classes_import_ImportHandler;
  */
 class MediaImport extends tao_actions_Import
 {
-    private const ERR_NO_MEDIA_ID
-        = 'Request should provide a media identifier as the id or instanceUri parameter';
-
     /** @var tao_models_classes_import_ImportHandler[] */
     private $importHandlers;
 

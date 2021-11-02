@@ -43,7 +43,6 @@ use Throwable;
 class SharedStimulus extends tao_actions_SaSModule
 {
     use LoggerAwareTrait;
-
     private const PERMISSION_READ = 'READ';
 
     /**

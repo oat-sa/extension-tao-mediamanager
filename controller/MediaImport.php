@@ -59,7 +59,11 @@ class MediaImport extends tao_actions_Import
             : $this->getRequestParameter('id');
 
         if (empty($id)) {
-            $this->returnError(self::ERR_NO_MEDIA_ID, true, 400);
+            $this->returnError(
+                __('Request should provide a media identifier as the id or instanceUri parameter'), 
+                true, 
+                400
+            );
             return;
         }
 

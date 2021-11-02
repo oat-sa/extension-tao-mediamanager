@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\classes\ServiceProvider;
 
+use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
 use oat\tao\model\accessControl\ActionAccessControl;
 use oat\tao\model\accessControl\PermissionChecker;
 use oat\taoMediaManager\model\accessControl\MediaPermissionService;
@@ -29,7 +30,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
-class MediaServiceProvider
+class MediaServiceProvider implements ContainerServiceProviderInterface
 {
     public function __invoke(ContainerConfigurator $configurator): void
     {

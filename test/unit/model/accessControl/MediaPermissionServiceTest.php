@@ -66,7 +66,7 @@ class MediaPermissionServiceTest extends TestCase
             ->method('contextHasWriteAccess')
             ->willReturn($contextHasWriteAccess);
 
-        self::assertSame($expected, $this->sut->isAllowedToEditResource($resource, $user));
+        $this->assertSame($expected, $this->sut->isAllowedToEditResource($resource, $user));
     }
 
     public function isAllowedToEditResourceDataProvider(): array
@@ -106,7 +106,7 @@ class MediaPermissionServiceTest extends TestCase
             ->method('contextHasWriteAccess')
             ->willReturn($contextHasWriteAccess);
 
-        self::assertSame($expected, $this->sut->isAllowedToEditMedia($user));
+        $this->assertSame($expected, $this->sut->isAllowedToEditMedia($user));
     }
 
     public function isAllowedToEditMediaDataProvider(): array
@@ -140,7 +140,7 @@ class MediaPermissionServiceTest extends TestCase
                 ])
             )->willReturn($contextHasReadAccess);
 
-        self::assertSame($expected, $this->sut->isAllowedToPreview($user));
+        $this->assertSame($expected, $this->sut->isAllowedToPreview($user));
     }
 
     public function isAllowedToPreviewDataProvider(): array

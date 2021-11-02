@@ -20,7 +20,7 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model;
+namespace oat\taoMediaManager\model\accessControl;
 
 use oat\oatbox\user\User;
 use oat\tao\model\accessControl\ActionAccessControl;

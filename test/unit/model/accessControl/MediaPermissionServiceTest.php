@@ -9,7 +9,7 @@ use oat\tao\model\accessControl\ActionAccessControl;
 use oat\tao\model\accessControl\Context;
 use oat\tao\model\accessControl\PermissionChecker;
 use oat\taoMediaManager\controller\MediaManager;
-use oat\taoMediaManager\model\MediaPermissionService;
+use oat\taoMediaManager\model\accessControl\MediaPermissionService;
 use PHPUnit\Framework\MockObject\MockObject;
 
 class MediaPermissionServiceTest extends TestCase

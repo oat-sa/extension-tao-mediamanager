@@ -21,7 +21,7 @@
 namespace oat\taoMediaManager\controller;
 
 use oat\taoMediaManager\model\ImportHandlerFactory;
-use oat\taoMediaManager\model\MediaPermissionService;
+use oat\taoMediaManager\model\accessControl\MediaPermissionService;
 use tao_actions_Import;
 use tao_models_classes_import_ImportHandler;
 

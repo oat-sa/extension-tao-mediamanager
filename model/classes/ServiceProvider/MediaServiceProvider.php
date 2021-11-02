@@ -24,7 +24,7 @@ namespace oat\taoMediaManager\model\classes\ServiceProvider;
 
 use oat\tao\model\accessControl\ActionAccessControl;
 use oat\tao\model\accessControl\PermissionChecker;
-use oat\taoMediaManager\model\MediaPermissionService;
+use oat\taoMediaManager\model\accessControl\MediaPermissionService;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;

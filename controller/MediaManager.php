@@ -88,11 +88,7 @@ class MediaManager extends \tao_actions_SaSModule
             $this->setData('error', __('No file found for this media'));
         }
 
-        if (isset($mimeType)) {
-            $allowed = $this->getClassService()->isXmlAllowedMimeType($mimeType);
-        }
-
-        $this->setData('xml', $allowed ?? null);
+        $this->setData('xml', isset($mimeType) ? $this->getClassService()->isXmlAllowedMimeType($mimeType) : null);
         $this->setData('mimeType', $mimeType ?? null);
         $this->setView('form.tpl');
     }

@@ -22,7 +22,7 @@ use oat\taoItems\model\user\TaoItemsRoles;
 use oat\taoMediaManager\scripts\install\SetMediaManager;
 use oat\taoMediaManager\scripts\install\RegisterXinludeHandler;
 use oat\taoMediaManager\scripts\install\RegisterItemDataHandler;
-use oat\taoMediaManager\model\classes\ServiceProvider\MediaPermissionServiceProvider;
+use oat\taoMediaManager\model\classes\ServiceProvider\MediaServiceProvider;
 use oat\taoMediaManager\model\user\TaoAssetRoles;
 use oat\taoMediaManager\scripts\install\SetRolesPermissions;
 use oat\taoMediaManager\scripts\install\SetupMiddlewares;

@@ -243,12 +243,6 @@ class MediaService extends ConfigurableService
         }
     }
 
-    /**
-     * Checks if the given mime type is an allowed type for uploaded files.
-     *
-     * @param string|null $type The mime type to check
-     * @return bool
-     */
     public function isXmlAllowedMimeType(string $type): bool
     {
         $paramsPos = strpos($type, ';');

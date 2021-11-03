@@ -1,0 +1,278 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO 2021.10\n"
+"PO-Revision-Date: 2021-10-22T10:39:17\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: nb-NO\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: nb-NO\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid "%s media on this environment"
+msgstr "%s media i dette miljøet"
+
+msgid "%s media successfully modified"
+msgstr "%s media er endret"
+
+msgid "%s media to modify"
+msgstr "%s media som skal endres"
+
+msgid "Add a media file"
+msgstr "Legg til en mediefil"
+
+msgid "An error has occurred. Please contact your administrator."
+msgstr "Det har oppstått en feil. Ta kontakt med din administrator."
+
+msgid "Are you sure you want to delete this"
+msgstr "Er du sikker på at du vil slette"
+
+msgid "Are you sure you want to delete this class and all of its content?"
+msgstr "Er du sikker på at du vil slette denne mappen og alt innholdet i den?"
+
+#, tao-public
+msgid "Assets"
+msgstr "Mediebank"
+
+#, tao-public
+msgid "Authoring"
+msgstr "Forfatter"
+
+msgid "Back to Manage Assets"
+msgstr "Tilbake for å administrere mediebank"
+
+msgid "Block"
+msgstr "Blokkere"
+
+msgid "Center"
+msgstr "Senter"
+
+msgid "Define item language."
+msgstr "Definer oppgavespråk."
+
+#, tao-public
+msgid "Delete"
+msgstr "Slette"
+
+msgid "Deleting this class will break the items and the tests that are currently using them."
+msgstr "Hvis du sletter denne mappen, blir prøvene som inneholder noen av disse oppgavene som finnes i denne mappen ødelagt."
+
+msgid "Edit Instance"
+msgstr "Rediger forekomst"
+
+msgid "Edited %s"
+msgstr "Redigert %s"
+
+msgid "Element Properties"
+msgstr "Elementegenskaper"
+
+#, tao-public
+msgid "Export"
+msgstr "Eksporter"
+
+msgid "Export Media as Zip file"
+msgstr "Eksporter media som zip-fil"
+
+msgid "Fail to edit shared stimulus"
+msgstr "Kunne ikke redigere delt stimulus"
+
+msgid "Fail to edit Shared Stimulus"
+msgstr "Kunne ikke redigere Delt Stimulus"
+
+msgid "Fail to import media"
+msgstr "Kunne ikke importere medier"
+
+msgid "Fail to import Shared Stimulus"
+msgstr "Kunne ikke importere Delt Stimulus"
+
+msgid "File"
+msgstr "Fil"
+
+msgid "File name"
+msgstr "Filnavn"
+
+msgid "Forbidden action"
+msgstr "Forbudt handling"
+
+#, tao-public
+msgid "Import"
+msgstr "Importer"
+
+msgid "Imported %s"
+msgstr "Importert %s"
+
+msgid "Imported new file"
+msgstr "Importert ny fil"
+
+msgid "Initial import"
+msgstr "Første import"
+
+msgid "Inline Interactions"
+msgstr "Inline oppgavetyper"
+
+msgid "inline-interactions"
+msgstr ""
+
+msgid "Instance saved"
+msgstr "Forekomsten er lagret"
+
+msgid "is currently used in"
+msgstr "brukes i"
+
+msgid "Issue while modifying %s"
+msgstr "Problem under endring av %s"
+
+msgid "item(s)"
+msgstr "oppgave(r)"
+
+msgid "Language"
+msgstr "Språk"
+
+msgid "Left"
+msgstr "Venstre"
+
+#, tao-public
+msgid "Manage Assets"
+msgstr "Administrere Mediebank"
+
+#, tao-public
+msgid "Manage Schema"
+msgstr "Administrer skjema"
+
+msgid "Media imported"
+msgstr "Media importert"
+
+msgid "Media imported successfully"
+msgstr "Media importert"
+
+#, tao-public
+msgid "Media Manager"
+msgstr "Media Manager"
+
+#, tao-public
+msgid "Media Manager extension"
+msgstr "Media Manager-utvidelse"
+
+msgid "Media Options"
+msgstr "Medialternativer"
+
+msgid "Media successfully exported."
+msgstr "Media eksportert."
+
+#, tao-public
+msgid "Move"
+msgstr "Flytt"
+
+#, tao-public
+msgid "Move To"
+msgstr "Flytt til"
+
+#, tao-public
+msgid "New class"
+msgstr "Ny mappe"
+
+#, tao-public
+msgid "New passage"
+msgstr "Nytt innhold"
+
+msgid "No file found for this media"
+msgstr "Fant ingen fil for dette mediet"
+
+msgid "Passage Properties"
+msgstr "Innholdsegenskaper"
+
+msgid "Please delete the subclasses before."
+msgstr "Slett undermappene før."
+
+msgid "Preview"
+msgstr "Forhåndsvis"
+
+msgid "Preview the item"
+msgstr "Forhåndsvis oppgaven"
+
+#, tao-public
+msgid "Properties"
+msgstr "Egenskaper"
+
+msgid "Replace Asset"
+msgstr "Erstatt medierfil"
+
+msgid "Resource deleted"
+msgstr "Ressurs ble slettet"
+
+msgid "Right"
+msgstr "Høyre"
+
+msgid "Save"
+msgstr "Lagre"
+
+msgid "Save the asset"
+msgstr "Lagre mediafil"
+
+msgid "Set a CSS class name in order to customize the display style."
+msgstr "Angi et CSS-mappenavn for å tilpasse visningen."
+
+msgid "Shared Stimulus"
+msgstr "Delt Innhold"
+
+msgid "Shared Stimulus edited successfully"
+msgstr "Delt innhold ble redigert"
+
+msgid "Shared Stimulus imported successfully"
+msgstr "Delt innhold ble importert"
+
+msgid "some text ..."
+msgstr "noe tekst..."
+
+msgid "Text Block"
+msgstr "Tekstblokk"
+
+msgid "Text Block CSS Class"
+msgstr "Tekstblokk CSS-mappe"
+
+msgid "The class"
+msgstr "Mappen"
+
+msgid "This"
+msgstr "Denne"
+
+msgid "Unable to delete the selected resource"
+msgstr "Kan ikke slette den valgte filen"
+
+msgid "Unable to extract the archive"
+msgstr "Kan ikke ta ut arkivet"
+
+msgid "Unable to import"
+msgstr "Kan ikke importere"
+
+msgid "Upload Media"
+msgstr "Last opp media"
+
+msgid "Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
+msgstr "Bruk: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
+
+msgid "Warning"
+msgstr "Advarsel"
+
+msgid "which contains assets that are in use elsewhere."
+msgstr "som inneholder mediefiler som er i bruk andre steder."
+
+msgid "You are about to delete the class"
+msgstr "Du er i ferd med å slette mappen"
+
+msgid "you are trying to delete is too large and contains too many subclasses."
+msgstr "du prøver å slette er for stor og inneholder for mange undermapper."
+
+msgid "You can\'t upload a zip file as a media"
+msgstr ""
+
+msgid "Your passage is saved"
+msgstr "Innholdsfil er lagret"
+
+msgid "Zip"
+msgstr "Zip"
+

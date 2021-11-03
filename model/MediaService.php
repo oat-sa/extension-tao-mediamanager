@@ -191,6 +191,7 @@ class MediaService extends ConfigurableService
 
         if ($link !== false) {
             $md5 = $fileSource instanceof File ? md5($fileSource->read()) : md5_file($fileSource);
+            $mime = $this->getResourceMimeType($instance) ?? '';
 
             $instance->editPropertyValues($this->getProperty(self::PROPERTY_LINK), $link);
             $instance->editPropertyValues($this->getProperty(self::PROPERTY_MD5), $md5);
@@ -199,7 +200,7 @@ class MediaService extends ConfigurableService
                 $instance->editPropertyValues($this->getProperty(self::PROPERTY_LANGUAGE), $language);
             }
 
-            $this->dispatchMediaSavedEvent('Imported new file', $instance, $fileSource, $this->getResourceMimeType($instance), $userId);
+            $this->dispatchMediaSavedEvent('Imported new file', $instance, $fileSource, $mime, $userId);
         }
 
         return $link !== false;

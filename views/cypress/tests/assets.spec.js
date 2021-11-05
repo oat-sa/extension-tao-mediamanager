@@ -18,6 +18,7 @@
 
 import urls from '../utils/urls';
 import selectors from '../utils/selectors';
+import { addBlockAndInlineInteractions } from '../utils/add-A-block-interaction-asset';
 
 describe('Assets', () => {
     const className = 'Asset E2E class';
@@ -35,6 +36,19 @@ describe('Assets', () => {
             urls.assets,
             selectors.root
         );
+        cy.get(selectors.root).then(root => {
+            if (root.find(`li[title="${className}"] a`).length) {
+                 cy.deleteClassFromRoot(
+                     selectors.root,
+                     selectors.assetClassForm,
+                     selectors.deleteClass,
+                     selectors.deleteConfirm,
+                     className,
+                     selectors.deleteClassUrl,
+                     false
+                 );
+            }
+        });
     });
 
     /**
@@ -63,10 +77,31 @@ describe('Assets', () => {
             cy.get(selectors.assetAuthoringPanel).find('li[data-qti-class="_container"]');
             cy.getSettled(selectors.assetAuthoringCanvas).should('have.length', 1);
         });
+        it('can add A block to the canvas', function () {
+            cy.log('ADD A-BLOCK TO CANVAS');
+            addBlockAndInlineInteractions();
+        });
+        it('can save asset with A-block in it', function () {
+            cy.log('SAVE ASSET WITH A-BLOCK IN IT');
+            cy.intercept('PATCH', '**/taoMediaManager/SharedStimulus/patch*').as('saveAsset');
+            cy.get('[data-testid="save-the-asset"]').click();
+            cy.wait('@saveAsset')
+                 .its('response.body')
+                 .its('success')
+                 .should('eq', true);
+         });
+
         it('can go back', function () {
             cy.get(selectors.manageAssets).click();
             cy.getSettled(selectors.treeMediaManager).find(`li[title="${AssetRenamed}"]`);
         });
+        it('can re-open the asset and validates that added block is present', function () {
+            cy.log('VALIDATES THAT A-BLOCK PRESENT WHEN REPOENED');
+            cy.get('[id="media-authoring"]').click();
+            cy.get('.widget-box.widget-block.widget-textBlock').should('exist');
+            cy.get('[data-testid="manage-assets"]').click();
+        });
+
         it('can delete passage', function () {
             cy.get(`li[title="${AssetRenamed}"]`)
             .deleteNode(
@@ -77,7 +112,6 @@ describe('Assets', () => {
             );
         });
     });
-
     describe('Moving and deleting asset class', function () {
         it('can move asset class', function () {
             cy.intercept('POST', `**/${ selectors.editClassLabelUrl }`).as('editClassLabel');

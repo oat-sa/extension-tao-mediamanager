@@ -112,7 +112,6 @@ describe('Assets', () => {
             );
         });
     });
-
     describe('Moving and deleting asset class', function () {
         it('can move asset class', function () {
             cy.intercept('POST', `**/${ selectors.editClassLabelUrl }`).as('editClassLabel');

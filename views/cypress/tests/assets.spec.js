@@ -36,6 +36,19 @@ describe('Assets', () => {
             urls.assets,
             selectors.root
         );
+        cy.get(selectors.root).then(root => {
+            if (root.find(`li[title="${className}"] a`).length) {
+                 cy.deleteClassFromRoot(
+                     selectors.root,
+                     selectors.assetClassForm,
+                     selectors.deleteClass,
+                     selectors.deleteConfirm,
+                     className,
+                     selectors.deleteClassUrl,
+                     false
+                 );
+            }
+        });
     });
 
     /**
@@ -70,8 +83,12 @@ describe('Assets', () => {
         });
         it('can save asset with A-block in it', function () {
             cy.log('SAVE ASSET WITH A-BLOCK IN IT');
-            cy.intercept('PATCH', '**/taoMediaManager/SharedStimulus*').as('saveAsset');
+            cy.intercept('PATCH', '**/taoMediaManager/SharedStimulus/patch*').as('saveAsset');
             cy.get('[data-testid="save-the-asset"]').click();
+             cy.wait('@saveAsset')
+                 .its('response.body')
+                 .its('success')
+                 .should('eq', true);
          });
 
         it('can go back', function () {

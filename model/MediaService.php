@@ -65,6 +65,12 @@ class MediaService extends ConfigurableService
 
     public const SHARED_STIMULUS_MIME_TYPE = 'application/qti+xml';
 
+    public const MEDIA_ALLOWED_TYPES = [
+        'application/xml',
+        'text/xml',
+        MediaService::SHARED_STIMULUS_MIME_TYPE
+    ];
+
     /**
      * @deprecated
      */
@@ -185,6 +191,7 @@ class MediaService extends ConfigurableService
 
         if ($link !== false) {
             $md5 = $fileSource instanceof File ? md5($fileSource->read()) : md5_file($fileSource);
+            $mime = $this->getResourceMimeType($instance) ?? '';
 
             $instance->editPropertyValues($this->getProperty(self::PROPERTY_LINK), $link);
             $instance->editPropertyValues($this->getProperty(self::PROPERTY_MD5), $md5);
@@ -193,7 +200,7 @@ class MediaService extends ConfigurableService
                 $instance->editPropertyValues($this->getProperty(self::PROPERTY_LANGUAGE), $language);
             }
 
-            $this->dispatchMediaSavedEvent('Imported new file', $instance, $fileSource, $this->getResourceMimeType($instance), $userId);
+            $this->dispatchMediaSavedEvent('Imported new file', $instance, $fileSource, $mime, $userId);
         }
 
         return $link !== false;
@@ -235,6 +242,16 @@ class MediaService extends ConfigurableService
             $this->logInfo('Auto generating initial revision');
             $this->getRepositoryService()->commit($instance, __($commitMessage), null, $userId);
         }
+    }
+
+    public function isXmlAllowedMimeType(string $type): bool
+    {
+        $paramsPos = strpos($type, ';');
+        if ($paramsPos > 0) {
+            $type = substr($type, 0, $paramsPos);
+        }
+
+        return in_array($type, self::MEDIA_ALLOWED_TYPES, true);
     }
 
     private function removeFromFilesystem($link): bool

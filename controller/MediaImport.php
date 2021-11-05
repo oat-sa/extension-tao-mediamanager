@@ -21,11 +21,12 @@
 namespace oat\taoMediaManager\controller;
 
 use oat\taoMediaManager\model\ImportHandlerFactory;
+use oat\taoMediaManager\model\accessControl\MediaPermissionService;
 use tao_actions_Import;
 use tao_models_classes_import_ImportHandler;
 
 /**
- * This controller provide the actions to import medias
+ * This controller provides the actions to import medias
  */
 class MediaImport extends tao_actions_Import
 {
@@ -45,11 +46,35 @@ class MediaImport extends tao_actions_Import
         parent::index();
     }
 
+    /**
+     * This action is called when requesting or submitting the upload form.
+     */
     public function editMedia()
     {
         $id = $this->hasRequestParameter('instanceUri')
             ? $this->getRequestParameter('instanceUri')
             : $this->getRequestParameter('id');
+
+        if (empty($id)) {
+            $this->returnError(
+                __('Request should provide a media identifier as the id or instanceUri parameter'),
+                true,
+                400
+            );
+            return;
+        }
+
+        $permissionService = $this->getPermissionService();
+        $resource = $this->getResource($id);
+        $user = $this->getSession()->getUser();
+
+        if (
+            !$permissionService->isAllowedToEditResource($resource, $user)
+            || !$permissionService->isAllowedToEditMedia($user)
+        ) {
+            $this->returnError('Access denied', true, 403);
+            return;
+        }
 
         $this->importHandlers = [$this->getImportHandlerFactory()->createByMediaId($id)];
 
@@ -63,6 +88,11 @@ class MediaImport extends tao_actions_Import
 
     private function getImportHandlerFactory(): ImportHandlerFactory
     {
-        return $this->getServiceLocator()->get(ImportHandlerFactory::class);
+        return $this->getPsrContainer()->get(ImportHandlerFactory::class);
+    }
+
+    private function getPermissionService(): MediaPermissionService
+    {
+        return $this->getPsrContainer()->get(MediaPermissionService::class);
     }
 }

@@ -85,7 +85,7 @@ describe('Assets', () => {
             cy.log('SAVE ASSET WITH A-BLOCK IN IT');
             cy.intercept('PATCH', '**/taoMediaManager/SharedStimulus/patch*').as('saveAsset');
             cy.get('[data-testid="save-the-asset"]').click();
-             cy.wait('@saveAsset')
+            cy.wait('@saveAsset')
                  .its('response.body')
                  .its('success')
                  .should('eq', true);
@@ -100,7 +100,6 @@ describe('Assets', () => {
             cy.get('[id="media-authoring"]').click();
             cy.get('.widget-box.widget-block.widget-textBlock').should('exist');
             cy.get('[data-testid="manage-assets"]').click();
-
         });
 
         it('can delete passage', function () {

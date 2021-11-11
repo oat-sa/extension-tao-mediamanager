@@ -25,7 +25,7 @@ const dropSelector = 'div.qti-itemBody.item-editor-drop-area';
 /**
  * Add A-Block for Asset
  */
-export function addBlockAndInlineInteractions() {
+export function addABlock() {
     cy.log('ADDING A-BLOCK INTERACTION');
     const blockSelector = `[data-qti-class="${blockContainer}"]`;
     cy.dragAndDrop(blockSelector, dropSelector);

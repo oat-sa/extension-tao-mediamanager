@@ -21,8 +21,10 @@ export default {
     moveConfirmSelector: 'button[data-control="ok"]',
 
     root: '[data-uri="http://www.tao.lu/Ontologies/TAOMedia.rdf#Media"]',
-    restResourceGetAll: 'tao/RestResource/getAll',
+    resourceGetAllUrl: 'tao/RestResource/getAll',
 
     treeRenderUrl: 'taoMediaManager/MediaManager',
-    treeMediaManager :'div[id="tree-media_manager"]'
+    treeMediaManager :'div[id="tree-media_manager"]',
+
+    moveClassUrl: 'taoMediaManager/MediaManager/moveResource'
 };

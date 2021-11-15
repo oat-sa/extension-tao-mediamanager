@@ -19,9 +19,10 @@
 import urls from '../utils/urls';
 import selectors from '../utils/selectors';
 import { addABlock } from '../utils/add-A-block-interaction-asset';
+import { getRandomNumber } from '../../../../tao/views/cypress/utils/helpers';
 
 describe('Assets', () => {
-    const className = 'Asset E2E class';
+    const className = `Asset E2E class ${getRandomNumber()}`;
     const AssetRenamed = 'Renamed E2E Asset';
 
     /**
@@ -30,21 +31,18 @@ describe('Assets', () => {
      */
     before(() => {
         cy.setup(selectors.treeRenderUrl, selectors.editClassLabelUrl, urls.assets, selectors.root);
-        cy.get(selectors.root).then(root => {
-            if (!root.find(`li[title="${className}"] a`).length) {
-                cy.addClassToRoot(
-                    selectors.root,
-                    selectors.assetClassForm,
-                    className,
-                    selectors.editClassLabelUrl,
-                    selectors.treeRenderUrl,
-                    selectors.addSubClassUrl
-                );
-            }
-            cy.selectNode(selectors.root, selectors.assetClassForm, className);
+
+        cy.addClassToRoot(
+            selectors.root,
+            selectors.assetClassForm,
+            className,
+            selectors.editClassLabelUrl,
+            selectors.treeRenderUrl,
+            selectors.addSubClassUrl
+        );
+        cy.selectNode(selectors.root, selectors.assetClassForm, className);
             cy.addNode(selectors.assetForm, selectors.addAsset);
             cy.renameSelectedNode(selectors.assetForm, selectors.editAssetUrl, AssetRenamed);
-        });
     });
     /**
      * Remove e2e class

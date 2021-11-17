@@ -32,3 +32,4 @@ interface MediaResourcePreparerInterface
 
     public function withMediaResolver(TaoMediaResolver $mediaResolver): self;
 }
+

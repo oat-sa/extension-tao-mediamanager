@@ -66,40 +66,11 @@ describe('Assets', () => {
             );
         });
     });
-    describe('Asset creating, authoring and deletion', () => {
+    describe('Asset creating and deletion', () => {
         it('can create and rename an Asset', function () {
             cy.selectNode(selectors.root, selectors.assetClassForm, className)
             .addNode(selectors.assetForm, selectors.addAsset)
             .renameSelectedNode(selectors.assetForm, selectors.editAssetUrl, AssetRenamed );
-        });
-        it('can click passage Authoring & check all blocks present', function () {
-            cy.get(selectors.authoringAsset).click();
-            cy.get(selectors.assetAuthoringPanel).find('li[data-qti-class="_container"]');
-            cy.getSettled(selectors.assetAuthoringCanvas).should('have.length', 1);
-        });
-        it('can add A block to the canvas', function () {
-            cy.log('ADD A-BLOCK TO CANVAS');
-            addBlockAndInlineInteractions();
-        });
-        it('can save asset with A-block in it', function () {
-            cy.log('SAVE ASSET WITH A-BLOCK IN IT');
-            cy.intercept('PATCH', '**/taoMediaManager/SharedStimulus/patch*').as('saveAsset');
-            cy.get('[data-testid="save-the-asset"]').click();
-            cy.wait('@saveAsset')
-                 .its('response.body')
-                 .its('success')
-                 .should('eq', true);
-         });
-
-        it('can go back', function () {
-            cy.get(selectors.manageAssets).click();
-            cy.getSettled(selectors.treeMediaManager).find(`li[title="${AssetRenamed}"]`);
-        });
-        it('can re-open the asset and validates that added block is present', function () {
-            cy.log('VALIDATES THAT A-BLOCK PRESENT WHEN REPOENED');
-            cy.get('[id="media-authoring"]').click();
-            cy.get('.widget-box.widget-block.widget-textBlock').should('exist');
-            cy.get('[data-testid="manage-assets"]').click();
         });
 
         it('can delete passage', function () {
@@ -128,7 +99,8 @@ describe('Assets', () => {
                 selectors.moveConfirmSelector,
                 className,
                 classMovedName,
-                selectors.restResourceGetAll
+                selectors.resourceGetAllUrl,
+                selectors.moveClassUrl
             );
         });
 

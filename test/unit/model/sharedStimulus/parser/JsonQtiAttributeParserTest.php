@@ -22,18 +22,28 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\test\unit\model\sharedStimulus\parser;
 
+use DOMDocument;
 use oat\generis\test\TestCase;
+use oat\oatbox\log\LoggerService;
 use oat\taoMediaManager\model\sharedStimulus\parser\JsonQtiAttributeParser;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
+use PHPUnit\Framework\MockObject\MockObject;
+use Psr\Log\LoggerInterface;
 
 class JsonQtiAttributeParserTest extends TestCase
 {
     /** @var JsonQtiAttributeParser */
     private $subject;
 
+    /** @var mixed|LoggerService|MockObject */
+    private $logger;
+
     public function setUp(): void
     {
+        $this->logger = $this->createMock(LoggerInterface::class);
+
         $this->subject = new JsonQtiAttributeParser();
+        $this->subject->setLogger($this->logger);
     }
 
     public function testParseWithLanguage(): void
@@ -44,10 +54,18 @@ class JsonQtiAttributeParserTest extends TestCase
         $this->assertSame('es-MX', $result['attributes']['xml:lang']);
     }
 
-
     public function testParseWithoutLanguage(): void
     {
-        $body = '<?xml version="1.0" encoding="UTF-8"?><div xmlns="http://www.imsglobal.org/xsd/imsqti_v2p2"></div>';
+        $body = <<<XML_DOCUMENT
+<?xml version="1.0" encoding="UTF-8"?>
+<div xmlns="http://www.imsglobal.org/xsd/imsqti_v2p2"/>
+
+XML_DOCUMENT;
+
+        $this->logger->expects($this->once())
+            ->method('notice')
+            ->with('lang attribute is empty. Impossible to set the Language Attribute', ['document' => $body]);
+
         $sharedStimulus = new SharedStimulus('id', '', '', $body);
         $result = $this->subject->parse($sharedStimulus);
         $this->assertArrayNotHasKey('xml:lang', (array) $result['attributes']);

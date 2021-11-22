@@ -6,6 +6,7 @@ export default {
     authoringAsset: '[data-action= "sharedStimulusAuthoring"]',
     assetAuthoringPanel: 'section[id="sidebar-left-section-inline-interactions"]',
     assetAuthoringCanvas: 'div[id="item-editor-scroll-inner"]',
+    assetAuthoringSaveButton: '[data-testid="save-the-asset"]',
     manageAssets: 'li[data-testid="manage-assets"]',
 
     deleteClass: '[data-context="class"][data-action="deleteSharedStimulus"]',
@@ -21,8 +22,10 @@ export default {
     moveConfirmSelector: 'button[data-control="ok"]',
 
     root: '[data-uri="http://www.tao.lu/Ontologies/TAOMedia.rdf#Media"]',
-    restResourceGetAll: 'tao/RestResource/getAll',
+    resourceGetAllUrl: 'tao/RestResource/getAll',
 
     treeRenderUrl: 'taoMediaManager/MediaManager',
-    treeMediaManager :'div[id="tree-media_manager"]'
+    treeMediaManager :'div[id="tree-media_manager"]',
+
+    moveClassUrl: 'taoMediaManager/MediaManager/moveResource'
 };

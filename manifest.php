@@ -20,7 +20,9 @@
 
 use oat\taoItems\model\user\TaoItemsRoles;
 use oat\taoMediaManager\model\export\service\MediaResourcePreparer;
+use oat\taoMediaManager\model\sharedStimulus\encoder\SharedStimulusMediaEncoder;
 use oat\taoMediaManager\scripts\install\RegisterMediaResourcePreparer;
+use oat\taoMediaManager\scripts\install\RegisterSharedStimulusMediaEncoder;
 use oat\taoMediaManager\scripts\install\SetMediaManager;
 use oat\taoMediaManager\model\user\TaoAssetRoles;
 use oat\tao\model\accessControl\func\AccessRule;
@@ -164,6 +166,7 @@ return [
             SetMediaManager::class,
             SetRolesPermissions::class,
             [RegisterMediaResourcePreparer::class, ['service' => MediaResourcePreparer::class]],
+            [RegisterSharedStimulusMediaEncoder::class, ['service' => SharedStimulusMediaEncoder::class]],
         ]
     ],
     'update' => 'oat\\taoMediaManager\\scripts\\update\\Updater',

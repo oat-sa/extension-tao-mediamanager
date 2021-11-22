@@ -19,6 +19,8 @@
  */
 
 use oat\taoItems\model\user\TaoItemsRoles;
+use oat\taoMediaManager\model\export\service\MediaResourcePreparer;
+use oat\taoMediaManager\scripts\install\RegisterMediaResourcePreparer;
 use oat\taoMediaManager\scripts\install\SetMediaManager;
 use oat\taoMediaManager\scripts\install\RegisterXinludeHandler;
 use oat\taoMediaManager\scripts\install\RegisterItemDataHandler;
@@ -168,6 +170,7 @@ return [
             RegisterItemDataHandler::class,
             SetRolesPermissions::class,
             SetupMiddlewares::class,
+            [RegisterMediaResourcePreparer::class, ['service' => MediaResourcePreparer::class]]
         ]
     ],
     'update' => 'oat\\taoMediaManager\\scripts\\update\\Updater',

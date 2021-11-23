@@ -62,9 +62,11 @@ class JsonQtiAttributeParserTest extends TestCase
 
 XML_DOCUMENT;
 
+        $expectedLog = '<div xmlns="http://www.imsglobal.org/xsd/imsqti_v2p2"/>';
+
         $this->logger->expects($this->once())
             ->method('notice')
-            ->with('lang attribute is empty. Impossible to set the Language Attribute', ['document' => $body]);
+            ->with('lang attribute is empty. Impossible to set the Language Attribute', ['document' => $expectedLog]);
 
         $sharedStimulus = new SharedStimulus('id', '', '', $body);
         $result = $this->subject->parse($sharedStimulus);

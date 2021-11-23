@@ -78,13 +78,14 @@ class JsonQtiAttributeParser extends ConfigurableService
      */
     private function addLanguageAttribute(DOMDocument $document, XInclude $xinclude): void
     {
-        $languageAttribute = $document->firstChild->getAttribute('xml:lang');
+        $rootNode = $document->firstChild;
+        $languageAttribute = trim($rootNode->getAttribute('xml:lang'));
 
-        if (empty($languageAttribute)) {
+        if (strlen($languageAttribute) < 2) {
             $this->getLogger()->notice(
                 'lang attribute is empty. Impossible to set the Language Attribute',
                 [
-                    'document' => $document->saveXML()
+                    'document' => substr($document->saveXML($rootNode), 0, 200)
                 ]
             );
 

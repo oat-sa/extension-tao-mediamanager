@@ -83,7 +83,7 @@ class JsonQtiAttributeParser extends ConfigurableService
 
         if (strlen($languageAttribute) < 2) {
             $this->getLogger()->notice(
-                'lang attribute is empty. Impossible to set the Language Attribute',
+                'lang attribute is wrong. Impossible to set the Language Attribute',
                 [
                     'document' => substr($document->saveXML($rootNode), 0, 200)
                 ]

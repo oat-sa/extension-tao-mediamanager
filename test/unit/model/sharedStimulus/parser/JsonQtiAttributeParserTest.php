@@ -66,7 +66,7 @@ XML_DOCUMENT;
 
         $this->logger->expects($this->once())
             ->method('notice')
-            ->with('lang attribute is empty. Impossible to set the Language Attribute', ['document' => $expectedLog]);
+            ->with('lang attribute is wrong. Impossible to set the Language Attribute', ['document' => $expectedLog]);
 
         $sharedStimulus = new SharedStimulus('id', '', '', $body);
         $result = $this->subject->parse($sharedStimulus);

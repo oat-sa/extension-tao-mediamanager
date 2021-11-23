@@ -24,18 +24,28 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\test\integration\model;
 
 use LogicException;
+use oat\generis\model\data\Ontology;
 use oat\generis\test\TestCase;
+use oat\oatbox\log\LoggerService;
+use oat\tao\model\media\TaoMediaResolver;
 use oat\taoMediaManager\model\sharedStimulus\parser\JsonQtiAttributeParser;
+use oat\taoMediaManager\model\sharedStimulus\parser\SharedStimulusMediaExtractor;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
+use PHPUnit\Framework\MockObject\MockObject;
+use Psr\Log\LoggerInterface;
 
 class JsonQtiAttributeParserTest extends TestCase
 {
     /** @var JsonQtiAttributeParser */
     private $subject;
 
+    /** @var Ontology|MockObject */
+    private $logger;
+
     public function setUp(): void
     {
         $this->subject = new JsonQtiAttributeParser();
+        $this->subject->setLogger($this->createMock(LoggerInterface::class));
     }
 
     public function testRendererEmptyBody()

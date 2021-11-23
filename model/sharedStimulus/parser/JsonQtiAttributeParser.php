@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\sharedStimulus\parser;
 
 use DOMDocument;
+use DOMElement;
 use LogicException;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
@@ -76,11 +77,23 @@ class JsonQtiAttributeParser extends ConfigurableService
      */
     private function addLanguageAttribute(DOMDocument $document, XInclude $xinclude): void
     {
-        if (isset($document->getElementsByTagName('div')->item(0)->attributes['lang']->nodeValue)) {
-            $xinclude->setAttribute(
-                'xml:lang',
-                $document->getElementsByTagName('div')->item(0)->attributes['lang']->nodeValue
+        $rootNode = $document->firstChild;
+        $languageAttribute = trim($rootNode->getAttribute('xml:lang'));
+
+        if (strlen($languageAttribute) < 2) {
+            $this->getLogger()->notice(
+                'lang attribute is wrong. Impossible to set the Language Attribute',
+                [
+                    'document' => substr($document->saveXML($rootNode), 0, 200)
+                ]
             );
+
+            return;
         }
+
+        $xinclude->setAttribute(
+            'xml:lang',
+            $languageAttribute
+        );
     }
 }

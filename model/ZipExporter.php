@@ -31,7 +31,7 @@ use core_kernel_classes_Literal;
 use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
 use oat\oatbox\service\ServiceManager;
-use oat\taoMediaManager\model\export\service\MediaResourcePreparer;
+use oat\taoMediaManager\model\export\service\MediaResourcePreparerInterface;
 use oat\taoMediaManager\model\export\service\SharedStimulusCSSExporter;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use tao_helpers_Export;
@@ -190,9 +190,9 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
         return $this->getServiceManager()->get(FileManagement::SERVICE_ID);
     }
 
-    private function getMediaResourcePreparer(): MediaResourcePreparer
+    private function getMediaResourcePreparer(): MediaResourcePreparerInterface
     {
-        return $this->getServiceManager()->get(MediaResourcePreparer::class);
+        return $this->getServiceManager()->get(MediaResourcePreparerInterface::SERVICE_ID);
     }
 
     private function getSharedStimulusCSSExporter(): SharedStimulusCSSExporter

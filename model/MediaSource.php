@@ -28,8 +28,8 @@ use oat\tao\model\accessControl\AccessControlEnablerInterface;
 use oat\tao\model\media\MediaManagement;
 use oat\tao\model\media\mediaSource\DirectorySearchQuery;
 use oat\tao\model\media\ProcessedFileStreamAware;
+use oat\taoMediaManager\model\export\service\MediaResourcePreparerInterface;
 use oat\taoMediaManager\model\mapper\MediaSourcePermissionsMapper;
-use oat\taoMediaManager\model\export\service\MediaResourcePreparer;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
 use Psr\Http\Message\StreamInterface;
@@ -352,9 +352,9 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
         );
     }
 
-    private function getPreparer(): MediaResourcePreparer
+    private function getPreparer(): MediaResourcePreparerInterface
     {
-        return $this->getServiceLocator()->get(MediaResourcePreparer::class);
+        return $this->getServiceLocator()->get(MediaResourcePreparerInterface::SERVICE_ID);
     }
 
     private function getFileSourceUnserializer(): FileSourceUnserializer

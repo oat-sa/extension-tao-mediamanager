@@ -31,6 +31,7 @@ use oat\tao\model\media\TaoMediaResolver;
 use oat\taoMediaManager\model\sharedStimulus\parser\JsonQtiAttributeParser;
 use oat\taoMediaManager\model\sharedStimulus\parser\SharedStimulusMediaExtractor;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
+use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 
 class JsonQtiAttributeParserTest extends TestCase
@@ -38,7 +39,7 @@ class JsonQtiAttributeParserTest extends TestCase
     /** @var JsonQtiAttributeParser */
     private $subject;
 
-    /** @var Ontology|\PHPUnit\Framework\MockObject\MockObject */
+    /** @var Ontology|MockObject */
     private $logger;
 
     public function setUp(): void

@@ -22,15 +22,15 @@ import selectors from '../utils/selectors';
 import selectorsItem from '../../../../taoQtiItem/views/cypress/utils/selectors';
 
 import { selectUploadAssetToClass } from '../utils/resource-manager';
-import {
-    selectUploadSharedStimulus,
-    addSharedStimulusToInteraction
-} from "../../../../taoQtiItem/views/cypress/utils/resource-manager";
+import {selectUploadSharedStimulus,
+        addSharedStimulusToInteraction } from "../../../../taoQtiItem/views/cypress/utils/resource-manager";
 import { addAblock } from '../../../../taoQtiItem/views/cypress/utils/authoring-add-interactions';
 import { addInteraction } from "../../../../taoQtiItem/views/cypress/utils/authoring-add-interactions";
 
 import paths from '../../../../taoQtiItem/views/cypress/utils/paths';
 import { getRandomNumber } from '../../../../tao/views/cypress/utils/helpers';
+import { importSelectedAsset } from '../utils/import-selected-asset'
+
 
 const className = `Test E2E class ${getRandomNumber()}`;
 const itemName = 'Test E2E passage 1';
@@ -96,6 +96,7 @@ describe('Passage Authoring', () => {
             selectors.deleteConfirm,
             className,
             selectors.deleteClassUrl,
+            true,
             true
         );
     });
@@ -120,17 +121,23 @@ describe('Passage Authoring', () => {
                 cy.log(`${paths.assetsPath}${imageName}`, 'IS ADDED');
                 cy.getSettled(`${ablockContainerParagraph}`).click({ force: true });
             });
-
-            it('can import some asset (image import shared sitmulus)', () => {
-                //TO DO
-                cy.log('IMAGE AND ASSET IMPORTED')
-            });
         });
 
         it('can save passage with A block & content', () => {
              cy.intercept('PATCH', '**/taoMediaManager/SharedStimulus/patch*').as('savePassage');
              cy.get(selectors.assetAuthoringSaveButton).click({ force: true });
              cy.wait('@savePassage').its('response.body').its('success').should('eq', true);
+             cy.get(`${selectors.manageAssets}`).click();
+        });
+        it('can import asset', function () {
+            const sharedStimulusName = 'importablepassagepxml.zip';
+            cy.selectNode(selectors.root, selectors.assetClassForm, className);
+            importSelectedAsset(
+                selectors.importAsset,
+    `${paths.assetsPath}/${sharedStimulusName}`,
+                selectors.importAssetUrl,
+                className);
+            cy.log('IMAGE AND ASSET IMPORTED')
         });
      });
 
@@ -160,26 +167,40 @@ describe('Passage Authoring', () => {
         });
 
         it('can add created passage to the prompt ', function () {
-            addSharedStimulusToInteraction()
-            selectUploadSharedStimulus();
+            const isCreatedAsset = true;
+            const isChoice = false;
+            addSharedStimulusToInteraction(isChoice)
+            selectUploadSharedStimulus(isCreatedAsset);
         });
 
-        it('can add created passage to the choice ', function () {
-            cy.get('#item-editor-scroll-inner').click();
-            cy.get('.choice-area ')
-                .first()
-                .click();
-            addSharedStimulusToInteraction()
-            selectUploadSharedStimulus();
+        it('can add created passage to the choice & save', function () {
+            const isCreatedAsset = true;
+            const isChoice = true;
+
+            addSharedStimulusToInteraction(isChoice)
+            selectUploadSharedStimulus(isCreatedAsset);
+            cy.intercept('POST', '**/saveItem*').as('saveItem');
+            cy.get('[data-testid="save-the-item"]').click();
+            cy.wait('@saveItem').its('response.body').its('success').should('eq', true);
+            cy.get(`${selectorsItem.manageItems}`).click();
         });
 
-        it('can add created asset to the prompt ', function () {
-            // TO DO
+        it('can add imported asset to the prompt ', function () {
+            const isCreatedAsset = false;
+            const isChoice = false;
+            cy.addNode(selectorsItem.itemForm, selectorsItem.addItem);
+            cy.get(selectorsItem.authoring).click();
+            addInteraction(choiceInteraction);
+            addSharedStimulusToInteraction(isChoice)
+            selectUploadSharedStimulus(isCreatedAsset);
             cy.log('ASSET ADDED TO PROMPT');
         });
 
-        it('can add created asset to the choice ', function () {
-            //TO DO
+        it('can add imported asset to the choice ', function () {
+            const isCreatedAsset = false;
+            const isChoice = true;
+            addSharedStimulusToInteraction(isChoice)
+            selectUploadSharedStimulus(isCreatedAsset);
             cy.log('ASSET ADDED TO CHOICE');
         });
 
@@ -189,6 +210,5 @@ describe('Passage Authoring', () => {
             cy.wait('@saveItem').its('response.body').its('success').should('eq', true);
             cy.log('ITEM SAVED');
         });
-
     });
 });

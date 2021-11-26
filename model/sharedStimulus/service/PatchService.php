@@ -22,9 +22,12 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus\service;
 
+use core_kernel_classes_Class;
+use core_kernel_classes_Literal;
 use core_kernel_classes_Resource as Resource;
 use core_kernel_persistence_Exception;
 use InvalidArgumentException;
+use LogicException;
 use oat\generis\model\fileReference\FileReferenceSerializer;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\filesystem\File;
@@ -32,12 +35,12 @@ use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\media\TaoMediaException;
 use oat\tao\model\media\TaoMediaResolver;
 use oat\taoMediaManager\model\MediaService;
-use oat\taoMediaManager\model\sharedStimulus\parser\SharedStimulusMediaExtractor;
 use oat\taoMediaManager\model\sharedStimulus\PatchCommand;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 use oat\taoMediaManager\model\SharedStimulusImporter;
 use qtism\data\storage\xml\XmlStorageException;
 use tao_models_classes_FileNotFoundException as FileNotFoundException;
+use tao_models_classes_LanguageService;
 
 class PatchService extends ConfigurableService
 {
@@ -69,10 +72,16 @@ class PatchService extends ConfigurableService
         $this->getMediaService()->editMediaInstance($file, $id, null, $userId);
         $file->delete();
 
+        $languageResource = $resource->getOnePropertyValue($this->getProperty(MediaService::PROPERTY_LANGUAGE));
+
+        if ($languageResource instanceof core_kernel_classes_Literal) {
+            $languageResource = $this->findLanguageResource($languageResource);
+        }
+
         return new SharedStimulus(
             $id,
             $resource->getLabel(),
-            $resource->getOnePropertyValue($this->getProperty(MediaService::PROPERTY_LANGUAGE))->getUri()
+            $languageResource->getUri()
         );
     }
 
@@ -111,8 +120,13 @@ class PatchService extends ConfigurableService
         }
     }
 
-    public function getMediaParser(): SharedStimulusMediaExtractor
+    private function findLanguageResource(core_kernel_classes_Literal $resourceLanguage): Resource
     {
-        return $this->getServiceLocator()->get(SharedStimulusMediaExtractor::class);
+        $userClass = new core_kernel_classes_Class(tao_models_classes_LanguageService::CLASS_URI_LANGUAGES);
+        $resourceLanguage = current($userClass->searchInstances([RDF_VALUE => (string)$resourceLanguage]));
+        if (!$resourceLanguage instanceof Resource) {
+            throw new LogicException(sprintf("Fail to find the resource of %s", (string)$resourceLanguage));
+        }
+        return $resourceLanguage;
     }
 }

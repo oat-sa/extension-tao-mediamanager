@@ -62,7 +62,6 @@ describe('Passage Authoring', () => {
         );
         cy.addNode(selectors.assetForm, selectors.addAsset);
         cy.renameSelectedNode(selectors.assetForm, selectors.editAssetUrl, itemName);
-        // Asset import to go here? or in tests TO DO
     });
     /**
      * Visit the page

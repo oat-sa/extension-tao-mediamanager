@@ -53,12 +53,12 @@ class StoreService extends ConfigurableService
             $fs->createDir($dirname . DIRECTORY_SEPARATOR . self::CSS_DIR_NAME);
             foreach ($cssFiles as $file) {
                 if (!file_exists($file)) {
-                    $this->getLogger()->notice(sprintf("file %s does not exist", $file));
+                    $this->getLogger()->notice(sprintf('file %s does not exist', $file));
                     continue;
                 }
 
                 if (!is_readable($file)) {
-                    $this->getLogger()->notice(sprintf("file %s is not readable", $file));
+                    $this->getLogger()->notice(sprintf('file %s is not readable', $file));
                     continue;
                 }
 

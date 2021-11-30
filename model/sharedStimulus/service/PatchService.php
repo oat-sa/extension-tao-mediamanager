@@ -174,7 +174,7 @@ class PatchService extends ConfigurableService
         $userClass = new core_kernel_classes_Class(tao_models_classes_LanguageService::CLASS_URI_LANGUAGES);
         $resourceLanguage = current($userClass->searchInstances([RDF_VALUE => (string)$resourceLanguage]));
         if (!$resourceLanguage instanceof Resource) {
-            throw new LogicException(sprintf("Fail to find the resource of %s", (string)$resourceLanguage));
+            throw new LogicException(sprintf('Fail to find the resource of %s', (string)$resourceLanguage));
         }
         return $resourceLanguage;
     }

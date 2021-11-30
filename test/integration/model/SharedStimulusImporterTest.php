@@ -27,6 +27,7 @@ use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\log\LoggerService;
 use oat\tao\model\upload\UploadService;
 use oat\taoMediaManager\model\MediaService;
+use oat\taoMediaManager\model\sharedStimulus\service\StoreService;
 use oat\taoMediaManager\model\SharedStimulusImporter;
 use Psr\Log\NullLogger;
 use qtism\data\storage\xml\XmlDocument;
@@ -70,13 +71,21 @@ class SharedStimulusImporterTest extends TestCase
             $this->assertTrue($response, __('It should not be valid'));
             $xmlDocument = new XmlDocument();
             $xmlDocument->load($filename);
-            $this->assertEquals($xmlDocument->getDomDocument()->C14N(), $xmlDocumentValid->getDomDocument()->C14N(), __('The loaded cml is wrong'));
+            $this->assertEquals(
+                $xmlDocument->getDomDocument()->C14N(),
+                $xmlDocumentValid->getDomDocument()->C14N(),
+                __('The loaded cml is wrong')
+            );
         } catch (\Exception $e) {
             $this->assertFalse($response, __('It should not throw an exception'));
             if (!is_null($e)) {
                 $this->assertInstanceOf(get_class($exception), $e, __('The exception class is wrong'));
                 if ($exception->getMessage() !== '') {
-                    $this->assertEquals($exception->getMessage(), $e->getMessage(), __('The exception message is wrong'));
+                    $this->assertEquals(
+                        $exception->getMessage(),
+                        $e->getMessage(),
+                        __('The exception message is wrong')
+                    );
                 }
             }
         }
@@ -102,14 +111,18 @@ class SharedStimulusImporterTest extends TestCase
 
         $myClass = new \core_kernel_classes_Class('http://fancyDomain.com/tao.rdf#fancyUri');
         $this->service->expects($this->once())
-            ->method('createMediaInstance')
-            ->with($file, $myClass->getUri(), 'EN_en', basename($filename))
+            ->method('createSharedStimulusInstance')
+            ->with($filename, $myClass->getUri(), 'EN_en', null)
             ->willReturn('myGreatLink');
 
         $report = $sharedImporter->import($myClass, $form);
 
         $this->assertEquals(\common_report_Report::TYPE_SUCCESS, $report->getType(), __('Report should be success'));
-        $this->assertEquals(__('Shared Stimulus imported successfully'), $report->getMessage(), __('Report message is wrong'));
+        $this->assertEquals(
+            __('Shared Stimulus imported successfully'),
+            $report->getMessage(),
+            __('Report message is wrong')
+        );
     }
 
     public function testEditXml()
@@ -131,10 +144,12 @@ class SharedStimulusImporterTest extends TestCase
         $sharedImporter = $this->getSharedStimulusImporter($instance->getUri());
 
         $form = $sharedImporter->getForm();
-        $form->setValues([
-            'source' => $fileinfo,
-            'lang' => 'EN_en'
-        ]);
+        $form->setValues(
+            [
+                'source' => $fileinfo,
+                'lang' => 'EN_en'
+            ]
+        );
 
         $this->service->expects($this->once())
             ->method('editMediaInstance')
@@ -143,7 +158,11 @@ class SharedStimulusImporterTest extends TestCase
 
         $report = $sharedImporter->import($myClass, $form);
 
-        $this->assertEquals(__('Shared Stimulus edited successfully'), $report->getMessage(), __('Report message is wrong'));
+        $this->assertEquals(
+            __('Shared Stimulus edited successfully'),
+            $report->getMessage(),
+            __('Report message is wrong')
+        );
         $this->assertEquals(\common_report_Report::TYPE_SUCCESS, $report->getType(), __('Report should be success'));
         $this->assertTrue($file->exists());
 
@@ -218,10 +237,22 @@ class SharedStimulusImporterTest extends TestCase
             [$sampleDir . 'sharedStimulus.xml', true, null],
             /** TODO :  this sample should come back once the qtsim validate apip file
              * and the SharedStimulusImporter l54 $xmlDocument->load($filename, false); should validate files*/
-        //            array($sampleDir . 'wrongParsing.xml', false, new XmlStorageException('')),
-            [$sampleDir . 'feedback.xml', false, new XmlStorageException("The shared stimulus contains feedback QTI components.")],
-            [$sampleDir . 'template.xml', false, new XmlStorageException("The shared stimulus contains template QTI components.")],
-            [$sampleDir . 'interactions.xml', false, new XmlStorageException("The shared stimulus contains interactions QTI components.")]
+            //            array($sampleDir . 'wrongParsing.xml', false, new XmlStorageException('')),
+            [
+                $sampleDir . 'feedback.xml',
+                false,
+                new XmlStorageException("The shared stimulus contains feedback QTI components.")
+            ],
+            [
+                $sampleDir . 'template.xml',
+                false,
+                new XmlStorageException("The shared stimulus contains template QTI components.")
+            ],
+            [
+                $sampleDir . 'interactions.xml',
+                false,
+                new XmlStorageException("The shared stimulus contains interactions QTI components.")
+            ]
         ];
     }
 
@@ -246,11 +277,20 @@ class SharedStimulusImporterTest extends TestCase
             $importer->setInstanceUri($uri);
         }
 
-        $importer->setServiceLocator($this->getServiceLocatorMock([
-            UploadService::SERVICE_ID => $uploadServiceMock,
-            LoggerService::SERVICE_ID => new NullLogger(),
-            MediaService::class => $this->service,
-        ]));
+        $storeMock = $this->createMock(StoreService::class);
+        $storeMock->expects($this->any())->method('store')->willReturn(
+            dirname(__DIR__) . '/sample/sharedStimulus'
+        );
+        $importer->setServiceLocator(
+            $this->getServiceLocatorMock(
+                [
+                    UploadService::SERVICE_ID => $uploadServiceMock,
+                    LoggerService::SERVICE_ID => new NullLogger(),
+                    MediaService::class => $this->service,
+                    StoreService::class => $storeMock
+                ]
+            )
+        );
 
         return $importer;
     }
@@ -270,9 +310,11 @@ class SharedStimulusImporterTest extends TestCase
             ],
         ]);
 
-        $fileSystemService->setServiceLocator($this->getServiceLocatorMock([
-            FileSystemService::SERVICE_ID => $fileSystemService
-        ]));
+        $fileSystemService->setServiceLocator(
+            $this->getServiceLocatorMock([
+                FileSystemService::SERVICE_ID => $fileSystemService
+            ])
+        );
 
         return $fileSystemService->getDirectory($directoryName);
     }

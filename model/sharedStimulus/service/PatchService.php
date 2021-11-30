@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus\service;
 
-use core_kernel_classes_Class;
 use core_kernel_classes_Literal;
 use core_kernel_classes_Resource as Resource;
 use core_kernel_persistence_Exception;
@@ -39,8 +38,8 @@ use oat\taoMediaManager\model\sharedStimulus\PatchCommand;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 use oat\taoMediaManager\model\SharedStimulusImporter;
 use qtism\data\storage\xml\XmlStorageException;
+use tao_helpers_I18n;
 use tao_models_classes_FileNotFoundException as FileNotFoundException;
-use tao_models_classes_LanguageService;
 
 class PatchService extends ConfigurableService
 {
@@ -122,8 +121,7 @@ class PatchService extends ConfigurableService
 
     private function findLanguageResource(core_kernel_classes_Literal $resourceLanguage): Resource
     {
-        $userClass = new core_kernel_classes_Class(tao_models_classes_LanguageService::CLASS_URI_LANGUAGES);
-        $resourceLanguage = current($userClass->searchInstances([RDF_VALUE => (string)$resourceLanguage]));
+        $resourceLanguage = tao_helpers_I18n::getLangResourceByCode((string)$resourceLanguage);
         if (!$resourceLanguage instanceof Resource) {
             throw new LogicException(sprintf("Fail to find the resource of %s", (string)$resourceLanguage));
         }

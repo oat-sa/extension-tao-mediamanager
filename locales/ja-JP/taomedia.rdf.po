@@ -1,0 +1,172 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO 2021.10\n"
+"PO-Revision-Date: 2021-12-01T11:25:25\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: ja-JP\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: ja-JP\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#Media
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Assets"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#Media
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Assets"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AltText
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Alternative Text"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AltText
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Alternative Text"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#Language
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Language"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#Language
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Language"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Media Manager"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "The Media Manager Role"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedMedia
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Related media"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedMedia
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "It describes Media where this media is used"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Related item"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedItem
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "It describes Item where this media is used"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Role"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Role Class"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetClassNavigatorRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Class Navigator"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetClassNavigatorRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Class Navigator Role"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetViewerRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Viewer"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetViewerRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Viewer Role"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetPreviewerRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Previewer"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetPreviewerRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Previewer Role"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetExporterRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Exporter"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetExporterRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Exporter Role"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetPropertiesEditorRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Properties Editor"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetPropertiesEditorRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Properties Editor Role"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetContentCreatorRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Content Creator"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetContentCreatorRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Content Creator Role"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetResourceCreatorRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Resource Creator"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetResourceCreatorRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Resource Creator Role"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetImporterRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Importer"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetImporterRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Importer Role"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetDeleterRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Deleter"
+msgstr ""
+
+# http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetDeleterRole
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Deleter Role"
+msgstr ""
+

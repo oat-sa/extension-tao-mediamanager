@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint117\n"
-"PO-Revision-Date: 2020-09-22T16:02:17\n"
+"Project-Id-Version: TAO 2021.10\n"
+"PO-Revision-Date: 2021-12-01T11:25:25\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ja-JP\n"
@@ -28,15 +28,71 @@ msgstr "メディアファイル追加"
 msgid "An error has occurred. Please contact your administrator."
 msgstr "エラーが発生しました。管理者にお問合せください。"
 
+msgid "Are you sure you want to delete this"
+msgstr ""
+
+msgid "Are you sure you want to delete this class and all of its content?"
+msgstr ""
+
+#, tao-public
+msgid "Assets"
+msgstr "メディア"
+
+#, tao-public
+msgid "Authoring"
+msgstr ""
+
+msgid "Back to Manage Assets"
+msgstr ""
+
+msgid "Background color"
+msgstr ""
+
+msgid "Block"
+msgstr ""
+
+msgid "Border color"
+msgstr ""
+
+msgid "Center"
+msgstr ""
+
+msgid "Default"
+msgstr ""
+
+msgid "Define item language."
+msgstr ""
+
 #, tao-public
 msgid "Delete"
 msgstr "削除"
 
+msgid "Deleting this class will break the items and the tests that are currently using them."
+msgstr ""
+
+msgid "Disable this stylesheet temporarily"
+msgstr ""
+
+msgid "Download this stylesheet"
+msgstr ""
+
+msgid "e.g. 13"
+msgstr ""
+
 msgid "Edit Instance"
 msgstr "インスタンス編集"
 
+msgid "Edit stylesheet label"
+msgstr ""
+
 msgid "Edited %s"
 msgstr "％sを編集しました"
+
+msgid "Element Properties"
+msgstr ""
+
+msgid "Enlarge font size"
+msgstr ""
 
 #, tao-public
 msgid "Export"
@@ -63,6 +119,15 @@ msgstr "ファイル"
 msgid "File name"
 msgstr "ファイル名"
 
+msgid "Font family"
+msgstr ""
+
+msgid "Font size"
+msgstr ""
+
+msgid "Forbidden action"
+msgstr ""
+
 #, tao-public
 msgid "Import"
 msgstr "インポート"
@@ -70,29 +135,37 @@ msgstr "インポート"
 msgid "Imported %s"
 msgstr "%s をインポート"
 
-msgid "Imported new file"
-msgstr "新規ファイルをインポート"
+msgid "Inline Interactions"
+msgstr ""
 
-msgid "Initial import"
-msgstr "初期インポート"
+msgid "inline-interactions"
+msgstr ""
 
 msgid "Instance saved"
 msgstr "インスタンスが保存されました"
 
+msgid "is currently used in"
+msgstr ""
+
 msgid "Issue while modifying %s"
 msgstr "%s の変更中に問題が発生しました"
 
+msgid "item(s)"
+msgstr ""
+
+msgid "Language"
+msgstr ""
+
+msgid "Left"
+msgstr ""
+
 #, tao-public
-msgid "Manage Media"
+msgid "Manage Assets"
 msgstr "メディア管理"
 
 #, tao-public
 msgid "Manage Schema"
 msgstr "スキーマ管理"
-
-#, tao-public
-msgid "Media"
-msgstr "メディア"
 
 msgid "Media imported"
 msgstr "メディアがインポートされました"
@@ -119,18 +192,86 @@ msgid "Move"
 msgstr "移動"
 
 #, tao-public
+msgid "Move To"
+msgstr ""
+
+#, tao-public
 msgid "New class"
 msgstr "新規クラス"
+
+#, tao-public
+msgid "New passage"
+msgstr ""
 
 msgid "No file found for this media"
 msgstr "メディアファイルが見つかりません"
 
+msgid "No value set"
+msgstr ""
+
+msgid "Passage Properties"
+msgstr ""
+
+msgid "Passage Style"
+msgstr ""
+
+msgid "Please delete the subclasses before."
+msgstr ""
+
+msgid "Preparing CSS, please wait…"
+msgstr ""
+
 msgid "Preview"
 msgstr "プレビュー"
+
+msgid "Preview the item"
+msgstr ""
 
 #, tao-public
 msgid "Properties"
 msgstr "プロパティ"
+
+msgid "Reduce font size"
+msgstr ""
+
+msgid "Remove custom background color"
+msgstr ""
+
+msgid "Remove custom border color"
+msgstr ""
+
+msgid "Remove custom font family"
+msgstr ""
+
+msgid "Remove custom font size"
+msgstr ""
+
+msgid "Remove custom text color"
+msgstr ""
+
+msgid "Remove this stylesheet"
+msgstr ""
+
+msgid "Replace Asset"
+msgstr ""
+
+msgid "Request should provide a media identifier as the id or instanceUri parameter"
+msgstr ""
+
+msgid "Resource deleted"
+msgstr ""
+
+msgid "Right"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Save the asset"
+msgstr ""
+
+msgid "Set a CSS class name in order to customize the display style."
+msgstr ""
 
 msgid "Shared Stimulus"
 msgstr "シェアードスティミュラス"
@@ -141,6 +282,45 @@ msgstr "シェアードスティミュラスの編集が完了しました"
 msgid "Shared Stimulus imported successfully"
 msgstr "シェアードスティミュラスのインポートが完了しました"
 
+msgid "some text ..."
+msgstr ""
+
+msgid "Style Sheet <b>%s</b> removed<br> Click <i>Add Style Sheet</i> to re-apply."
+msgstr ""
+
+msgid "Table headings"
+msgstr ""
+
+msgid "Text Block"
+msgstr ""
+
+msgid "Text Block CSS Class"
+msgstr ""
+
+msgid "Text Block Properties"
+msgstr ""
+
+msgid "Text Block Style"
+msgstr ""
+
+msgid "Text color"
+msgstr ""
+
+msgid "The class"
+msgstr ""
+
+msgid "There was a problem downloading your CSS, please try again."
+msgstr ""
+
+msgid "This"
+msgstr ""
+
+msgid "Unable to delete the selected resource"
+msgstr ""
+
+msgid "Unable to delete the selected resource because you do not have the required rights to delete part of its content."
+msgstr ""
+
 msgid "Unable to extract the archive"
 msgstr "アーカイブから抽出できません"
 
@@ -150,14 +330,26 @@ msgstr "インポートできません"
 msgid "Upload Media"
 msgstr "メディアのアップロード"
 
-msgid "Upload new media"
-msgstr "メディアを入替える"
-
 msgid "Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
 msgstr "Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
 
+msgid "Warning"
+msgstr ""
+
+msgid "which contains assets that are in use elsewhere."
+msgstr ""
+
+msgid "You are about to delete the class"
+msgstr ""
+
+msgid "you are trying to delete is too large and contains too many subclasses."
+msgstr ""
+
 msgid "You can\'t upload a zip file as a media"
 msgstr "zipファイルはアップロードできません"
+
+msgid "Your passage is saved"
+msgstr ""
 
 msgid "Zip"
 msgstr "ZIP"

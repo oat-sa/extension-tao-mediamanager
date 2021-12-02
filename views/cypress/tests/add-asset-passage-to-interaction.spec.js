@@ -30,6 +30,7 @@ import { addInteraction } from "../../../../taoQtiItem/views/cypress/utils/autho
 import paths from '../../../../taoQtiItem/views/cypress/utils/paths';
 import { getRandomNumber } from '../../../../tao/views/cypress/utils/helpers';
 import { importSelectedAsset } from '../utils/import-selected-asset'
+import {checkPassageNotEditable} from "../utils/check-read-only";
 
 
 const className = `Test E2E class ${getRandomNumber()}`;
@@ -178,9 +179,18 @@ describe('Passage Authoring', () => {
 
             addSharedStimulusToInteraction(isChoice)
             selectUploadSharedStimulus(isCreatedAsset);
-            cy.intercept('POST', '**/saveItem*').as('saveItem');
-            cy.get('[data-testid="save-the-item"]').click();
-            cy.wait('@saveItem').its('response.body').its('success').should('eq', true);
+            cy.log('IMPORTED ASSET ADDED TO PROMPT');
+            cy.saveItem();
+            cy.get(`${selectorsItem.manageItems}`).click();
+        });
+        it('can check that created passage is read-only and cannot be edited', function () {
+            cy.get(selectorsItem.authoring).click();
+            //check that prompts's paragraph in passage cannot be edited
+            checkPassageNotEditable(isChoice)
+            //check that choice's paragraph in passage cannot be edited
+            let isChoice = true;
+            checkPassageNotEditable(isChoice)
+            cy.saveItem();
             cy.get(`${selectorsItem.manageItems}`).click();
         });
 
@@ -192,7 +202,7 @@ describe('Passage Authoring', () => {
             addInteraction(choiceInteraction);
             addSharedStimulusToInteraction(isChoice)
             selectUploadSharedStimulus(isCreatedAsset);
-            cy.log('ASSET ADDED TO PROMPT');
+            cy.log('IMPORTED ASSET ADDED TO PROMPT');
         });
 
         it('can add imported asset to the choice ', function () {
@@ -200,14 +210,20 @@ describe('Passage Authoring', () => {
             const isChoice = true;
             addSharedStimulusToInteraction(isChoice)
             selectUploadSharedStimulus(isCreatedAsset);
-            cy.log('ASSET ADDED TO CHOICE');
+            cy.saveItem();
+            cy.log('IMPORTED ASSET ADDED TO CHOICE');
+            cy.get(`${selectorsItem.manageItems}`).click();
         });
 
-        it('can save the item ', function () {
-            cy.intercept('POST', '**/saveItem*').as('saveItem');
-            cy.get('[data-testid="save-the-item"]').click();
-            cy.wait('@saveItem').its('response.body').its('success').should('eq', true);
-            cy.log('ITEM SAVED');
+        it('can check that imported passage is read-only and cannot be edited', function () {
+            cy.get(selectorsItem.authoring).click();
+            //check that prompts's paragraph in passage cannot be edited
+             checkPassageNotEditable(isChoice)
+            //check that choice's paragraph in passage cannot be edited
+            let isChoice = true;
+            checkPassageNotEditable(isChoice)
+            cy.saveItem();
+            cy.get(`${selectorsItem.manageItems}`).click();
         });
     });
 });

@@ -76,5 +76,6 @@ export function selectUploadSharedStimulusToItem(isCreatedAsset, dataAlt) {
                     .last()
                     .click();
             }
+            cy.getSettled('[class="qti-include"]').should('exist')
         });
 }

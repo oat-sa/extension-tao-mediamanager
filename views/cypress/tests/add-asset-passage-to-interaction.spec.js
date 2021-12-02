@@ -125,6 +125,7 @@ describe('Passage Authoring', () => {
 
         it('can save passage with A block & content', () => {
              cy.intercept('PATCH', '**/taoMediaManager/SharedStimulus/patch*').as('savePassage');
+             cy.get(selectors.assetAuthoringSaveButton).should('not.be.disabled');
              cy.get(selectors.assetAuthoringSaveButton).click({ force: true });
              cy.wait('@savePassage').its('response.body').its('success').should('eq', true);
              cy.get(`${selectors.manageAssets}`).click();

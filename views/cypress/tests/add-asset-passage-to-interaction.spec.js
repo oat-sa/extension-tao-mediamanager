@@ -33,7 +33,7 @@ import { importSelectedAsset } from '../utils/import-selected-asset'
 
 
 const className = `Test E2E class ${getRandomNumber()}`;
-const itemName = 'Test E2E passage 1';
+const passageName = 'Test E2E passage 1';
 const choiceInteraction = 'choice';
 const ablockContainerParagraph = '.widget-box[data-qti-class="_container"] p';
 const aBlockContainer = '.widget-box[data-qti-class="_container"]';
@@ -62,7 +62,7 @@ describe('Passage Authoring', () => {
             selectors.addSubClassUrl
         );
         cy.addNode(selectors.assetForm, selectors.addAsset);
-        cy.renameSelectedNode(selectors.assetForm, selectors.editAssetUrl, itemName);
+        cy.renameSelectedNode(selectors.assetForm, selectors.editAssetUrl, passageName);
     });
     /**
      * Visit the page
@@ -159,7 +159,7 @@ describe('Passage Authoring', () => {
                 selectorsItem.addSubClassUrl
             );
             cy.addNode(selectorsItem.itemForm, selectorsItem.addItem);
-            cy.renameSelectedNode(selectorsItem.itemForm, selectorsItem.editItemUrl, itemName);
+            cy.renameSelectedNode(selectorsItem.itemForm, selectorsItem.editItemUrl, passageName);
         });
 
         it('can add an interaction to item ', function () {
@@ -173,14 +173,14 @@ describe('Passage Authoring', () => {
             const isCreatedAsset = true;
             const isChoice = false;
             addSharedStimulusToInteraction(isChoice)
-            selectUploadSharedStimulusToItem(isCreatedAsset, dataAlt, className);
+            selectUploadSharedStimulusToItem(isCreatedAsset, dataAlt, className, passageName);
         });
 
         it('can add created passage to the choice & save', function () {
             const isCreatedAsset = true;
             const isChoice = true;
             addSharedStimulusToInteraction(isChoice)
-            selectUploadSharedStimulusToItem(isCreatedAsset, dataAlt, className);
+            selectUploadSharedStimulusToItem(isCreatedAsset, dataAlt, className, passageName);
             cy.intercept('POST', '**/saveItem*').as('saveItem');
             cy.get('[data-testid="save-the-item"]').click();
             cy.wait('@saveItem').its('response.body').its('success').should('eq', true);
@@ -194,7 +194,7 @@ describe('Passage Authoring', () => {
             cy.get(selectorsItem.authoring).click();
             addInteraction(choiceInteraction);
             addSharedStimulusToInteraction(isChoice)
-            selectUploadSharedStimulusToItem(isCreatedAsset, dataAlt, className);
+            selectUploadSharedStimulusToItem(isCreatedAsset, dataAlt, className,passageName);
             cy.log('ASSET ADDED TO PROMPT');
         });
 
@@ -202,7 +202,7 @@ describe('Passage Authoring', () => {
             const isCreatedAsset = false;
             const isChoice = true;
             addSharedStimulusToInteraction(isChoice)
-            selectUploadSharedStimulusToItem(isCreatedAsset, dataAlt, className);
+            selectUploadSharedStimulusToItem(isCreatedAsset, dataAlt, className, passageName);
             cy.log('ASSET ADDED TO CHOICE');
         });
 

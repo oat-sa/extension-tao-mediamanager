@@ -49,7 +49,7 @@ export function selectUploadAssetToClass(fileName, pathToFile, className) {
  * * @param {boolean} isCreatedAsset determines whether the asset is
  * the one previously created (vs imported)
  */
-export function selectUploadSharedStimulusToItem(isCreatedAsset, dataAlt, className) {
+export function selectUploadSharedStimulusToItem(isCreatedAsset, dataAlt, className, passageName) {
     cy.log('SELECT OR UPLOAD SHARED STIMULUS',);
     return cy.get('.resourcemgr.modal')
         .last()
@@ -61,14 +61,14 @@ export function selectUploadSharedStimulusToItem(isCreatedAsset, dataAlt, classN
             cy.getSettled(`.file-selector .files  [data-alt="${dataAlt}"]`).should('exist');
             if(isCreatedAsset){
                 cy.getSettled(`#${resourcemgrId} ul > li[data-type="html"]`)
-                    .first()
+                    .contains(passageName)
                     .click();
                 cy.get(`#${resourcemgrId} li > .actions a.select`)
                     .first()
                     .click();
             } else {
                 cy.getSettled(`#${resourcemgrId} ul > li[data-type="html"]`)
-                    .last()
+                    .contains('sharedStimulus')
                     .click();
                 cy.get(`#${resourcemgrId} li > .actions a.select`)
                     .last()

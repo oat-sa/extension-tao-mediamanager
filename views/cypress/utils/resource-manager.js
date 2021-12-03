@@ -49,7 +49,7 @@ export function selectUploadAssetToClass(fileName, pathToFile, className) {
  * * @param {boolean} isCreatedAsset determines whether the asset is
  * the one previously created (vs imported)
  */
-export function selectUploadSharedStimulusToItem(isCreatedAsset, dataAlt) {
+export function selectUploadSharedStimulusToItem(isCreatedAsset, dataAlt, className) {
     cy.log('SELECT OR UPLOAD SHARED STIMULUS',);
     return cy.get('.resourcemgr.modal')
         .last()
@@ -57,6 +57,7 @@ export function selectUploadSharedStimulusToItem(isCreatedAsset, dataAlt) {
             const resourcemgrId = resourcemgr[0].id;
             cy.getSettled(`#${resourcemgrId} .file-browser .root-folder`).should('exist');
             cy.getSettled(`.mediamanager .folders .root`).should('exist');
+            cy.get(`#${resourcemgrId} .file-browser .mediamanager .folders`).contains(className).click();
             cy.getSettled(`#${resourcemgrId} .mediamanager .folders .root ul > li`)
                 .first()
                 .click();
@@ -76,6 +77,6 @@ export function selectUploadSharedStimulusToItem(isCreatedAsset, dataAlt) {
                     .last()
                     .click();
             }
-            cy.getSettled('[class="qti-include"]').should('exist')
+            cy.getSettled('[class="qti-include"] div').should('exist');
         });
 }

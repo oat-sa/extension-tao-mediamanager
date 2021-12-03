@@ -125,9 +125,9 @@ describe('Passage Authoring', () => {
 
         it('can save passage with A block & content', () => {
              cy.intercept('PATCH', '**/taoMediaManager/SharedStimulus/patch*').as('savePassage');
-             cy.get(selectors.assetAuthoringSaveButton).should('not.be.disabled');
              cy.get(selectors.assetAuthoringSaveButton).click({ force: true });
              cy.wait('@savePassage').its('response.body').its('success').should('eq', true);
+             cy.get(selectors.assetAuthoringSaveButton).should('not.have.class', 'disabled');
              cy.get(`${selectors.manageAssets}`).click();
         });
         it('can import asset', function () {
@@ -144,9 +144,9 @@ describe('Passage Authoring', () => {
 
     describe('item authoring add shared stimulus', () => {
         it('can create an item ', function () {
-            cy.intercept('POST', '**/taoItems/Items/editItem*').as('editItem');
+            cy.intercept('POST', '**/taoItems/Items/editItem*').as('editItems');
             cy.visit(urlsItem.items);
-            cy.wait('@editItem');
+            cy.wait('@editItems');
             // create folder and item
             cy.addClassToRoot(
                 selectorsItem.root,
@@ -171,14 +171,14 @@ describe('Passage Authoring', () => {
             const isCreatedAsset = true;
             const isChoice = false;
             addSharedStimulusToInteraction(isChoice)
-            selectUploadSharedStimulusToItem(isCreatedAsset, dataAlt);
+            selectUploadSharedStimulusToItem(isCreatedAsset, dataAlt, className);
         });
 
         it('can add created passage to the choice & save', function () {
             const isCreatedAsset = true;
             const isChoice = true;
             addSharedStimulusToInteraction(isChoice)
-            selectUploadSharedStimulusToItem(isCreatedAsset, dataAlt);
+            selectUploadSharedStimulusToItem(isCreatedAsset, dataAlt, className);
             cy.intercept('POST', '**/saveItem*').as('saveItem');
             cy.get('[data-testid="save-the-item"]').click();
             cy.wait('@saveItem').its('response.body').its('success').should('eq', true);
@@ -192,7 +192,7 @@ describe('Passage Authoring', () => {
             cy.get(selectorsItem.authoring).click();
             addInteraction(choiceInteraction);
             addSharedStimulusToInteraction(isChoice)
-            selectUploadSharedStimulusToItem(isCreatedAsset, dataAlt);
+            selectUploadSharedStimulusToItem(isCreatedAsset, dataAlt, className);
             cy.log('ASSET ADDED TO PROMPT');
         });
 
@@ -200,7 +200,7 @@ describe('Passage Authoring', () => {
             const isCreatedAsset = false;
             const isChoice = true;
             addSharedStimulusToInteraction(isChoice)
-            selectUploadSharedStimulusToItem(isCreatedAsset, dataAlt);
+            selectUploadSharedStimulusToItem(isCreatedAsset, dataAlt, className);
             cy.log('ASSET ADDED TO CHOICE');
         });
 

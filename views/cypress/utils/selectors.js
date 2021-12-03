@@ -18,6 +18,9 @@ export default {
     editClassLabelUrl: 'taoMediaManager/MediaManager/editClassLabel',
     editAssetUrl: 'taoMediaManager/MediaManager/editInstance',
 
+    importAsset: '#media-import',
+    importAssetUrl: 'taoMediaManager/MediaImport/index',
+
     moveClass: '[id="media-move-to"][data-context="resource"][data-action="moveTo"]',
     moveConfirmSelector: 'button[data-control="ok"]',
 

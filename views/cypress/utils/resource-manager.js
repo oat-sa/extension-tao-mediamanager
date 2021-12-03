@@ -43,3 +43,35 @@ export function selectUploadAssetToClass(fileName, pathToFile, className) {
             cy.getSettled(`#${resourcemgrId} li[data-alt="${fileName}"] .actions a.select`).last().click();
         });
 }
+
+/**
+ * Add/upload shared stimulus to Item interaction
+ * * @param {boolean} isCreatedAsset determines whether the asset is
+ * the one previously created (vs imported)
+ */
+export function selectUploadSharedStimulusToItem(isCreatedAsset, dataAlt, className, passageName) {
+    cy.log('SELECT OR UPLOAD SHARED STIMULUS',);
+    return cy.get('.resourcemgr.modal')
+        .last()
+        .then(resourcemgr => {
+            const resourcemgrId = resourcemgr[0].id;
+            cy.getSettled(`#${resourcemgrId} .file-browser .root-folder`).should('exist');
+            cy.getSettled(`.mediamanager .folders .root`).should('exist');
+            cy.get(`#${resourcemgrId} .file-browser .mediamanager .folders`).contains(className).click();
+            cy.getSettled(`.file-selector .files  [data-alt="${dataAlt}"]`).should('exist');
+            if(isCreatedAsset){
+                cy.getSettled(`#${resourcemgrId} ul > li[data-type="html"]`)
+                    .contains(passageName)
+                    .siblings('.actions')
+                    .find('a[title="Select this file"]')
+                    .click();
+            } else {
+                cy.getSettled(`#${resourcemgrId} ul > li[data-type="html"]`)
+                    .contains('sharedStimulus')
+                    .siblings('.actions')
+                    .find('a[title="Select this file"]')
+                    .click();
+            }
+            cy.getSettled('[class="qti-include"] div').should('exist');
+        });
+}

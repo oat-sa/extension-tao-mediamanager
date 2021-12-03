@@ -62,16 +62,14 @@ export function selectUploadSharedStimulusToItem(isCreatedAsset, dataAlt, classN
             if(isCreatedAsset){
                 cy.getSettled(`#${resourcemgrId} ul > li[data-type="html"]`)
                     .contains(passageName)
-                    .click();
-                cy.get(`#${resourcemgrId} li > .actions a.select`)
-                    .first()
+                    .siblings('.actions')
+                    .find('a[title="Select this file"]')
                     .click();
             } else {
                 cy.getSettled(`#${resourcemgrId} ul > li[data-type="html"]`)
                     .contains('sharedStimulus')
-                    .click();
-                cy.get(`#${resourcemgrId} li > .actions a.select`)
-                    .last()
+                    .siblings('.actions')
+                    .find('a[title="Select this file"]')
                     .click();
             }
             cy.getSettled('[class="qti-include"] div').should('exist');

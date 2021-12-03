@@ -58,9 +58,6 @@ export function selectUploadSharedStimulusToItem(isCreatedAsset, dataAlt, classN
             cy.getSettled(`#${resourcemgrId} .file-browser .root-folder`).should('exist');
             cy.getSettled(`.mediamanager .folders .root`).should('exist');
             cy.get(`#${resourcemgrId} .file-browser .mediamanager .folders`).contains(className).click();
-            cy.getSettled(`#${resourcemgrId} .mediamanager .folders .root ul > li`)
-                .first()
-                .click();
             cy.getSettled(`.file-selector .files  [data-alt="${dataAlt}"]`).should('exist');
             if(isCreatedAsset){
                 cy.getSettled(`#${resourcemgrId} ul > li[data-type="html"]`)

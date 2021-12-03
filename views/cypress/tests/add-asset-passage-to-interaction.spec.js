@@ -128,7 +128,9 @@ describe('Passage Authoring', () => {
              cy.get(selectors.assetAuthoringSaveButton).click({ force: true });
              cy.wait('@savePassage').its('response.body').its('success').should('eq', true);
              cy.get(selectors.assetAuthoringSaveButton).should('not.have.class', 'disabled');
-             cy.get(`${selectors.manageAssets}`).click();
+            cy.intercept('GET', `**/getOntologyData**`).as('treeRender');
+            cy.get(`${selectors.manageAssets}`).click();
+            cy.wait('@treeRender');
         });
         it('can import asset', function () {
             const sharedStimulusName = 'importablepassagepxml.zip';

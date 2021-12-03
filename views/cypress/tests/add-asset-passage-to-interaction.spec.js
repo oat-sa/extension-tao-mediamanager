@@ -30,6 +30,7 @@ import { addInteraction } from "../../../../taoQtiItem/views/cypress/utils/autho
 import paths from '../../../../taoQtiItem/views/cypress/utils/paths';
 import { getRandomNumber } from '../../../../tao/views/cypress/utils/helpers';
 import { importSelectedAsset } from '../utils/import-selected-asset'
+import { checkPassageNotEditable } from '../utils/check-read-only'
 
 
 const className = `Test E2E class ${getRandomNumber()}`;
@@ -186,6 +187,18 @@ describe('Passage Authoring', () => {
             cy.wait('@saveItem').its('response.body').its('success').should('eq', true);
             cy.get(`${selectorsItem.manageItems}`).click();
         });
+        it('can check that created passage is read-only and cannot be edited', function () {
+            cy.get(selectorsItem.authoring).click();
+            //check that prompts's paragraph in passage cannot be edited
+            checkPassageNotEditable(isChoice)
+            //check that choice's paragraph in passage cannot be edited
+            let isChoice = true;
+            checkPassageNotEditable(isChoice)
+            cy.intercept('POST', '**/saveItem*').as('saveItem');
+            cy.get('[data-testid="save-the-item"]').click();
+            cy.wait('@saveItem').its('response.body').its('success').should('eq', true);
+            cy.get(`${selectorsItem.manageItems}`).click();
+        });
 
         it('can add imported asset to the prompt ', function () {
             const isCreatedAsset = false;
@@ -198,19 +211,28 @@ describe('Passage Authoring', () => {
             cy.log('ASSET ADDED TO PROMPT');
         });
 
-        it('can add imported asset to the choice ', function () {
+        it('can add imported asset to the choice & safe ', function () {
             const isCreatedAsset = false;
             const isChoice = true;
             addSharedStimulusToInteraction(isChoice)
             selectUploadSharedStimulusToItem(isCreatedAsset, dataAlt, className, passageName);
             cy.log('ASSET ADDED TO CHOICE');
-        });
-
-        it('can save the item ', function () {
             cy.intercept('POST', '**/saveItem*').as('saveItem');
             cy.get('[data-testid="save-the-item"]').click();
             cy.wait('@saveItem').its('response.body').its('success').should('eq', true);
             cy.log('ITEM SAVED');
+        });
+        it('can check that imported passage is read-only and cannot be edited', function () {
+            //check that prompts's paragraph in passage cannot be edited
+            checkPassageNotEditable(isChoice)
+            //check that choice's paragraph in passage cannot be edited
+            let isChoice = true;
+            checkPassageNotEditable(isChoice)
+            cy.intercept('POST', '**/saveItem*').as('saveItem');
+            cy.get('[data-testid="save-the-item"]').click();
+            cy.wait('@saveItem').its('response.body').its('success').should('eq', true);
+            cy.log('ITEM SAVED');
+            // cy.get(`${selectorsItem.manageItems}`).click();
         });
     });
 });

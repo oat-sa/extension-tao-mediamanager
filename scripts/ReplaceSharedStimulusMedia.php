@@ -15,9 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2017 (original work) Open Assessment Technologies SA;
- *
- *
+ * Copyright (c) 2021 (original work) Open Assessment Technologies SA;
  */
 
 namespace oat\taoMediaManager\scripts;
@@ -37,8 +35,6 @@ use oat\taoMediaManager\model\sharedStimulus\service\StoreService;
 use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourceSpecification;
 
 /**
- * Class UpdateMedia
- *
  * Used to update old media from the command line
  *
  * ```
@@ -159,3 +155,4 @@ class ReplaceSharedStimulusMedia extends ConfigurableService implements Action
         return $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
     }
 }
+

@@ -38,7 +38,7 @@ use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourc
  * Used to update old media from the command line
  *
  * ```
- * sudo -u www-data php index.php 'oat\taoMediaManager\scripts\UpdateMedia' [dryRun]
+ * sudo -u www-data php index.php 'oat\taoMediaManager\scripts\ReplaceSharedStimulusMedia' [dryRun]
  * ```
  */
 class ReplaceSharedStimulusMedia extends ConfigurableService implements Action

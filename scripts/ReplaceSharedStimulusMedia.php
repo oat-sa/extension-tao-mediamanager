@@ -18,6 +18,8 @@
  * Copyright (c) 2021 (original work) Open Assessment Technologies SA;
  */
 
+declare(strict_types=1);
+
 namespace oat\taoMediaManager\scripts;
 
 use core_kernel_classes_Literal;
@@ -58,7 +60,7 @@ class ReplaceSharedStimulusMedia extends ConfigurableService implements Action
         $toBeChangedCount = 0;
         $successCount = 0;
 
-        $dryRun = isset($params[0]) && strpos($params[0], 'dryRun') !== false;
+        $dryRun = isset($params[0]) && $params[0] === 'dryRun';
 
         foreach ($mediaInstances as $mediaInstance) {
             if (!$this->getSharedStimulusResourceSpecification()->isSatisfiedBy($mediaInstance)) {

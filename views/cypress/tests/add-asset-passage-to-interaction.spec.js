@@ -189,10 +189,10 @@ describe('Passage Authoring', () => {
         });
         it('can check that created passage is read-only and cannot be edited', function () {
             cy.get(selectorsItem.authoring).click();
+            let isChoice = true;
             //check that prompts's paragraph in passage cannot be edited
             checkPassageNotEditable(isChoice)
             //check that choice's paragraph in passage cannot be edited
-            let isChoice = true;
             checkPassageNotEditable(isChoice)
             cy.intercept('POST', '**/saveItem*').as('saveItem');
             cy.get('[data-testid="save-the-item"]').click();
@@ -223,10 +223,10 @@ describe('Passage Authoring', () => {
             cy.log('ITEM SAVED');
         });
         it('can check that imported passage is read-only and cannot be edited', function () {
+            let isChoice = true;
             //check that prompts's paragraph in passage cannot be edited
             checkPassageNotEditable(isChoice)
             //check that choice's paragraph in passage cannot be edited
-            let isChoice = true;
             checkPassageNotEditable(isChoice)
             cy.intercept('POST', '**/saveItem*').as('saveItem');
             cy.get('[data-testid="save-the-item"]').click();

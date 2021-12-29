@@ -26,7 +26,6 @@
 export function checkPassageNotEditable(isChoice = false){
     cy.get('[contenteditable="false"]').should('exist');
     cy.getSettled('#item-editor-scoll-container').click();
-    cy.get('.qti-prompt-container').click();
     if (isChoice){
         cy.get('.choice-area ').find('[data-identifier="choice_2"]').click({force:true});
     } else {

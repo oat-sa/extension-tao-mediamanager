@@ -121,6 +121,7 @@ describe('Passage Authoring', () => {
             selectUploadAssetToClass(imageName, `${paths.assetsPath}${imageName}`, className).then(() => {
                 cy.log(`${paths.assetsPath}${imageName}`, 'IS ADDED');
                 cy.getSettled(`${ablockContainerParagraph}`).click({ force: true });
+                cy.getSettled(`${ablockContainerParagraph} img`).should('exist');
             });
         });
 
@@ -147,7 +148,7 @@ describe('Passage Authoring', () => {
 
     describe('item authoring add shared stimulus', () => {
         it('can create an item ', function () {
-            cy.intercept('POST', '**/taoItems/Items/editItem*').as('editItems');
+            cy.intercept('POST', '**/edit*').as('editItems');
             cy.visit(urlsItem.items);
             cy.wait('@editItems');
             // create folder and item

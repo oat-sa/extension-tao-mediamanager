@@ -28,9 +28,9 @@ export function checkPassageNotEditable(isChoice = false){
     cy.getSettled('#item-editor-scoll-container').click();
     cy.get('.qti-prompt-container').click();
     if (isChoice){
-        cy.get('.qti-prompt-container').click();
-    } else {
         cy.get('.choice-area ').find('[data-identifier="choice_2"]').click({force:true});
+    } else {
+        cy.get('.qti-prompt-container').click();
     }
     cy.get('.qti-include').last().click({force: true});
     cy.getSettled('#toolbar-top').should('have.css','display', 'none');

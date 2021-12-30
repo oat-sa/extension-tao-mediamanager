@@ -121,6 +121,7 @@ describe('Passage Authoring', () => {
             selectUploadAssetToClass(imageName, `${paths.assetsPath}${imageName}`, className).then(() => {
                 cy.log(`${paths.assetsPath}${imageName}`, 'IS ADDED');
                 cy.getSettled(`${ablockContainerParagraph}`).click({ force: true });
+                cy.getSettled(`${ablockContainerParagraph} img`).should('exist');
             });
         });
 
@@ -147,7 +148,7 @@ describe('Passage Authoring', () => {
 
     describe('item authoring add shared stimulus', () => {
         it('can create an item ', function () {
-            cy.intercept('POST', '**/taoItems/Items/editItem*').as('editItems');
+            cy.intercept('POST', '**/edit*').as('editItems');
             cy.visit(urlsItem.items);
             cy.wait('@editItems');
             // create folder and item
@@ -189,10 +190,11 @@ describe('Passage Authoring', () => {
         });
         it('can check that created passage is read-only and cannot be edited', function () {
             cy.get(selectorsItem.authoring).click();
+            let isChoice = false;
             //check that prompts's paragraph in passage cannot be edited
             checkPassageNotEditable(isChoice)
             //check that choice's paragraph in passage cannot be edited
-            let isChoice = true;
+            isChoice = true;
             checkPassageNotEditable(isChoice)
             cy.intercept('POST', '**/saveItem*').as('saveItem');
             cy.get('[data-testid="save-the-item"]').click();
@@ -223,10 +225,11 @@ describe('Passage Authoring', () => {
             cy.log('ITEM SAVED');
         });
         it('can check that imported passage is read-only and cannot be edited', function () {
+            let isChoice = false;
             //check that prompts's paragraph in passage cannot be edited
             checkPassageNotEditable(isChoice)
             //check that choice's paragraph in passage cannot be edited
-            let isChoice = true;
+            isChoice = true;
             checkPassageNotEditable(isChoice)
             cy.intercept('POST', '**/saveItem*').as('saveItem');
             cy.get('[data-testid="save-the-item"]').click();

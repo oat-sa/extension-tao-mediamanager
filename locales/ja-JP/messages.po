@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint117\n"
-"PO-Revision-Date: 2020-09-22T16:02:17\n"
+"Project-Id-Version: TAO 2021.11\n"
+"PO-Revision-Date: 2022-01-25T10:44:03\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ja-JP\n"
@@ -28,15 +28,50 @@ msgstr "メディアファイル追加"
 msgid "An error has occurred. Please contact your administrator."
 msgstr "エラーが発生しました。管理者にお問合せください。"
 
+msgid "Are you sure you want to delete this"
+msgstr ""
+
+msgid "Are you sure you want to delete this \"%s\"?"
+msgstr "「%s」を削除してもよろしいですか？"
+
+msgid "Are you sure you want to delete this class and all of its content?"
+msgstr ""
+
+#, tao-public
+msgid "Assets"
+msgstr "メディア"
+
+#, tao-public
+msgid "Authoring"
+msgstr ""
+
+msgid "Back to Manage Assets"
+msgstr ""
+
+msgid "Block"
+msgstr ""
+
+msgid "Center"
+msgstr ""
+
+msgid "Define item language."
+msgstr ""
+
 #, tao-public
 msgid "Delete"
 msgstr "削除"
+
+msgid "Deleting this class will break the items and the tests that are currently using them."
+msgstr ""
 
 msgid "Edit Instance"
 msgstr "インスタンス編集"
 
 msgid "Edited %s"
 msgstr "％sを編集しました"
+
+msgid "Element Properties"
+msgstr ""
 
 #, tao-public
 msgid "Export"
@@ -45,10 +80,10 @@ msgstr "エクスポート"
 msgid "Export Media as Zip file"
 msgstr "メディアをZIPファイルにエクスポート"
 
-msgid "Fail to edit Shared Stimulus"
+msgid "Fail to edit shared stimulus"
 msgstr "シェアードスティミュラスの編集に失敗しました。"
 
-msgid "Fail to edit shared stimulus"
+msgid "Fail to edit Shared Stimulus"
 msgstr "シェアードスティミュラスの編集に失敗しました。"
 
 msgid "Fail to import media"
@@ -63,6 +98,9 @@ msgstr "ファイル"
 msgid "File name"
 msgstr "ファイル名"
 
+msgid "Forbidden action"
+msgstr ""
+
 #, tao-public
 msgid "Import"
 msgstr "インポート"
@@ -76,23 +114,31 @@ msgstr "新規ファイルをインポート"
 msgid "Initial import"
 msgstr "初期インポート"
 
+msgid "Inline Interactions"
+msgstr ""
+
+msgid "inline-interactions"
+msgstr ""
+
 msgid "Instance saved"
 msgstr "インスタンスが保存されました"
 
 msgid "Issue while modifying %s"
 msgstr "%s の変更中に問題が発生しました"
 
+msgid "Language"
+msgstr ""
+
+msgid "Left"
+msgstr ""
+
 #, tao-public
-msgid "Manage Media"
-msgstr "メディア管理"
+msgid "Manage Assets"
+msgstr ""
 
 #, tao-public
 msgid "Manage Schema"
 msgstr "スキーマ管理"
-
-#, tao-public
-msgid "Media"
-msgstr "メディア"
 
 msgid "Media imported"
 msgstr "メディアがインポートされました"
@@ -119,18 +165,53 @@ msgid "Move"
 msgstr "移動"
 
 #, tao-public
+msgid "Move To"
+msgstr ""
+
+#, tao-public
 msgid "New class"
 msgstr "新規クラス"
+
+#, tao-public
+msgid "New passage"
+msgstr ""
 
 msgid "No file found for this media"
 msgstr "メディアファイルが見つかりません"
 
+msgid "Passage Properties"
+msgstr ""
+
+msgid "Please delete the subclasses before."
+msgstr ""
+
 msgid "Preview"
 msgstr "プレビュー"
+
+msgid "Preview the item"
+msgstr ""
 
 #, tao-public
 msgid "Properties"
 msgstr "プロパティ"
+
+msgid "Replace Asset"
+msgstr ""
+
+msgid "Resource deleted"
+msgstr ""
+
+msgid "Right"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Save the asset"
+msgstr ""
+
+msgid "Set a CSS class name in order to customize the display style."
+msgstr ""
 
 msgid "Shared Stimulus"
 msgstr "シェアードスティミュラス"
@@ -141,6 +222,24 @@ msgstr "シェアードスティミュラスの編集が完了しました"
 msgid "Shared Stimulus imported successfully"
 msgstr "シェアードスティミュラスのインポートが完了しました"
 
+msgid "some text ..."
+msgstr ""
+
+msgid "Text Block"
+msgstr ""
+
+msgid "Text Block CSS Class"
+msgstr ""
+
+msgid "The class"
+msgstr ""
+
+msgid "This \"%s\" is currently used in %d item(s)"
+msgstr "この「%s」は現在、%dつのアイテムで使用されています。"
+
+msgid "Unable to delete the selected resource"
+msgstr ""
+
 msgid "Unable to extract the archive"
 msgstr "アーカイブから抽出できません"
 
@@ -150,14 +249,26 @@ msgstr "インポートできません"
 msgid "Upload Media"
 msgstr "メディアのアップロード"
 
-msgid "Upload new media"
-msgstr "メディアを入替える"
-
 msgid "Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
 msgstr "Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
 
+msgid "Warning"
+msgstr ""
+
+msgid "which contains assets that are in use elsewhere."
+msgstr ""
+
+msgid "You are about to delete the class"
+msgstr ""
+
+msgid "you are trying to delete is too large and contains too many subclasses."
+msgstr ""
+
 msgid "You can\'t upload a zip file as a media"
 msgstr "zipファイルはアップロードできません"
+
+msgid "Your passage is saved"
+msgstr ""
 
 msgid "Zip"
 msgstr "ZIP"

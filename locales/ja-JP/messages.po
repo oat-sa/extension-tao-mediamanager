@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 2021.10\n"
-"PO-Revision-Date: 2021-12-01T11:25:25\n"
+"Project-Id-Version: TAO 2022.01\n"
+"PO-Revision-Date: 2022-01-24T17:24:46\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ja-JP\n"
@@ -22,6 +22,9 @@ msgstr "メディアが正常に修正されました：%s "
 msgid "%s media to modify"
 msgstr "メディアを変更します：%s "
 
+msgid "%s shared stimulus media to modify"
+msgstr ""
+
 msgid "Add a media file"
 msgstr "メディアファイル追加"
 
@@ -30,6 +33,9 @@ msgstr "エラーが発生しました。管理者にお問合せください。
 
 msgid "Are you sure you want to delete this"
 msgstr ""
+
+msgid "Are you sure you want to delete this \"%s\"?"
+msgstr "「%s」を削除してもよろしいですか？"
 
 msgid "Are you sure you want to delete this class and all of its content?"
 msgstr ""
@@ -55,6 +61,9 @@ msgid "Border color"
 msgstr ""
 
 msgid "Center"
+msgstr ""
+
+msgid "Current path: %s"
 msgstr ""
 
 msgid "Default"
@@ -101,10 +110,10 @@ msgstr "エクスポート"
 msgid "Export Media as Zip file"
 msgstr "メディアをZIPファイルにエクスポート"
 
-msgid "Fail to edit Shared Stimulus"
+msgid "Fail to edit shared stimulus"
 msgstr "シェアードスティミュラスの編集に失敗しました。"
 
-msgid "Fail to edit shared stimulus"
+msgid "Fail to edit Shared Stimulus"
 msgstr "シェアードスティミュラスの編集に失敗しました。"
 
 msgid "Fail to import media"
@@ -144,14 +153,8 @@ msgstr ""
 msgid "Instance saved"
 msgstr "インスタンスが保存されました"
 
-msgid "is currently used in"
-msgstr ""
-
 msgid "Issue while modifying %s"
 msgstr "%s の変更中に問題が発生しました"
-
-msgid "item(s)"
-msgstr ""
 
 msgid "Language"
 msgstr ""
@@ -201,6 +204,9 @@ msgstr "新規クラス"
 
 #, tao-public
 msgid "New passage"
+msgstr ""
+
+msgid "New path %s"
 msgstr ""
 
 msgid "No file found for this media"
@@ -312,7 +318,10 @@ msgstr ""
 msgid "There was a problem downloading your CSS, please try again."
 msgstr ""
 
-msgid "This"
+msgid "This \"%s\" is currently used in %d item(s)"
+msgstr "この「%s」は現在、%dつのアイテムで使用されています。"
+
+msgid "Total shared stimulus media: %s"
 msgstr ""
 
 msgid "Unable to delete the selected resource"

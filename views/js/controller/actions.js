@@ -146,7 +146,8 @@ define([
                         message = relatedItemsPopupTpl({
                             name,
                             inUsageMessage:  __('This "%s" is currently used in %d item(s)', name, haveItemReferences.length),
-                            confirmationMessage: __('Are you sure you want to delete this "%s"?', name)
+                            confirmationMessage: __('Are you sure you want to delete this "%s"?', name),
+                            items: haveItemReferences
                         });
                     }
                 } else if (actionContext.context[0] !== 'instance') {

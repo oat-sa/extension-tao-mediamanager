@@ -40,13 +40,13 @@ msgstr "Mediebank"
 
 #, tao-public
 msgid "Authoring"
-msgstr "Forfatter"
+msgstr "Rediger"
 
 msgid "Back to Manage Assets"
 msgstr "Tilbake for å administrere mediebank"
 
 msgid "Block"
-msgstr "Blokkere"
+msgstr "Tekstboks"
 
 msgid "Center"
 msgstr "Senter"
@@ -56,13 +56,13 @@ msgstr "Definer oppgavespråk."
 
 #, tao-public
 msgid "Delete"
-msgstr "Slette"
+msgstr "Slett"
 
 msgid "Deleting this class will break the items and the tests that are currently using them."
 msgstr "Hvis du sletter denne mappen, blir prøvene som inneholder noen av disse oppgavene som finnes i denne mappen ødelagt."
 
 msgid "Edit Instance"
-msgstr "Rediger forekomst"
+msgstr "Rediger egenskaper"
 
 msgid "Edited %s"
 msgstr "Redigert %s"
@@ -112,7 +112,7 @@ msgid "Initial import"
 msgstr "Første import"
 
 msgid "Inline Interactions"
-msgstr "Inline oppgavetyper"
+msgstr "Tekstboks med oppgavetyper"
 
 msgid "inline-interactions"
 msgstr ""
@@ -141,7 +141,7 @@ msgstr "Administrere Mediebank"
 
 #, tao-public
 msgid "Manage Schema"
-msgstr "Administrer skjema"
+msgstr "Administrer egenskaper"
 
 msgid "Media imported"
 msgstr "Media importert"
@@ -155,7 +155,7 @@ msgstr "Media Manager"
 
 #, tao-public
 msgid "Media Manager extension"
-msgstr "Media Manager-utvidelse"
+msgstr "Mediebank"
 
 msgid "Media Options"
 msgstr "Medialternativer"
@@ -199,7 +199,7 @@ msgid "Properties"
 msgstr "Egenskaper"
 
 msgid "Replace Asset"
-msgstr "Erstatt medierfil"
+msgstr "Erstatt mediefil"
 
 msgid "Resource deleted"
 msgstr "Ressurs ble slettet"
@@ -229,10 +229,10 @@ msgid "some text ..."
 msgstr "noe tekst..."
 
 msgid "Text Block"
-msgstr "Tekstblokk"
+msgstr "Tekstboks"
 
 msgid "Text Block CSS Class"
-msgstr "Tekstblokk CSS-mappe"
+msgstr "Tekstboks CSS-mappe"
 
 msgid "The class"
 msgstr "Mappen"
@@ -271,7 +271,7 @@ msgid "You can\'t upload a zip file as a media"
 msgstr ""
 
 msgid "Your passage is saved"
-msgstr "Innholdsfil er lagret"
+msgstr "Lagret"
 
 msgid "Zip"
 msgstr "Zip"

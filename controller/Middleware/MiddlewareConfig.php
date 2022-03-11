@@ -31,15 +31,9 @@ class MiddlewareConfig implements MiddlewareConfigInterface
     public function __invoke(): array
     {
         return [
-            MiddlewareMap::perRoute(
-                '/taoMediaManager/SharedStimulus/patch',
-                [
-                    OpenAPISchemaValidateRequestMiddleware::SERVICE_ID,
-                ],
-                [
-                    'PATCH',
-                ]
-            ),
+            MiddlewareMap::byRoute('/taoMediaManager/SharedStimulus/patch')
+                ->andMiddlewareId(OpenAPISchemaValidateRequestMiddleware::SERVICE_ID)
+                ->andHttpMethod('PATCH'),
         ];
     }
 }

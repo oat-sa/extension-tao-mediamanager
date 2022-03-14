@@ -19,6 +19,7 @@
  */
 
 use oat\taoItems\model\user\TaoItemsRoles;
+use oat\taoMediaManager\controller\Middleware\MiddlewareConfig;
 use oat\taoMediaManager\model\export\service\MediaResourcePreparer;
 use oat\taoMediaManager\scripts\install\RegisterMediaResourcePreparer;
 use oat\taoMediaManager\scripts\install\SetMediaManager;
@@ -219,5 +220,8 @@ return [
     ],
     'containerServiceProviders' => [
         MediaServiceProvider::class,
+    ],
+    'middlewares' => [
+        MiddlewareConfig::class,
     ],
 ];

@@ -39,7 +39,7 @@ use qtism\data\content\xhtml\Img;
 use qtism\data\content\xhtml\QtiObject;
 use qtism\data\storage\xml\XmlDocument;
 
-class MediaResourcePreparer extends ConfigurableService
+class MediaResourcePreparer extends ConfigurableService implements MediaResourcePreparerInterface
 {
     use OntologyAwareTrait;
 
@@ -86,7 +86,7 @@ class MediaResourcePreparer extends ConfigurableService
         $this->setComponentSource($component, $base64Content);
     }
 
-    public function withMediaResolver(TaoMediaResolver $mediaResolver): self
+    public function withMediaResolver(TaoMediaResolver $mediaResolver): MediaResourcePreparerInterface
     {
         $this->mediaResolver = $mediaResolver;
 

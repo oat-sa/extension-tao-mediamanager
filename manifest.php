@@ -19,6 +19,8 @@
  */
 
 use oat\taoItems\model\user\TaoItemsRoles;
+use oat\taoMediaManager\model\export\service\MediaResourcePreparer;
+use oat\taoMediaManager\scripts\install\RegisterMediaResourcePreparer;
 use oat\taoMediaManager\scripts\install\SetMediaManager;
 use oat\taoMediaManager\model\user\TaoAssetRoles;
 use oat\tao\model\accessControl\func\AccessRule;
@@ -162,6 +164,7 @@ return [
         'php' => [
             SetMediaManager::class,
             SetRolesPermissions::class,
+            [RegisterMediaResourcePreparer::class, ['service' => MediaResourcePreparer::class]],
             SetupMiddlewares::class,
         ]
     ],

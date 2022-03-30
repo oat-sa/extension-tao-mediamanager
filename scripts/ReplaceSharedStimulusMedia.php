@@ -23,12 +23,14 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\scripts;
 
 use Throwable;
+use RuntimeException;
 use oat\oatbox\filesystem\File;
 use core_kernel_classes_Literal;
 use oat\oatbox\reporting\Report;
 use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
 use oat\generis\model\data\Ontology;
+use oat\oatbox\filesystem\Directory;
 use oat\taoMediaManager\model\MediaService;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\extension\script\ScriptAction;
@@ -47,8 +49,8 @@ class ReplaceSharedStimulusMedia extends ScriptAction
     /** @var core_kernel_classes_Property */
     private $propertyLink;
 
-    /** @var string */
-    private $fileSystemId;
+    /** @var Directory */
+    private $rootDirectory;
 
     protected function provideOptions(): array
     {
@@ -109,19 +111,18 @@ class ReplaceSharedStimulusMedia extends ScriptAction
                     continue;
                 }
 
-                $sharedStimulusStoredSourceFile = $this->getFile($link);
+                $sharedStimulusStoredSourceFile = $this->getRootDirectory()->getFile($link);
 
                 if (!$sharedStimulusStoredSourceFile->exists()) {
                     ++$notExistsCount;
-                    $report->add(
-                        Report::createWarning(
-                            __(
-                                'Shared stimulus "%s": file "%s" not exists',
-                                $mediaInstance->getUri(),
-                                $sharedStimulusStoredSourceFile->getBasename()
-                            )
-                        )
+                    $message = __(
+                        'Shared stimulus "%s": file "%s" not exists',
+                        $mediaInstance->getUri(),
+                        $sharedStimulusStoredSourceFile->getBasename()
                     );
+
+                    $report->add(Report::createWarning($message));
+                    $this->logWarning($message);
 
                     continue;
                 }
@@ -131,7 +132,12 @@ class ReplaceSharedStimulusMedia extends ScriptAction
                 $report->add(Report::createInfo(__('New path %s', $newMediaLink)));
 
                 if (!$mediaInstance->editPropertyValues($this->getPropertyLink(), $newMediaLink)) {
-                    $report->add(Report::createError(__('Issue while modifying %s', $mediaInstance->getUri())));
+                    ++$errorsCount;
+                    $this->getRootDirectory()->getDirectory($dirname)->deleteSelf();
+
+                    $message = __('Issue while modifying %s', $mediaInstance->getUri());
+                    $report->add(Report::createError($message));
+                    $this->logError($message);
 
                     continue;
                 }
@@ -143,9 +149,11 @@ class ReplaceSharedStimulusMedia extends ScriptAction
                 $report->add(Report::createError(__('Issue while processing "%s"', $mediaInstance->getUri())));
                 $this->logError(
                     sprintf(
-                        'Issue while processing "%s": %s',
+                        'Issue while processing "%s": %s (Exception: "%s"; Trace: %s)',
                         $mediaInstance->getUri(),
-                        $exception->getMessage()
+                        $exception->getMessage(),
+                        get_class($exception),
+                        $exception->getTraceAsString()
                     )
                 );
             }
@@ -174,11 +182,21 @@ class ReplaceSharedStimulusMedia extends ScriptAction
         return null;
     }
 
-    private function getFile($link): File
+    private function getRootDirectory(): Directory
     {
-        return $this->getFileSystemService()
-            ->getDirectory($this->getFileSystemId())
-            ->getFile($link);
+        if (!isset($this->rootDirectory)) {
+            $this->rootDirectory = $this->getFileSystemService()->getDirectory($this->getFileSystemId());
+        }
+
+        return $this->rootDirectory;
+    }
+
+    private function getFileSystemId(): string
+    {
+        return $this
+            ->getServiceManager()
+            ->get(FlySystemManagement::SERVICE_ID)
+            ->getOption(FlySystemManagement::OPTION_FS);
     }
 
     private function getPropertyLink(): core_kernel_classes_Property
@@ -213,17 +231,6 @@ class ReplaceSharedStimulusMedia extends ScriptAction
     private function getFileSourceUnserializer(): FileSourceUnserializer
     {
         return $this->getServiceManager()->get(FileSourceUnserializer::class);
-    }
-
-    private function getFileSystemId(): string
-    {
-        if (!isset($this->fileSystemId)) {
-            $flySystemManagement = $this->getServiceManager()->get(FlySystemManagement::SERVICE_ID);
-
-            $this->fileSystemId = $flySystemManagement->getOption(FlySystemManagement::OPTION_FS);
-        }
-
-        return $this->fileSystemId;
     }
 
     private function getFileSystemService(): FileSystemService

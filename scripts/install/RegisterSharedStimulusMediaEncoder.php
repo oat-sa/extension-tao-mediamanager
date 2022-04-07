@@ -15,8 +15,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2021 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ * Copyright (c) 2021-2022 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  */
+
+declare(strict_types=1);
 
 namespace oat\taoMediaManager\scripts\install;
 
@@ -30,12 +32,14 @@ class RegisterSharedStimulusMediaEncoder extends InstallAction
     {
         $SharedStimulusMediaEncoder = new $params['service']();
 
-        $serviceManager = $this->getServiceManager();
-        $serviceManager->register(SharedStimulusMediaEncoderInterface::SERVICE_ID, $SharedStimulusMediaEncoder);
+        $this->getServiceManager()->register(
+            SharedStimulusMediaEncoderInterface::SERVICE_ID,
+            $SharedStimulusMediaEncoder
+        );
 
         return Report::createSuccess(
             sprintf(
-                'Successfully registered service \'%s\' on service key: \'%s',
+                'Successfully registered service "%s" on service key: "%s"',
                 $params['service'],
                 SharedStimulusMediaEncoderInterface::SERVICE_ID
             )

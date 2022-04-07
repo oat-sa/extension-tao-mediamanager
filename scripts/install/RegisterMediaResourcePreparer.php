@@ -18,6 +18,8 @@
  * Copyright (c) 2021 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  */
 
+declare(strict_types=1);
+
 namespace oat\taoMediaManager\scripts\install;
 
 use oat\oatbox\extension\InstallAction;
@@ -30,12 +32,14 @@ class RegisterMediaResourcePreparer extends InstallAction
     {
         $mediaResourcePreparer = new $params['service']();
 
-        $serviceManager = $this->getServiceManager();
-        $serviceManager->register(MediaResourcePreparerInterface::SERVICE_ID, $mediaResourcePreparer);
+        $this->getServiceManager()->register(
+            MediaResourcePreparerInterface::SERVICE_ID,
+            $mediaResourcePreparer
+        );
 
         return Report::createSuccess(
             sprintf(
-                'Successfully registered service \'%s\' on service key: \'%s',
+                'Successfully registered service "%s" on service key: "%s"',
                 $params['service'],
                 MediaResourcePreparerInterface::SERVICE_ID
             )

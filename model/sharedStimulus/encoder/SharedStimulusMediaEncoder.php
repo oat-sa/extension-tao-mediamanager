@@ -15,8 +15,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2022 (original work) Open Assessment Technologies SA;
  */
+
+declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus\encoder;
 
@@ -74,6 +76,8 @@ class SharedStimulusMediaEncoder extends ConfigurableService implements SharedSt
 
     /**
      * @throws InvalidSourcePathException
+     * @throws common_exception_Error
+     * @throws tao_models_classes_FileNotFoundException
      */
     protected function validateSource(string $baseDir, string $sourcePath): void
     {
@@ -86,29 +90,27 @@ class SharedStimulusMediaEncoder extends ConfigurableService implements SharedSt
         if (!helpers_File::isFileInsideDirectory($sourcePath, $baseDir)) {
             throw new InvalidSourcePathException($baseDir, $sourcePath);
         }
+
+        if (!tao_helpers_File::securityCheck($sourcePath, false)) {
+            throw new common_exception_Error('Invalid source path "' . $sourcePath . '"');
+        }
+
+        if (!file_exists($baseDir . $sourcePath)) {
+            throw new tao_models_classes_FileNotFoundException($sourcePath);
+        }
     }
 
     /**
-     * Verify paths and encode the file
-     *
-     * @throws tao_models_classes_FileNotFoundException
-     * @throws common_exception_Error
+     * Build base64 binary if path is internal
      */
     protected function secureEncode(string $basedir, string $source): string
     {
         $components = parse_url($source);
 
         if (!isset($components['scheme'])) {
-            if (tao_helpers_File::securityCheck($source, false)) {
-                if (file_exists($basedir . $source)) {
-                    return 'data:' . tao_helpers_File::getMimeType($basedir . $source) . ';'
-                        . 'base64,' . base64_encode(file_get_contents($basedir . $source));
-                }
 
-                throw new tao_models_classes_FileNotFoundException($source);
-            }
-
-            throw new common_exception_Error('Invalid source path "' . $source . '"');
+            return 'data:' . tao_helpers_File::getMimeType($basedir . $source) . ';'
+                . 'base64,' . base64_encode(file_get_contents($basedir . $source));
         }
 
         return $source;

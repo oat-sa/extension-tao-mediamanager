@@ -70,8 +70,7 @@ class SharedStimulusPackageImporter extends ZipImporter
             // throws an exception of invalid
             SharedStimulusImporter::isValidSharedStimulus($xmlFile);
 
-            $sharedStimulusMediaEncoderService = $this->getSharedStimulusMediaEncoderService();
-            $embeddedFile = $sharedStimulusMediaEncoderService->encodeAssets($xmlFile);
+            $embeddedFile = $this->getSharedStimulusMediaEncoderService()->encodeAssets($xmlFile);
 
             $report = Report::createSuccess(__('Shared Stimulus imported successfully'));
 
@@ -116,8 +115,7 @@ class SharedStimulusPackageImporter extends ZipImporter
             // throws an exception of invalid
             SharedStimulusImporter::isValidSharedStimulus($xmlFile);
 
-            $sharedStimulusMediaEncoderService = $this->getSharedStimulusMediaEncoderService();
-            $embeddedFile = $sharedStimulusMediaEncoderService->encodeAssets($xmlFile);
+            $embeddedFile = $this->getSharedStimulusMediaEncoderService()->encodeAssets($xmlFile);
 
             $report = $this->replaceSharedStimulus($instance, $this->getDecodedUri($form), $embeddedFile, $userId);
         } catch (Exception $e) {

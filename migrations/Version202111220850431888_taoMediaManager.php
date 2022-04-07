@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2021 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2022 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
@@ -32,18 +32,12 @@ final class Version202111220850431888_taoMediaManager extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return sprintf('Perform \'%s\' ', RegisterSharedStimulusMediaEncoder::class);
+        return sprintf('Perform "%s" ', RegisterSharedStimulusMediaEncoder::class);
     }
 
     public function up(Schema $schema): void
     {
-        $this->addReport(
-            $this->propagate(
-                new RegisterSharedStimulusMediaEncoder()
-            )(
-                ['service' => SharedStimulusMediaEncoder::class]
-            )
-        );
+        $this->runAction(new RegisterSharedStimulusMediaEncoder(), ['service' => SharedStimulusMediaEncoder::class]);
     }
 
     public function down(Schema $schema): void

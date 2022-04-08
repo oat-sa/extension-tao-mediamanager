@@ -25,16 +25,13 @@ namespace oat\taoMediaManager\model;
 use common_Exception;
 use common_exception_Error;
 use common_exception_UserReadableException;
-use common_report_Report as Report;
+use oat\oatbox\reporting\Report as Report;
 use core_kernel_classes_Class;
 use core_kernel_classes_Resource as Resource;
 use Exception;
-use helpers_File;
-use oat\tao\model\import\InvalidSourcePathException;
+use oat\taoMediaManager\model\sharedStimulus\encoder\SharedStimulusMediaEncoder;
+use oat\taoMediaManager\model\sharedStimulus\encoder\SharedStimulusMediaEncoderInterface;
 use oat\taoMediaManager\model\sharedStimulus\service\StoreService;
-use qtism\data\content\xhtml\Img;
-use qtism\data\content\xhtml\QtiObject;
-use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -42,7 +39,6 @@ use SplFileInfo;
 use tao_helpers_File;
 use tao_helpers_form_Form as Form;
 use tao_helpers_Uri;
-use tao_models_classes_FileNotFoundException;
 
 /**
  * Service methods to manage the Media
@@ -60,7 +56,7 @@ class SharedStimulusPackageImporter extends ZipImporter
      * @param string|null $userId owner of the resource
      * @return Report
      */
-    public function import($class, $form, $userId = null)
+    public function import($class, $form, $userId = null): Report
     {
         try {
             $uploadedFile = $this->fetchUploadedFile($form);
@@ -74,7 +70,7 @@ class SharedStimulusPackageImporter extends ZipImporter
             // throws an exception of invalid
             SharedStimulusImporter::isValidSharedStimulus($xmlFile);
 
-            $embeddedFile = static::embedAssets($xmlFile);
+            $embeddedFile = $this->getSharedStimulusMediaEncoderService()->encodeAssets($xmlFile);
 
             $report = Report::createSuccess(__('Shared Stimulus imported successfully'));
 
@@ -119,7 +115,7 @@ class SharedStimulusPackageImporter extends ZipImporter
             // throws an exception of invalid
             SharedStimulusImporter::isValidSharedStimulus($xmlFile);
 
-            $embeddedFile = static::embedAssets($xmlFile);
+            $embeddedFile = $this->getSharedStimulusMediaEncoderService()->encodeAssets($xmlFile);
 
             $report = $this->replaceSharedStimulus($instance, $this->getDecodedUri($form), $embeddedFile, $userId);
         } catch (Exception $e) {
@@ -132,67 +128,6 @@ class SharedStimulusPackageImporter extends ZipImporter
         }
 
         return $report;
-    }
-
-    /**
-     * Embed external resources into the XML
-     *
-     * @param $originalXml
-     *
-     * @return string
-     * @throws InvalidSourcePathException
-     * @throws common_exception_Error
-     * @throws XmlStorageException
-     * @throws tao_models_classes_FileNotFoundException
-     */
-    public static function embedAssets($originalXml)
-    {
-        $basedir = dirname($originalXml) . DIRECTORY_SEPARATOR;
-
-        $xmlDocument = new XmlDocument();
-        $xmlDocument->load($originalXml, true);
-
-        //get images and object to base64 their src/data
-        $images = $xmlDocument->getDocumentComponent()->getComponentsByClassName('img');
-        $objects = $xmlDocument->getDocumentComponent()->getComponentsByClassName('object');
-
-        /** @var $image Img */
-        foreach ($images as $image) {
-            $source = $image->getSrc();
-            static::validateSource($basedir, $source);
-            $image->setSrc(self::secureEncode($basedir, $source));
-        }
-
-        /** @var $object QtiObject */
-        foreach ($objects as $object) {
-            $data = $object->getData();
-            static::validateSource($basedir, $data);
-            $object->setData(self::secureEncode($basedir, $data));
-        }
-
-        // save the document to a tempfile
-        $newXml = tempnam(sys_get_temp_dir(), 'sharedStimulus_') . '.xml';
-        $xmlDocument->save($newXml);
-        return $newXml;
-    }
-
-    /**
-     * @param string $basePath
-     * @param string $sourcePath
-     *
-     * @throws InvalidSourcePathException
-     */
-    private static function validateSource(string $basePath, string $sourcePath): void
-    {
-        $urlData = parse_url($sourcePath);
-
-        if (!empty($urlData['scheme'])) {
-            return;
-        }
-
-        if (!helpers_File::isFileInsideDirectory($sourcePath, $basePath)) {
-            throw new InvalidSourcePathException($basePath, $sourcePath);
-        }
     }
 
     /**
@@ -339,32 +274,6 @@ class SharedStimulusPackageImporter extends ZipImporter
     }
 
     /**
-     * Verify paths and encode the file
-     *
-     * @throws tao_models_classes_FileNotFoundException
-     * @throws common_exception_Error
-     */
-    protected static function secureEncode(string $basedir, string $source): string
-    {
-        $components = parse_url($source);
-
-        if (!isset($components['scheme'])) {
-            if (tao_helpers_File::securityCheck($source, false)) {
-                if (file_exists($basedir . $source)) {
-                    return 'data:' . tao_helpers_File::getMimeType($basedir . $source) . ';'
-                        . 'base64,' . base64_encode(file_get_contents($basedir . $source));
-                }
-
-                throw new tao_models_classes_FileNotFoundException($source);
-            }
-
-            throw new common_exception_Error('Invalid source path "' . $source . '"');
-        }
-
-        return $source;
-    }
-
-    /**
      * @param array|Form $form
      */
     private function getDecodedUri($form): string
@@ -380,5 +289,10 @@ class SharedStimulusPackageImporter extends ZipImporter
     private function getSharedStimulusStoreService(): StoreService
     {
         return $this->getServiceLocator()->get(StoreService::class);
+    }
+
+    private function getSharedStimulusMediaEncoderService (): SharedStimulusMediaEncoderInterface
+    {
+        return $this->getServiceLocator()->get(SharedStimulusMediaEncoderInterface::SERVICE_ID);
     }
 }

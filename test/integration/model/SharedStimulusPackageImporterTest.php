@@ -29,6 +29,8 @@ use oat\tao\model\import\InvalidSourcePathException;
 use oat\tao\model\upload\UploadService;
 use oat\taoMediaManager\model\FileImportForm;
 use oat\taoMediaManager\model\MediaService;
+use oat\taoMediaManager\model\sharedStimulus\encoder\SharedStimulusMediaEncoder;
+use oat\taoMediaManager\model\sharedStimulus\encoder\SharedStimulusMediaEncoderInterface;
 use oat\taoMediaManager\model\sharedStimulus\service\StoreService;
 use oat\taoMediaManager\model\SharedStimulusPackageImporter;
 use Psr\Log\NullLogger;
@@ -152,7 +154,7 @@ class SharedStimulusPackageImporterTest extends TestCase
         $xmlDocument = new XmlDocument();
         $xmlDocument->load($directory . '/stimulus.xml');
 
-        $xmlConverted = SharedStimulusPackageImporter::embedAssets($directory . '/stimulus.xml');
+        $xmlConverted = $this->getSharedStimulusMediaEncoder()->encodeAssets($directory . '/stimulus.xml');
         $xmlDocument->load($xmlConverted);
         $strXml = $xmlDocument->saveToString();
         $xmlDocument->load($converted);
@@ -182,7 +184,7 @@ class SharedStimulusPackageImporterTest extends TestCase
     public function testEmbedAssetsExceptions($directory)
     {
         $this->expectException(InvalidSourcePathException::class);
-        SharedStimulusPackageImporter::embedAssets($directory . '/stimulus.xml');
+        $this->getSharedStimulusMediaEncoder()->encodeAssets($directory . '/stimulus.xml');
     }
 
     /**
@@ -254,9 +256,17 @@ class SharedStimulusPackageImporterTest extends TestCase
             LoggerService::SERVICE_ID => new NullLogger(),
             MediaService::class => $this->mediaServiceMock,
             StoreService::class => $this->storeServiceMock,
+            SharedStimulusMediaEncoderInterface::SERVICE_ID => $this->getSharedStimulusMediaEncoder(),
         ]));
 
         return $importer;
+    }
+
+    private function getSharedStimulusMediaEncoder()
+    {
+        $encoder = new SharedStimulusMediaEncoder();
+        $encoder->setServiceLocator($this->getServiceLocatorMock([]));
+        return $encoder;
     }
 
     protected function getTempDirectory()

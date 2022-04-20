@@ -23,20 +23,26 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\migrations;
 
 use Doctrine\DBAL\Schema\Schema;
+use oat\oatbox\reporting\Report;
 use oat\tao\scripts\tools\migrations\AbstractMigration;
 use Doctrine\Migrations\Exception\IrreversibleMigration;
-use oat\taoMediaManager\scripts\ReplaceSharedStimulusMedia;
 
 final class Version202112230835581888_taoMediaManager extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Moving shared stimulus stored as single files to sub-folders (needed for Rich Passage feature)';
+        return 'Inform about the necessary script execution, to move shared stimulus ' .
+            'stored as single files to sub-folders (needed for Rich Passage feature)';
     }
 
     public function up(Schema $schema): void
     {
-        $this->runAction(new ReplaceSharedStimulusMedia());
+        $this->addReport(
+            Report::createWarning(
+                'You must run the following command to fix existing shared stimulus storage: ' . PHP_EOL .
+                '`php index.php \'oat\taoMediaManager\scripts\ReplaceSharedStimulusMedia\'`'
+            )
+        );
     }
 
     public function down(Schema $schema): void

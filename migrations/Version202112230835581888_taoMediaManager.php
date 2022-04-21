@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2021 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2021-2022 (original work) Open Assessment Technologies SA.
  */
 
 declare(strict_types=1);
@@ -23,34 +23,30 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\migrations;
 
 use Doctrine\DBAL\Schema\Schema;
-use Doctrine\Migrations\Exception\IrreversibleMigration;
+use oat\oatbox\reporting\Report;
 use oat\tao\scripts\tools\migrations\AbstractMigration;
-use oat\taoMediaManager\scripts\ReplaceSharedStimulusMedia;
+use Doctrine\Migrations\Exception\IrreversibleMigration;
 
 final class Version202112230835581888_taoMediaManager extends AbstractMigration
 {
-
     public function getDescription(): string
     {
-        return 'Moving shared stimulus stored as single files to sub-folders (needed for Rich Passage feature)';
+        return 'Inform about the necessary script execution, to move shared stimulus ' .
+            'stored as single files to sub-folders (needed for Rich Passage feature)';
     }
 
     public function up(Schema $schema): void
     {
         $this->addReport(
-            $this->propagate(
-                new ReplaceSharedStimulusMedia()
-            )(
-                []
+            Report::createWarning(
+                'You must run the following command to fix existing shared stimulus storage: ' . PHP_EOL .
+                '`php index.php \'oat\taoMediaManager\scripts\ReplaceSharedStimulusMedia\'`'
             )
         );
     }
 
     public function down(Schema $schema): void
     {
-        throw new IrreversibleMigration(
-            'Reverting this migration does not make sense'
-        );
+        throw new IrreversibleMigration('Reverting this migration does not make sense');
     }
 }
-

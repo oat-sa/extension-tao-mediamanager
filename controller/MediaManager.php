@@ -39,6 +39,13 @@ use tao_models_classes_dataBinding_GenerisFormDataBinder;
 
 class MediaManager extends \tao_actions_SaSModule
 {
+    // NOTE this inherits public function copyClass(): void from tao_actions_RdfController
+
+    public function copyClass(): void
+    {
+        parent::copyClass();
+    }
+
     /**
      * Show the form to edit an instance, show also a preview of the media
      *

@@ -26,6 +26,7 @@ use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
 use oat\tao\model\accessControl\ActionAccessControl;
 use oat\tao\model\accessControl\PermissionChecker;
 use oat\taoMediaManager\model\accessControl\MediaPermissionService;
+use oat\taoMediaManager\model\classes\Copier\AssetCopier;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
@@ -43,6 +44,15 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                 [
                     service(ActionAccessControl::class),
                     service(PermissionChecker::class),
+                ]
+            );
+
+        $services
+            ->set(AssetCopier::class, AssetCopier::class)
+            ->public()
+            ->args(
+                [
+                    // @todo Add parameters as-needed or remove the args() call
                 ]
             );
     }

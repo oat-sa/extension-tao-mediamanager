@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2021 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2014-2022 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
@@ -51,17 +51,17 @@ class MediaService extends ConfigurableService
     use GenerisServiceTrait;
     use LoggerAwareTrait;
 
-    public const ROOT_CLASS_URI = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Media';
+    public const ROOT_CLASS_URI = TaoMediaOntology::CLASS_MEDIA_ROOT_URI;
 
-    public const PROPERTY_LINK = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Link';
+    public const PROPERTY_LINK = TaoMediaOntology::PROPERTY_LINK_URI;
 
-    public const PROPERTY_LANGUAGE = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Language';
+    public const PROPERTY_LANGUAGE = TaoMediaOntology::PROPERTY_LANGUAGE_URI;
 
-    public const PROPERTY_ALT_TEXT = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AltText';
+    public const PROPERTY_ALT_TEXT = TaoMediaOntology::PROPERTY_ALT_TEXT;
 
-    public const PROPERTY_MD5 = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#md5';
+    public const PROPERTY_MD5 = TaoMediaOntology::PROPERTY_MD5;
 
-    public const PROPERTY_MIME_TYPE = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#mimeType';
+    public const PROPERTY_MIME_TYPE = TaoMediaOntology::PROPERTY_MIME_TYPE;
 
     public const SHARED_STIMULUS_MIME_TYPE = 'application/qti+xml';
 

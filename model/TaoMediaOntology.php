@@ -24,11 +24,11 @@ namespace oat\taoMediaManager\model;
 
 interface TaoMediaOntology
 {
-    public const CLASS_MEDIA_ROOT_URI = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Media';
+    public const CLASS_URI_MEDIA_ROOT = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Media';
 
-    public const PROPERTY_LINK_URI = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Link';
+    public const PROPERTY_LINK = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Link';
 
-    public const PROPERTY_LANGUAGE_URI = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Language';
+    public const PROPERTY_LANGUAGE = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Language';
 
     public const PROPERTY_ALT_TEXT = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AltText';
 

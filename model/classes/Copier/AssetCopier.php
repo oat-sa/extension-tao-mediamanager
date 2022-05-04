@@ -29,7 +29,7 @@ use oat\taoMediaManager\model\TaoMediaOntology;
 
 class AssetCopier implements ClassCopierInterface
 {
-    private const ROOT_CLASS_URI = TaoMediaOntology::CLASS_MEDIA_ROOT_URI;
+    private const ROOT_CLASS_URI = TaoMediaOntology::CLASS_URI_MEDIA_ROOT;
 
     /** @var RootClassesListServiceInterface */
     private $rootClassesListService;

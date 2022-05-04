@@ -51,11 +51,11 @@ class MediaService extends ConfigurableService
     use GenerisServiceTrait;
     use LoggerAwareTrait;
 
-    public const ROOT_CLASS_URI = TaoMediaOntology::CLASS_MEDIA_ROOT_URI;
+    public const ROOT_CLASS_URI = TaoMediaOntology::CLASS_URI_MEDIA_ROOT;
 
-    public const PROPERTY_LINK = TaoMediaOntology::PROPERTY_LINK_URI;
+    public const PROPERTY_LINK = TaoMediaOntology::PROPERTY_LINK;
 
-    public const PROPERTY_LANGUAGE = TaoMediaOntology::PROPERTY_LANGUAGE_URI;
+    public const PROPERTY_LANGUAGE = TaoMediaOntology::PROPERTY_LANGUAGE;
 
     public const PROPERTY_ALT_TEXT = TaoMediaOntology::PROPERTY_ALT_TEXT;
 

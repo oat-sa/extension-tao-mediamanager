@@ -52,8 +52,6 @@ describe('Passage Authoring Preview', () => {
             selectors.treeRenderUrl,
             selectors.addSubClassUrl
         );
-       // cy.addNode(selectors.assetForm, selectors.addAsset);
-        //cy.renameSelectedNode(selectors.assetForm, selectors.editAssetUrl, itemName);
     });
     /**
      * Visit the page
@@ -78,7 +76,7 @@ describe('Passage Authoring Preview', () => {
     /**
      * Tests
      */
-    describe('Passage authoring', () => {
+    describe('Passage authoring Preview', () => {
         it('can create new asset', () => {
             cy.addNode(selectors.assetForm, selectors.addAsset);
             cy.renameSelectedNode(selectors.assetForm, selectors.editAssetUrl, itemName);
@@ -90,7 +88,7 @@ describe('Passage Authoring Preview', () => {
             });
         });
 
-        it('can add A block', () => {
+        it('can create an asse and add an A block', () => {
             addAblock();
         });
 

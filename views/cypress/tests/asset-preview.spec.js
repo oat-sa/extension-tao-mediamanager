@@ -112,6 +112,7 @@ describe('Passage Authoring Preview', () => {
             cy.wait('@savePassage').its('response.body').its('success').should('eq', true);
         });
         it('can click on preview, preview is rendered', () => {
+            cy.getSettled(selectors.assetAuthoringPreviewButton).should('not.be.disabled');
             cy.get(selectors.assetAuthoringPreviewButton).click();
             cy.intercept('GET', '**taoMediaManager/SharedStimulus/get*').as('previewPassage');
             cy.wait('@previewPassage');

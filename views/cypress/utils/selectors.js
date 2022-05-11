@@ -7,6 +7,7 @@ export default {
     assetAuthoringPanel: 'section[id="sidebar-left-section-inline-interactions"]',
     assetAuthoringCanvas: 'div[id="item-editor-scroll-inner"]',
     assetAuthoringSaveButton: '[data-testid="save-the-asset"]',
+    assetAuthoringPreviewButton: '[data-testid="preview-the-asset"]',
     manageAssets: 'li[data-testid="manage-assets"]',
 
     deleteClass: '[data-context="class"][data-action="deleteSharedStimulus"]',

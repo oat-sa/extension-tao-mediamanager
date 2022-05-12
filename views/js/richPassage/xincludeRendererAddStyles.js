@@ -33,7 +33,8 @@ define(['jquery', 'uri', 'util/url', 'core/dataProvider/request'], function ($, 
                             href: urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
                                 uri: passageUri,
                                 stylesheet: element
-                            })
+                            }),
+                            'data-serial': passageUri
                         });
                         head.append(styleElem);
                     });

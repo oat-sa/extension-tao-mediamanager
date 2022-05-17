@@ -17,7 +17,11 @@ export default {
     deleteAssetUrl: 'taoMediaManager/MediaManager/deleteResource',
 
     editClassLabelUrl: 'taoMediaManager/MediaManager/editClassLabel',
+    editClassUrl: 'taoBackOffice/Lists/getListElements',
     editAssetUrl: 'taoMediaManager/MediaManager/editInstance',
+    classAssetOptions: 'div.xhtml_form',
+    propertyEdit: 'div[class="form-group property-block regular-property property-edit-container-open"]',
+    manageSchema: '#media-class-schema',
 
     importAsset: '#media-import',
     importAssetUrl: 'taoMediaManager/MediaImport/index',

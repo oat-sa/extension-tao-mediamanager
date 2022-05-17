@@ -61,7 +61,12 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
 
         $services
             ->set(AssetInstanceContentCopier::class, AssetInstanceContentCopier::class)
-            ->public();
+            ->public()
+            ->args(
+                [
+                    service(LoggerService::SERVICE_ID),
+                ]
+            );
 
         $services
             ->set(AssetInstanceCopier::class, AssetInstanceCopier::class)

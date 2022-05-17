@@ -62,23 +62,21 @@ class AssetInstanceContentCopier implements InstanceContentCopierInterface
     private function copyProperty(
         core_kernel_classes_Resource $source,
         core_kernel_classes_Resource $destination,
-        string                       $propertyId
+        string $propertyId
     ): void {
         $property = $source->getProperty($propertyId);
         $this->debug(
-            "Property %s (URI: %s)",
+            "Property %s (URI: %s, LanguageDependent: %s)",
             $property->getLabel(),
-            $property->getUri()
+            $property->getUri(),
+            $property->isLgDependent() ? 'y' : 'n'
         );
 
         if ($property->isLgDependent()) {
-            $this->debug("Property %s is LgDependent", $property->getUri());
-
             $this->copyLanguageDependentProperty($source, $destination, $property);
             return;
         }
 
-        $this->debug("Property %s is not LgDependent", $property->getUri());
         $this->copyNonLanguageDependentProperty($source, $destination, $property);
     }
 
@@ -86,8 +84,7 @@ class AssetInstanceContentCopier implements InstanceContentCopierInterface
         core_kernel_classes_Resource $source,
         core_kernel_classes_Resource $destination,
         core_kernel_classes_Property $property
-    ): void
-    {
+    ): void {
         $values = $source->getPropertyValuesCollection($property);
 
         foreach ($values as $value) {
@@ -109,8 +106,7 @@ class AssetInstanceContentCopier implements InstanceContentCopierInterface
         core_kernel_classes_Resource $source,
         core_kernel_classes_Resource $destination,
         core_kernel_classes_Property $property
-    ): void
-    {
+    ): void {
         foreach ($source->getUsedLanguages($property) as $lang) {
             /** @var $lang string */
 
@@ -160,6 +156,6 @@ class AssetInstanceContentCopier implements InstanceContentCopierInterface
     // @todo To be deleted before merge
     private function debug(string $format, string ...$va_args): void
     {
-        $this->logger->info(__CLASS__ . ' MM '. vsprintf($format, $va_args));
+        $this->logger->info(__CLASS__ . ' MM ' . vsprintf($format, $va_args));
     }
 }

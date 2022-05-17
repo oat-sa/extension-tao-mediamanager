@@ -56,8 +56,9 @@ class AssetClassCopier implements ClassCopierInterface
         RootClassesListServiceInterface $rootClassesListService,
         ClassSpecificationInterface $mediaClassSpecification,
         ClassPropertyCopierInterface $classPropertyCopier,
-        AssetInstanceCopier $instanceCopier // @todo is there an applicable interface?
-                                            //       [i.e. for copy(resource,class)]
+        // @todo is there an applicable interface for AssetClassCopier?
+        //       [i.e. defining a copy(resource,class) method]
+        AssetInstanceCopier $instanceCopier
     ) {
         $this->logger = $logger;
         $this->rootClassesListService = $rootClassesListService;
@@ -145,7 +146,7 @@ class AssetClassCopier implements ClassCopierInterface
     // @todo To be deleted before merge
     private function debug(string $format, string ...$va_args): void
     {
-        $this->logger->info(__CLASS__ . ' MM '. vsprintf($format, $va_args));
+        $this->logger->info(__CLASS__ . ' MM ' . vsprintf($format, $va_args));
     }
 
     private function assertInAssetsRootClass(core_kernel_classes_Class $class): void

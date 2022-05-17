@@ -18,65 +18,139 @@
  * Copyright (c) 2022 (original work) Open Assessment Technologies SA.
  */
 
+declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\classes\Copier;
 
 use core_kernel_classes_Class;
 use InvalidArgumentException;
 use oat\tao\model\resources\Contract\ClassCopierInterface;
+use oat\tao\model\resources\Contract\ClassPropertyCopierInterface;
 use oat\tao\model\resources\Contract\RootClassesListServiceInterface;
+use oat\tao\model\resources\Service\ClassPropertyCopier;
+use oat\tao\model\Specification\ClassSpecificationInterface;
 use oat\taoMediaManager\model\TaoMediaOntology;
+use Psr\Log\LoggerInterface;
 
-class AssetCopier implements ClassCopierInterface
+class AssetClassCopier implements ClassCopierInterface
 {
     private const ROOT_CLASS_URI = TaoMediaOntology::CLASS_URI_MEDIA_ROOT;
+
+    /** @var LoggerInterface */
+    private $logger;
 
     /** @var RootClassesListServiceInterface */
     private $rootClassesListService;
 
+    /** @var ClassPropertyCopier */
+    private $classPropertyCopier;
+
+    /** @var ClassSpecificationInterface */
+    private $mediaClassSpecification;
+
+    /** @var AssetInstanceCopier */
+    private $instanceCopier;
+
     public function __construct(
-        RootClassesListServiceInterface $rootClassesListService
+        LoggerInterface $logger,
+        RootClassesListServiceInterface $rootClassesListService,
+        ClassSpecificationInterface $mediaClassSpecification,
+        ClassPropertyCopierInterface $classPropertyCopier,
+        AssetInstanceCopier $instanceCopier // @todo is there an applicable interface?
+                                            //       [i.e. for copy(resource,class)]
     ) {
+        $this->logger = $logger;
         $this->rootClassesListService = $rootClassesListService;
+        $this->mediaClassSpecification = $mediaClassSpecification;
+        $this->classPropertyCopier = $classPropertyCopier;
+        $this->instanceCopier = $instanceCopier;
     }
 
     /**
      * ACs:
      *
      * - The "copy process" should be processed in the queue in the background.
-     *      -Handled by tao_actions_RdfController::copyClasS() @ tao-core
-     *
+     *   -> Handled by tao_actions_RdfController::copyClass() @ tao-core
      *
      * - Assets related to items will keep the reference to the original assets
      *   (no asset duplication required).
-     *      - This seems correct, since it seems asset files themselves are kept
-     *        (only RDF data in the DB is removed)
+     *   -> Consistent with asset removal, since it seems in that case asset
+     *      files themselves are kept: only RDF data in the DB is removed.
      *
      * - We must keep class hierarchy while copying.
-     *      - i.e. Recursive copying
+     *   -> i.e. Recursive copying
      *
      * @param core_kernel_classes_Class $class
      * @param core_kernel_classes_Class $destinationClass
+     *
      * @return core_kernel_classes_Class
      */
-
     public function copy(
         core_kernel_classes_Class $class,
         core_kernel_classes_Class $destinationClass
     ): core_kernel_classes_Class {
+        $this->debug(__FUNCTION__);
+
         $this->assertInAssetsRootClass($class);
         $this->assertInAssetsRootClass($destinationClass);
-
-        // Needed, otherwise it could be properties defined in the source class
-        // schema that doesn't exist in the destination
         $this->assertInSameRootClass($class, $destinationClass);
 
-        // TODO: Implement copy() method.
+        $newClass = $destinationClass->createSubClass($class->getLabel());
+        $this->debug(
+            'Created new subclass %s under %s',
+            $newClass->getUri(),
+            $class->getUri()
+        );
+
+        $this->debug('Iterating properties');
+        foreach ($class->getProperties(false) as $property) {
+            $this->debug(
+                'Copying property %s to %s',
+                $property->getUri(),
+                $newClass->getUri()
+            );
+
+            $this->classPropertyCopier->copy($property, $newClass);
+        }
+
+        $this->debug('Iterating instances');
+        foreach ($class->getInstances() as $instance) {
+            $this->debug(
+                '%s copying instance %s into %s',
+                get_class($this->instanceCopier),
+                $instance->getUri(),
+                $newClass->getUri()
+            );
+
+            $this->instanceCopier->copy($instance, $newClass);
+        }
+
+        $this->debug('Iterating subclasses');
+        foreach ($class->getSubClasses() as $subClass) {
+            $this->debug(
+                'Copying subclass %s (%s) to %s (%s)',
+                $subClass->getUri(),
+                $subClass->getLabel(),
+                $newClass->getUri(),
+                $newClass->getLabel()
+            );
+
+            $this->copy($subClass, $newClass);
+        }
+
+        $this->debug('Returning class %s', $newClass->getLabel());
+        return $newClass;
+    }
+
+    // @todo To be deleted before merge
+    private function debug(string $format, string ...$va_args): void
+    {
+        $this->logger->info(__CLASS__ . ' MM '. vsprintf($format, $va_args));
     }
 
     private function assertInAssetsRootClass(core_kernel_classes_Class $class): void
     {
-        if (!$class->isSubClassOf($class->getClass(self::ROOT_CLASS_URI))) {
+        if (!$this->mediaClassSpecification->isSatisfiedBy($class)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Selected class (%s) is not supported because it is not part of the media assets root class (%s).',
@@ -87,7 +161,6 @@ class AssetCopier implements ClassCopierInterface
         }
     }
 
-    // @todo May be moved into a specification (to be reused by tao-core's ClassCopier)
     private function assertInSameRootClass(
         core_kernel_classes_Class $class,
         core_kernel_classes_Class $destinationClass

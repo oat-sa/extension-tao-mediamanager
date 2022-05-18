@@ -17,3 +17,21 @@
  *
  * Copyright (c) 2022 (original work) Open Assessment Technologies SA.
  */
+
+declare(strict_types=1);
+
+namespace oat\taoMediaManager\test\unit\model;
+
+use oat\taoMediaManager\model\classes\Copier\AssetInstanceContentCopier;
+use oat\taoMediaManager\model\TaoMediaOntology;
+use core_kernel_classes_Literal;
+use core_kernel_classes_Property;
+use core_kernel_classes_Resource;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
+
+class AssetClassCopier extends TestCase
+{
+
+}

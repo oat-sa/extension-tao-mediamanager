@@ -28,14 +28,20 @@ use Psr\Log\LoggerInterface;
 
 class AssetInstanceContentCopier implements InstanceContentCopierInterface
 {
-    private const PROPERTY_ALT_TEXT = TaoMediaOntology::PROPERTY_ALT_TEXT;
-    private const PROPERTY_LANGUAGE = TaoMediaOntology::PROPERTY_LANGUAGE;
+    /**
+     * Base filename for the asset (i.e. 123456789abcdef123456.mp4)
+     */
     private const PROPERTY_LINK = TaoMediaOntology::PROPERTY_LINK;
 
     /**
      * MD5 hash of the file contents
      */
     private const PROPERTY_MD5 = TaoMediaOntology::PROPERTY_MD5;
+
+    private const PROPERTY_ALT_TEXT = TaoMediaOntology::PROPERTY_ALT_TEXT;
+
+    private const PROPERTY_LANGUAGE = TaoMediaOntology::PROPERTY_LANGUAGE;
+
     private const PROPERTY_MIME = TaoMediaOntology::PROPERTY_MIME_TYPE;
 
     /** @var LoggerInterface */
@@ -122,10 +128,6 @@ class AssetInstanceContentCopier implements InstanceContentCopierInterface
             );
 
             foreach ($values as $value) {
-                if ($value instanceof core_kernel_classes_Resource) {
-                    $value = $value->getUri();
-                }
-
                 $this->debug(
                     "Setting property %s = %s for instance %s (type=%s %s)",
                     $property->getUri(),

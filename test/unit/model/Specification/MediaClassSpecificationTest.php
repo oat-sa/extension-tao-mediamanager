@@ -52,7 +52,6 @@ class MediaClassSpecificationTest extends TestCase
             ->with(TaoMediaOntology::CLASS_URI_MEDIA_ROOT)
             ->willReturn($this->rootClass);
 
-
         $this->sut = new MediaClassSpecification();
     }
 

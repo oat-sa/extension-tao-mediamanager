@@ -25,15 +25,34 @@ namespace oat\taoMediaManager\test\unit\model\Specification;
 use oat\taoMediaManager\model\Specification\MediaClassSpecification;
 use oat\taoMediaManager\model\TaoMediaOntology;
 use core_kernel_classes_Class;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class MediaClassSpecificationTest extends TestCase
 {
+    /** @var core_kernel_classes_Class|MockObject */
+    private $rootClass;
+
+    /** @var core_kernel_classes_Class|MockObject */
+    private $testedClass;
+
     /** @var MediaClassSpecification */
     private $sut;
 
     public function setUp(): void
     {
+        $this->rootClass = $this->createMock(core_kernel_classes_Class::class);
+        $this->rootClass
+            ->method('getUri')
+            ->willReturn(TaoMediaOntology::CLASS_URI_MEDIA_ROOT);
+
+        $this->testedClass = $this->createMock(core_kernel_classes_Class::class);
+        $this->testedClass
+            ->method('getClass')
+            ->with(TaoMediaOntology::CLASS_URI_MEDIA_ROOT)
+            ->willReturn($this->rootClass);
+
+
         $this->sut = new MediaClassSpecification();
     }
 
@@ -42,9 +61,18 @@ class MediaClassSpecificationTest extends TestCase
      */
     public function testIsSatisfiedBy(
         bool $expected,
-        core_kernel_classes_Class $class
+        bool $isSubclass
     ): void {
-        $this->assertEquals($expected, $this->sut->isSatisfiedBy($class));
+        $this->testedClass
+            ->expects($this->once())
+            ->method('isSubclassOf')
+            ->with($this->rootClass)
+            ->willReturn($isSubclass);
+
+        $this->assertEquals(
+            $expected,
+            $this->sut->isSatisfiedBy($this->testedClass)
+        );
     }
 
     public function isSatisfiedByDataProvider(): array
@@ -52,34 +80,12 @@ class MediaClassSpecificationTest extends TestCase
         return [
             'Subclass of MEDIA_ROOT' => [
                 'expected' => true,
-                'class' => $this->getRDFClassMock(true),
+                'isSubclass' => true,
             ],
             'Not a subclass of MEDIA_ROOT' => [
                 'expected' => false,
-                'class' => $this->getRDFClassMock(false),
+                'isSubclass' => false,
             ],
         ];
-    }
-
-    private function getRDFClassMock(bool $isSubclass): core_kernel_classes_Class
-    {
-        $rootClass = $this->createMock(core_kernel_classes_Class::class);
-        $rootClass
-            ->method('getUri')
-            ->willReturn(TaoMediaOntology::CLASS_URI_MEDIA_ROOT);
-
-        $mock = $this->createMock(core_kernel_classes_Class::class);
-        $mock
-            ->method('getClass')
-            ->with(TaoMediaOntology::CLASS_URI_MEDIA_ROOT)
-            ->willReturn($rootClass);
-
-        $mock
-            ->expects($this->once())
-            ->method('isSubclassOf')
-            ->with($rootClass)
-            ->willReturn($isSubclass);
-
-        return $mock;
     }
 }

@@ -26,6 +26,7 @@ use core_kernel_classes_Class;
 use InvalidArgumentException;
 use oat\tao\model\resources\Contract\ClassCopierInterface;
 use oat\tao\model\resources\Contract\ClassPropertyCopierInterface;
+use oat\tao\model\resources\Contract\InstanceCopierInterface;
 use oat\tao\model\resources\Contract\RootClassesListServiceInterface;
 use oat\tao\model\resources\Service\ClassPropertyCopier;
 use oat\tao\model\Specification\ClassSpecificationInterface;
@@ -48,7 +49,7 @@ class AssetClassCopier implements ClassCopierInterface
     /** @var ClassSpecificationInterface */
     private $mediaClassSpecification;
 
-    /** @var AssetInstanceCopier */
+    /** @var InstanceCopierInterface */
     private $instanceCopier;
 
     public function __construct(
@@ -56,9 +57,7 @@ class AssetClassCopier implements ClassCopierInterface
         RootClassesListServiceInterface $rootClassesListService,
         ClassSpecificationInterface $mediaClassSpecification,
         ClassPropertyCopierInterface $classPropertyCopier,
-        // @todo is there an applicable interface for AssetClassCopier?
-        //       [i.e. defining a copy(resource,class) method]
-        AssetInstanceCopier $instanceCopier
+        InstanceCopierInterface $instanceCopier
     ) {
         $this->logger = $logger;
         $this->rootClassesListService = $rootClassesListService;

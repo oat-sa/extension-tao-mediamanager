@@ -153,6 +153,9 @@ class AssetInstanceContentCopierTest extends TestCase
         $this->sut->copy($this->source, $this->target);
     }
 
+    /**
+     * @return core_kernel_classes_Literal[]|core_kernel_classes_Resource[]|MockObject[]|string[]
+     */
     private function getValueCollectionForProperty(
         core_kernel_classes_Property $p,
         array $opts
@@ -223,6 +226,9 @@ class AssetInstanceContentCopierTest extends TestCase
         );
     }
 
+    /**
+     * @return core_kernel_classes_Resource|MockObject
+     */
     private function mockResource(string $uri): MockObject
     {
         return $this->createConfiguredMock(
@@ -231,6 +237,9 @@ class AssetInstanceContentCopierTest extends TestCase
         );
     }
 
+    /**
+     * @return core_kernel_classes_Literal|MockObject
+     */
     private function mockLiteral(string $value): MockObject
     {
         return $this->createConfiguredMock(

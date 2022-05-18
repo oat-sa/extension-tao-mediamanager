@@ -26,7 +26,7 @@ use oat\taoItems\model\Copier\InstanceContentCopier;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Class;
 
-class AssetInstanceCopier
+class AssetInstanceCopier implements InstanceCopierInterface
 {
     /** @var InstanceCopierInterface */
     private $taoInstanceCopier;

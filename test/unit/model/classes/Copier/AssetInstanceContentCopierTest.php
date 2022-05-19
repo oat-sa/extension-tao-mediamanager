@@ -29,7 +29,6 @@ use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 
 class AssetInstanceContentCopierTest extends TestCase
 {
@@ -118,9 +117,7 @@ class AssetInstanceContentCopierTest extends TestCase
                 );
             });
 
-        $this->sut = new AssetInstanceContentCopier(
-            $this->createMock(LoggerInterface::class)
-        );
+        $this->sut = new AssetInstanceContentCopier();
     }
 
     public function testTargetPropertiesAreSet(): void

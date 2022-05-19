@@ -48,9 +48,6 @@ class AssetClassCopierTest extends TestCase
     private const ERRMSG_NOT_IN_SAME_ROOT =
         'Selected class (%s) and destination class (%s) must be in the same root class (%s).';
 
-    /** @var ItemClassCopier */
-    private $sut;
-
     /** @var ClassCopierInterface|MockObject */
     private $classCopier;
 
@@ -71,6 +68,9 @@ class AssetClassCopierTest extends TestCase
 
     /** @var core_kernel_classes_Class|MockObject */
     private $target;
+
+    /** @var ItemClassCopier */
+    private $sut;
 
     protected function setUp(): void
     {
@@ -198,16 +198,11 @@ class AssetClassCopierTest extends TestCase
 
     public function testCopy(): void
     {
+        $this->source->method('getLabel')->willReturn('Source Class');
         $this->source->method('getUri')->willReturn('http://asset.root/1/c1');
         $this->target->method('getUri')->willReturn('http://asset.root/1/c2');
 
-        $this->source->method('getLabel')->willReturn('Source Class');
-
         $newClass = $this->createMock(core_kernel_classes_Class::class);
-
-        // @todo Probably can be removed once we remove debug() calls from
-        //       the copier itself
-        $newClass->method('getLabel')->willReturn('Source Class');
 
         $propertyMocks = [
             $this->createMock(core_kernel_classes_Property::class),
@@ -258,16 +253,11 @@ class AssetClassCopierTest extends TestCase
 
     public function testCopyRecursive(): void
     {
+        $this->source->method('getLabel')->willReturn('Source Class');
         $this->source->method('getUri')->willReturn('http://asset.root/1/c1');
         $this->target->method('getUri')->willReturn('http://asset.root/1/c2');
 
-        $this->source->method('getLabel')->willReturn('Source Class');
-
         $newClass = $this->createMock(core_kernel_classes_Class::class);
-
-        // @todo Probably can be removed once we remove debug() calls from
-        //       the copier itself
-        $newClass->method('getLabel')->willReturn('Source Class');
 
         $this->target
             ->expects($this->once())
@@ -290,11 +280,6 @@ class AssetClassCopierTest extends TestCase
 
         $subClass = $this->createMock(core_kernel_classes_Class::class);
 
-        // @todo Probably can be removed once we remove debug() calls from
-        //       the copier itself
-        $subClass->method('getUri')->willReturn('http://...');
-        $subClass->method('getLabel')->willReturn('Sub Class');
-
         $this->source->method('getInstances')->willReturn([]);
         $this->source->method('getSubclasses')->willReturn([$subClass]);
 
@@ -312,47 +297,4 @@ class AssetClassCopierTest extends TestCase
             $this->sut->copy($this->source, $this->target)
         );
     }
-
-    /*public function testCopyInvalidClass(): void
-    {
-        $rootClass = $this->createMock(core_kernel_classes_Class::class);
-
-        $classUri = 'classUri';
-
-        $class = $this->createMock(core_kernel_classes_Class::class);
-        $class
-            ->expects($this->once())
-            ->method('getClass')
-            ->with(TaoOntology::CLASS_URI_ITEM)
-            ->willReturn($rootClass);
-        $class
-            ->expects($this->once())
-            ->method('equals')
-            ->with($rootClass)
-            ->willReturn(false);
-        $class
-            ->expects($this->once())
-            ->method('isSubClassOf')
-            ->with($rootClass)
-            ->willReturn(false);
-        $class
-            ->expects($this->once())
-            ->method('getUri')
-            ->willReturn($classUri);
-
-        $this->classCopier
-            ->expects($this->never())
-            ->method('copy');
-
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            sprintf(
-                'Selected class (%s) is not supported because it is not part of the items root class (%s).',
-                $classUri,
-                TaoOntology::CLASS_URI_ITEM
-            )
-        );
-
-        $this->sut->copy($class, $this->createMock(core_kernel_classes_Class::class));
-    }*/
 }

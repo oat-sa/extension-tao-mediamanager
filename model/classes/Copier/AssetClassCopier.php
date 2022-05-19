@@ -79,86 +79,29 @@ class AssetClassCopier implements ClassCopierInterface
         $this->subClassCopier = $copier;
     }
 
-    /**
-     * ACs:
-     *
-     * - The "copy process" should be processed in the queue in the background.
-     *   -> Handled by tao_actions_RdfController::copyClass() @ tao-core
-     *
-     * - Assets related to items will keep the reference to the original assets
-     *   (no asset duplication required).
-     *   -> Consistent with asset removal, since it seems in that case asset
-     *      files themselves are kept: only RDF data in the DB is removed.
-     *
-     * - We must keep class hierarchy while copying.
-     *   -> i.e. Recursive copying
-     *
-     * @param core_kernel_classes_Class $class
-     * @param core_kernel_classes_Class $destinationClass
-     *
-     * @return core_kernel_classes_Class
-     */
     public function copy(
         core_kernel_classes_Class $class,
         core_kernel_classes_Class $destinationClass
     ): core_kernel_classes_Class {
-        $this->debug(__FUNCTION__);
-
         $this->assertInAssetsRootClass($class);
         $this->assertInAssetsRootClass($destinationClass);
         $this->assertInSameRootClass($class, $destinationClass);
 
         $newClass = $destinationClass->createSubClass($class->getLabel());
-        $this->debug(
-            'Created new subclass %s under %s',
-            $newClass->getUri(),
-            $class->getUri()
-        );
 
-        $this->debug('Iterating properties');
         foreach ($class->getProperties(false) as $property) {
-            $this->debug(
-                'Copying property %s to %s',
-                $property->getUri(),
-                $newClass->getUri()
-            );
-
             $this->classPropertyCopier->copy($property, $newClass);
         }
 
-        $this->debug('Iterating instances');
         foreach ($class->getInstances() as $instance) {
-            $this->debug(
-                '%s copying instance %s into %s',
-                get_class($this->instanceCopier),
-                $instance->getUri(),
-                $newClass->getUri()
-            );
-
             $this->instanceCopier->copy($instance, $newClass);
         }
 
-        $this->debug('Iterating subclasses');
         foreach ($class->getSubClasses() as $subClass) {
-            $this->debug(
-                'Copying subclass %s (%s) to %s (%s)',
-                $subClass->getUri(),
-                $subClass->getLabel(),
-                $newClass->getUri(),
-                $newClass->getLabel()
-            );
-
             $this->subClassCopier->copy($subClass, $newClass);
         }
 
-        $this->debug('Returning class %s', $newClass->getLabel());
         return $newClass;
-    }
-
-    // @todo To be deleted before merge
-    private function debug(string $format, string ...$va_args): void
-    {
-        $this->logger->info(__CLASS__ . ' MM ' . vsprintf($format, $va_args));
     }
 
     private function assertInAssetsRootClass(core_kernel_classes_Class $class): void

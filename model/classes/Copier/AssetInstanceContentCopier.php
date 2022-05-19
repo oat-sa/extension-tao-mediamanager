@@ -24,7 +24,6 @@ use oat\tao\model\resources\Contract\InstanceContentCopierInterface;
 use oat\taoMediaManager\model\TaoMediaOntology;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Property;
-use Psr\Log\LoggerInterface;
 
 class AssetInstanceContentCopier implements InstanceContentCopierInterface
 {
@@ -43,14 +42,6 @@ class AssetInstanceContentCopier implements InstanceContentCopierInterface
     private const PROPERTY_LANGUAGE = TaoMediaOntology::PROPERTY_LANGUAGE;
 
     private const PROPERTY_MIME = TaoMediaOntology::PROPERTY_MIME_TYPE;
-
-    /** @var LoggerInterface */
-    private $logger;
-
-    public function __construct(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
 
     public function copy(
         core_kernel_classes_Resource $instance,
@@ -71,12 +62,6 @@ class AssetInstanceContentCopier implements InstanceContentCopierInterface
         string $propertyId
     ): void {
         $property = $source->getProperty($propertyId);
-        $this->debug(
-            "Property %s (URI: %s, LanguageDependent: %s)",
-            $property->getLabel(),
-            $property->getUri(),
-            $property->isLgDependent() ? 'y' : 'n'
-        );
 
         if ($property->isLgDependent()) {
             $this->copyLanguageDependentProperty($source, $destination, $property);
@@ -94,13 +79,6 @@ class AssetInstanceContentCopier implements InstanceContentCopierInterface
         $values = $source->getPropertyValuesCollection($property);
 
         foreach ($values as $value) {
-            $this->debug(
-                "NL Setting property %s value to %s for instance %s",
-                $property->getUri(),
-                $this->formatPropertyValue($value),
-                $destination->getUri()
-            );
-
             $destination->setPropertyValue(
                 $property,
                 $this->formatPropertyValue($value)
@@ -116,10 +94,6 @@ class AssetInstanceContentCopier implements InstanceContentCopierInterface
         foreach ($source->getUsedLanguages($property) as $lang) {
             /** @var $lang string */
 
-            assert(is_string($lang) && is_scalar($lang)); // @todo Not needed anymore
-
-            $this->debug("Property %s lang=%s", $property->getUri(), $lang);
-
             $values = $source->getPropertyValuesCollection(
                 $property,
                 [
@@ -128,15 +102,6 @@ class AssetInstanceContentCopier implements InstanceContentCopierInterface
             );
 
             foreach ($values as $value) {
-                $this->debug(
-                    "Setting property %s = %s for instance %s (type=%s %s)",
-                    $property->getUri(),
-                    $this->formatPropertyValue($value),
-                    $destination->getUri(),
-                    gettype($value),
-                    (is_object($value) ? get_class($value) : '')
-                );
-
                 $destination->setPropertyValueByLg(
                     $property,
                     $this->formatPropertyValue($value),
@@ -146,7 +111,6 @@ class AssetInstanceContentCopier implements InstanceContentCopierInterface
         }
     }
 
-    // @todo Check if this is really needed
     private function formatPropertyValue($value): string
     {
         if ($value instanceof core_kernel_classes_Resource) {
@@ -154,11 +118,5 @@ class AssetInstanceContentCopier implements InstanceContentCopierInterface
         }
 
         return (string) $value;
-    }
-
-    // @todo To be deleted before merge
-    private function debug(string $format, string ...$va_args): void
-    {
-        $this->logger->info(__CLASS__ . ' MM ' . vsprintf($format, $va_args));
     }
 }

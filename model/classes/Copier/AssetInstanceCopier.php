@@ -18,6 +18,8 @@
  * Copyright (c) 2022 (original work) Open Assessment Technologies SA.
  */
 
+declare(strict_types=1);
+
 namespace oat\taoMediaManager\model\classes\Copier;
 
 use oat\tao\model\resources\Contract\InstanceContentCopierInterface;

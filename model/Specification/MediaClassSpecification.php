@@ -28,10 +28,10 @@ use oat\taoMediaManager\model\TaoMediaOntology;
 
 class MediaClassSpecification implements ClassSpecificationInterface
 {
-    private const ROOT_CLASS_URI = TaoMediaOntology::CLASS_URI_MEDIA_ROOT;
-
     public function isSatisfiedBy(core_kernel_classes_Class $class): bool
     {
-        return $class->isSubClassOf($class->getClass(self::ROOT_CLASS_URI));
+        return $class->isSubClassOf(
+            $class->getClass(TaoMediaOntology::CLASS_URI_MEDIA_ROOT)
+        );
     }
 }

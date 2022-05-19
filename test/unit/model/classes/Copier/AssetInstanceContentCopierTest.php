@@ -32,12 +32,6 @@ use PHPUnit\Framework\TestCase;
 
 class AssetInstanceContentCopierTest extends TestCase
 {
-    private const PROPERTY_URI_ALT_TEXT = TaoMediaOntology::PROPERTY_ALT_TEXT;
-    private const PROPERTY_URI_LANGUAGE = TaoMediaOntology::PROPERTY_LANGUAGE;
-    private const PROPERTY_URI_LINK = TaoMediaOntology::PROPERTY_LINK;
-    private const PROPERTY_URI_MD5 = TaoMediaOntology::PROPERTY_MD5;
-    private const PROPERTY_URI_MIME = TaoMediaOntology::PROPERTY_MIME_TYPE;
-
     private const LANGUAGE_CODE = 'fr-CA';
     private const LANGUAGE_URI = 'http://www.tao.lu/Ontologies/TAO.rdf#Langfr-CA';
 
@@ -69,23 +63,23 @@ class AssetInstanceContentCopierTest extends TestCase
     {
         $this->propertyAltText = $this->mockLgDependentProperty(
             'Alt Text',
-            self::PROPERTY_URI_ALT_TEXT
+            TaoMediaOntology::PROPERTY_ALT_TEXT
         );
         $this->propertyLanguage = $this->mockLgDependentProperty(
             'Language',
-            self::PROPERTY_URI_LANGUAGE
+            TaoMediaOntology::PROPERTY_LANGUAGE
         );
         $this->propertyLink = $this->mockProperty(
             '123456789abcdef123456.mp4',
-            self::PROPERTY_URI_LINK
+            TaoMediaOntology::PROPERTY_LINK
         );
         $this->propertyMD5 = $this->mockProperty(
             'c38cd6d9c873bf072d9753d730f87ce',
-            self::PROPERTY_URI_MD5
+            TaoMediaOntology::PROPERTY_MD5
         );
         $this->propertyMime = $this->mockProperty(
             'video/mp4',
-            self::PROPERTY_URI_MIME
+            TaoMediaOntology::PROPERTY_MIME_TYPE
         );
 
         $this->target = $this->mockResource('http://test.resources/target');
@@ -94,19 +88,19 @@ class AssetInstanceContentCopierTest extends TestCase
         $this->source
             ->method('getProperty')
             ->willReturnMap([
-                [self::PROPERTY_URI_ALT_TEXT, $this->propertyAltText],
-                [self::PROPERTY_URI_LANGUAGE, $this->propertyLanguage],
-                [self::PROPERTY_URI_LINK, $this->propertyLink],
-                [self::PROPERTY_URI_MD5, $this->propertyMD5],
-                [self::PROPERTY_URI_MIME, $this->propertyMime],
+                [TaoMediaOntology::PROPERTY_ALT_TEXT, $this->propertyAltText],
+                [TaoMediaOntology::PROPERTY_LANGUAGE, $this->propertyLanguage],
+                [TaoMediaOntology::PROPERTY_LINK, $this->propertyLink],
+                [TaoMediaOntology::PROPERTY_MD5, $this->propertyMD5],
+                [TaoMediaOntology::PROPERTY_MIME_TYPE, $this->propertyMime],
             ]);
 
         $this->source
             ->method('getUsedLanguages')
             ->willReturnCallback(function (core_kernel_classes_Property $p): array {
                 switch ($p->getUri()) {
-                    case self::PROPERTY_URI_ALT_TEXT:
-                    case self::PROPERTY_URI_LANGUAGE:
+                    case TaoMediaOntology::PROPERTY_ALT_TEXT:
+                    case TaoMediaOntology::PROPERTY_LANGUAGE:
                         return [self::LANGUAGE_CODE];
                 }
 
@@ -158,29 +152,29 @@ class AssetInstanceContentCopierTest extends TestCase
         array $opts
     ): array {
         switch ($p->getUri()) {
-            case self::PROPERTY_URI_ALT_TEXT:
+            case TaoMediaOntology::PROPERTY_ALT_TEXT:
                 $this->assertTrue($opts === ['lg' => self::LANGUAGE_CODE]);
 
                 return ['Alt Text'];
 
-            case self::PROPERTY_URI_LANGUAGE:
+            case TaoMediaOntology::PROPERTY_LANGUAGE:
                 $this->assertTrue($opts === ['lg' => self::LANGUAGE_CODE]);
 
                 return [$this->mockResource(self::LANGUAGE_URI)];
 
-            case self::PROPERTY_URI_MIME:
+            case TaoMediaOntology::PROPERTY_MIME_TYPE:
                 $this->assertTrue($opts === []);
 
                 return [$this->mockLiteral('video/mp4')];
 
-            case self::PROPERTY_URI_MD5:
+            case TaoMediaOntology::PROPERTY_MD5:
                 $this->assertTrue($opts === []);
 
                 return [
                     $this->mockLiteral('c38cd6d9c873bf072d9753d730f87ce')
                 ];
 
-            case self::PROPERTY_URI_LINK:
+            case TaoMediaOntology::PROPERTY_LINK:
                 $this->assertTrue($opts === []);
 
                 return [

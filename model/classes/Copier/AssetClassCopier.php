@@ -52,6 +52,9 @@ class AssetClassCopier implements ClassCopierInterface
     /** @var InstanceCopierInterface */
     private $instanceCopier;
 
+    /** @var ClassCopierInterface */
+    private $subClassCopier;
+
     public function __construct(
         LoggerInterface $logger,
         RootClassesListServiceInterface $rootClassesListService,
@@ -59,11 +62,21 @@ class AssetClassCopier implements ClassCopierInterface
         ClassPropertyCopierInterface $classPropertyCopier,
         InstanceCopierInterface $instanceCopier
     ) {
+        $this->subClassCopier = $this;
+
         $this->logger = $logger;
         $this->rootClassesListService = $rootClassesListService;
         $this->mediaClassSpecification = $mediaClassSpecification;
         $this->classPropertyCopier = $classPropertyCopier;
         $this->instanceCopier = $instanceCopier;
+    }
+
+    /**
+     * Used from tests
+     */
+    public function withSubClassCopier(AssetClassCopier $copier): void
+    {
+        $this->subClassCopier = $copier;
     }
 
     /**
@@ -135,7 +148,7 @@ class AssetClassCopier implements ClassCopierInterface
                 $newClass->getLabel()
             );
 
-            $this->copy($subClass, $newClass);
+            $this->subClassCopier->copy($subClass, $newClass);
         }
 
         $this->debug('Returning class %s', $newClass->getLabel());

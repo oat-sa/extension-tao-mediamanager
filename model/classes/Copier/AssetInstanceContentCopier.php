@@ -146,6 +146,7 @@ class AssetInstanceContentCopier implements InstanceContentCopierInterface
         }
     }
 
+    // @todo Check if this is really needed
     private function formatPropertyValue($value): string
     {
         if ($value instanceof core_kernel_classes_Resource) {

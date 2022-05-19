@@ -25,18 +25,14 @@ namespace oat\taoMediaManager\test\unit\model;
 use oat\tao\model\resources\Contract\ClassPropertyCopierInterface;
 use oat\tao\model\resources\Contract\InstanceCopierInterface;
 use oat\tao\model\resources\Contract\RootClassesListServiceInterface;
-use oat\tao\model\Specification\ClassSpecificationInterface;
 use oat\taoMediaManager\model\classes\Copier\AssetClassCopier;
-use oat\taoMediaManager\model\classes\Copier\AssetInstanceContentCopier;
 use oat\taoMediaManager\model\Specification\MediaClassSpecification;
 use oat\taoMediaManager\model\TaoMediaOntology;
 use oat\taoItems\model\Copier\ItemClassCopier;
 use oat\tao\model\resources\Contract\ClassCopierInterface;
-use core_kernel_classes_Literal;
 use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Class;
-use oat\tao\model\TaoOntology;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
@@ -70,15 +66,14 @@ class AssetClassCopierTest extends TestCase
     /** @var InstanceCopierInterface|MockObject */
     private $instanceCopier;
 
-    /** @var core_kernel_classes_Class|MockObject
-     * @todo Needed?
-     */
-    private $classMedia;
+    /** @var core_kernel_classes_Class|MockObject */
+    private $source;
+
+    /** @var core_kernel_classes_Class|MockObject */
+    private $target;
 
     protected function setUp(): void
     {
-        $this->classMedia = $this->createMock(core_kernel_classes_Class::class);
-
         $this->classCopier = $this->createMock(ClassCopierInterface::class);
         $this->mediaClassSpecification = $this->createMock(
             MediaClassSpecification::class
@@ -93,8 +88,39 @@ class AssetClassCopierTest extends TestCase
             InstanceCopierInterface::class
         );
 
+        $this->mediaClassSpecification
+            ->method('isSatisfiedBy')
+            ->willReturnCallback(function (core_kernel_classes_Class $class) {
+                return in_array(
+                    $class->getUri(),
+                    [
+                        'http://asset.root/1',
+                        'http://asset.root/1/1',
+                        'http://asset.root/2',
+                        'http://asset.root/2/1',
+                        'http://asset.root/1/c1',
+                        'http://asset.root/1/c2',
+                    ]
+                );
+            });
+
+        $classRoot1 = $this->createMock(core_kernel_classes_Class::class);
+        $classRoot1->method('getUri')->willReturn('http://asset.root/1');
+
+        $classRoot2 = $this->createMock(core_kernel_classes_Class::class);
+        $classRoot2->method('getUri')->willReturn('http://asset.root/2');
+
+        $this->rootClassesListService
+            ->method('list')
+            ->willReturn([$classRoot1, $classRoot2]);
+
+        $loggerMock = $this->createMock(LoggerInterface::class);
+
+        $this->source = $this->createMock(core_kernel_classes_Class::class);
+        $this->target = $this->createMock(core_kernel_classes_Class::class);
+
         $this->sut = new AssetClassCopier(
-            $this->createMock(LoggerInterface::class),
+            $loggerMock,
             $this->rootClassesListService,
             $this->mediaClassSpecification,
             $this->classPropertyCopier,
@@ -102,61 +128,190 @@ class AssetClassCopierTest extends TestCase
         );
     }
 
-    /*public function testCopyInvalidSourceClass(): void
-    {
+    /**
+     * @dataProvider copyInvalidClassTypesDataProvider
+     */
+    public function testCopyInvalidClassType(
+        string $sourceUri,
+        string $targetUri,
+        string $unsupportedClass
+    ): void {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessageMatches(
+        $this->expectExceptionMessage(
             sprintf(
                 self::ERRMSG_NOT_IN_ASSETS_ROOT,
+                $unsupportedClass,
                 self::ASSET_ROOT_CLASS_URI
             )
         );
+
+        $this->source->method('getUri')->willReturn($sourceUri);
+        $this->target->method('getUri')->willReturn($targetUri);
+
+        $this->sut->copy($this->source, $this->target);
     }
 
-    public function testCopyInvalidDestinationClass(): void
+    public function copyInvalidClassTypesDataProvider(): array
     {
-
+        return [
+            'Copy from a non-assets class type' => [
+                'sourceUri' => 'http://test.root/1',
+                'targetUri' => 'http://asset.root/2',
+                'unsupportedClass' => 'http://test.root/1',
+            ],
+            'Copy to a non-assets class type' => [
+                'sourceUri' => 'http://asset.root/1',
+                'targetUri' => 'http://item.root/2',
+                'unsupportedClass' => 'http://item.root/2',
+            ],
+        ];
     }
 
-    public function testClassMismatch(): void
+    public function testClassRootMismatch(): void
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            sprintf(
+                self::ERRMSG_NOT_IN_SAME_ROOT,
+                'http://asset.root/1/1',
+                'http://asset.root/2/1',
+                'http://asset.root/1'
+            )
+        );
 
-    }*/
+        $this->source->method('getUri')->willReturn('http://asset.root/1/1');
+        $this->source
+            ->method('isSubclassOf')
+            ->willReturnCallback(function (core_kernel_classes_Class $class) {
+                return $class->getUri() === 'http://asset.root/1';
+            });
 
-    /*public function testCopy(): void
+        $this->target->method('getUri')->willReturn('http://asset.root/2/1');
+        $this->target
+            ->method('isSubclassOf')
+            ->willReturnCallback(function (core_kernel_classes_Class $class) {
+                return $class->getUri() === 'http://asset.root/2';
+            });
+
+        $this->sut->copy($this->source, $this->target);
+    }
+
+    public function testCopy(): void
     {
-        // @todo
-        /*$rootClass = $this->createMock(core_kernel_classes_Class::class);
+        $this->source->method('getUri')->willReturn('http://asset.root/1/c1');
+        $this->target->method('getUri')->willReturn('http://asset.root/1/c2');
 
-        $class = $this->createMock(core_kernel_classes_Class::class);
-        $class
-            ->expects($this->once())
-            ->method('getClass')
-            ->with(TaoOntology::CLASS_URI_ITEM)
-            ->willReturn($rootClass);
-        $class
-            ->expects($this->once())
-            ->method('equals')
-            ->with($rootClass)
-            ->willReturn(true);
-        $class
-            ->expects($this->never())
-            ->method('isSubClassOf');
-        $class
-            ->expects($this->never())
-            ->method('getUri');
+        $this->source->method('getLabel')->willReturn('Source Class');
 
-        $destinationClass = $this->createMock(core_kernel_classes_Class::class);
         $newClass = $this->createMock(core_kernel_classes_Class::class);
 
-        $this->classCopier
+        // @todo Probably can be removed once we remove debug() calls from
+        //       the copier itself
+        $newClass->method('getLabel')->willReturn('Source Class');
+
+        $propertyMocks = [
+            $this->createMock(core_kernel_classes_Property::class),
+            $this->createMock(core_kernel_classes_Property::class),
+        ];
+
+        $this->target
             ->expects($this->once())
-            ->method('copy')
-            ->with($class, $destinationClass)
+            ->method('createSubClass')
+            ->with('Source Class')
             ->willReturn($newClass);
 
-        $this->assertEquals($newClass, $this->sut->copy($class, $destinationClass));
-    }*/
+        $this->source
+            ->method('getProperties')
+            ->with(false)
+            ->willReturn($propertyMocks);
+
+        $this->classCopier
+            ->method('copy')
+            ->withConsecutive([
+                [$propertyMocks[0], $newClass],
+                [$propertyMocks[1], $newClass],
+            ]);
+
+        $instances = [
+            $this->createMock(core_kernel_classes_Resource::class),
+            $this->createMock(core_kernel_classes_Resource::class),
+            $this->createMock(core_kernel_classes_Resource::class),
+        ];
+
+        $this->instanceCopier
+            ->expects($this->exactly(3))
+            ->method('copy')
+            ->withConsecutive(
+                [$instances[0], $newClass],
+                [$instances[1], $newClass],
+                [$instances[2], $newClass]
+            );
+
+        $this->source->method('getInstances')->willReturn($instances);
+        $this->source->method('getSubclasses')->willReturn([]);
+
+        $this->assertEquals(
+            $newClass,
+            $this->sut->copy($this->source, $this->target)
+        );
+    }
+
+    public function testCopyRecursive(): void
+    {
+        $this->source->method('getUri')->willReturn('http://asset.root/1/c1');
+        $this->target->method('getUri')->willReturn('http://asset.root/1/c2');
+
+        $this->source->method('getLabel')->willReturn('Source Class');
+
+        $newClass = $this->createMock(core_kernel_classes_Class::class);
+
+        // @todo Probably can be removed once we remove debug() calls from
+        //       the copier itself
+        $newClass->method('getLabel')->willReturn('Source Class');
+
+        $this->target
+            ->expects($this->once())
+            ->method('createSubClass')
+            ->with('Source Class')
+            ->willReturn($newClass);
+
+        $this->source
+            ->method('getProperties')
+            ->with(false)
+            ->willReturn([]);
+
+        $this->classCopier
+            ->expects($this->never())
+            ->method('copy');
+
+        $this->instanceCopier
+            ->expects($this->never())
+            ->method('copy');
+
+        $subClass = $this->createMock(core_kernel_classes_Class::class);
+
+        // @todo Probably can be removed once we remove debug() calls from
+        //       the copier itself
+        $subClass->method('getUri')->willReturn('http://...');
+        $subClass->method('getLabel')->willReturn('Sub Class');
+
+        $this->source->method('getInstances')->willReturn([]);
+        $this->source->method('getSubclasses')->willReturn([$subClass]);
+
+        $subClassCopier = $this->createMock(AssetClassCopier::class);
+        $subClassCopier
+            ->expects($this->once())
+            ->method('copy')
+            ->with($subClass, $newClass)
+            ->willReturn($newClass);
+
+        $this->sut->withSubClassCopier($subClassCopier);
+
+        $this->assertEquals(
+            $newClass,
+            $this->sut->copy($this->source, $this->target)
+        );
+    }
 
     /*public function testCopyInvalidClass(): void
     {

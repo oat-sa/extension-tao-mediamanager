@@ -35,8 +35,6 @@ use Psr\Log\LoggerInterface;
 
 class AssetClassCopier implements ClassCopierInterface
 {
-    private const ROOT_CLASS_URI = TaoMediaOntology::CLASS_URI_MEDIA_ROOT;
-
     /** @var LoggerInterface */
     private $logger;
 
@@ -111,7 +109,7 @@ class AssetClassCopier implements ClassCopierInterface
                 sprintf(
                     'Selected class (%s) is not supported because it is not part of the media assets root class (%s).',
                     $class->getUri(),
-                    self::ROOT_CLASS_URI
+                    TaoMediaOntology::CLASS_URI_MEDIA_ROOT
                 )
             );
         }

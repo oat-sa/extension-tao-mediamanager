@@ -239,7 +239,10 @@ class SharedStimulusPackageImporter extends ZipImporter
         string $userId = null
     ): Report {
         //if the class does not belong to media classes create a new one with its name (for items)
-        $mediaClass = new core_kernel_classes_Class(MediaService::ROOT_CLASS_URI);
+        $mediaClass = new core_kernel_classes_Class(
+            TaoMediaOntology::CLASS_URI_MEDIA_ROOT
+        );
+
         if (!$instance->isInstanceOf($mediaClass)) {
             $report = Report::createFailure(
                 'The instance ' . $instance->getUri() . ' is not a Media instance'

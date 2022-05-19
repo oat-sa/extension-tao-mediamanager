@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\relation\service;
 
-use oat\taoMediaManager\model\MediaService;
+use oat\taoMediaManager\model\TaoMediaOntology;
 
 class MediaToMediaRdsSearcher extends AbstractRdsSearcher
 {
@@ -30,9 +30,12 @@ class MediaToMediaRdsSearcher extends AbstractRdsSearcher
     {
         return array_merge(
             [
-                MediaService::ROOT_CLASS_URI,
+                TaoMediaOntology::CLASS_URI_MEDIA_ROOT,
             ],
-            array_keys($this->getClass(MediaService::ROOT_CLASS_URI)->getSubClasses(true))
+            array_keys(
+                $this->getClass(TaoMediaOntology::CLASS_URI_MEDIA_ROOT)
+                    ->getSubClasses(true)
+            )
         );
     }
 }

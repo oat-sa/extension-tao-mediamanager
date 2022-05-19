@@ -25,6 +25,7 @@ namespace oat\taoMediaManager\scripts;
 use oat\oatbox\action\Action;
 use common_report_Report as Report;
 use oat\taoMediaManager\model\MediaService;
+use oat\taoMediaManager\model\TaoMediaOntology;
 
 /**
  * Class ImportMedia
@@ -53,7 +54,7 @@ class ImportMedia implements Action
         $file = array_shift($params);
         $destinationClassUri = count($params) > 0
             ? array_shift($params)
-            : MediaService::ROOT_CLASS_URI;
+            : TaoMediaOntology::CLASS_URI_MEDIA_ROOT;
 
         $service = MediaService::singleton();
         $uri = $service->createMediaInstance($file, $destinationClassUri, DEFAULT_LANG, basename($file));

@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\scripts;
 
+use oat\taoMediaManager\model\TaoMediaOntology;
 use Throwable;
 use RuntimeException;
 use oat\oatbox\filesystem\File;
@@ -202,7 +203,9 @@ class ReplaceSharedStimulusMedia extends ScriptAction
     private function getPropertyLink(): core_kernel_classes_Property
     {
         if (!isset($this->propertyLink)) {
-            $this->propertyLink = $this->getOntology()->getProperty(MediaService::PROPERTY_LINK);
+            $this->propertyLink = $this->getOntology()->getProperty(
+                TaoMediaOntology::PROPERTY_LINK
+            );
         }
 
         return $this->propertyLink;

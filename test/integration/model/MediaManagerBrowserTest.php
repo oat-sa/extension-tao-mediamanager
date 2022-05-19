@@ -21,10 +21,13 @@
 
 namespace oat\taoMediaManager\test\integration\model;
 
+use core_kernel_classes_Property;
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\MediaService;
 use oat\generis\test\TestCase;
+use oat\taoMediaManager\model\TaoMediaOntology;
+use ReflectionProperty;
 use tao_models_classes_FileNotFoundException;
 
 class MediaManagerBrowserTest extends TestCase
@@ -90,8 +93,8 @@ class MediaManagerBrowserTest extends TestCase
     public function testGetFileInfo()
     {
         $instance = $this->rootClass->createInstance('Brazil.png');
-        $instance->setPropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LINK), 'myGreatLink');
-        $instance->setPropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_MIME_TYPE), 'image/png');
+        $instance->setPropertyValue(new core_kernel_classes_Property(TaoMediaOntology::PROPERTY_LINK), 'myGreatLink');
+        $instance->setPropertyValue(new core_kernel_classes_Property(TaoMediaOntology::PROPERTY_MIME_TYPE), 'image/png');
 
         $uri = $instance->getUri();
 
@@ -128,7 +131,7 @@ class MediaManagerBrowserTest extends TestCase
 
         $mediaSource = new MediaSource(['lang' => 'EN_en', 'rootClass' => $this->rootClass]);
 
-        $ref = new \ReflectionProperty(MediaSource::class, 'fileManagementService');
+        $ref = new ReflectionProperty(MediaSource::class, 'fileManagementService');
         $ref->setAccessible(true);
         $ref->setValue($mediaSource, $fileManagerMock);
 

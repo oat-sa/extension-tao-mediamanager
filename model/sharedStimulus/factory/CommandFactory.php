@@ -28,9 +28,9 @@ use oat\oatbox\filesystem\Directory;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\user\User;
-use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\sharedStimulus\CreateCommand;
 use oat\taoMediaManager\model\sharedStimulus\PatchCommand;
+use oat\taoMediaManager\model\TaoMediaOntology;
 use Psr\Http\Message\ServerRequestInterface;
 
 class CommandFactory extends ConfigurableService
@@ -45,7 +45,7 @@ class CommandFactory extends ConfigurableService
         $parsedBody = json_decode((string)$request->getBody(), true);
 
         return new CreateCommand(
-            $parsedBody['classId'] ?? $parsedBody['classUri'] ?? MediaService::ROOT_CLASS_URI,
+            $parsedBody['classId'] ?? $parsedBody['classUri'] ?? TaoMediaOntology::CLASS_URI_MEDIA_ROOT,
             $parsedBody['name'] ?? null,
             $parsedBody['languageId'] ?? $parsedBody['languageUri'] ?? null
         );

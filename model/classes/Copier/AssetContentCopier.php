@@ -17,3 +17,22 @@
  *
  * Copyright (c) 2022 (original work) Open Assessment Technologies SA.
  */
+
+declare(strict_types=1);
+
+namespace oat\taoMediaManager\model\classes\Copier;
+
+use core_kernel_classes_Resource;
+use oat\tao\model\resources\Contract\InstanceContentCopierInterface;
+
+class AssetContentCopier implements InstanceContentCopierInterface
+{
+    public function copy(
+        core_kernel_classes_Resource $instance,
+        core_kernel_classes_Resource $destinationInstance
+    ): void {
+        // Content (i.e. files) are shared, so nothing to copy here
+
+        // @todo May need to copy CSS & XML for shared stimulus assets
+    }
+}

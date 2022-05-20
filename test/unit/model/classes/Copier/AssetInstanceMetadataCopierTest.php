@@ -22,7 +22,8 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\test\unit\model;
 
-use oat\taoMediaManager\model\classes\Copier\AssetInstanceContentCopier;
+use oat\tao\model\resources\Contract\InstanceMetadataCopierInterface;
+use oat\taoMediaManager\model\classes\Copier\AssetInstanceMetadataCopier;
 use oat\taoMediaManager\model\TaoMediaOntology;
 use core_kernel_classes_Literal;
 use core_kernel_classes_Property;
@@ -30,12 +31,12 @@ use core_kernel_classes_Resource;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class AssetInstanceContentCopierTest extends TestCase
+class AssetInstanceMetadataCopierTest extends TestCase
 {
     private const LANGUAGE_CODE = 'fr-CA';
     private const LANGUAGE_URI = 'http://www.tao.lu/Ontologies/TAO.rdf#Langfr-CA';
 
-    /** @var AssetInstanceContentCopier */
+    /** @var AssetInstanceMetadataCopier */
     private $sut;
 
     /** @var core_kernel_classes_Resource|MockObject */
@@ -107,11 +108,18 @@ class AssetInstanceContentCopierTest extends TestCase
                 // Called getUsedLanguages for a non-lg dependent property
                 //
                 $this->fail(
-                    'Unexpected call to getUsedLanguages for ' . $p->getUri()
+                    "Unexpected call to getUsedLanguages for {$p->getUri()}"
                 );
             });
 
-        $this->sut = new AssetInstanceContentCopier();
+        $nestedCopier = $this->createMock(InstanceMetadataCopierInterface::class);
+
+        $nestedCopier
+            ->expects($this->once())
+            ->method('copy')
+            ->with($this->source, $this->target);
+
+        $this->sut = new AssetInstanceMetadataCopier($nestedCopier);
     }
 
     public function testTargetPropertiesAreSet(): void
@@ -184,7 +192,7 @@ class AssetInstanceContentCopierTest extends TestCase
 
         // Called getUsedLanguages for a non-lg dependent property
         //
-        $this->fail('Unexpected call to getUsedLanguages for ' . $p->getUri());
+        $this->fail("Unexpected call to getUsedLanguages for {$p->getUri()}");
     }
 
     /**

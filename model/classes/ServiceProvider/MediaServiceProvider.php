@@ -27,16 +27,18 @@ use oat\oatbox\log\LoggerService;
 use oat\tao\model\accessControl\ActionAccessControl;
 use oat\tao\model\accessControl\PermissionChecker;
 use oat\tao\model\resources\Service\ClassCopierProxy;
+use oat\tao\model\resources\Service\ClassMetadataCopier;
+use oat\tao\model\resources\Service\ClassMetadataMapper;
 use oat\tao\model\resources\Service\ClassPropertyCopier;
-use oat\tao\model\resources\Service\InstanceCopier as TaoCoreInstanceCopier;
+use oat\tao\model\resources\Service\InstanceCopier;
+use oat\tao\model\resources\Service\InstanceMetadataCopier;
 use oat\tao\model\resources\Service\RootClassesListService;
-use oat\tao\model\TaoOntology;
-use oat\tao\test\integration\ServiceTest;
 use oat\taoItems\model\Copier\ClassCopier;
+use oat\tao\model\resources\Service\ClassCopier as TaoClassCopier;
 use oat\taoMediaManager\model\accessControl\MediaPermissionService;
 use oat\taoMediaManager\model\classes\Copier\AssetClassCopier;
-use oat\taoMediaManager\model\classes\Copier\AssetInstanceContentCopier;
-use oat\taoMediaManager\model\classes\Copier\AssetInstanceCopier;
+use oat\taoMediaManager\model\classes\Copier\AssetContentCopier;
+use oat\taoMediaManager\model\classes\Copier\AssetInstanceMetadataCopier;
 use oat\taoMediaManager\model\TaoMediaOntology;
 use oat\taoMediaManager\model\Specification\MediaClassSpecification;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -60,27 +62,54 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
             );
 
         $services
-            ->set(AssetInstanceContentCopier::class, AssetInstanceContentCopier::class)
-            ->public()
-            ->args(
-                [
-                    service(LoggerService::SERVICE_ID),
-                ]
-            );
-
-        $services
-            ->set(AssetInstanceCopier::class, AssetInstanceCopier::class)
-            ->public()
-            ->args(
-                [
-                    service(TaoCoreInstanceCopier::class),
-                    service(AssetInstanceContentCopier::class),
-                ]
-            );
-
-        $services
             ->set(MediaClassSpecification::class, MediaClassSpecification::class)
             ->public();
+
+        $services
+            ->get(InstanceMetadataCopier::class)
+            ->call(
+                'addPropertyUriToBlacklist',
+                [
+                    TaoMediaOntology::PROPERTY_LINK
+                ]
+            );
+
+        $services
+            ->set(AssetInstanceMetadataCopier::class, AssetInstanceMetadataCopier::class)
+            ->args(
+                [
+                    service(InstanceMetadataCopier::class),
+                ]
+            );
+
+        $services
+            ->set(AssetContentCopier::class, AssetContentCopier::class);
+
+        $services
+            ->set(InstanceCopier::class . '::ASSETS', InstanceCopier::class)
+            ->args(
+                [
+                    service(AssetInstanceMetadataCopier::class),
+                ]
+            )
+            ->call(
+                'withInstanceContentCopier',
+                [
+                    service(AssetContentCopier::class),
+                ]
+            );
+
+        $services
+            ->set(TaoClassCopier::class . '::ASSETS', TaoClassCopier::class)
+            ->share(false)
+            ->args(
+                [
+                    service(RootClassesListService::class),
+                    service(ClassMetadataCopier::class),
+                    service(InstanceCopier::class . '::ASSETS'),
+                    service(ClassMetadataMapper::class),
+                ]
+            );
 
         $services
             ->set(AssetClassCopier::class, AssetClassCopier::class)
@@ -90,8 +119,7 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                     service(LoggerService::SERVICE_ID),
                     service(RootClassesListService::class),
                     service(MediaClassSpecification::class),
-                    service(ClassPropertyCopier::class),
-                    service(AssetInstanceCopier::class),
+                    service(TaoClassCopier::class . '::ASSETS'),
                 ]
             );
 

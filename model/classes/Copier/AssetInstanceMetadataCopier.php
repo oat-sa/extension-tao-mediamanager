@@ -20,12 +20,12 @@
 
 namespace oat\taoMediaManager\model\classes\Copier;
 
-use oat\tao\model\resources\Contract\InstanceContentCopierInterface;
+use oat\tao\model\resources\Contract\InstanceMetadataCopierInterface;
 use oat\taoMediaManager\model\TaoMediaOntology;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Property;
 
-class AssetInstanceContentCopier implements InstanceContentCopierInterface
+class AssetInstanceMetadataCopier implements InstanceMetadataCopierInterface
 {
     /**
      * Base filename for the asset (i.e. 123456789abcdef123456.mp4)
@@ -43,17 +43,33 @@ class AssetInstanceContentCopier implements InstanceContentCopierInterface
 
     private const PROPERTY_MIME = TaoMediaOntology::PROPERTY_MIME_TYPE;
 
+    /** @var InstanceMetadataCopierInterface */
+    private $nestedCopier;
+
+    public function __construct(
+        InstanceMetadataCopierInterface $nestedCopier
+    ) {
+        $this->nestedCopier = $nestedCopier;
+    }
     public function copy(
         core_kernel_classes_Resource $instance,
         core_kernel_classes_Resource $destinationInstance
     ): void {
+        $this->nestedCopier->copy($instance, $destinationInstance);
+
+        // Doesn't seem to be copied by the wrapped class
         $this->copyProperty($instance, $destinationInstance, self::PROPERTY_ALT_TEXT);
         $this->copyProperty($instance, $destinationInstance, self::PROPERTY_LANGUAGE);
         $this->copyProperty($instance, $destinationInstance, self::PROPERTY_MD5);
         $this->copyProperty($instance, $destinationInstance, self::PROPERTY_MIME);
 
-        // References the original file instead of making a copy of it
-        $this->copyProperty($instance, $destinationInstance, self::PROPERTY_LINK);
+        // References the original file instead of creating a copy
+        //
+        $this->copyProperty(
+            $instance,
+            $destinationInstance,
+            self::PROPERTY_LINK
+        );
     }
 
     private function copyProperty(

@@ -22,16 +22,15 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\classes\Copier;
 
-use core_kernel_classes_Class;
-use InvalidArgumentException;
 use oat\tao\model\resources\Contract\ClassCopierInterface;
 use oat\tao\model\resources\Contract\ClassPropertyCopierInterface;
-use oat\tao\model\resources\Contract\InstanceCopierInterface;
 use oat\tao\model\resources\Contract\RootClassesListServiceInterface;
 use oat\tao\model\resources\Service\ClassPropertyCopier;
 use oat\tao\model\Specification\ClassSpecificationInterface;
 use oat\taoMediaManager\model\TaoMediaOntology;
+use core_kernel_classes_Class;
 use Psr\Log\LoggerInterface;
+use InvalidArgumentException;
 
 class AssetClassCopier implements ClassCopierInterface
 {
@@ -41,40 +40,22 @@ class AssetClassCopier implements ClassCopierInterface
     /** @var RootClassesListServiceInterface */
     private $rootClassesListService;
 
-    /** @var ClassPropertyCopier */
-    private $classPropertyCopier;
-
     /** @var ClassSpecificationInterface */
     private $mediaClassSpecification;
 
-    /** @var InstanceCopierInterface */
-    private $instanceCopier;
-
     /** @var ClassCopierInterface */
-    private $subClassCopier;
+    private $taoClassCopier;
 
     public function __construct(
         LoggerInterface $logger,
         RootClassesListServiceInterface $rootClassesListService,
         ClassSpecificationInterface $mediaClassSpecification,
-        ClassPropertyCopierInterface $classPropertyCopier,
-        InstanceCopierInterface $instanceCopier
+        ClassCopierInterface $taoClassCopier
     ) {
-        $this->subClassCopier = $this;
-
         $this->logger = $logger;
         $this->rootClassesListService = $rootClassesListService;
         $this->mediaClassSpecification = $mediaClassSpecification;
-        $this->classPropertyCopier = $classPropertyCopier;
-        $this->instanceCopier = $instanceCopier;
-    }
-
-    /**
-     * Used from tests
-     */
-    public function withSubClassCopier(AssetClassCopier $copier): void
-    {
-        $this->subClassCopier = $copier;
+        $this->taoClassCopier = $taoClassCopier;
     }
 
     public function copy(
@@ -85,21 +66,7 @@ class AssetClassCopier implements ClassCopierInterface
         $this->assertInAssetsRootClass($destinationClass);
         $this->assertInSameRootClass($class, $destinationClass);
 
-        $newClass = $destinationClass->createSubClass($class->getLabel());
-
-        foreach ($class->getProperties(false) as $property) {
-            $this->classPropertyCopier->copy($property, $newClass);
-        }
-
-        foreach ($class->getInstances() as $instance) {
-            $this->instanceCopier->copy($instance, $newClass);
-        }
-
-        foreach ($class->getSubClasses() as $subClass) {
-            $this->subClassCopier->copy($subClass, $newClass);
-        }
-
-        return $newClass;
+        return $this->taoClassCopier->copy($class, $destinationClass);
     }
 
     private function assertInAssetsRootClass(core_kernel_classes_Class $class): void

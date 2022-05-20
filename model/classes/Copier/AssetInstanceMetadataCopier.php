@@ -57,7 +57,6 @@ class AssetInstanceMetadataCopier implements InstanceMetadataCopierInterface
     ): void {
         $this->nestedCopier->copy($instance, $destinationInstance);
 
-        // Doesn't seem to be copied by the wrapped class
         $this->copyProperty($instance, $destinationInstance, self::PROPERTY_ALT_TEXT);
         $this->copyProperty($instance, $destinationInstance, self::PROPERTY_LANGUAGE);
         $this->copyProperty($instance, $destinationInstance, self::PROPERTY_MD5);
@@ -65,11 +64,7 @@ class AssetInstanceMetadataCopier implements InstanceMetadataCopierInterface
 
         // References the original file instead of creating a copy
         //
-        $this->copyProperty(
-            $instance,
-            $destinationInstance,
-            self::PROPERTY_LINK
-        );
+        $this->copyProperty($instance, $destinationInstance,self::PROPERTY_LINK);
     }
 
     private function copyProperty(

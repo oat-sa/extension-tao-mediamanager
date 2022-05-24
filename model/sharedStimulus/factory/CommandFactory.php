@@ -28,6 +28,7 @@ use oat\oatbox\filesystem\Directory;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\user\User;
+use oat\taoMediaManager\model\sharedStimulus\CopyCommand;
 use oat\taoMediaManager\model\sharedStimulus\CreateCommand;
 use oat\taoMediaManager\model\sharedStimulus\PatchCommand;
 use oat\taoMediaManager\model\TaoMediaOntology;
@@ -62,6 +63,14 @@ class CommandFactory extends ConfigurableService
             $this->getSerializer()->serialize($file),
             $user->getIdentifier()
         );
+    }
+
+    public function makeCopyCommand(
+        string $sourceUri,
+        string $destinationUri,
+        string $language
+    ): CopyCommand {
+        return new CopyCommand($sourceUri, $destinationUri, $language);
     }
 
     private function getDirectory(): Directory

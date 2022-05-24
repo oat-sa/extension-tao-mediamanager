@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\classes\ServiceProvider;
 
+use oat\generis\model\data\Ontology;
 use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
 use oat\oatbox\log\LoggerService;
 use oat\tao\model\accessControl\ActionAccessControl;
@@ -39,6 +40,15 @@ use oat\taoMediaManager\model\accessControl\MediaPermissionService;
 use oat\taoMediaManager\model\classes\Copier\AssetClassCopier;
 use oat\taoMediaManager\model\classes\Copier\AssetContentCopier;
 use oat\taoMediaManager\model\classes\Copier\AssetInstanceMetadataCopier;
+use oat\taoMediaManager\model\fileManagement\FileManagement;
+use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
+use oat\taoMediaManager\model\MediaService;
+use oat\taoMediaManager\model\sharedStimulus\css\repository\StylesheetRepository;
+use oat\taoMediaManager\model\sharedStimulus\css\service\ListStylesheetsService;
+use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
+use oat\taoMediaManager\model\sharedStimulus\service\CopyService;
+use oat\taoMediaManager\model\sharedStimulus\service\StoreService;
+use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourceSpecification;
 use oat\taoMediaManager\model\TaoMediaOntology;
 use oat\taoMediaManager\model\Specification\MediaClassSpecification;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -50,6 +60,21 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
     public function __invoke(ContainerConfigurator $configurator): void
     {
         $services = $configurator->services();
+
+        $services
+            ->set(CopyService::class, CopyService::class)
+            ->public()
+            ->args(
+                [
+                    service(Ontology::SERVICE_ID),
+                    service(MediaService::class),
+                    service(StoreService::class),
+                    service(ListStylesheetsService::class),
+                    service(StylesheetRepository::class),
+                    service(FileSourceUnserializer::class),
+                    service(FileManagement::SERVICE_ID),
+                ]
+            );
 
         $services
             ->set(MediaPermissionService::class, MediaPermissionService::class)
@@ -83,7 +108,14 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
             );
 
         $services
-            ->set(AssetContentCopier::class, AssetContentCopier::class);
+            ->set(AssetContentCopier::class, AssetContentCopier::class)
+            ->args(
+                [
+                    service(SharedStimulusResourceSpecification::class),
+                    service(CommandFactory::class),
+                    service(CopyService::class),
+                ]
+            );
 
         $services
             ->set(InstanceCopier::class . '::ASSETS', InstanceCopier::class)

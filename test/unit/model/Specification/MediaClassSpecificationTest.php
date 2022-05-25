@@ -60,10 +60,17 @@ class MediaClassSpecificationTest extends TestCase
      */
     public function testIsSatisfiedBy(
         bool $expected,
+        bool $equals,
         bool $isSubclass
     ): void {
         $this->testedClass
-            ->expects($this->once())
+            ->expects($this->atMost(1))
+            ->method('equals')
+            ->with($this->rootClass)
+            ->willReturn($equals);
+
+        $this->testedClass
+            ->expects($this->atMost(1))
             ->method('isSubclassOf')
             ->with($this->rootClass)
             ->willReturn($isSubclass);
@@ -79,10 +86,17 @@ class MediaClassSpecificationTest extends TestCase
         return [
             'Subclass of MEDIA_ROOT' => [
                 'expected' => true,
+                'equals' => false,
                 'isSubclass' => true,
             ],
             'Not a subclass of MEDIA_ROOT' => [
                 'expected' => false,
+                'equals' => false,
+                'isSubclass' => false,
+            ],
+            'Same class as MEDIA_ROOT' => [
+                'expected' => true,
+                'equals' => true,
                 'isSubclass' => false,
             ],
         ];

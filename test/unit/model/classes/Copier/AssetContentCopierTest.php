@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,68 +22,169 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\test\unit\model;
 
+use core_kernel_classes_Resource;
 use oat\tao\model\resources\Contract\ClassPropertyCopierInterface;
-use oat\tao\model\resources\Contract\RootClassesListServiceInterface;
-use oat\taoMediaManager\model\classes\Copier\AssetClassCopier;
-use oat\taoMediaManager\model\Specification\MediaClassSpecification;
+use oat\taoMediaManager\model\classes\Copier\AssetContentCopier;
+use oat\taoMediaManager\model\sharedStimulus\CopyCommand;
+use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
+use oat\taoMediaManager\model\sharedStimulus\service\CopyService;
+use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourceSpecification;
 use oat\taoMediaManager\model\TaoMediaOntology;
-use oat\taoItems\model\Copier\ItemClassCopier;
 use oat\tao\model\resources\Contract\ClassCopierInterface;
-use core_kernel_classes_Class;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
-use Psr\Log\LoggerInterface;
-use InvalidArgumentException;
 
-class AssetClassCopierTest extends TestCase
+class AssetContentCopierTest extends TestCase
 {
     /** @var ClassCopierInterface|MockObject */
     private $taoClassCopier;
 
-    /** @var core_kernel_classes_Class|MockObject */
+    /** @var CommandFactory */
+    private $commandFactory;
+
+    /** @var core_kernel_classes_Resource|MockObject */
     private $source;
 
-    /** @var core_kernel_classes_Class|MockObject */
+    /** @var core_kernel_classes_Resource|MockObject */
     private $target;
 
-    /** @var ItemClassCopier */
+    /** @var SharedStimulusResourceSpecification|MockObject */
+    private $sharedStimulusSpecification;
+
+    /** @var CopyService|MockObject */
+    private $sharedStimulusCopyService;
+
+    /** @var CopyCommand|MockObject */
+    private $commandMock;
+
+    /** @var AssetContentCopier */
     private $sut;
 
     protected function setUp(): void
     {
-        $this->taoClassCopier = $this->createMock(ClassCopierInterface::class);
-        $this->source = $this->createMock(core_kernel_classes_Class::class);
-        $this->target = $this->createMock(core_kernel_classes_Class::class);
+        $this->source = $this->mockResource('http://test.resources/source');
+        $this->target = $this->mockResource('http://test.resources/target');
 
-        $sharedStimulusSpecification = $this->createMock(
+        $this->commandMock = $this->createMock(CopyCommand::class);
+        $this->commandFactory = $this->createMock(CommandFactory::class);
+        $this->sharedStimulusCopyService = $this->createMock(CopyService::class);
+        $this->taoClassCopier = $this->createMock(ClassCopierInterface::class);
+
+        $this->sharedStimulusSpecification = $this->createMock(
             SharedStimulusResourceSpecification::class
         );
-        $sharedStimulusSpecification
-            ->method('isSatisfiedBy')
-            ->willReturnCallback(function (core_kernel_classes_Resource $asset) {
-                return in_array(
-                    $asset->getUri(),
-                    [
-                        'http://asset.root/1',
-                        'http://asset.root/1/1',
-                        'http://asset.root/2',
-                        'http://asset.root/2/1',
-                        'http://asset.root/1/c1',
-                        'http://asset.root/1/c2',
-                    ]
-                );
-            });
 
         $this->sut = new AssetContentCopier(
-
-            $this->getRootClassesListServiceMock(),
-            $sharedStimulusSpecification,
-            $this->taoClassCopier
+            $this->sharedStimulusSpecification,
+            $this->commandFactory,
+            $this->sharedStimulusCopyService,
+            'fr-FR'
         );
     }
 
-    public function testSomething(): void
+    public function testCopySharedStimulus(): void
     {
-        // @todo
+        $this->sharedStimulusSpecification
+            ->expects($this->once())
+            ->method('isSatisfiedBy')
+            ->with($this->source)
+            ->willReturn(true);
+
+        $this->commandFactory
+            ->expects($this->once())
+            ->method('makeCopyCommand')
+            ->withConsecutive(
+                [
+                    'http://test.resources/source',
+                    'http://test.resources/target',
+                    'fr-FR', // Default language for the copier
+                ])
+            ->willReturn($this->commandMock);
+
+        $this->sharedStimulusCopyService
+            ->expects($this->once())
+            ->method('copy')
+            ->with($this->commandMock);
+
+        $this->source
+            ->expects($this->once())
+            ->method('getPropertyValues')
+            ->with($this->callback(function ($value) {
+                return ($value instanceof \core_kernel_classes_Property)
+                    && ($value->getUri() === TaoMediaOntology::PROPERTY_LANGUAGE);
+            }))
+            ->willReturn([]);
+
+        $this->sut->copy($this->source, $this->target);
+    }
+
+    public function testCopyNonSharedStimulus(): void
+    {
+        $this->sharedStimulusSpecification
+            ->expects($this->once())
+            ->method('isSatisfiedBy')
+            ->with($this->source)
+            ->willReturn(false);
+
+        $this->commandFactory
+            ->expects($this->never())
+            ->method('makeCopyCommand');
+
+        $this->sharedStimulusCopyService
+            ->expects($this->never())
+            ->method('copy');
+
+        $this->source
+            ->expects($this->never())
+            ->method('getPropertyValues');
+
+        $this->sut->copy($this->source, $this->target);
+    }
+
+    public function testUsesDefaultLanguage(): void
+    {
+        $this->sharedStimulusSpecification
+            ->expects($this->once())
+            ->method('isSatisfiedBy')
+            ->with($this->source)
+            ->willReturn(true);
+
+        $this->commandFactory
+            ->expects($this->once())
+            ->method('makeCopyCommand')
+            ->withConsecutive(
+                [
+                    'http://test.resources/source',
+                    'http://test.resources/target',
+                    'en-EN'
+                ])
+            ->willReturn($this->commandMock);
+
+        $this->sharedStimulusCopyService
+            ->expects($this->once())
+            ->method('copy')
+            ->with($this->commandMock);
+
+        $this->source
+            ->expects($this->once())
+            ->method('getPropertyValues')
+            ->with($this->callback(function ($value) {
+                return ($value instanceof \core_kernel_classes_Property)
+                    && ($value->getUri() === TaoMediaOntology::PROPERTY_LANGUAGE);
+            }))
+            ->willReturn(['en-EN']);
+
+        $this->sut->copy($this->source, $this->target);
+    }
+
+    /**
+     * @return core_kernel_classes_Resource|MockObject
+     */
+    private function mockResource(string $uri): MockObject
+    {
+        return $this->createConfiguredMock(
+            core_kernel_classes_Resource::class,
+            ['exists' => true, 'getUri' => $uri]
+        );
     }
 }

@@ -24,36 +24,16 @@ namespace oat\taoMediaManager\model\classes\Copier;
 
 use common_Exception;
 use core_kernel_classes_Resource;
-use oat\generis\model\GenerisRdf;
 use oat\tao\model\resources\Contract\InstanceContentCopierInterface;
-// @todo We may add a ResourceSpeficiation interface in core or generis instead
-use oat\tao\model\Specification\ClassSpecificationInterface;
-// use oat\taoMediaManager\model\sharedStimulus\CopyCommand;
-// use oat\taoMediaManager\model\sharedStimulus\CreateCommand;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
-// use oat\taoMediaManager\model\sharedStimulus\FindQuery;
-use oat\taoMediaManager\model\sharedStimulus\repository\SharedStimulusRepositoryInterface;
 use oat\taoMediaManager\model\sharedStimulus\service\CopyService;
-use oat\taoMediaManager\model\sharedStimulus\service\StoreService;
-// use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourceSpecification as ResourceSpecification;
 use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourceSpecification;
 use oat\taoMediaManager\model\TaoMediaOntology;
-
-// use oat\taoMediaManager\model\TaoMediaOntology;
 
 class AssetContentCopier implements InstanceContentCopierInterface
 {
     /** @var SharedStimulusResourceSpecification */
     private $sharedStimulusSpecification;
-
-    /** @var ClassSpecificationInterface */
-    //private $mediaClassSpecification;
-
-    /** @var StoreService */
-    //private $sharedStimulusStoreService; // @todo
-
-    /** @var SharedStimulusRepositoryInterface */
-    //private $sharedStimulusRepository; // @todo
 
     /** @var CommandFactory */
     private $commandFactory;
@@ -61,17 +41,19 @@ class AssetContentCopier implements InstanceContentCopierInterface
     /** @var CopyService */
     private $sharedStimulusCopyService;
 
+    /** @var string */
+    private $defaultLanguage;
+
     public function __construct(
         SharedStimulusResourceSpecification $sharedStimulusResourceSpecification,
-        //ClassSpecificationInterface $mediaClassSpecification,
         CommandFactory $commandFactory,
-        //StoreService $storeService,
-        CopyService $copyService
+        CopyService $copyService,
+        string $defaultLanguage
     ) {
-        //$this->mediaClassSpecification = $mediaClassSpecification;
         $this->sharedStimulusSpecification = $sharedStimulusResourceSpecification;
         $this->commandFactory = $commandFactory;
         $this->sharedStimulusCopyService = $copyService;
+        $this->defaultLanguage = $defaultLanguage;
     }
 
     /**
@@ -103,7 +85,7 @@ class AssetContentCopier implements InstanceContentCopierInterface
         );
 
         if (empty($lang)) {
-            return DEFAULT_LANG;
+            return $this->defaultLanguage;
         }
 
         return current($lang);

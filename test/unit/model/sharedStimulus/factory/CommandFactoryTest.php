@@ -28,6 +28,7 @@ use oat\oatbox\filesystem\Directory;
 use oat\oatbox\filesystem\File;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\user\User;
+use oat\taoMediaManager\model\sharedStimulus\CopyCommand;
 use oat\taoMediaManager\model\sharedStimulus\CreateCommand;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
 use oat\taoMediaManager\model\sharedStimulus\PatchCommand;
@@ -41,6 +42,8 @@ class CommandFactoryTest extends TestCase
     private const URI = 'uri';
     private const BODY = 'body';
     private const USER_ID = 'u_id';
+    private const DESTINATION_URI = 'destination_uri';
+    private const LANGUAGE = 'es-ES';
 
     /** @var CommandFactory */
     private $factory;
@@ -100,6 +103,21 @@ class CommandFactoryTest extends TestCase
         $this->assertEquals(
             new PatchCommand(self::URI, self::BODY, self::USER_ID),
             $this->factory->makePatchCommand(self::URI, self::BODY, $user)
+        );
+    }
+
+    public function testMakeCopyCommand(): void
+    {
+        $user = $this->createMock(User::class);
+        $user->method('getIdentifier')->willReturn(self::USER_ID);
+
+        $this->assertEquals(
+            new CopyCommand(self::URI, self::DESTINATION_URI, self::LANGUAGE),
+            $this->factory->makeCopyCommand(
+                self::URI,
+                self::DESTINATION_URI,
+                self::LANGUAGE
+            )
         );
     }
 }

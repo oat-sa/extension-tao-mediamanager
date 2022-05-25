@@ -114,6 +114,7 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                     service(SharedStimulusResourceSpecification::class),
                     service(CommandFactory::class),
                     service(CopyService::class),
+                    DEFAULT_LANG,
                 ]
             );
 

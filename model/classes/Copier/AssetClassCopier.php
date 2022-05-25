@@ -64,7 +64,6 @@ class AssetClassCopier implements ClassCopierInterface
     ): core_kernel_classes_Class {
         $this->assertInAssetsRootClass($class);
         $this->assertInAssetsRootClass($destinationClass);
-        $this->assertInSameRootClass($class, $destinationClass);
 
         return $this->taoClassCopier->copy($class, $destinationClass);
     }
@@ -79,24 +78,6 @@ class AssetClassCopier implements ClassCopierInterface
                     TaoMediaOntology::CLASS_URI_MEDIA_ROOT
                 )
             );
-        }
-    }
-
-    private function assertInSameRootClass(
-        core_kernel_classes_Class $class,
-        core_kernel_classes_Class $destinationClass
-    ): void {
-        foreach ($this->rootClassesListService->list() as $rootClass) {
-            if ($class->isSubClassOf($rootClass) && !$destinationClass->isSubClassOf($rootClass)) {
-                throw new InvalidArgumentException(
-                    sprintf(
-                        'Selected class (%s) and destination class (%s) must be in the same root class (%s).',
-                        $class->getUri(),
-                        $destinationClass->getUri(),
-                        $rootClass->getUri()
-                    )
-                );
-            }
         }
     }
 }

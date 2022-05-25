@@ -108,9 +108,6 @@ class CommandFactoryTest extends TestCase
 
     public function testMakeCopyCommand(): void
     {
-        $user = $this->createMock(User::class);
-        $user->method('getIdentifier')->willReturn(self::USER_ID);
-
         $this->assertEquals(
             new CopyCommand(self::URI, self::DESTINATION_URI, self::LANGUAGE),
             $this->factory->makeCopyCommand(

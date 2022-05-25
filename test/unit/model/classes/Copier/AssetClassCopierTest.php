@@ -42,9 +42,6 @@ class AssetClassCopierTest extends TestCase
     private const ERRMSG_NOT_IN_ASSETS_ROOT =
         'Selected class (%s) is not supported because it is not part of the media assets root class (%s).';
 
-    private const ERRMSG_NOT_IN_SAME_ROOT =
-        'Selected class (%s) and destination class (%s) must be in the same root class (%s).';
-
     /** @var ClassCopierInterface|MockObject */
     private $taoClassCopier;
 
@@ -127,35 +124,6 @@ class AssetClassCopierTest extends TestCase
                 'unsupportedClass' => 'http://item.root/2',
             ],
         ];
-    }
-
-    public function testClassRootMismatch(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            sprintf(
-                self::ERRMSG_NOT_IN_SAME_ROOT,
-                'http://asset.root/1/1',
-                'http://asset.root/2/1',
-                'http://asset.root/1'
-            )
-        );
-
-        $this->source->method('getUri')->willReturn('http://asset.root/1/1');
-        $this->source
-            ->method('isSubclassOf')
-            ->willReturnCallback(function (core_kernel_classes_Class $class) {
-                return $class->getUri() === 'http://asset.root/1';
-            });
-
-        $this->target->method('getUri')->willReturn('http://asset.root/2/1');
-        $this->target
-            ->method('isSubclassOf')
-            ->willReturnCallback(function (core_kernel_classes_Class $class) {
-                return $class->getUri() === 'http://asset.root/2';
-            });
-
-        $this->sut->copy($this->source, $this->target);
     }
 
     public function testCopy(): void

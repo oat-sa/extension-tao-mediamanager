@@ -66,11 +66,6 @@ class StoreService extends ConfigurableService
         string $stimulusFilename,
         array $cssFiles = []
     ): string {
-        \common_Logger::singleton()->logError(
-            __FUNCTION__ . ' stimulusXmlStream is ' .
-            gettype($stimulusXmlStream)
-        );
-
         $fs = $this->getFileSystem();
 
         $dirname = $this->getUniqueName($stimulusFilename);

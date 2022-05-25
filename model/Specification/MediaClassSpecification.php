@@ -30,8 +30,8 @@ class MediaClassSpecification implements ClassSpecificationInterface
 {
     public function isSatisfiedBy(core_kernel_classes_Class $class): bool
     {
-        return $class->isSubClassOf(
-            $class->getClass(TaoMediaOntology::CLASS_URI_MEDIA_ROOT)
-        );
+        $rootClass = $class->getClass(TaoMediaOntology::CLASS_URI_MEDIA_ROOT);
+
+        return $class->equals($rootClass) || $class->isSubClassOf($rootClass);
     }
 }

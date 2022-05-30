@@ -46,11 +46,11 @@ class AssetMetadataCopier implements InstanceMetadataCopierInterface
     /** @var InstanceMetadataCopierInterface */
     private $nestedCopier;
 
-    public function __construct(
-        InstanceMetadataCopierInterface $nestedCopier
-    ) {
+    public function __construct(InstanceMetadataCopierInterface $nestedCopier)
+    {
         $this->nestedCopier = $nestedCopier;
     }
+
     public function copy(
         core_kernel_classes_Resource $instance,
         core_kernel_classes_Resource $destinationInstance

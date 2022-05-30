@@ -29,14 +29,10 @@ use oat\tao\model\resources\Service\ClassPropertyCopier;
 use oat\tao\model\Specification\ClassSpecificationInterface;
 use oat\taoMediaManager\model\TaoMediaOntology;
 use core_kernel_classes_Class;
-use Psr\Log\LoggerInterface;
 use InvalidArgumentException;
 
 class AssetClassCopier implements ClassCopierInterface
 {
-    /** @var LoggerInterface */
-    private $logger;
-
     /** @var RootClassesListServiceInterface */
     private $rootClassesListService;
 
@@ -47,12 +43,10 @@ class AssetClassCopier implements ClassCopierInterface
     private $taoClassCopier;
 
     public function __construct(
-        LoggerInterface $logger,
         RootClassesListServiceInterface $rootClassesListService,
         ClassSpecificationInterface $mediaClassSpecification,
         ClassCopierInterface $taoClassCopier
     ) {
-        $this->logger = $logger;
         $this->rootClassesListService = $rootClassesListService;
         $this->mediaClassSpecification = $mediaClassSpecification;
         $this->taoClassCopier = $taoClassCopier;

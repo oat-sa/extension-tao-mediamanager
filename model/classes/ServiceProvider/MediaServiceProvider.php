@@ -24,7 +24,6 @@ namespace oat\taoMediaManager\model\classes\ServiceProvider;
 
 use oat\generis\model\data\Ontology;
 use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
-use oat\oatbox\log\LoggerService;
 use oat\tao\model\accessControl\ActionAccessControl;
 use oat\tao\model\accessControl\PermissionChecker;
 use oat\tao\model\resources\Service\ClassCopierProxy;
@@ -149,7 +148,6 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
             ->public()
             ->args(
                 [
-                    service(LoggerService::SERVICE_ID),
                     service(RootClassesListService::class),
                     service(MediaClassSpecification::class),
                     service(TaoClassCopier::class . '::ASSETS'),

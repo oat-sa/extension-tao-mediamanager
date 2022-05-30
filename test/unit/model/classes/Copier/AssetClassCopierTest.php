@@ -80,7 +80,6 @@ class AssetClassCopierTest extends TestCase
             });
 
         $this->sut = new AssetClassCopier(
-            $this->createMock(LoggerInterface::class),
             $this->getRootClassesListServiceMock(),
             $mediaClassSpecification,
             $this->taoClassCopier

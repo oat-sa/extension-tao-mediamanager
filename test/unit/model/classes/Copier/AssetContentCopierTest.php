@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\test\unit\model;
 
+use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
 use oat\tao\model\resources\Contract\ClassPropertyCopierInterface;
 use oat\taoMediaManager\model\classes\Copier\AssetContentCopier;
@@ -74,6 +75,19 @@ class AssetContentCopierTest extends TestCase
             SharedStimulusResourceSpecification::class
         );
 
+        $langPropertyMock = $this->createMock(
+            core_kernel_classes_Property::class
+        );
+
+        $langPropertyMock
+            ->method('getUri')
+            ->willReturn(TaoMediaOntology::PROPERTY_LANGUAGE);
+
+        $this->source
+            ->method('getProperty')
+            ->with(TaoMediaOntology::PROPERTY_LANGUAGE)
+            ->willReturn($langPropertyMock);
+
         $this->sut = new AssetContentCopier(
             $this->sharedStimulusSpecification,
             $this->commandFactory,
@@ -109,7 +123,7 @@ class AssetContentCopierTest extends TestCase
             ->expects($this->once())
             ->method('getPropertyValues')
             ->with($this->callback(function ($value) {
-                return ($value instanceof \core_kernel_classes_Property)
+                return ($value instanceof core_kernel_classes_Property)
                     && ($value->getUri() === TaoMediaOntology::PROPERTY_LANGUAGE);
             }))
             ->willReturn([]);
@@ -167,7 +181,7 @@ class AssetContentCopierTest extends TestCase
             ->expects($this->once())
             ->method('getPropertyValues')
             ->with($this->callback(function ($value) {
-                return ($value instanceof \core_kernel_classes_Property)
+                return ($value instanceof core_kernel_classes_Property)
                     && ($value->getUri() === TaoMediaOntology::PROPERTY_LANGUAGE);
             }))
             ->willReturn(['en-EN']);

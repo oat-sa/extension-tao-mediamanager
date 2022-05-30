@@ -36,13 +36,8 @@ class TempFileWriter
     /** @var string[] */
     private $createdDirectories = [];
 
-    private $logger; //@fixme To be removed
-
     public function __construct(string $cacheDirectory = null)
     {
-        $this->logger = \common_Logger::singleton();
-        $this->logger->logError("Created instance of TemFileWriter");
-
         $this->cacheDirectory = $cacheDirectory;
 
         if (null === $this->cacheDirectory) {
@@ -60,15 +55,15 @@ class TempFileWriter
     public function removeTempFiles(): void
     {
         foreach ($this->createdFiles as $path) {
-            $this->logger->logError("Removing file " . $path);
-            if (!unlink($path)) {
-                throw new \Exception("wtf");
+            if (file_exists($path)) {
+                unlink($path);
             }
         }
 
         foreach ($this->createdDirectories as $path) {
-            \common_Logger::singleton()->logInfo("Removing file " . $path);
-            unlink($path);
+            if (file_exists($path)) {
+                rmdir($path);
+            }
         }
     }
 
@@ -87,8 +82,6 @@ class TempFileWriter
         if (!file_put_contents($path, $data)) {
             throw new RuntimeException('Error writing data to temp file');
         }
-
-        \common_Logger::singleton()->logError("Written file " . $path);
 
         $this->createdFiles[] = $path;
 
@@ -118,10 +111,6 @@ class TempFileWriter
                 "Unable to create temp directory {$tmpDir}"
             );
         }
-
-        \common_Logger::singleton()->logError(
-            "Adding created dir: {$tmpDir}"
-        );
 
         $this->createdDirectories[] = $tmpDir;
 

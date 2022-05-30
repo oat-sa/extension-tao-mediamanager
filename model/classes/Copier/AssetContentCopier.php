@@ -76,8 +76,7 @@ class AssetContentCopier implements InstanceContentCopierInterface
 
     private function getResourceLanguageCode(
         core_kernel_classes_Resource $instance
-    ): string
-    {
+    ): string {
         $lang = $instance->getPropertyValues(
             new \core_kernel_classes_Property(
                 TaoMediaOntology::PROPERTY_LANGUAGE

@@ -64,7 +64,7 @@ class AssetMetadataCopier implements InstanceMetadataCopierInterface
 
         // References the original file instead of creating a copy
         //
-        $this->copyProperty($instance, $destinationInstance,self::PROPERTY_LINK);
+        $this->copyProperty($instance, $destinationInstance, self::PROPERTY_LINK);
     }
 
     private function copyProperty(

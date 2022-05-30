@@ -93,12 +93,11 @@ class AssetContentCopierTest extends TestCase
         $this->commandFactory
             ->expects($this->once())
             ->method('makeCopyCommand')
-            ->withConsecutive(
-                [
-                    'http://test.resources/source',
-                    'http://test.resources/target',
-                    'fr-FR', // Default language for the copier
-                ])
+            ->withConsecutive([
+                'http://test.resources/source',
+                'http://test.resources/target',
+                'fr-FR', // Default language for the copier
+            ])
             ->willReturn($this->commandMock);
 
         $this->sharedStimulusCopyService
@@ -152,12 +151,11 @@ class AssetContentCopierTest extends TestCase
         $this->commandFactory
             ->expects($this->once())
             ->method('makeCopyCommand')
-            ->withConsecutive(
-                [
-                    'http://test.resources/source',
-                    'http://test.resources/target',
-                    'en-EN'
-                ])
+            ->withConsecutive([
+                'http://test.resources/source',
+                'http://test.resources/target',
+                'en-EN'
+            ])
             ->willReturn($this->commandMock);
 
         $this->sharedStimulusCopyService

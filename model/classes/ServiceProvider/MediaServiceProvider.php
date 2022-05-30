@@ -39,7 +39,7 @@ use oat\tao\model\resources\Service\ClassCopier as TaoClassCopier;
 use oat\taoMediaManager\model\accessControl\MediaPermissionService;
 use oat\taoMediaManager\model\classes\Copier\AssetClassCopier;
 use oat\taoMediaManager\model\classes\Copier\AssetContentCopier;
-use oat\taoMediaManager\model\classes\Copier\AssetInstanceMetadataCopier;
+use oat\taoMediaManager\model\classes\Copier\AssetMetadataCopier;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
 use oat\taoMediaManager\model\MediaService;
@@ -100,7 +100,7 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
             );
 
         $services
-            ->set(AssetInstanceMetadataCopier::class, AssetInstanceMetadataCopier::class)
+            ->set(AssetMetadataCopier::class, AssetMetadataCopier::class)
             ->args(
                 [
                     service(InstanceMetadataCopier::class),
@@ -122,7 +122,7 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
             ->set(InstanceCopier::class . '::ASSETS', InstanceCopier::class)
             ->args(
                 [
-                    service(AssetInstanceMetadataCopier::class),
+                    service(AssetMetadataCopier::class),
                 ]
             )
             ->call(

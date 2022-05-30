@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\test\unit\model;
 
 use oat\tao\model\resources\Contract\InstanceMetadataCopierInterface;
-use oat\taoMediaManager\model\classes\Copier\AssetInstanceMetadataCopier;
+use oat\taoMediaManager\model\classes\Copier\AssetMetadataCopier;
 use oat\taoMediaManager\model\TaoMediaOntology;
 use core_kernel_classes_Literal;
 use core_kernel_classes_Property;
@@ -31,12 +31,12 @@ use core_kernel_classes_Resource;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class AssetInstanceMetadataCopierTest extends TestCase
+class AssetMetadataCopierTest extends TestCase
 {
     private const LANGUAGE_CODE = 'fr-CA';
     private const LANGUAGE_URI = 'http://www.tao.lu/Ontologies/TAO.rdf#Langfr-CA';
 
-    /** @var AssetInstanceMetadataCopier */
+    /** @var AssetMetadataCopier */
     private $sut;
 
     /** @var core_kernel_classes_Resource|MockObject */
@@ -119,7 +119,7 @@ class AssetInstanceMetadataCopierTest extends TestCase
             ->method('copy')
             ->with($this->source, $this->target);
 
-        $this->sut = new AssetInstanceMetadataCopier($nestedCopier);
+        $this->sut = new AssetMetadataCopier($nestedCopier);
     }
 
     public function testTargetPropertiesAreSet(): void

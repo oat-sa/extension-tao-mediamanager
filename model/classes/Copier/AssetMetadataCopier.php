@@ -25,7 +25,7 @@ use oat\taoMediaManager\model\TaoMediaOntology;
 use core_kernel_classes_Resource;
 use core_kernel_classes_Property;
 
-class AssetInstanceMetadataCopier implements InstanceMetadataCopierInterface
+class AssetMetadataCopier implements InstanceMetadataCopierInterface
 {
     /**
      * Base filename for the asset (i.e. 123456789abcdef123456.mp4)

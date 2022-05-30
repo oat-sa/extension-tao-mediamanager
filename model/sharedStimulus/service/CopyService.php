@@ -22,15 +22,9 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus\service;
 
-use core_kernel_classes_Class;
-use core_kernel_classes_Property;
-use core_kernel_classes_Resource;
-use InvalidArgumentException;
 use oat\generis\model\data\Ontology;
-use oat\generis\model\resource\Contract\ResourceRepositoryInterface;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
-use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\sharedStimulus\CopyCommand;
 use oat\taoMediaManager\model\sharedStimulus\css\dto\ListStylesheets as ListStylesheetsDTO;
@@ -38,7 +32,8 @@ use oat\taoMediaManager\model\sharedStimulus\css\repository\StylesheetRepository
 use oat\taoMediaManager\model\sharedStimulus\css\service\ListStylesheetsService;
 use oat\taoMediaManager\model\sharedStimulus\dto\SharedStimulusInstanceData;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
-use oat\taoMediaManager\model\TaoMediaOntology;
+use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * @todo Unit tests
@@ -66,11 +61,11 @@ class CopyService
     /** @var FileManagement */
     private $fileManagement;
 
-    /**
-     * @var \common_Logger
-     * @todo Remove before merge
-     */
-    private $log;
+    /** @var string[] */
+    private $tempFiles = [];
+
+    /** @var ?string */
+    private $tempBaseDir = null;
 
     public function __construct(
         Ontology $ontology,
@@ -88,8 +83,19 @@ class CopyService
         $this->stylesheetRepository = $stylesheetRepository;
         $this->fileSourceUnserializer = $fileSourceUnserializer;
         $this->fileManagement = $fileManagement;
+    }
 
-        $this->log = \common_Logger::singleton(); // @todo Remove before merge
+    public function __destruct()
+    {
+        foreach ($this->tempFiles as $file) {
+            if (is_writable($file)) {
+                unlink($file);
+            }
+        }
+
+        if (!empty($this->tempBaseDir) && is_writable($this->tempBaseDir)) {
+            unlink($this->tempBaseDir);
+        }
     }
 
     public function copy(CopyCommand $command): SharedStimulus
@@ -101,66 +107,15 @@ class CopyService
             $command->getLanguage()
         );
 
-        $this->log->logInfo(sprintf('source.language = %s', $source->language));
-        $this->log->logInfo(sprintf('source.label    = %s', $source->label));
-        $this->log->logInfo(sprintf('source.link     = %s', $source->link));
-        $this->log->logInfo(sprintf('source.altText  = %s', $source->altText));
-        $this->log->logInfo(sprintf('source.md5      = %s', $source->md5));
-        $this->log->logInfo(sprintf('source.mimeType = %s', $source->mimeType));
+        $xmlSourcePath = $this->fileSourceUnserializer->unserialize($source->link);
 
+        $this->sharedStimulusStoreService->storeStream(
+            $this->fileManagement->getFileStream($xmlSourcePath)->detach(),
+            basename($source->link),
+            $this->copyCSSFilesFrom($source)
+        );
 
         $target = $this->ontology->getResource($command->getDestinationUri());
-        $type = $this->getTargetClass($target);
-
-        $classUri = $type->getUri();
-
-        $this->log->logInfo(sprintf('target.uri  = %s', $target->getUri()));
-        $this->log->logInfo(sprintf('classUri    = %s', $classUri));
-
-        // We still need to copy both the CSS and the XML
-
-        $cssFiles = $this->listStylesheetsService->getList(
-            new ListStylesheetsDTO($source->resourceUri)
-        );
-
-        $cssPath = $this->stylesheetRepository->getPath($command->getSourceUri());
-        $this->log->logInfo(sprintf('cssPath  = %s', serialize($cssPath)));
-        $this->log->logInfo(sprintf('cssFiles = %s', serialize($cssFiles)));
-
-        $newCssFiles = [];
-        $tempFiles = [];
-        $tmpBaseDir = $this->getTempBaseDir();
-
-        $this->registerFileCleanupCallback($tempFiles, $tmpBaseDir);
-
-        foreach ($cssFiles as $baseName) {
-            $destinationPath = $this->copyCSSToTempFile(
-                $tmpBaseDir,
-                $cssPath . DIRECTORY_SEPARATOR . StoreService::CSS_DIR_NAME,
-                $baseName
-            );
-
-            $tempFiles[] = $destinationPath;
-            $newCssFiles[] = $destinationPath;
-        }
-
-        $this->log->logInfo(sprintf('$tempFiles  = %s', serialize($tempFiles)));
-        $this->log->logInfo(sprintf('$newCssFiles  = %s', serialize($newCssFiles)));
-
-        // 2- Get XML path
-        //
-        $xmlSourceFile = $this->fileSourceUnserializer->unserialize($source->link);
-        $this->log->logInfo(sprintf('xmlSourceFile  = %s', $xmlSourceFile));
-
-        // 3- Call storeService->store with the css files
-        //
-        $dirname = $this->sharedStimulusStoreService->storeStream(
-            $this->fileManagement->getFileStream($xmlSourceFile)->detach(),
-            basename($source->link),
-            $newCssFiles
-        );
-
-        $this->log->logInfo(sprintf('copied data to %s', $dirname));
 
         return new SharedStimulus(
             $source->resourceUri,
@@ -169,8 +124,32 @@ class CopyService
         );
     }
 
+    private function copyCSSFilesFrom(SharedStimulusInstanceData $source): array
+    {
+        $cssPath = $this->stylesheetRepository->getPath($source->resourceUri);
+        $cssFiles = $this->listStylesheetsService->getList(
+            new ListStylesheetsDTO($source->resourceUri)
+        );
+
+        if (!empty($cssFiles) && empty($this->tempBaseDir)) {
+            $this->tempBaseDir = $this->getTempBaseDir();
+        }
+
+        $newCssFiles = [];
+
+        foreach ($cssFiles as $baseName) {
+            $newCssFiles[] = $this->copyCSSToTempFile(
+                $cssPath . DIRECTORY_SEPARATOR . StoreService::CSS_DIR_NAME,
+                $baseName
+            );
+        }
+
+        $this->tempFiles = array_merge($this->tempFiles, $newCssFiles);
+
+        return $newCssFiles;
+    }
+
     private function copyCSSToTempFile(
-        string $tmpBaseDir,
         string $cssPath,
         string $baseName
     ): string {
@@ -178,37 +157,13 @@ class CopyService
             $cssPath . DIRECTORY_SEPARATOR . $baseName
         );
 
-        $destinationPath = $tmpBaseDir . DIRECTORY_SEPARATOR . $baseName;
+        $destinationPath = $this->tempBaseDir . DIRECTORY_SEPARATOR . $baseName;
 
         if (!file_put_contents($destinationPath, $data)) {
-            throw new \Exception('shit fuck crap');
+            throw new RuntimeException('Error writing CSS data to temp file');
         }
 
         return $destinationPath;
-    }
-
-    private function getTargetClass(core_kernel_classes_Resource $resource): core_kernel_classes_Class {
-        $types = $resource->getTypes();
-
-        $this->log->logInfo(sprintf('types.count  = %d', count($types)));
-        if (count($types) != 1) {
-            throw new \Exception('getTypes() returned an unexpected number of types');
-        }
-
-        /** @var $type core_kernel_classes_Class */
-        $type = current($types);
-        if (!isset($type)) {
-            throw new \Exception('Unable to retrieve target class type');
-        }
-
-        $this->log->logInfo(sprintf('type  = %s', $type->getUri()));
-
-        return $type;
-
-        //$classUri = $target->getTypes()[0]->getUri();
-        /*$classUri = $type->getUri();
-
-        $this->log->logInfo(sprintf('target.uri  = %s', $target->getUri()));*/
     }
 
     private function assertHasRequiredParameters(CopyCommand $command): void
@@ -225,29 +180,16 @@ class CopyService
         }
     }
 
-    private function registerFileCleanupCallback(
-        array &$tempFiles,
-        ?string $tmpBaseDir
-    ): void
-    {
-        register_shutdown_function(function () use (&$tempFiles, $tmpBaseDir)
-        {
-            foreach ($tempFiles as $file) {
-                @ unlink($file);
-            }
-
-            @ unlink($tmpBaseDir);
-        });
-    }
-
     private function getTempBaseDir(): string
     {
         $tmpBaseDir = tempnam(sys_get_temp_dir(), 'MediaManagerCopy');
-        @ unlink($tmpBaseDir);
-        mkdir ($tmpBaseDir);
+
+        if (!unlink($tmpBaseDir) || !mkdir($tmpBaseDir)) {
+            throw new RuntimeException(
+                'Unable to create a temp directory for copying assets'
+            );
+        }
 
         return $tmpBaseDir;
     }
-
-
 }

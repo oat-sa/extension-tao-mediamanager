@@ -47,6 +47,7 @@ use oat\taoMediaManager\model\sharedStimulus\css\service\ListStylesheetsService;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
 use oat\taoMediaManager\model\sharedStimulus\service\CopyService;
 use oat\taoMediaManager\model\sharedStimulus\service\StoreService;
+use oat\taoMediaManager\model\sharedStimulus\service\TempFileWriter;
 use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourceSpecification;
 use oat\taoMediaManager\model\TaoMediaOntology;
 use oat\taoMediaManager\model\Specification\MediaClassSpecification;
@@ -61,17 +62,21 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
         $services = $configurator->services();
 
         $services
+            ->set(TempFileWriter::class, TempFileWriter::class)
+            ->private();
+
+        $services
             ->set(CopyService::class, CopyService::class)
             ->public()
             ->args(
                 [
                     service(Ontology::SERVICE_ID),
-                    service(MediaService::class),
                     service(StoreService::class),
                     service(ListStylesheetsService::class),
                     service(StylesheetRepository::class),
                     service(FileSourceUnserializer::class),
                     service(FileManagement::SERVICE_ID),
+                    service(TempFileWriter::class),
                 ]
             );
 

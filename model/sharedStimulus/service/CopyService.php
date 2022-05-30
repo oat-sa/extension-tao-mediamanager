@@ -25,7 +25,6 @@ namespace oat\taoMediaManager\model\sharedStimulus\service;
 use oat\generis\model\data\Ontology;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
-use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\sharedStimulus\CopyCommand;
 use oat\taoMediaManager\model\sharedStimulus\css\dto\ListStylesheets as ListStylesheetsDTO;
 use oat\taoMediaManager\model\sharedStimulus\css\repository\StylesheetRepository;
@@ -33,18 +32,16 @@ use oat\taoMediaManager\model\sharedStimulus\css\service\ListStylesheetsService;
 use oat\taoMediaManager\model\sharedStimulus\dto\SharedStimulusInstanceData;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 use InvalidArgumentException;
-use RuntimeException;
 
 /**
  * @todo Unit tests
  */
 class CopyService
 {
+    private const NAMESPACE_TEMP_FILES = 'MediaManagerCopyService';
+
     /** @var Ontology */
     private $ontology;
-
-    /** @var MediaService */
-    private $mediaService;
 
     /** @var StoreService */
     private $sharedStimulusStoreService;
@@ -61,41 +58,25 @@ class CopyService
     /** @var FileManagement */
     private $fileManagement;
 
-    /** @var string[] */
-    private $tempFiles = [];
-
-    /** @var ?string */
-    private $tempBaseDir = null;
+    /** @var TempFileWriter */
+    private $tempFileWriter;
 
     public function __construct(
         Ontology $ontology,
-        MediaService $mediaService,
         StoreService $sharedStimulusStoreService,
         ListStylesheetsService $listStylesheetsService,
         StylesheetRepository $stylesheetRepository,
         FileSourceUnserializer $fileSourceUnserializer,
-        FileManagement $fileManagement
+        FileManagement $fileManagement,
+        TempFileWriter $tempFileWriter
     ) {
         $this->ontology = $ontology;
-        $this->mediaService = $mediaService;
         $this->sharedStimulusStoreService = $sharedStimulusStoreService;
         $this->listStylesheetsService = $listStylesheetsService;
         $this->stylesheetRepository = $stylesheetRepository;
         $this->fileSourceUnserializer = $fileSourceUnserializer;
         $this->fileManagement = $fileManagement;
-    }
-
-    public function __destruct()
-    {
-        foreach ($this->tempFiles as $file) {
-            if (is_writable($file)) {
-                unlink($file);
-            }
-        }
-
-        if (!empty($this->tempBaseDir) && is_writable($this->tempBaseDir)) {
-            unlink($this->tempBaseDir);
-        }
+        $this->tempFileWriter = $tempFileWriter;
     }
 
     public function copy(CopyCommand $command): SharedStimulus
@@ -131,39 +112,22 @@ class CopyService
             new ListStylesheetsDTO($source->resourceUri)
         );
 
-        if (!empty($cssFiles) && empty($this->tempBaseDir)) {
-            $this->tempBaseDir = $this->getTempBaseDir();
-        }
-
         $newCssFiles = [];
 
         foreach ($cssFiles as $baseName) {
-            $newCssFiles[] = $this->copyCSSToTempFile(
-                $cssPath . DIRECTORY_SEPARATOR . StoreService::CSS_DIR_NAME,
-                $baseName
+            $newCssFiles[] = $this->tempFileWriter->writeFile(
+                self::NAMESPACE_TEMP_FILES,
+                $baseName,
+                $this->stylesheetRepository->read(
+                    implode(
+                        DIRECTORY_SEPARATOR,
+                        [$cssPath , StoreService::CSS_DIR_NAME, $baseName]
+                    )
+                )
             );
         }
 
-        $this->tempFiles = array_merge($this->tempFiles, $newCssFiles);
-
         return $newCssFiles;
-    }
-
-    private function copyCSSToTempFile(
-        string $cssPath,
-        string $baseName
-    ): string {
-        $data = $this->stylesheetRepository->read(
-            $cssPath . DIRECTORY_SEPARATOR . $baseName
-        );
-
-        $destinationPath = $this->tempBaseDir . DIRECTORY_SEPARATOR . $baseName;
-
-        if (!file_put_contents($destinationPath, $data)) {
-            throw new RuntimeException('Error writing CSS data to temp file');
-        }
-
-        return $destinationPath;
     }
 
     private function assertHasRequiredParameters(CopyCommand $command): void
@@ -178,18 +142,5 @@ class CopyService
                 )
             );
         }
-    }
-
-    private function getTempBaseDir(): string
-    {
-        $tmpBaseDir = tempnam(sys_get_temp_dir(), 'MediaManagerCopy');
-
-        if (!unlink($tmpBaseDir) || !mkdir($tmpBaseDir)) {
-            throw new RuntimeException(
-                'Unable to create a temp directory for copying assets'
-            );
-        }
-
-        return $tmpBaseDir;
     }
 }

@@ -29,7 +29,6 @@ use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
 use oat\taoMediaManager\model\sharedStimulus\service\CopyService;
 use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourceSpecification;
 use oat\taoMediaManager\model\TaoMediaOntology;
-use core_kernel_classes_Property;
 
 class AssetContentCopier implements InstanceContentCopierInterface
 {
@@ -86,6 +85,10 @@ class AssetContentCopier implements InstanceContentCopierInterface
             return $this->defaultLanguage;
         }
 
-        return current($lang);
+        $langCode = trim(current($lang));
+
+        return empty($langCode)
+            ? $this->defaultLanguage
+            : $langCode;
     }
 }

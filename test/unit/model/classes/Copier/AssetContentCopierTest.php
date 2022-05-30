@@ -154,7 +154,7 @@ class AssetContentCopierTest extends TestCase
         $this->sut->copy($this->source, $this->target);
     }
 
-    public function testUsesDefaultLanguage(): void
+    public function testCommandLanguageMatchesResourceLanguage(): void
     {
         $this->sharedStimulusSpecification
             ->expects($this->once())
@@ -185,6 +185,41 @@ class AssetContentCopierTest extends TestCase
                     && ($value->getUri() === TaoMediaOntology::PROPERTY_LANGUAGE);
             }))
             ->willReturn(['en-EN']);
+
+        $this->sut->copy($this->source, $this->target);
+    }
+
+    public function testEmptyLanguageValueUsesDefaultLanguage(): void
+    {
+        $this->sharedStimulusSpecification
+            ->expects($this->once())
+            ->method('isSatisfiedBy')
+            ->with($this->source)
+            ->willReturn(true);
+
+        $this->commandFactory
+            ->expects($this->once())
+            ->method('makeCopyCommand')
+            ->withConsecutive([
+                'http://test.resources/source',
+                'http://test.resources/target',
+                'fr-FR'
+            ])
+            ->willReturn($this->commandMock);
+
+        $this->sharedStimulusCopyService
+            ->expects($this->once())
+            ->method('copy')
+            ->with($this->commandMock);
+
+        $this->source
+            ->expects($this->once())
+            ->method('getPropertyValues')
+            ->with($this->callback(function ($value) {
+                return ($value instanceof core_kernel_classes_Property)
+                    && ($value->getUri() === TaoMediaOntology::PROPERTY_LANGUAGE);
+            }))
+            ->willReturn([' ']);
 
         $this->sut->copy($this->source, $this->target);
     }

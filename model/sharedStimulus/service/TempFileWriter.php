@@ -114,6 +114,6 @@ class TempFileWriter
 
         $this->createdDirectories[] = $tmpDir;
 
-        return $cacheDir;
+        return $tmpDir;
     }
 }

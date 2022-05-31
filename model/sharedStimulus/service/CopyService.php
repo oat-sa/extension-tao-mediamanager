@@ -33,9 +33,6 @@ use oat\taoMediaManager\model\sharedStimulus\dto\SharedStimulusInstanceData;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 use InvalidArgumentException;
 
-/**
- * @todo Unit tests
- */
 class CopyService
 {
     private const NAMESPACE_TEMP_FILES = 'MediaManagerCopyService';
@@ -88,10 +85,10 @@ class CopyService
             $command->getLanguage()
         );
 
-        $xmlSourcePath = $this->fileSourceUnserializer->unserialize($source->link);
+        $srcXmlPath = $this->fileSourceUnserializer->unserialize($source->link);
 
         $this->sharedStimulusStoreService->storeStream(
-            $this->fileManagement->getFileStream($xmlSourcePath)->detach(),
+            $this->fileManagement->getFileStream($srcXmlPath)->detach(),
             basename($source->link),
             $this->copyCSSFilesFrom($source)
         );
@@ -132,9 +129,11 @@ class CopyService
 
     private function assertHasRequiredParameters(CopyCommand $command): void
     {
-        if ('' === trim($command->getSourceUri())
+        if (
+            '' === trim($command->getSourceUri())
             || '' === trim($command->getDestinationUri())
-            || '' === trim($command->getLanguage()) ) {
+            || '' === trim($command->getLanguage())
+        ) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Argument of type %s is missing a required parameter',

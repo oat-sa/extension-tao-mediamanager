@@ -269,7 +269,7 @@ class CopyServiceTest extends TestCase
                         );
                 }
 
-                return 'css://writtenFile/' . $basename;
+                return "css://writtenFile/{$basename}";
             });
 
         $newCssFiles = [

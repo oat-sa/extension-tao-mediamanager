@@ -42,6 +42,7 @@ class TempFileWriterTest  extends TestCase
         // Precondition: cache dir does not exist (it is created by the writer)
         //
         $this->assertFalse(file_exists($this->vfsRoot->path() . '/cache'));
+        $this->assertFalse(file_exists($this->vfsRoot->path() . '/cache2'));
     }
 
     public function tearDown(): void

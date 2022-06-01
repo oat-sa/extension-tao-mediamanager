@@ -65,7 +65,7 @@ define([
 
                 uploader.resourcemgr({
                     appendContainer: '#mediaManager',
-                    path: '/',
+                    path: 'taomedia://mediamanager/',
                     root: 'local',
                     browseUrl: itemConfig.getFilesUrl,
                     uploadUrl: itemConfig.fileUploadUrl,
@@ -75,7 +75,8 @@ define([
                     params: {
                         uri: itemConfig.uri,
                         lang: itemConfig.lang,
-                        filters: 'text/css'
+                        filters: 'text/css',
+                        elementClass: itemConfig.elementClass
                     },
                     pathParam: 'path',
                     select: function (e, files) {

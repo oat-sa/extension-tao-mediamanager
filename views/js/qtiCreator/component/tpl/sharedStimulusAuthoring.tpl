@@ -6,6 +6,14 @@
         <ul class="menu action-group plain item-editor-menu"></ul>
 
         <ul class="menu-right action-group plain item-editor-menu">
+            <li id="appearance-trigger" class="btn-info small rgt">
+                <span class="li-inner">
+                    <span class="icon-item"></span>
+                    <span class="icon-style"></span>
+                    <span class="menu-label" data-item="{{__ 'Item properties'}}" data-style="{{__ 'Style Editor'}}">{{__ 'Style
+                        Editor'}}</span>
+                </span>
+            </li>
         </ul>
     </nav>
     <div class="wrapper clearfix content sidebar-popup-parent" id="item-editor-wrapper">
@@ -37,6 +45,24 @@
         <div class="item-editor-sidebar-wrapper right-bar sidebar-popup-parent">
             <div class="item-editor-sidebar" id="item-editor-item-widget-bar">
                 <div class="item-editor-item-related sidebar-right-section-box" id="item-editor-item-property-bar">
+                    <section class="tool-group clearfix" id="sidebar-right-css-manager">
+
+                        <h2>{{__ 'Style Sheet Manager'}}</h2>
+
+                        <div class="panel">
+
+                            <ul class="none" id="style-sheet-toggler">
+                                <!-- TAO style sheet -->
+                                <li data-css-res="taoQtiItem/views/css/themes/default.css">
+                                    <span class="icon-preview style-sheet-toggler"
+                                        title="{{__ 'Disable this stylesheet temporarily'}}"></span>
+                                    <span>{{__ 'TAO default styles'}}</span>
+                                </li>
+
+                            </ul>
+                            <button id="stylesheet-uploader" class="btn-info small block">{{__ 'Add Style Sheet'}}</button>
+                        </div>
+                    </section>
                     <section class="tool-group clearfix" id="sidebar-right-passage-properties">
                         <h2>{{__ 'Passage Properties'}}</h2>
                         <div class="panel"></div>

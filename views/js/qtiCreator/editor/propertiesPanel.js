@@ -38,6 +38,8 @@ define([
         panel.initSidebarAccordion($container);
         panel.initFormVisibilityListener();
 
+        const elementClass = { elementClass: styleEditor.getHashClass() };
+        config = Object.assign(config, elementClass);
         styleEditor.init(widget.element, config);
         styleSheetToggler.init(config);
 

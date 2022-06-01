@@ -22,12 +22,9 @@ namespace oat\taoMediaManager\model\sharedStimulus\service;
 
 use RuntimeException;
 
-/**
- * @todo Unit tests
- */
 class TempFileWriter
 {
-    /** @var ?string */
+    /** @var string */
     private $cacheDirectory;
 
     /** @var string[] */
@@ -41,10 +38,13 @@ class TempFileWriter
         $this->cacheDirectory = $cacheDirectory;
 
         if (null === $this->cacheDirectory) {
-            $this->cacheDirectory = defined('GENERIS_CACHE_PATH')
+            $this->cacheDirectory = defined('GENERIS_CACHE_PATH') && !empty(GENERIS_CACHE_PATH)
                 ? GENERIS_CACHE_PATH
                 : sys_get_temp_dir();
         }
+
+        $this->createRootCacheDirectory();
+        $this->cacheDirectory = realpath($this->cacheDirectory);
     }
 
     public function __destruct()
@@ -54,17 +54,20 @@ class TempFileWriter
 
     public function removeTempFiles(): void
     {
-        foreach ($this->createdFiles as $path) {
+        foreach (array_reverse($this->createdFiles) as $path) {
             if (file_exists($path)) {
                 unlink($path);
             }
         }
 
-        foreach ($this->createdDirectories as $path) {
-            if (file_exists($path)) {
+        foreach (array_reverse($this->createdDirectories) as $path) {
+            if (is_dir($path)) {
                 rmdir($path);
             }
         }
+
+        $this->createdFiles = [];
+        $this->createdDirectories = [];
     }
 
     /**
@@ -79,10 +82,14 @@ class TempFileWriter
             . DIRECTORY_SEPARATOR
             . $basename;
 
-        if (!file_put_contents($path, $data)) {
-            throw new RuntimeException('Error writing data to temp file');
+        if (!@file_put_contents($path, $data)) {
+            throw new RuntimeException(
+                'Error writing data to temp file: '.
+                error_get_last()['message']
+            );
         }
 
+        $path = realpath($path);
         $this->createdFiles[] = $path;
 
         return $path;
@@ -93,20 +100,22 @@ class TempFileWriter
      */
     private function createTempDirectory(string $namespace): string
     {
-        if (!is_dir($this->cacheDirectory)) {
-            mkdir($this->cacheDirectory);
-        }
+        $this->createRootCacheDirectory();
 
         $cacheDir = $this->cacheDirectory . DIRECTORY_SEPARATOR . $namespace;
 
         if (!is_dir($cacheDir)) {
-            $this->createdDirectories[] = $cacheDir;
-            mkdir($cacheDir);
+            if (!mkdir($cacheDir, 0777, true)) {
+                throw new RuntimeException(
+                    'Cannot create subdirectory under temp directory'
+                );
+            }
+
+            $this->createdDirectories[] = realpath($cacheDir);
         }
 
-        $tmpDir = tempnam($cacheDir, null);
-
-        if (!unlink($tmpDir) || !mkdir($tmpDir)) {
+        $tmpDir = realpath($cacheDir) . DIRECTORY_SEPARATOR . uniqid();
+        if (!mkdir($tmpDir)) {
             throw new RuntimeException(
                 "Unable to create temp directory {$tmpDir}"
             );
@@ -115,5 +124,18 @@ class TempFileWriter
         $this->createdDirectories[] = $tmpDir;
 
         return $tmpDir;
+    }
+
+    private function createRootCacheDirectory(): void
+    {
+        if (!is_dir($this->cacheDirectory)) {
+            if (!mkdir($this->cacheDirectory, 0777, true)) {
+                throw new RuntimeException(
+                    'Cache root directory does not exist and cannot be created'
+                );
+            }
+
+            $this->createdDirectories[] = realpath($this->cacheDirectory);
+        }
     }
 }

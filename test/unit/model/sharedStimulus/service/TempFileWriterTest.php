@@ -26,12 +26,10 @@ use oat\generis\test\TestCase;
 use oat\taoMediaManager\model\sharedStimulus\service\TempFileWriter;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
+use RuntimeException;
 
 class TempFileWriterTest  extends TestCase
 {
-    /** @var TempFileWriter */
-    private $sut;
-
     /**
      * @var vfsStreamDirectory
      */
@@ -41,30 +39,114 @@ class TempFileWriterTest  extends TestCase
     {
         $this->vfsRoot = vfsStream::setup('TempFW');
 
-        $this->sut = new TempFileWriter($this->vfsRoot->path());
+        // Precondition: cache dir does not exist (it is created by the writer)
+        //
+        $this->assertFalse(file_exists($this->vfsRoot->path() . '/cache'));
+    }
+
+    public function tearDown(): void
+    {
+        // Cache dirs should not be preserved across runs
+        //
+        if (is_dir($this->vfsRoot->path() . '/cache')) {
+            rmdir($this->vfsRoot->path() . '/cache');
+        }
+
+        if (is_dir($this->vfsRoot->path() . '/cache2')) {
+            rmdir($this->vfsRoot->path() . '/cache2');
+        }
     }
 
     public function testWriteFile(): void
     {
-        $path = $this->sut->writeFile('namespace', 'basename', 'data');
+        $sut = new TempFileWriter(
+            $this->vfsRoot->path() . DIRECTORY_SEPARATOR . 'cache'
+        );
+        $path = $sut->writeFile('namespace', 'basename', 'data');
 
-        // Paths are something like namespace/RandomChars/basename
+        // Paths are in the form namespace/RandomChars/basename
         //
-        $relative = substr($path, strpos($path, 'namespace'));
-        $this->assertEquals('namespace/', substr($relative, 0, 10));
-        $this->assertEquals('/basename', substr($relative, -9));
+        $this->assertEquals('namespace/', "{$this->getNamespaceFromPath($path)}/");
+        $this->assertEquals('/basename', "/{$this->getBaseNameFromPath($path)}");
 
         $this->assertTrue(file_exists($path));
         $this->assertEquals('data', file_get_contents($path));
+
+        $sut->removeTempFiles();
+        $this->assertFalse(file_exists($this->vfsRoot->path() . '/cache'));
     }
 
+    /**
+     * @dependsOn testWriteFile
+     */
     public function testRemoveTempFiles(): void
     {
-        $this->markTestIncomplete('Not implemented');
+        $sut = new TempFileWriter(
+            $this->vfsRoot->path() . DIRECTORY_SEPARATOR . 'cache'
+        );
+        $path = $sut->writeFile('namespace', 'basename', 'data');
+        $dir = dirname($path);
+        $this->assertTrue(file_exists($path));
+        $this->assertTrue(is_dir($dir));
+
+        $sut->removeTempFiles();
+
+        $this->assertFalse(file_exists($path));
+        $this->assertFalse(file_exists($dir));
+        $this->assertFalse(
+            file_exists($this->vfsRoot->path() . DIRECTORY_SEPARATOR . 'cache')
+        );
     }
 
-    public function testTempFilesRemovedOnDestructorCall(): void
+    public function testWriteErrorThrowsException(): void
     {
-        $this->markTestIncomplete('Not implemented');
+        $sut = new TempFileWriter($this->vfsRoot->path() . '/cache');
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Error writing data to temp file');
+
+        // Force a write error by using an invalid filename for the directory
+        // and file ('.' is a reserved name).
+        //
+        $sut->writeFile('.', '.', 'data');
+    }
+
+    public function testCacheBaseDirIsCreatedRecursively(): void
+    {
+        $root = implode(
+            DIRECTORY_SEPARATOR,
+            [$this->vfsRoot->path() , 'cache2', 'nestedDir']
+        );
+
+        $sut = new TempFileWriter($root);
+        $path = $sut->writeFile('namespace', 'basename', 'data');
+        $prefix = $root . DIRECTORY_SEPARATOR . $this->getNamespaceFromPath($path);
+
+        $this->assertTrue(is_dir($root));
+        $this->assertTrue(is_dir($prefix));
+        $this->assertTrue(is_file($path));
+
+        $sut->removeTempFiles();
+
+        $this->assertFalse(file_exists($path));
+        $this->assertFalse(file_exists($prefix));
+        $this->assertFalse(file_exists($root));
+    }
+
+    private function getNamespaceFromPath(string $path): string
+    {
+        return substr($this->getRelativePath($path), 0, 9);
+    }
+
+    private function getBaseNameFromPath(string $path): string
+    {
+        return substr($this->getRelativePath($path), -8);
+    }
+
+    private function getRelativePath(string $path): string
+    {
+        // Paths are in the form namespace/RandomChars/basename
+        //
+        return substr($path, strpos($path, 'namespace'));
     }
 }

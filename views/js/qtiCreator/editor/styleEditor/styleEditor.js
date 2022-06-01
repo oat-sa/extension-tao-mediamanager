@@ -29,8 +29,9 @@ define([
     'util/urlParser',
     'core/dataProvider/request',
     'tpl!taoMediaManager/qtiCreator/tpl/toolbars/cssToggler',
+    'taoMediaManager/qtiCreator/helper/formatStyles',
     'jquery.fileDownload'
-], function ($, _, __, UrlParser, request, cssTpl) {
+], function ($, _, __, UrlParser, request, cssTpl, formatStyles) {
     'use strict';
 
     let itemConfig;
@@ -261,6 +262,9 @@ define([
             // time difference between loading the css file and applying the styles
             setTimeout(
                 function () {
+                    // clean and format CSS styles with Browser API
+                    formatStyles(linkElement[0], hashClass);
+
                     let isInit = false;
 
                     $(document).trigger('customcssloaded.styleeditor', [style]);

@@ -28,8 +28,9 @@ define([
     'core/promiseQueue',
     'core/dataProvider/request',
     'util/url',
-    'taoMediaManager/qtiCreator/helper/createDummyItemData'
-], function ($, _, __, promiseQueue, request, urlUtil, creatorDummyItemData) {
+    'taoMediaManager/qtiCreator/helper/createDummyItemData',
+    'taoMediaManager/qtiCreator/helper/formatStyles'
+], function ($, _, __, promiseQueue, request, urlUtil, creatorDummyItemData, formatStyles) {
     'use strict';
 
     const serviceController = 'SharedStimulus';
@@ -95,13 +96,14 @@ define([
                 };
                 styles.forEach((stylesheet, index) => {
                     const serial = `stylesheet_${index}`;
+                    const link = urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
+                        uri: identifier,
+                        stylesheet: stylesheet
+                    });
                     data.content.data.stylesheets[serial] = {
                         qtiClass: 'stylesheet',
                         attributes: {
-                            href: urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
-                                uri: identifier,
-                                stylesheet: stylesheet
-                            }),
+                            href: link,
                             media: 'all',
                             title: '',
                             type: 'text/css'
@@ -109,6 +111,18 @@ define([
                         serial,
                         getComposingElements: () => ({})
                     };
+
+                    // get cssRules from owner link tag, referenced in load event
+                    if (stylesheet !== 'tao-user-styles.css') {
+                        setTimeout(
+                            function () {
+                                const cssFile = Object.values(document.styleSheets).find(sheet => sheet.href === link);
+                                if (cssFile) {
+                                    formatStyles(cssFile, data.body.attributes.class);
+                                }
+                            }, 100
+                        );
+                    }
                 });
                 return data;
             });

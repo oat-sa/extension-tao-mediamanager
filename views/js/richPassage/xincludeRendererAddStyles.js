@@ -15,10 +15,10 @@
  *
  * Copyright (c) 2021 (original work) Open Assessment Technologies SA ;
  */
-define(['jquery', 'uri', 'util/url', 'core/dataProvider/request'], function ($, uri, urlUtil, request) {
+define(['jquery', 'uri', 'util/url', 'core/dataProvider/request', 'taoMediaManager/qtiCreator/helper/formatStyles'], function ($, uri, urlUtil, request, formatStyles) {
     'use strict';
 
-    return function xincludeRendererAddStyles(passageHref, head = $('head')) {
+    return function xincludeRendererAddStyles(passageHref, passageClassName, head = $('head')) {
         if (/taomedia:\/\/mediamanager\//.test(passageHref)) {
             // check rich passage styles and inject them to item
             const passageUri = uri.decode(passageHref.replace('taomedia://mediamanager/', ''));
@@ -27,16 +27,30 @@ define(['jquery', 'uri', 'util/url', 'core/dataProvider/request'], function ($, 
             })
                 .then(response => {
                     response.forEach(element => {
+                        // check different names of elements
+                        const link = urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
+                            uri: passageUri,
+                            stylesheet: element
+                        });
                         const styleElem = $('<link>', {
                             rel: 'stylesheet',
                             type: 'text/css',
-                            href: urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
-                                uri: passageUri,
-                                stylesheet: element
-                            }),
-                            'data-serial': passageUri
+                            href: link,
+                            'data-serial': passageUri,
+                            disabled: 'disabled'
                         });
                         head.append(styleElem);
+                        if (document.styleSheets.length && element !== 'tao-user-styles.css') {
+                            setTimeout(
+                                function () {
+                                    const cssFile = Object.values(document.styleSheets).find(sheet => sheet.href === link);
+                                    if (cssFile) {
+                                        formatStyles(cssFile, passageClassName);
+                                    }
+                                }, 100
+                            );
+                        }
+
                     });
                 })
                 .catch();

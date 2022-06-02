@@ -71,9 +71,9 @@ define([
      *
      * @returns {Promise} that resolve with the loaded item model
      */
-    const loadSharedStimulus = function loadSharedStimulus(id, uri, assetDataUrl) {
+    const loadSharedStimulus = function loadSharedStimulus(id, uri, assetDataUrl, assetDataStyles) {
         return new Promise(function (resolve, reject) {
-            sharedStimulusLoader.loadSharedStimulus({ id, uri, assetDataUrl }, function (item) {
+            sharedStimulusLoader.loadSharedStimulus({ id, uri, assetDataUrl, assetDataStyles }, function (item) {
                 if (!item) {
                     reject(new Error('Unable to load the Shared Stimulus'));
                 }
@@ -207,7 +207,7 @@ define([
                     this.destroy();
                 });
 
-                loadSharedStimulus(config.properties.id, config.properties.uri, config.properties.assetDataUrl)
+                loadSharedStimulus(config.properties.id, config.properties.uri, config.properties.assetDataUrl, config.properties.assetDataStyles)
                     .then(item => {
                         if (!_.isObject(item)) {
                             this.trigger('error', new Error(`Unable to load the item ${config.properties.label}`));

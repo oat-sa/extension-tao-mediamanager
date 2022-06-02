@@ -33,6 +33,8 @@ define([
     'use strict';
 
     const logger = loggerFactory('taoMediaManager/authoring');
+    const serviceController = 'SharedStimulus';
+    const serviceExtension = 'taoMediaManager';
 
     const manageMediaController = {
         /**
@@ -40,12 +42,13 @@ define([
          */
         start() {
             const $panel = $('#panel-authoring');
-            const assetDataUrl = urlUtil.route('get', 'SharedStimulus', 'taoMediaManager');
+            const assetDataUrl = urlUtil.route('get', serviceController, serviceExtension);
+            const assetDataStyles = urlUtil.route('getStylesheets', 'SharedStimulusStyling', serviceExtension);
             const assetId = uri.decode($panel.attr('data-id'));
             let previewEnabled = false;
 
-            request(assetDataUrl, { id : assetId })
-                .then(response => {
+            request(assetDataUrl, { id: assetId })
+                .then((response) => {
                     if (response.permissions.includes('READ')) {
                         previewEnabled = true;
                     }
@@ -55,6 +58,7 @@ define([
                             uri: $panel.attr('data-uri'),
                             id: assetId,
                             assetDataUrl,
+                            assetDataStyles,
                             fileUploadUrl: urlUtil.route('upload', 'ItemContent', 'taoItems'),
                             fileDeleteUrl: urlUtil.route('delete', 'ItemContent', 'taoItems'),
                             fileDownloadUrl: urlUtil.route('download', 'ItemContent', 'taoItems'),
@@ -68,16 +72,15 @@ define([
                             loadCssUrl: urlUtil.route('load', 'SharedStimulusStyling', 'taoMediaManager'),
                             saveCssUrl: urlUtil.route('save', 'SharedStimulusStyling', 'taoMediaManager')
                         }
+                    }).on('success', () => {
+                        feedback().success(__('Your passage is saved'));
                     })
-                        .on('success', () => {
-                            feedback().success(__('Your passage is saved'));
-                        })
-                        .on('error', err => {
-                            if (!_.isUndefined(err.message)) {
-                                feedback().error(err.message);
-                            }
-                            logger.error(err);
-                        });
+                    .on('error', err => {
+                        if (!_.isUndefined(err.message)) {
+                            feedback().error(err.message);
+                        }
+                        logger.error(err);
+                    });
                 });
         }
     };

@@ -22,8 +22,9 @@ define([
     'taoQtiItem/qtiCreator/model/qtiClasses',
     'taoMediaManager/qtiCreator/helper/createDummyItemData',
     'core/dataProvider/request',
-    'util/url'
-], function($, Loader, qtiClasses, creatorDummyItemData, request, urlUtil) {
+    'util/url',
+    'taoMediaManager/qtiCreator/helper/formatStyles'
+], function ($, Loader, qtiClasses, creatorDummyItemData, request, urlUtil, formatStyles) {
     'use strict';
 
     const qtiNamespace = 'http://www.imsglobal.org/xsd/imsqti_v2p2';
@@ -39,8 +40,9 @@ define([
 
             if (config.id) {
                 const languagesList = request(languagesUrl);
-                const assetData = request(config.assetDataUrl, { id : config.id });
-                Promise.all([languagesList, assetData]).then((values) => {
+                const assetData = request(config.assetDataUrl, { id: config.id });
+                const assetStyles = request(config.assetDataStyles, { uri: config.id })
+                Promise.all([languagesList, assetData, assetStyles]).then((values) => {
                     let loader, itemData;
 
                     itemData = creatorDummyItemData(values[1]);
@@ -62,6 +64,43 @@ define([
 
                         callback(loadedItem, this.getLoadedClasses());
                     });
+
+                    if (values[2]) {
+                        const styles = values[2];
+                        const data = values[1];
+                        styles.forEach((stylesheet, index) => {
+                            const serial = `stylesheet_${index}`;
+                            const link = urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
+                                uri: config.id,
+                                stylesheet: stylesheet
+                            });
+
+                            const linkDom = Object.values(document.styleSheets).find(sheet => sheet.href === link);
+
+                            if (!linkDom) {
+                                // avoid adding the CSS file on Preview list everytime Asset is clicked
+                                data.content.data.stylesheets[serial] = {
+                                    qtiClass: 'stylesheet',
+                                    attributes: {
+                                        href: link,
+                                        media: 'all',
+                                        title: '',
+                                        type: 'text/css'
+                                    },
+                                    serial,
+                                    getComposingElements: () => ({})
+                                };
+                            }
+
+                            // get cssRules from owner link tag, referenced in load event
+                            if (stylesheet !== 'tao-user-styles.css') {
+                                const cssFile = Object.values(document.styleSheets).find(sheet => sheet.href === link);
+                                if (cssFile) {
+                                    formatStyles(cssFile, data.body.attributes.class);
+                                }
+                            }
+                        });
+                    }
                 });
             }
         }

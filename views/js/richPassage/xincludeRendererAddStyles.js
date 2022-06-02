@@ -36,8 +36,7 @@ define(['jquery', 'uri', 'util/url', 'core/dataProvider/request', 'taoMediaManag
                             rel: 'stylesheet',
                             type: 'text/css',
                             href: link,
-                            'data-serial': passageUri,
-                            disabled: 'disabled'
+                            'data-serial': passageUri
                         });
                         head.append(styleElem);
                         if (document.styleSheets.length && element !== 'tao-user-styles.css') {

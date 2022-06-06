@@ -49,28 +49,25 @@ define([
 
                     if (values[2]) {
                         values[2].forEach((stylesheet, index) => {
-                            const serial = `stylesheet_${index}`;
-                            const link = urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
-                                uri: config.id,
-                                stylesheet: stylesheet
-                            });
-
-                            const linkDom = Object.values(document.styleSheets).find(sheet => sheet.href === link);
-
-                            itemData.stylesheets[serial] = {
-                                qtiClass: 'stylesheet',
-                                attributes: {
-                                    href: link,
-                                    media: 'all',
-                                    title: stylesheet,
-                                    type: 'text/css'
-                                },
-                                serial,
-                                getComposingElements: () => ({})
-                            };
-
-                            // get cssRules from owner link tag, referenced in load event
                             if (stylesheet !== 'tao-user-styles.css') {
+                                const serial = `stylesheet_${index}`;
+                                const link = urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
+                                    uri: config.id,
+                                    stylesheet: stylesheet
+                                });
+                                // avoid adding the CSS file on Preview list everytime Asset is clicked
+                                itemData.stylesheets[serial] = {
+                                    qtiClass: 'stylesheet',
+                                    attributes: {
+                                        href: link,
+                                        media: 'all',
+                                        title: stylesheet,
+                                        type: 'text/css'
+                                    },
+                                    serial,
+                                    getComposingElements: () => ({})
+                                };
+
                                 const cssFile = Object.values(document.styleSheets).find(sheet => sheet.href === link);
                                 if (cssFile) {
                                     formatStyles(cssFile, itemData.body.attributes.class);

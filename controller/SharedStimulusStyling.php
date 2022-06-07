@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\controller;
 
+use oat\taoMediaManager\model\sharedStimulus\css\handler\UploadStylesheetRequestHandler;
+use oat\taoMediaManager\model\sharedStimulus\css\service\UploadStylesheetService;
 use Throwable;
 use tao_helpers_Http as HttpHelper;
 use oat\oatbox\log\LoggerAwareTrait;
@@ -131,5 +133,28 @@ class SharedStimulusStyling extends CommonModule
 
             $this->setResponse($formatter->format($this->getPsrResponse()));
         }
+    }
+
+    public function upload(
+        UploadStylesheetRequestHandler $uploadStylesheetHandler,
+        UploadStylesheetService $uploadStylesheetService,
+        ResponseFormatter $responseFormatter
+    ): void {
+        $formatter = $responseFormatter->withJsonHeader();
+
+        try {
+            $uploadedStylesheet = $uploadStylesheetHandler($this->getPsrRequest());
+            $uploadStylesheetService->save($uploadedStylesheet);
+
+            $formatter->withBody(new SuccessJsonResponse([]));
+        } catch (Throwable $exception) {
+            $this->logError(sprintf('Error uploading passage stylesheets: %s', $exception->getMessage()));
+
+            $formatter
+                ->withStatusCode(400)
+                ->withBody(new ErrorJsonResponse($exception->getCode(), $exception->getMessage()));
+        }
+
+        $this->setResponse($formatter->format($this->getPsrResponse()));
     }
 }

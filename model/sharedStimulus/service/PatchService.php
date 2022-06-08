@@ -42,6 +42,7 @@ use oat\taoMediaManager\model\sharedStimulus\parser\SharedStimulusMediaExtractor
 use oat\taoMediaManager\model\sharedStimulus\PatchCommand;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 use oat\taoMediaManager\model\SharedStimulusImporter;
+use oat\taoMediaManager\model\TaoMediaOntology;
 use qtism\data\storage\xml\XmlStorageException;
 use tao_helpers_I18n;
 use tao_models_classes_FileNotFoundException as FileNotFoundException;
@@ -74,13 +75,17 @@ class PatchService extends ConfigurableService
         $this->validateXml($file);
 
         /* @var core_kernel_classes_Literal */
-        $link = $resource->getUniquePropertyValue($this->getProperty(MediaService::PROPERTY_LINK));
+        $link = $resource->getUniquePropertyValue($this->getProperty(
+            TaoMediaOntology::PROPERTY_LINK)
+        );
         $sharedStimulusStoredSourceFile = $this->getFileSourceUnserializer()->unserialize((string)$link);
 
         $this->getFileSystem()->putStream($sharedStimulusStoredSourceFile, $file->readStream());
 
         $content = $file->read();
-        $resource->editPropertyValues($this->getProperty(MediaService::PROPERTY_MD5), md5($content));
+        $resource->editPropertyValues(
+            $this->getProperty(TaoMediaOntology::PROPERTY_MD5), md5($content)
+        );
 
         $this->getMediaService()->dispatchMediaSavedEvent(
             'Imported new file',
@@ -93,7 +98,9 @@ class PatchService extends ConfigurableService
 
         $file->delete();
 
-        $languageResource = $resource->getOnePropertyValue($this->getProperty(MediaService::PROPERTY_LANGUAGE));
+        $languageResource = $resource->getOnePropertyValue(
+            $this->getProperty(TaoMediaOntology::PROPERTY_LANGUAGE)
+        );
 
         if ($languageResource instanceof core_kernel_classes_Literal) {
             $languageResource = $this->findLanguageResource($languageResource);
@@ -116,12 +123,12 @@ class PatchService extends ConfigurableService
      */
     private function validateResource(Resource $resource): void
     {
-        if (!$resource->isInstanceOf($this->getClass(MediaService::ROOT_CLASS_URI))) {
+        if (!$resource->isInstanceOf($this->getClass(TaoMediaOntology::CLASS_URI_MEDIA_ROOT))) {
             $this->logAlert(
                 sprintf(
                     'Incorrect resource provided, %s should be subtype of  %s',
                     $resource->getUri(),
-                    MediaService::ROOT_CLASS_URI
+                    TaoMediaOntology::CLASS_URI_MEDIA_ROOT
                 )
             );
             throw new InvalidArgumentException('Invalid resource provided');

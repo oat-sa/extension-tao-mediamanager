@@ -46,7 +46,7 @@ define(['jquery', 'uri', 'util/url', 'core/dataProvider/request', 'taoMediaManag
                                     if (cssFile) {
                                         formatStyles(cssFile, passageClassName);
                                     }
-                                }, 100
+                                }, 1000
                             );
                         }
 

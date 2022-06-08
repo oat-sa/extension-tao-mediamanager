@@ -100,10 +100,8 @@ define([
                         uri: identifier,
                         stylesheet: stylesheet
                     });
-
-                    const linkDom = Object.values(document.styleSheets).find(sheet => sheet.href === link);
-
-                    if (!linkDom) {
+                    let cssFile = Object.values(document.styleSheets).find(sheet => typeof sheet.href === 'string' && sheet.href === link);
+                    if (!cssFile) {
                         // avoid adding the CSS file on Preview list everytime Asset is clicked
                         data.content.data.stylesheets[serial] = {
                             qtiClass: 'stylesheet',
@@ -117,18 +115,14 @@ define([
                             getComposingElements: () => ({})
                         };
                     }
-
-                    // get cssRules from owner link tag, referenced in load event
-                    if (stylesheet !== 'tao-user-styles.css') {
-                        setTimeout(
-                            function () {
-                                const cssFile = Object.values(document.styleSheets).find(sheet => sheet.href === link);
-                                if (cssFile) {
-                                    formatStyles(cssFile, data.body.attributes.class);
-                                }
-                            }, 100
-                        );
-                    }
+                    setTimeout(
+                        function () {
+                            cssFile = Object.values(document.styleSheets).find(sheet => sheet.href === link);
+                            if (cssFile && stylesheet !== 'tao-user-styles.css') {
+                                formatStyles(cssFile, data.body.attributes.class);
+                            }
+                        }, 1000
+                    );
                 });
                 return data;
             });

@@ -16,7 +16,7 @@
  * Copyright (c) 2021 (original work) Open Assessment Technologies SA;
  */
 
-define(['lodash', 'uri', 'util/url', 'core/dataProvider/request'], function (_, uri, urlUtil, request) {
+define(['lodash', 'uri', 'util/url', 'core/dataProvider/request', 'taoMediaManager/qtiCreator/helper/formatStyles'], function (_, uri, urlUtil, request, formatStyles) {
     'use strict';
 
     /**
@@ -89,24 +89,32 @@ define(['lodash', 'uri', 'util/url', 'core/dataProvider/request'], function (_, 
                             .then(response => {
                                 response.forEach((element, index) => {
                                     const serial = `stylesheet_${id}_${index}`;
+                                    const link = urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
+                                        uri: passageUri,
+                                        stylesheet: element
+                                    });
                                     itemData.content.data.stylesheets[serial] = {
                                         qtiClass: 'stylesheet',
                                         attributes: {
-                                            href: urlUtil.route(
-                                                'loadStylesheet',
-                                                'SharedStimulusStyling',
-                                                'taoMediaManager',
-                                                {
-                                                    uri: passageUri,
-                                                    stylesheet: element
-                                                }
-                                            ),
+                                            href: link,
                                             media: 'all',
                                             title: '',
                                             type: 'text/css'
                                         },
                                         serial
                                     };
+
+                                    if (document.styleSheets.length && element !== 'tao-user-styles.css') {
+                                        setTimeout(
+                                            (id) => {
+                                                const className = itemData.content.data.body.elements[id].attributes.class;
+                                                const cssFile = Object.values(document.styleSheets).find(sheet => sheet.href === link);
+                                                if (cssFile) {
+                                                    formatStyles(cssFile, className);
+                                                }
+                                            }, 500, id
+                                        );
+                                    }
                                 });
                             })
                             .catch()

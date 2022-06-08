@@ -21,8 +21,9 @@ define([], function () {
     const formatStyles = function (linkTag, className) {
         const { cssRules } = linkTag.sheet || linkTag || {};
         const CSSStyleSheet = linkTag.sheet || linkTag || {};
+        const classNameFormated = className && className.length ? `.${className}` : '';
         // prefix rules
-        const scopedCssRules = _scopeStyles(cssRules, `.${className}`, ['body html *']);
+        const scopedCssRules = _scopeStyles(cssRules, classNameFormated, ['body html *']);
 
         Object.values(cssRules).map((index, rule) => {
             CSSStyleSheet.deleteRule(index);

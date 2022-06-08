@@ -32,12 +32,13 @@ use oat\taoMediaManager\model\accessControl\MediaPermissionService;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\tao\model\Lists\Business\Validation\DependsOnPropertyValidator;
 use core_kernel_classes_Resource;
+use tao_actions_SaSModule;
 use tao_helpers_form_FormContainer as FormContainer;
 use tao_helpers_Uri;
 use tao_models_classes_FileNotFoundException;
 use tao_models_classes_dataBinding_GenerisFormDataBinder;
 
-class MediaManager extends \tao_actions_SaSModule
+class MediaManager extends tao_actions_SaSModule
 {
     /**
      * Show the form to edit an instance, show also a preview of the media

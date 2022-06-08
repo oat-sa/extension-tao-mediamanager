@@ -31,23 +31,50 @@ use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 class StoreService extends ConfigurableService
 {
     /**
-     * name of sub-directory to store stylesheets
+     * Name of subdirectory to store stylesheets
      */
     public const CSS_DIR_NAME = 'css';
 
     /**
      * @param string|File $stimulusXmlSourceFile
      */
-    public function store($stimulusXmlSourceFile, string $stimulusFilename, array $cssFiles = []): string
-    {
+    public function store(
+        $stimulusXmlSourceFile,
+        string $stimulusFilename,
+        array $cssFiles = []
+    ): string {
+        if ($stimulusXmlSourceFile instanceof File) {
+            return $this->storeStream(
+                $stimulusXmlSourceFile->readStream(),
+                $stimulusFilename,
+                $cssFiles
+            );
+        }
+
+        return $this->storeStream(
+            fopen($stimulusXmlSourceFile, 'r'),
+            $stimulusFilename,
+            $cssFiles
+        );
+    }
+
+    /**
+     * @param resource $stimulusXmlStream
+     */
+    public function storeStream(
+        $stimulusXmlStream,
+        string $stimulusFilename,
+        array $cssFiles = []
+    ): string {
         $fs = $this->getFileSystem();
 
         $dirname = $this->getUniqueName($stimulusFilename);
         $fs->createDir($dirname);
 
-        $stimulusXmlStream = $stimulusXmlSourceFile instanceof File ? $stimulusXmlSourceFile->readStream() : fopen($stimulusXmlSourceFile, 'r');
-
-        $fs->putStream($dirname . DIRECTORY_SEPARATOR . $stimulusFilename, $stimulusXmlStream);
+        $fs->putStream(
+            $dirname . DIRECTORY_SEPARATOR . $stimulusFilename,
+            $stimulusXmlStream
+        );
 
         if (count($cssFiles)) {
             $fs->createDir($dirname . DIRECTORY_SEPARATOR . self::CSS_DIR_NAME);

@@ -213,7 +213,9 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
      */
     private function getResourceLink(core_kernel_classes_Resource $resource)
     {
-        $link = $resource->getUniquePropertyValue(new core_kernel_classes_Property(MediaService::PROPERTY_LINK));
+        $link = $resource->getUniquePropertyValue(
+            new core_kernel_classes_Property(TaoMediaOntology::PROPERTY_LINK)
+        );
 
         return $link instanceof core_kernel_classes_Literal ? $link->literal : $link;
     }

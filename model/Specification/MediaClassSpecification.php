@@ -15,27 +15,23 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2022 (original work) Open Assessment Technologies SA.
  */
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\relation\service;
+namespace oat\taoMediaManager\model\Specification;
 
+use core_kernel_classes_Class;
+use oat\tao\model\Specification\ClassSpecificationInterface;
 use oat\taoMediaManager\model\TaoMediaOntology;
 
-class MediaToMediaRdsSearcher extends AbstractRdsSearcher
+class MediaClassSpecification implements ClassSpecificationInterface
 {
-    protected function getTargetClasses(): array
+    public function isSatisfiedBy(core_kernel_classes_Class $class): bool
     {
-        return array_merge(
-            [
-                TaoMediaOntology::CLASS_URI_MEDIA_ROOT,
-            ],
-            array_keys(
-                $this->getClass(TaoMediaOntology::CLASS_URI_MEDIA_ROOT)
-                    ->getSubClasses(true)
-            )
-        );
+        $rootClass = $class->getClass(TaoMediaOntology::CLASS_URI_MEDIA_ROOT);
+
+        return $class->equals($rootClass) || $class->isSubClassOf($rootClass);
     }
 }

@@ -28,6 +28,7 @@ use oat\taoMediaManager\model\MediaService;
 use oat\generis\test\TestCase;
 use core_kernel_classes_Resource as RdfResource;
 use core_kernel_classes_Property as RdfProperty;
+use oat\taoMediaManager\model\TaoMediaOntology;
 use oat\taoRevision\model\RepositoryService;
 
 include_once dirname(__FILE__) . '/../../../includes/raw_start.php';
@@ -114,7 +115,9 @@ class MediaServiceTest extends TestCase
         $uri = $mediaService->createMediaInstance($fileTmp, $classUri, $lang);
 
         $instance = new RdfResource($uri);
-        $thing = $instance->getUniquePropertyValue(new RdfProperty(MediaService::PROPERTY_LINK));
+        $thing = $instance->getUniquePropertyValue(
+            new RdfProperty(TaoMediaOntology::PROPERTY_LINK)
+        );
 
         $linkResult = $thing instanceof RdfResource ? $thing->getUri() : (string)$thing;
         $this->assertInstanceOf(
@@ -127,7 +130,9 @@ class MediaServiceTest extends TestCase
         $this->assertEquals($linkResult, 'MyGreatLink', 'The returned link is wrong');
         $this->assertEquals(
             $lang,
-            $instance->getUniquePropertyValue(new RdfProperty(MediaService::PROPERTY_LANGUAGE)),
+            $instance->getUniquePropertyValue(
+                new RdfProperty(TaoMediaOntology::PROPERTY_LANGUAGE)
+            ),
             'The instance language is wrong'
         );
 
@@ -139,8 +144,8 @@ class MediaServiceTest extends TestCase
         $fileTmp = dirname(__DIR__) . '/sample/Italy.png';
         $lang = 'EN-en';
 
-        $linkProperty = new RdfProperty(MediaService::PROPERTY_LINK);
-        $mimeTypeProperty = new RdfProperty(MediaService::PROPERTY_MIME_TYPE);
+        $linkProperty = new RdfProperty(TaoMediaOntology::PROPERTY_LINK);
+        $mimeTypeProperty = new RdfProperty(TaoMediaOntology::PROPERTY_MIME_TYPE);
 
         $instanceUri = 'http://myFancyDomain.com/myGreatInstanceUri';
         $instance = new RdfResource($instanceUri);
@@ -156,7 +161,9 @@ class MediaServiceTest extends TestCase
 
         $this->assertEquals(
             $lang,
-            $instance->getUniquePropertyValue(new RdfProperty(MediaService::PROPERTY_LANGUAGE)),
+            $instance->getUniquePropertyValue(
+                new RdfProperty(TaoMediaOntology::PROPERTY_LANGUAGE)
+            ),
             'The instance language is wrong'
         );
 

@@ -75,8 +75,7 @@ define([
                     params: {
                         uri: itemConfig.uri,
                         lang: itemConfig.lang,
-                        filters: 'text/css',
-                        elementClass: itemConfig.elementClass
+                        filters: 'text/css'
                     },
                     pathParam: 'path',
                     select: function (e, files) {

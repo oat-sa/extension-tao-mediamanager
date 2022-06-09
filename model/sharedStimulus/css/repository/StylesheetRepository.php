@@ -63,6 +63,11 @@ class StylesheetRepository extends ConfigurableService
         return $this->getFileSystem()->put($path, $contents);
     }
 
+    public function putStream(string $path, $streamResource): bool
+    {
+        return $this->getFileSystem()->putStream($path, $streamResource);
+    }
+
     /**
      * @throws FileNotFoundException
      */

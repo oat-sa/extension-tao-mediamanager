@@ -19,11 +19,12 @@
  * @author Jean-Sébastien Conan <jean-sebastien@taotesting.com>
  */
 define([
+    'jquery',
     'context',
     'taoQtiTestPreviewer/previewer/runner',
     'taoMediaManager/qtiCreator/helper/formatStyles',
     'css!taoQtiTestPreviewer/previewer/provider/item/css/item'
-], function (context, previewerFactory, formatStyles) {
+], function ($, context, previewerFactory, formatStyles) {
     'use strict';
 
     /**
@@ -81,7 +82,7 @@ define([
                     runner.itemRunner.setState(config.itemState);
                 }
                 this.trigger('preview-loaded');
-                $(`link[data-serial`).each((i, style) => {
+                $(`link[data-serial*="preview"`).each((i, style) => {
                     if (style) {
                         const asset = $('.qti-itemBody');
                         let assetClassName = '';
@@ -90,20 +91,20 @@ define([
                             if (hasClass.length) {
                                 assetClassName = hasClass[0];
                             }
-                        }
-                        setTimeout(
-                            function () {
-                                const myLink = $(style);
-                                myLink.ready(() => {
+
+                            if (style.sheet) {
+                                formatStyles(style.sheet, assetClassName);
+                            } else {
+                                style.onload = () => {
                                     const stylesheetName = style.href.split('stylesheet=');
                                     if (stylesheetName && stylesheetName[1] !== 'tao-user-styles.css') {
                                         formatStyles(style.sheet, assetClassName);
                                     }
-                                })
-                            }, 500
-                        );
+                                };
+                            }
+                        }
                     }
-                })
+                });
             });
             if (config.itemUri) {
                 return runner.loadItem(config.itemUri);

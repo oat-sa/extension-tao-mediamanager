@@ -50,7 +50,7 @@ define([
                     if (values[2]) {
                         values[2].forEach((stylesheet, index) => {
                             if (stylesheet !== 'tao-user-styles.css') {
-                                const serial = `stylesheet_${index}`;
+                                const serial = `creator_${index}`;
                                 const link = urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
                                     uri: config.id,
                                     stylesheet: stylesheet
@@ -68,10 +68,10 @@ define([
                                     getComposingElements: () => ({})
                                 };
 
-                                const linkDom = $('link[data-serial]');
-                                linkDom.ready(() => {
+                                const linkDom = $(`link[data-serial="${serial}"]`)[0];
+                                linkDom.onload = () => {
                                     formatStyles(linkDom[0], itemData.body.attributes.class);
-                                })
+                                };
                             }
                         });
                     }

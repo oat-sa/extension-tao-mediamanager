@@ -94,13 +94,13 @@ define([
                     type: 'qti',
                     data: itemData
                 };
-                const assetStyles = $(`link[data-serial`);
+                const assetStyles = $(`link[data-serial*="preview"]`);
                 if (assetStyles.length) {
                     assetStyles.remove();
                 }
 
                 styles.forEach((stylesheet, index) => {
-                    const serial = `stylesheet_${index}`;
+                    const serial = `preview_${index}`;
                     const link = urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
                         uri: identifier,
                         stylesheet: stylesheet

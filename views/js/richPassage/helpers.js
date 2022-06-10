@@ -104,16 +104,11 @@ define(['lodash', 'uri', 'util/url', 'core/dataProvider/request', 'taoMediaManag
                                         serial
                                     };
 
-                                    if (document.styleSheets.length && element !== 'tao-user-styles.css') {
-                                        setTimeout(
-                                            (id) => {
-                                                const className = itemData.content.data.body.elements[id].attributes.class;
-                                                const cssFile = Object.values(document.styleSheets).find(sheet => sheet.href === link);
-                                                if (cssFile) {
-                                                    formatStyles(cssFile, className);
-                                                }
-                                            }, 500, id
-                                        );
+                                    if (element !== 'tao-user-styles.css') {
+                                        $(`[href="${link}"]`).load((e) => {
+                                            const className = itemData.content.data.body.elements[id].attributes.class;
+                                            formatStyles(e.target, className);
+                                        })
                                     }
                                 });
                             })

@@ -15,7 +15,7 @@
  *
  * Copyright (c) 2021 (original work) Open Assessment Technologies SA ;
  */
-define(['jquery', 'uri', 'util/url', 'core/dataProvider/request', 'taoMediaManager/qtiCreator/helper/formatStyles'], function ($, uri, urlUtil, request, formatStyles) {
+define(['lodash', 'jquery', 'uri', 'util/url', 'core/dataProvider/request', 'taoMediaManager/qtiCreator/helper/formatStyles'], function (_, $, uri, urlUtil, request, formatStyles) {
     'use strict';
 
     return function xincludeRendererAddStyles(passageHref, passageClassName, head = $('head')) {
@@ -39,15 +39,10 @@ define(['jquery', 'uri', 'util/url', 'core/dataProvider/request', 'taoMediaManag
                             'data-serial': passageUri
                         });
                         head.append(styleElem);
-                        if (document.styleSheets.length && element !== 'tao-user-styles.css') {
-                            setTimeout(
-                                function () {
-                                    const cssFile = Object.values(document.styleSheets).find(sheet => sheet.href === link);
-                                    if (cssFile) {
-                                        formatStyles(cssFile, passageClassName);
-                                    }
-                                }, 1000
-                            );
+                        if (element !== 'tao-user-styles.css') {
+                            $(`[href="${link}"]`).load((e) => {
+                                formatStyles(e.target, passageClassName);
+                            })
                         }
 
                     });

@@ -94,6 +94,11 @@ define([
                     type: 'qti',
                     data: itemData
                 };
+                const assetStyles = $(`link[data-serial`);
+                if (assetStyles.length) {
+                    assetStyles.remove();
+                }
+
                 styles.forEach((stylesheet, index) => {
                     const serial = `stylesheet_${index}`;
                     const link = urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
@@ -115,14 +120,6 @@ define([
                             getComposingElements: () => ({})
                         };
                     }
-                    setTimeout(
-                        function () {
-                            cssFile = Object.values(document.styleSheets).find(sheet => sheet.href === link);
-                            if (cssFile && stylesheet !== 'tao-user-styles.css') {
-                                formatStyles(cssFile, data.body.attributes.class);
-                            }
-                        }, 1000
-                    );
                 });
                 return data;
             });

@@ -21,8 +21,9 @@
 define([
     'context',
     'taoQtiTestPreviewer/previewer/runner',
+    'taoMediaManager/qtiCreator/helper/formatStyles',
     'css!taoQtiTestPreviewer/previewer/provider/item/css/item'
-], function (context, previewerFactory) {
+], function (context, previewerFactory, formatStyles) {
     'use strict';
 
     /**
@@ -80,6 +81,29 @@ define([
                     runner.itemRunner.setState(config.itemState);
                 }
                 this.trigger('preview-loaded');
+                $(`link[data-serial`).each((i, style) => {
+                    if (style) {
+                        const asset = $('.qti-itemBody');
+                        let assetClassName = '';
+                        if (asset.length) {
+                            const hasClass = asset[0].className.match(/[\w-]*tao-[\w-]*/g);
+                            if (hasClass.length) {
+                                assetClassName = hasClass[0];
+                            }
+                        }
+                        setTimeout(
+                            function () {
+                                const myLink = $(style);
+                                myLink.ready(() => {
+                                    const stylesheetName = style.href.split('stylesheet=');
+                                    if (stylesheetName && stylesheetName[1] !== 'tao-user-styles.css') {
+                                        formatStyles(style.sheet, assetClassName);
+                                    }
+                                })
+                            }, 500
+                        );
+                    }
+                })
             });
             if (config.itemUri) {
                 return runner.loadItem(config.itemUri);

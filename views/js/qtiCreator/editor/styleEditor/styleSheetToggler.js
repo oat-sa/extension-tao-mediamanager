@@ -21,10 +21,11 @@ define([
     'taoMediaManager/qtiCreator/editor/styleEditor/styleEditor',
     'i18n',
     'lodash',
+    'util/url',
     'taoQtiItem/qtiCreator/model/Stylesheet',
     'tpl!taoQtiItem/qtiCreator/tpl/notifications/genericFeedbackPopup',
     'ui/resourcemgr'
-], function ($, styleEditor, __, _, Stylesheet, genericFeedbackPopup) {
+], function ($, styleEditor, __, _, urlUtil, Stylesheet, genericFeedbackPopup) {
     'use strict';
 
     var $doc = $(document);
@@ -68,7 +69,7 @@ define([
                     path: 'taomedia://mediamanager/',
                     root: 'local',
                     browseUrl: itemConfig.getFilesUrl,
-                    uploadUrl: itemConfig.fileUploadUrl,
+                    uploadUrl: urlUtil.route('upload', 'SharedStimulusStyling', 'taoMediaManager'),
                     deleteUrl: itemConfig.fileDeleteUrl,
                     downloadUrl: itemConfig.fileDownloadUrl,
                     fileExistsUrl : itemConfig.fileExistsUrl,
@@ -163,20 +164,22 @@ define([
                         $('#item-editor-user-styles')[0].disabled = true;
                         customCssToggler.addClass('not-available');
                     }
+                    // add some visual feed back to the triggers
+                    $(trigger).toggleClass('disabled');
                 }
                 // all other styles are handled via their link element
                 else {
-                    const linkDom = Object.values(document.styleSheets).find(sheet => typeof sheet.href === 'string' && sheet.href.includes(context.cssUri));
-
-                    if (context.isDisabled) {
-                        linkDom.disabled = false;
-                    } else {
-                        linkDom.disabled = true;
-                    }
+                    const myLink = $(`link[data-serial=${context.stylesheetObj.serial}`);
+                    myLink.ready(() => {
+                        if (context.isDisabled) {
+                            myLink[0].sheet.disabled = false;
+                        } else {
+                            myLink[0].sheet.disabled = true;
+                        }
+                        // add some visual feed back to the triggers
+                        $(trigger).toggleClass('disabled');
+                    })
                 }
-
-                // add some visual feed back to the triggers
-                $(trigger).toggleClass('disabled');
             };
 
             /**

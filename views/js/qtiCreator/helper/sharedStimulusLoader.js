@@ -68,10 +68,10 @@ define([
                                     getComposingElements: () => ({})
                                 };
 
-                                const cssFile = Object.values(document.styleSheets).find(sheet => sheet.href === link);
-                                if (cssFile) {
-                                    formatStyles(cssFile, itemData.body.attributes.class);
-                                }
+                                const linkDom = $('link[data-serial]');
+                                linkDom.ready(() => {
+                                    formatStyles(linkDom[0], itemData.body.attributes.class);
+                                })
                             }
                         });
                     }

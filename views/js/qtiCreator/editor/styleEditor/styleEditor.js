@@ -263,7 +263,9 @@ define([
             setTimeout(
                 function () {
                     // clean and format CSS styles with Browser API
-                    formatStyles(linkElement[0], hashClass);
+                    $(`[href="${link}"]`).load((e) => {
+                        formatStyles(e.target, hashClass);
+                    })
 
                     let isInit = false;
 

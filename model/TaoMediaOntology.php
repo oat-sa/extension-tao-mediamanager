@@ -15,27 +15,24 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2022 (original work) Open Assessment Technologies SA.
  */
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\model\relation\service;
+namespace oat\taoMediaManager\model;
 
-use oat\taoMediaManager\model\TaoMediaOntology;
-
-class MediaToMediaRdsSearcher extends AbstractRdsSearcher
+interface TaoMediaOntology
 {
-    protected function getTargetClasses(): array
-    {
-        return array_merge(
-            [
-                TaoMediaOntology::CLASS_URI_MEDIA_ROOT,
-            ],
-            array_keys(
-                $this->getClass(TaoMediaOntology::CLASS_URI_MEDIA_ROOT)
-                    ->getSubClasses(true)
-            )
-        );
-    }
+    public const CLASS_URI_MEDIA_ROOT = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Media';
+
+    public const PROPERTY_LINK = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Link';
+
+    public const PROPERTY_LANGUAGE = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Language';
+
+    public const PROPERTY_ALT_TEXT = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AltText';
+
+    public const PROPERTY_MD5 = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#md5';
+
+    public const PROPERTY_MIME_TYPE = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#mimeType';
 }

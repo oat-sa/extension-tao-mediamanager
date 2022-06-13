@@ -36,6 +36,7 @@ use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\relation\service\update\MediaRelationUpdateService;
 use oat\taoMediaManager\model\sharedStimulus\parser\SharedStimulusMediaExtractor;
 use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourceSpecification;
+use oat\taoMediaManager\model\TaoMediaOntology;
 
 class MediaToMediaUnitProcessor extends ConfigurableService implements ResultUnitProcessorInterface
 {
@@ -54,10 +55,14 @@ class MediaToMediaUnitProcessor extends ConfigurableService implements ResultUni
         }
 
         if ($this->getSharedStimulusResourceSpecification()->isSatisfiedBy($resource)) {
-            $fileLink = $resource->getUniquePropertyValue($this->getProperty(MediaService::PROPERTY_LINK));
+            $fileLink = $resource->getUniquePropertyValue(
+                $this->getProperty(TaoMediaOntology::PROPERTY_LINK)
+            );
+
             $fileLink = $fileLink instanceof core_kernel_classes_Resource ? $fileLink->getUri() : (string)$fileLink;
             $fileSource = $this->getFileManager()->getFileStream($fileLink);
             $content = $fileSource instanceof File ? $fileSource->read() : $fileSource->getContents();
+
             $elementIds = $this->getSharedStimulusExtractor()->extractMediaIdentifiers($content);
             $this->getMediaRelationUpdateService()->updateByTargetId($resource->getUri(), $elementIds);
         }

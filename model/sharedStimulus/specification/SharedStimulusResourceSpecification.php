@@ -29,6 +29,7 @@ use core_kernel_classes_Resource;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\MediaService;
+use oat\taoMediaManager\model\TaoMediaOntology;
 
 class SharedStimulusResourceSpecification extends ConfigurableService
 {
@@ -40,7 +41,9 @@ class SharedStimulusResourceSpecification extends ConfigurableService
     public function isSatisfiedBy(core_kernel_classes_Resource $resource): bool
     {
         try {
-            $propertyValue = $resource->getUniquePropertyValue($this->getProperty(MediaService::PROPERTY_MIME_TYPE));
+            $propertyValue = $resource->getUniquePropertyValue(
+                $this->getProperty(TaoMediaOntology::PROPERTY_MIME_TYPE)
+            );
 
             if ($propertyValue instanceof core_kernel_classes_Literal) {
                 return $propertyValue->literal === MediaService::SHARED_STIMULUS_MIME_TYPE;

@@ -94,7 +94,7 @@ define([
                     type: 'qti',
                     data: itemData
                 };
-                const assetStyles = $(`link[data-serial*="preview"]`);
+                const assetStyles = $('link[data-serial*="preview"]');
                 if (assetStyles.length) {
                     assetStyles.remove();
                 }

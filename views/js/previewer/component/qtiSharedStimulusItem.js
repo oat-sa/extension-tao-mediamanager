@@ -82,7 +82,7 @@ define([
                     runner.itemRunner.setState(config.itemState);
                 }
                 this.trigger('preview-loaded');
-                $(`link[data-serial*="preview"`).each((i, style) => {
+                $('link[data-serial*="preview"').each((i, style) => {
                     if (style) {
                         const asset = $('.qti-itemBody');
                         let assetClassName = '';
@@ -93,7 +93,10 @@ define([
                             }
 
                             if (style.sheet) {
-                                formatStyles(style.sheet, assetClassName);
+                                const stylesheetName = style.href.split('stylesheet=');
+                                if (stylesheetName && stylesheetName[1] !== 'tao-user-styles.css') {
+                                    formatStyles(style.sheet, assetClassName);
+                                }
                             } else {
                                 style.onload = () => {
                                     const stylesheetName = style.href.split('stylesheet=');

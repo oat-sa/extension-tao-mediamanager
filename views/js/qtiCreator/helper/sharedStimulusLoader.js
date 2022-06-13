@@ -68,10 +68,14 @@ define([
                                     getComposingElements: () => ({})
                                 };
 
-                                const linkDom = $(`link[data-serial="${serial}"]`)[0];
-                                linkDom.onload = () => {
-                                    formatStyles(linkDom[0], itemData.body.attributes.class);
-                                };
+                                setTimeout(() => {
+                                    const styleLink = document.querySelector(`link[data-serial="${serial}"]`);
+                                    if (styleLink) {
+                                        const linkDom = $(styleLink)[0];
+                                        formatStyles(linkDom, itemData.attributes.class);
+                                    }
+                                }, 1000)
+
                             }
                         });
                     }

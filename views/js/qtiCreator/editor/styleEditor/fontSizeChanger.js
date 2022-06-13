@@ -13,7 +13,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2021 (original work) Open Assessment Technologies SA ;
+ * Copyright (c) 2021-2022 (original work) Open Assessment Technologies SA ;
  *
  */
 
@@ -32,6 +32,7 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
     const fontSizeChanger = function ($container) {
         const $fontSizeChanger = $container.find('#item-editor-font-size-changer'),
             itemSelector = styleEditor.replaceHashClass($fontSizeChanger.data('target')),
+            figcaptionSelector = `${itemSelector} figure figcaption`,
             $resetBtn = $fontSizeChanger.parents('.reset-group').find('[data-role="font-size-reset"]'),
             $input = $container.find('.item-editor-font-size-text');
         let itemFontSize = parseInt($(itemSelector).css('font-size'), 10);
@@ -49,6 +50,8 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
          */
         const resizeFont = function () {
             styleEditor.apply(itemSelector, 'font-size', `${itemFontSize.toString()}px`);
+            const figcaptionSize = itemFontSize > 14 ? (itemFontSize -2).toString() : Math.min(itemFontSize, 12).toString()
+            styleEditor.apply(figcaptionSelector, 'font-size', `${figcaptionSize}px`);
         };
 
         /**
@@ -81,6 +84,7 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
                 resizeFont();
             } else {
                 styleEditor.apply(itemSelector, 'font-size');
+                styleEditor.apply(figcaptionSelector, 'font-size');
             }
         });
 
@@ -101,6 +105,7 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
          */
         $resetBtn.off('click').on('click', function () {
             styleEditor.apply(itemSelector, 'font-size');
+            styleEditor.apply(figcaptionSelector, 'font-size');
             $input.val('');
             itemFontSize = parseInt($(itemSelector).css('font-size'), 10);
         });

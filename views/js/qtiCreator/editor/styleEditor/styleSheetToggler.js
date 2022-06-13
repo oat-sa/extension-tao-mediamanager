@@ -71,10 +71,10 @@ define([
                     browseUrl: itemConfig.getFilesUrl,
                     uploadUrl: urlUtil.route('upload', 'SharedStimulusStyling', 'taoMediaManager'),
                     deleteUrl: itemConfig.fileDeleteUrl,
-                    downloadUrl: itemConfig.fileDownloadUrl,
+                    downloadUrl: urlUtil.route('download', 'SharedStimulusStyling', 'taoMediaManager'),
                     fileExistsUrl : itemConfig.fileExistsUrl,
                     params: {
-                        uri: itemConfig.uri,
+                        uri: encodeURIComponent(itemConfig.id),
                         lang: itemConfig.lang,
                         filters: 'text/css'
                     },

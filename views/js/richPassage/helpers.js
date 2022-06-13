@@ -103,14 +103,42 @@ define(['lodash', 'uri', 'util/url', 'core/dataProvider/request', 'taoMediaManag
                                         },
                                         serial
                                     };
-
-                                    if (element !== 'tao-user-styles.css') {
-                                        $(`[href="${link}"]`).load((e) => {
-                                            const className = itemData.content.data.body.elements[id].attributes.class;
-                                            formatStyles(e.target, className);
+                                });
+                                setTimeout(() => {
+                                    const assetStyles = $('link[data-serial*="stylesheet"]');
+                                    assetStyles.each((i, style) => {
+                                        // styles duplicates on Authoring editor and Preview inside editor
+                                        const assetHref = $(`link[href="${style.href}"]`);
+                                        if (assetHref && assetHref.length > 1) {
+                                            assetHref.each((j, styleNone) => {
+                                                if (styleNone.attributes['data-serial'].value.match(/[\w-]*stylesheet_[\w-]*/g)) {
+                                                    styleNone.disabled = true;
+                                                }
                                         })
                                     }
-                                });
+                                        if (style) {
+                                            const asset = $('.preview-content .qti-include');
+                                            let assetClassName = '';
+                                            const hasClass = asset[0].className.match(/[\w-]*tao-[\w-]*/g);
+                                            if (hasClass && hasClass.length) {
+                                                assetClassName = hasClass[0];
+                                            }
+                                            if (style.sheet) {
+                                                const stylesheetName = style.href.split('stylesheet=');
+                                                if (stylesheetName && stylesheetName[1] !== 'tao-user-styles.css') {
+                                                    formatStyles(style.sheet, assetClassName);
+                                                }
+                                            } else {
+                                                style.onload = () => {
+                                                    const stylesheetName = style.href.split('stylesheet=');
+                                                    if (stylesheetName && stylesheetName[1] !== 'tao-user-styles.css') {
+                                                        formatStyles(style.sheet, assetClassName);
+                                                    }
+                                                };
+                                            }
+                                        }
+                                    })
+                                }, 1000);
                             })
                             .catch()
                     );

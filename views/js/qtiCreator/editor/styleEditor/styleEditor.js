@@ -62,8 +62,10 @@ define([
     };
 
     // hash class for shared stimulus styles
+    const mainClassSelector = 'mainClass';
     const hashClassSelector = 'hashClass';
     const taoHashClassPrefix = 'tao-';
+    let mainClass = '';
     let hashClass = '';
 
     // stylesheet as object
@@ -154,6 +156,15 @@ define([
      * @param {{string}} value
      */
     const apply = function (selector, property, value) {
+        const itemBodyClass = document.querySelector('.qti-itemBody').classList;
+        let mainClass = '';
+        itemBodyClass.forEach(function (className) {
+            const searchClass = className.match(/(?<className>tao-\w+)?/);
+            if (searchClass.groups.className) {
+                mainClass = searchClass.groups.className;
+           }
+        })
+        selector = selector.replace(mainClassSelector, mainClass);
         selector = selector.replace(hashClassSelector, hashClass);
         style[selector] = style[selector] || {};
 

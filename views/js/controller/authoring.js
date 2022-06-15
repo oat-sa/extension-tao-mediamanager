@@ -70,7 +70,8 @@ define([
                             lang: 'en-US',
                             previewEnabled: previewEnabled,
                             loadCssUrl: urlUtil.route('load', 'SharedStimulusStyling', 'taoMediaManager'),
-                            saveCssUrl: urlUtil.route('save', 'SharedStimulusStyling', 'taoMediaManager')
+                            saveCssUrl: urlUtil.route('save', 'SharedStimulusStyling', 'taoMediaManager'),
+                            downloadCssUrl: urlUtil.route('download', 'SharedStimulusStyling', 'taoMediaManager')
                         }
                     }).on('success', () => {
                         feedback().success(__('Your passage is saved'));

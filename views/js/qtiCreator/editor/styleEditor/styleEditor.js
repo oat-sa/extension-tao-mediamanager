@@ -65,7 +65,6 @@ define([
     const mainClassSelector = 'mainClass';
     const hashClassSelector = 'hashClass';
     const taoHashClassPrefix = 'tao-';
-    let mainClass = '';
     let hashClass = '';
 
     // stylesheet as object

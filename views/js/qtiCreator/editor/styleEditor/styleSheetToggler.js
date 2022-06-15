@@ -68,13 +68,13 @@ define([
                     appendContainer: '#mediaManager',
                     path: 'taomedia://mediamanager/',
                     root: 'local',
-                    browseUrl: itemConfig.getFilesUrl,
+                    browseUrl: urlUtil.route('getStylesheets', 'SharedStimulusStyling', 'taoMediaManager'),
                     uploadUrl: urlUtil.route('upload', 'SharedStimulusStyling', 'taoMediaManager'),
-                    deleteUrl: itemConfig.fileDeleteUrl,
+                    deleteUrl: urlUtil.route('fileDeleteUrl', 'SharedStimulusStyling', 'taoMediaManager'),
                     downloadUrl: urlUtil.route('download', 'SharedStimulusStyling', 'taoMediaManager'),
-                    fileExistsUrl : itemConfig.fileExistsUrl,
+                    fileExistsUrl: urlUtil.route('fileExists', 'SharedStimulusStyling', 'taoMediaManager'),
                     params: {
-                        uri: encodeURIComponent(itemConfig.id),
+                        uri: itemConfig.id,
                         lang: itemConfig.lang,
                         filters: 'text/css'
                     },

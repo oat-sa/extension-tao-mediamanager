@@ -144,9 +144,9 @@ class SharedStimulusStyling extends CommonModule
 
         try {
             $uploadedStylesheet = $uploadStylesheetHandler($this->getPsrRequest());
-            $uploadStylesheetService->save($uploadedStylesheet);
+            $data = $uploadStylesheetService->save($uploadedStylesheet);
 
-            $formatter->withBody(new SuccessJsonResponse([]));
+            $formatter->withBody(new SuccessJsonResponse($data));
         } catch (Throwable $exception) {
             $this->logError(sprintf('Error uploading passage stylesheets: %s', $exception->getMessage()));
 

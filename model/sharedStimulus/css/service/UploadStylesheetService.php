@@ -28,17 +28,29 @@ use oat\taoMediaManager\model\sharedStimulus\css\repository\StylesheetRepository
 
 class UploadStylesheetService extends ConfigurableService
 {
-    public function save(UploadedStylesheet $uploadedStylesheetDTO): void
+    public function save(UploadedStylesheet $uploadedStylesheetDTO): array
     {
-        $path = $this->getStylesheetRepository()->getPath($uploadedStylesheetDTO->getUri());
-        $stylesheetName = $uploadedStylesheetDTO->getFileName();
-        $link = $path
+        $passagePath = $this->getStylesheetRepository()->getPath($uploadedStylesheetDTO->getUri());
+        $link = $passagePath
             . DIRECTORY_SEPARATOR
             . StylesheetRepository::STYLESHEETS_DIRECTORY
             . DIRECTORY_SEPARATOR
-            . $stylesheetName;
+            . $uploadedStylesheetDTO->getFileName();
 
-        $this->getStylesheetRepository()->putStream($link, $uploadedStylesheetDTO->getFileResource());
+        $tmpResource = $uploadedStylesheetDTO->getFileResource();
+        $size = filesize($uploadedStylesheetDTO->getTmpFileLink());
+        $this->getStylesheetRepository()->putStream($link, $tmpResource);
+        fclose($tmpResource);
+        unlink($uploadedStylesheetDTO->getTmpFileLink());
+
+        return [
+            'alt' => $uploadedStylesheetDTO->getFileName(),
+            'link' => DIRECTORY_SEPARATOR . $uploadedStylesheetDTO->getFileName(),
+            'mime' => 'text/css',
+            'name' => $uploadedStylesheetDTO->getFileName(),
+            'size' => $size,
+            'uri' => DIRECTORY_SEPARATOR . $uploadedStylesheetDTO->getFileName()
+        ];
     }
 
     private function getStylesheetRepository(): StylesheetRepository

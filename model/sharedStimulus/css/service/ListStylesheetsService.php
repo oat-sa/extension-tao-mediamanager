@@ -37,7 +37,24 @@ class ListStylesheetsService extends ConfigurableService
             $path . DIRECTORY_SEPARATOR . StylesheetRepository::STYLESHEETS_DIRECTORY
         );
 
-        return array_column($list, 'basename');
+        $data = [];
+        foreach ($list as $file) {
+            $data[] = [
+                'name' => $file['basename'],
+                'uri' => DIRECTORY_SEPARATOR . $file['basename'],
+                'mime' => 'text/css',
+                'filePath' => DIRECTORY_SEPARATOR . $file['basename'],
+                'size' => $file['size']
+            ];
+        }
+
+        return [
+            'path' => DIRECTORY_SEPARATOR,
+            'label' => 'Passage stylesheets',
+            'childrenLimit' => 100,
+            'total' => count($data),
+            'children' => $data
+        ];
     }
 
     private function getStylesheetRepository(): StylesheetRepository

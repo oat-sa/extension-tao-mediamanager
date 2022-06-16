@@ -87,11 +87,11 @@ define(['lodash', 'uri', 'util/url', 'core/dataProvider/request', 'taoMediaManag
                             uri: passageUri
                         })
                             .then(response => {
-                                response.forEach((element, index) => {
+                                response.children.forEach((element, index) => {
                                     const serial = `stylesheet_${id}_${index}`;
                                     const link = urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
                                         uri: passageUri,
-                                        stylesheet: element
+                                        stylesheet: element.name
                                     });
                                     itemData.content.data.stylesheets[serial] = {
                                         qtiClass: 'stylesheet',

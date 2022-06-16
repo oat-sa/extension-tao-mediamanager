@@ -99,11 +99,11 @@ define([
                     assetStyles.remove();
                 }
 
-                styles.forEach((stylesheet, index) => {
+                styles.children.forEach((stylesheet, index) => {
                     const serial = `preview_${index}`;
                     const link = urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
                         uri: identifier,
-                        stylesheet: stylesheet
+                        stylesheet: stylesheet.name
                     });
                     let cssFile = Object.values(document.styleSheets).find(sheet => typeof sheet.href === 'string' && sheet.href === link);
                     if (!cssFile) {

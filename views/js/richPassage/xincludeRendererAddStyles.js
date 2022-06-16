@@ -26,11 +26,11 @@ define(['lodash', 'jquery', 'uri', 'util/url', 'core/dataProvider/request', 'tao
                 uri: passageUri
             })
                 .then(response => {
-                    response.forEach(element => {
+                    response.children.forEach(element => {
                         // check different names of elements
                         const link = urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
                             uri: passageUri,
-                            stylesheet: element
+                            stylesheet: element.name
                         });
                         const styleElem = $('<link>', {
                             rel: 'stylesheet',
@@ -39,7 +39,7 @@ define(['lodash', 'jquery', 'uri', 'util/url', 'core/dataProvider/request', 'tao
                             'data-serial': passageUri
                         });
                         head.append(styleElem);
-                        if (element !== 'tao-user-styles.css') {
+                        if (element.name !== 'tao-user-styles.css') {
                             $(`[href="${link}"]`).load((e) => {
                                 formatStyles(e.target, passageClassName);
                             })

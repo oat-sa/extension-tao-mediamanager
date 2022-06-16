@@ -47,13 +47,13 @@ define([
 
                     itemData = creatorDummyItemData(values[1]);
 
-                    if (values[2]) {
-                        values[2].forEach((stylesheet, index) => {
-                            if (stylesheet !== 'tao-user-styles.css') {
+                    if (values[2].children.length) {
+                        values[2].children.forEach((stylesheet, index) => {
+                            if (stylesheet.name !== 'tao-user-styles.css') {
                                 const serial = `creator_${index}`;
                                 const link = urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
                                     uri: config.id,
-                                    stylesheet: stylesheet
+                                    stylesheet: stylesheet.name
                                 });
                                 // avoid adding the CSS file on Preview list everytime Asset is clicked
                                 itemData.stylesheets[serial] = {
@@ -61,7 +61,7 @@ define([
                                     attributes: {
                                         href: link,
                                         media: 'all',
-                                        title: stylesheet,
+                                        title: stylesheet.name,
                                         type: 'text/css'
                                     },
                                     serial,

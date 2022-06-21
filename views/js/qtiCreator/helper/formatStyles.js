@@ -25,14 +25,15 @@ define([], function () {
         // prefix rules
         const scopedCssRules = _scopeStyles(cssRules, classNameFormated, ['body html *']);
 
-        Object.values(cssRules).map((index, rule) => {
-            CSSStyleSheet.deleteRule(index);
-        })
-
-        const newRules = scopedCssRules.split('\n');
-        Object.values(newRules).map(rule => {
-            CSSStyleSheet.insertRule(rule);
-        })
+        if (cssRules) {
+            Object.values(cssRules).map((index, rule) => {
+                CSSStyleSheet.deleteRule(index);
+            })
+            const newRules = scopedCssRules.split('\n');
+            Object.values(newRules).map(rule => {
+                CSSStyleSheet.insertRule(rule);
+            })
+        }
 
         return;
     };

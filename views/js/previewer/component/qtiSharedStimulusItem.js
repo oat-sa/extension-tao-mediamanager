@@ -88,7 +88,7 @@ define([
                         let assetClassName = '';
                         if (asset.length) {
                             const hasClass = asset[0].className.match(/[\w-]*tao-[\w-]*/g);
-                            if (hasClass.length) {
+                            if (!!hasClass && hasClass.length) {
                                 assetClassName = hasClass[0];
                             }
 

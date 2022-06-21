@@ -30,8 +30,9 @@ define([
     'core/dataProvider/request',
     'tpl!taoMediaManager/qtiCreator/tpl/toolbars/cssToggler',
     'taoMediaManager/qtiCreator/helper/formatStyles',
+    'util/url',
     'jquery.fileDownload'
-], function ($, _, __, UrlParser, request, cssTpl, formatStyles) {
+], function ($, _, __, UrlParser, request, cssTpl, formatStyles, urlUtil) {
     'use strict';
 
     let itemConfig;
@@ -224,13 +225,24 @@ define([
      */
     const download = function (uri) {
         verifyInit();
-        $.fileDownload(_getUri('download'), {
-            preparingMessageHtml: common.preparingMessageHtml,
-            failMessageHtml: common.failMessageHtml,
-            successCallback: function () {},
-            httpMethod: 'POST',
-            data: _.extend({}, itemConfig, { stylesheetUri: uri })
+        const downloadUrl = urlUtil.build(_getUri('download'), {
+            uri: globalConfig['id'],
+            stylesheet: uri
         });
+
+        fetch(downloadUrl)
+            .then(resp => resp.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = uri;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(() => common.failMessageHtml);
     };
 
     /**

@@ -71,7 +71,7 @@ define([
                     browseUrl: urlUtil.route('getStylesheets', 'SharedStimulusStyling', 'taoMediaManager'),
                     uploadUrl: urlUtil.route('upload', 'SharedStimulusStyling', 'taoMediaManager'),
                     deleteUrl: urlUtil.route('fileDeleteUrl', 'SharedStimulusStyling', 'taoMediaManager'),
-                    downloadUrl: urlUtil.route('download', 'SharedStimulusStyling', 'taoMediaManager'),
+                    downloadUrl: urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager'),
                     fileExistsUrl: urlUtil.route('fileExists', 'SharedStimulusStyling', 'taoMediaManager'),
                     params: {
                         uri: itemConfig.id,
@@ -128,7 +128,7 @@ define([
              * @param trigger
              */
             var downloadStylesheet = function(trigger) {
-                styleEditor.download(getContext(trigger).cssUri);
+                styleEditor.download(getContext(trigger).stylesheetObj.attributes.title);
             };
 
             /**

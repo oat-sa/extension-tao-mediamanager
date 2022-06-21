@@ -23,8 +23,9 @@ define([
     'taoMediaManager/qtiCreator/helper/createDummyItemData',
     'core/dataProvider/request',
     'util/url',
-    'taoMediaManager/qtiCreator/helper/formatStyles'
-], function ($, Loader, qtiClasses, creatorDummyItemData, request, urlUtil, formatStyles) {
+    'taoMediaManager/qtiCreator/helper/formatStyles',
+    'taoMediaManager/qtiCreator/editor/styleEditor/styleEditor'
+], function ($, Loader, qtiClasses, creatorDummyItemData, request, urlUtil, formatStyles, styleEditor) {
     'use strict';
 
     const qtiNamespace = 'http://www.imsglobal.org/xsd/imsqti_v2p2';
@@ -68,11 +69,18 @@ define([
                                     getComposingElements: () => ({})
                                 };
 
+                                itemData.attributes.class
+                                    ? styleEditor.setHashClass(itemData.attributes.class)
+                                    : styleEditor.generateHashClass();
+                                // set class on container for style editor
+                                const hasClass = styleEditor.getHashClass();
+                                $('.qti-itemBody').addClass(hasClass);
+
                                 setTimeout(() => {
                                     const styleLink = document.querySelector(`link[data-serial="${serial}"]`);
                                     if (styleLink) {
                                         const linkDom = $(styleLink)[0];
-                                        formatStyles(linkDom, itemData.attributes.class);
+                                        formatStyles(linkDom, hasClass);
                                     }
                                 }, 1000)
 

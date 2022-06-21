@@ -23,8 +23,9 @@ define([
     'context',
     'taoQtiTestPreviewer/previewer/runner',
     'taoMediaManager/qtiCreator/helper/formatStyles',
+    'taoMediaManager/qtiCreator/editor/styleEditor/styleEditor',
     'css!taoQtiTestPreviewer/previewer/provider/item/css/item'
-], function ($, context, previewerFactory, formatStyles) {
+], function ($, context, previewerFactory, formatStyles, styleEditor) {
     'use strict';
 
     /**
@@ -90,6 +91,9 @@ define([
                             const hasClass = asset[0].className.match(/[\w-]*tao-[\w-]*/g);
                             if (!!hasClass && hasClass.length) {
                                 assetClassName = hasClass[0];
+                            } else {
+                                assetClassName = styleEditor.generateHashClass();
+                                asset.addClass(assetClassName);
                             }
 
                             if (style.sheet) {

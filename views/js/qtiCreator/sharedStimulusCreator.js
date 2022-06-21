@@ -40,6 +40,7 @@ define([
     'core/request',
     'util/url',
     'taoMediaManager/qtiCreator/editor/interactionsPanel',
+    'taoMediaManager/qtiCreator/helper/formatStyles',
     'taoMediaManager/qtiCreator/editor/styleEditor/styleEditor',
     'taoQtiItem/qtiItem/core/Element'
 ], function (
@@ -58,6 +59,7 @@ define([
     request,
     urlUtil,
     interactionPanel,
+    formatStyles,
     styleEditor,
     Element
 ) {
@@ -323,6 +325,37 @@ define([
 
                                 //init event listeners:
                                 eventHelper.initElementToWidgetListeners();
+                                setTimeout(() => {
+                                    $('link[data-serial*="creator"').each((i, style) => {
+                                        if (style) {
+                                            const asset = $('.qti-itemBody');
+                                            let assetClassName = '';
+                                            if (asset.length) {
+                                                const hasClass = asset[0].className.match(/[\w-]*tao-[\w-]*/g);
+                                                if (!!hasClass && hasClass.length) {
+                                                    assetClassName = hasClass[0];
+                                                } else {
+                                                    assetClassName = styleEditor.generateHashClass();
+                                                    asset.addClass(assetClassName);
+                                                }
+
+                                                if (style.sheet) {
+                                                    const stylesheetName = style.href.split('stylesheet=');
+                                                    if (stylesheetName && stylesheetName[1] !== 'tao-user-styles.css') {
+                                                        formatStyles(style.sheet, assetClassName);
+                                                    }
+                                                } else {
+                                                    style.onload = () => {
+                                                        const stylesheetName = style.href.split('stylesheet=');
+                                                        if (stylesheetName && stylesheetName[1] !== 'tao-user-styles.css') {
+                                                            formatStyles(style.sheet, assetClassName);
+                                                        }
+                                                    };
+                                                }
+                                            }
+                                        }
+                                    });
+                                }, 1000)
 
                                 return pluginRun('render').then(function () {
                                     self.trigger('render');

@@ -40,9 +40,10 @@ define(['lodash', 'jquery', 'uri', 'util/url', 'core/dataProvider/request', 'tao
                         });
                         head.append(styleElem);
                         if (element.name !== 'tao-user-styles.css') {
-                            $(`[href="${link}"]`).load((e) => {
-                                formatStyles(e.target, passageClassName);
-                            })
+                            const cssFile = $(`[href="${link}"]`);
+                            if (cssFile) {
+                                formatStyles(cssFile, passageClassName);
+                            }
                         }
 
                     });

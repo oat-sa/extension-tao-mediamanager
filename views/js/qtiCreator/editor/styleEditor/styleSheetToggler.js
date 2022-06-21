@@ -98,7 +98,7 @@ define([
                     cssLinks = $('head link');
 
 
-                styleEditor.getItem().removeStyleSheet(context.stylesheetObj);
+                styleEditor.deleteStylesheet(context.stylesheetObj);
 
                 cssLinks.filter('[' + attr + '*="' + context.cssUri + '"]').remove();
                 context.li.remove();

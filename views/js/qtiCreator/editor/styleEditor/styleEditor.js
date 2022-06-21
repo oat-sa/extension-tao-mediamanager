@@ -219,6 +219,18 @@ define([
         );
     };
 
+    const deleteStylesheet = function (stylesheet) {
+        verifyInit();
+        return request(
+            _getUri('save'),
+            _.extend({}, itemConfig, {
+                cssJson: JSON.stringify({}),
+                stylesheetUri: `css/${stylesheet.attr('title')}`
+            }),
+            'POST'
+        );
+    };
+
     /**
      * Download CSS as file
      * @param {String} uri
@@ -455,6 +467,7 @@ define([
     return {
         apply: apply,
         save: save,
+        deleteStylesheet: deleteStylesheet,
         download: download,
         erase: erase,
         init: init,

@@ -15,9 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
- *
- *
+ * Copyright (c) 2014-2022 (original work) Open Assessment Technologies SA;
  */
 
 namespace oat\taoMediaManager\model;
@@ -180,12 +178,13 @@ class FileImporter implements
     /**
      * Get the zip importer for shared stimulus
      *
-     * @return SharedStimulusPackageImporter
+     * @return ZipImporter
      */
     protected function getZipImporter()
     {
-        $zipImporter = new SharedStimulusPackageImporter();
+        $zipImporter = new ZipImporter();
         $zipImporter->setServiceLocator($this->getServiceLocator());
+
         return $zipImporter;
     }
 }

@@ -72,17 +72,15 @@ define([
                     uploadUrl: urlUtil.route('upload', 'SharedStimulusStyling', 'taoMediaManager'),
                     deleteUrl: urlUtil.route('fileDeleteUrl', 'SharedStimulusStyling', 'taoMediaManager'),
                     downloadUrl: urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager'),
-                    fileExistsUrl: urlUtil.route('fileExists', 'SharedStimulusStyling', 'taoMediaManager'),
                     params: {
                         uri: itemConfig.id,
                         lang: itemConfig.lang,
                         filters: 'text/css'
                     },
-                    pathParam: 'path',
                     select: function (e, files) {
                         var i, l = files.length;
                         for (i = 0; i < l; i++) {
-                            styleEditor.addStylesheet(files[i].file);
+                            styleEditor.addStylesheet(files[i].file, itemConfig);
                         }
                     }
                 });

@@ -74,15 +74,15 @@ define([
         customStylesheet = '';
     // DOM element to hold the style
     const $styleElem = (function () {
-            let styleElem = $('#item-editor-user-styles');
-            if (!styleElem.length) {
-                styleElem = $('<style>', { id: 'item-editor-user-styles' });
-                $('head').append(styleElem);
-            } else {
-                styleElem.empty();
-            }
-            return styleElem;
-        })(),
+        let styleElem = $('#item-editor-user-styles');
+        if (!styleElem.length) {
+            styleElem = $('<style>', { id: 'item-editor-user-styles' });
+            $('head').append(styleElem);
+        } else {
+            styleElem.empty();
+        }
+        return styleElem;
+    })(),
         common = {
             title: __('Disable this stylesheet temporarily'),
             deleteTxt: __('Remove this stylesheet'),
@@ -162,7 +162,7 @@ define([
             const searchClass = className.match(/(?<className>tao-\w+)?/);
             if (searchClass.groups.className) {
                 mainClass = searchClass.groups.className;
-           }
+            }
         })
         selector = selector.replace(mainClassSelector, mainClass);
         selector = selector.replace(hashClassSelector, hashClass);
@@ -262,7 +262,7 @@ define([
      *
      * @param {Object} stylesheet
      */
-    const addStylesheet = function (stylesheet) {
+    const addStylesheet = function (stylesheet, itemConfig) {
         let fileName, link, listEntry, parser;
         function loadStylesheet(linkElement, stylesheetObject, isLocal, isValid) {
             // in the given scenario we cannot test whether a remote stylesheet really exists
@@ -330,9 +330,9 @@ define([
         fileName = _basename(stylesheet.attr('href'));
         // link with cache buster
         link = (function () {
-            const _link = $(stylesheet.render()),
-                _href = _link.attr('href'),
-                _sep = _href.indexOf('?') > -1 ? '&' : '?';
+            const _link = $(stylesheet.render());
+            const _href = itemConfig && urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', { uri: itemConfig.id, stylesheet: fileName }) || _link.attr('href');
+            const _sep = _href.indexOf('?') > -1 ? '&' : '?';
             _link.attr('href', _href + _sep + new Date().getTime().toString());
             return _link;
         })();

@@ -38,8 +38,8 @@ define(['lodash', 'jquery', 'uri', 'util/url', 'core/dataProvider/request', 'tao
                             href: link,
                             'data-serial': passageUri
                         });
-                        head.append(styleElem);
-                        if (element.name !== 'tao-user-styles.css') {
+                        head.append(styleElem[0]);
+                        if (element.name !== 'tao-user-styles.css' && serial.length) {
                             setTimeout(() => {
                                 $(`[data-serial="${serial}"`).addClass(passageClassName);
                                 const cssFile = $(`link[href="${link}"]`);

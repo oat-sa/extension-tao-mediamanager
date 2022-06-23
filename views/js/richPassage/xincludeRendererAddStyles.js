@@ -18,7 +18,7 @@
 define(['lodash', 'jquery', 'uri', 'util/url', 'core/dataProvider/request', 'taoMediaManager/qtiCreator/helper/formatStyles'], function (_, $, uri, urlUtil, request, formatStyles) {
     'use strict';
 
-    return function xincludeRendererAddStyles(passageHref, passageClassName, head = $('head')) {
+    return function xincludeRendererAddStyles(passageHref, passageClassName, serial, head = $('head')) {
         if (/taomedia:\/\/mediamanager\//.test(passageHref)) {
             // check rich passage styles and inject them to item
             const passageUri = uri.decode(passageHref.replace('taomedia://mediamanager/', ''));
@@ -40,10 +40,13 @@ define(['lodash', 'jquery', 'uri', 'util/url', 'core/dataProvider/request', 'tao
                         });
                         head.append(styleElem);
                         if (element.name !== 'tao-user-styles.css') {
-                            const cssFile = $(`[href="${link}"]`);
-                            if (cssFile) {
-                                formatStyles(cssFile, passageClassName);
-                            }
+                            setTimeout(() => {
+                                $(`[data-serial="${serial}"`).addClass(passageClassName);
+                                const cssFile = $(`link[href="${link}"]`);
+                                if (cssFile) {
+                                    formatStyles(cssFile[0].sheet, passageClassName);
+                                }
+                            }, 1000)
                         }
 
                     });

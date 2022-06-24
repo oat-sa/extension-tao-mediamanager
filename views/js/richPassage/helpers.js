@@ -16,7 +16,14 @@
  * Copyright (c) 2021 (original work) Open Assessment Technologies SA;
  */
 
-define(['lodash', 'uri', 'util/url', 'core/dataProvider/request', 'taoMediaManager/qtiCreator/helper/formatStyles'], function (_, uri, urlUtil, request, formatStyles) {
+define([
+    'lodash',
+    'uri',
+    'util/url',
+    'core/dataProvider/request',
+    'taoMediaManager/qtiCreator/helper/formatStyles',
+    'taoMediaManager/qtiCreator/editor/styleEditor/styleEditor',
+], function (_, uri, urlUtil, request, formatStyles, styleEditor) {
     'use strict';
 
     /**
@@ -114,14 +121,18 @@ define(['lodash', 'uri', 'util/url', 'core/dataProvider/request', 'taoMediaManag
                                                 if (styleNone.attributes['data-serial'].value.match(/[\w-]*stylesheet_[\w-]*/g)) {
                                                     styleNone.disabled = true;
                                                 }
-                                        })
-                                    }
+                                            })
+                                        }
                                         if (style) {
                                             const asset = $('.preview-content .qti-include');
                                             let assetClassName = '';
                                             const hasClass = asset[0].className.match(/[\w-]*tao-[\w-]*/g);
                                             if (hasClass && hasClass.length) {
                                                 assetClassName = hasClass[0];
+                                            } else {
+                                                // in case Passage has no className and it is preview outside editor
+                                                assetClassName = styleEditor.generateMainClass();
+                                                asset.addClass(assetClassName);
                                             }
                                             if (style.sheet) {
                                                 const stylesheetName = style.href.split('stylesheet=');
@@ -129,12 +140,18 @@ define(['lodash', 'uri', 'util/url', 'core/dataProvider/request', 'taoMediaManag
                                                     formatStyles(style.sheet, assetClassName);
                                                 }
                                             } else {
-                                                style.onload = () => {
-                                                    const stylesheetName = style.href.split('stylesheet=');
-                                                    if (stylesheetName && stylesheetName[1] !== 'tao-user-styles.css') {
-                                                        formatStyles(style.sheet, assetClassName);
-                                                    }
-                                                };
+                                                // in case Passage has no className and it is preview inside editor
+                                                const renderLayout = $('.qti-itemBody .qti-include > div');
+                                                const renderHasClass = renderLayout[0].className.match(/[\w-]*tao-[\w-]*/g);
+                                                if (renderHasClass && renderHasClass.length) {
+                                                    assetClassName = renderHasClass[0];
+                                                    asset.addClass(assetClassName);
+                                                }
+                                                const assetHref2 = $(`link[href="${style.href}"]:not([disabled])`);
+                                                const stylesheetName = style.href.split('stylesheet=');
+                                                if (stylesheetName && stylesheetName[1] !== 'tao-user-styles.css' && assetHref2[0]) {
+                                                    formatStyles(assetHref2[0].sheet);
+                                                }
                                             }
                                         }
                                     })

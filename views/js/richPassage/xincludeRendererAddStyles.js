@@ -15,7 +15,15 @@
  *
  * Copyright (c) 2021 (original work) Open Assessment Technologies SA ;
  */
-define(['lodash', 'jquery', 'uri', 'util/url', 'core/dataProvider/request', 'taoMediaManager/qtiCreator/helper/formatStyles'], function (_, $, uri, urlUtil, request, formatStyles) {
+define([
+    'lodash',
+    'jquery',
+    'uri',
+    'util/url',
+    'core/dataProvider/request',
+    'taoMediaManager/qtiCreator/helper/formatStyles',
+    'taoMediaManager/qtiCreator/editor/styleEditor/styleEditor',
+], function (_, $, uri, urlUtil, request, formatStyles, styleEditor) {
     'use strict';
 
     return function xincludeRendererAddStyles(passageHref, passageClassName, serial, head = $('head')) {
@@ -41,7 +49,10 @@ define(['lodash', 'jquery', 'uri', 'util/url', 'core/dataProvider/request', 'tao
                         head.append(styleElem[0]);
                         if (element.name !== 'tao-user-styles.css' && serial.length) {
                             setTimeout(() => {
-                                $(`[data-serial="${serial}"`).addClass(passageClassName);
+                                if (!passageClassName) {
+                                    passageClassName = styleEditor.generateMainClass();
+                                    $(`[data-serial="${serial}"] .qti-include > div`).addClass(passageClassName);
+                                }
                                 const cssFile = $(`link[href="${link}"]`);
                                 if (cssFile) {
                                     formatStyles(cssFile[0].sheet, passageClassName);

@@ -316,8 +316,8 @@ define([
 
                                 item.attributes.class
                                     ? styleEditor.setHashClass(item.attributes.class)
-                                    : styleEditor.generateHashClass();
-                                sharedStimulusCreator.hashClass = styleEditor.getHashClass();
+                                    : styleEditor.generateMainClass();
+                                sharedStimulusCreator.hashClass = styleEditor.getMainClass();
                                 // set class on container for style editor
                                 widget.$container.find('.qti-itemBody').addClass(sharedStimulusCreator.hashClass);
 
@@ -335,7 +335,7 @@ define([
                                                 if (!!hasClass && hasClass.length) {
                                                     assetClassName = hasClass[0];
                                                 } else {
-                                                    assetClassName = styleEditor.generateHashClass();
+                                                    assetClassName = styleEditor.generateMainClass();
                                                     asset.addClass(assetClassName);
                                                 }
 

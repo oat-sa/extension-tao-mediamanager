@@ -92,7 +92,7 @@ define([
                             if (!!hasClass && hasClass.length) {
                                 assetClassName = hasClass[0];
                             } else {
-                                assetClassName = styleEditor.generateHashClass();
+                                assetClassName = styleEditor.generateMainClass();
                                 asset.addClass(assetClassName);
                             }
 

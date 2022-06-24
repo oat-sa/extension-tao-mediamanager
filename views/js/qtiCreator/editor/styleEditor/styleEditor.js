@@ -67,6 +67,7 @@ define([
     const hashClassSelector = 'hashClass';
     const taoHashClassPrefix = 'tao-';
     let hashClass = '';
+    let mainClass = '';
 
     // stylesheet as object
     let style = {},
@@ -157,7 +158,6 @@ define([
      */
     const apply = function (selector, property, value) {
         const itemBodyClass = document.querySelector('.qti-itemBody').classList;
-        let mainClass = '';
         itemBodyClass.forEach(function (className) {
             const searchClass = className.match(/(?<className>tao-\w+)?/);
             if (searchClass.groups.className) {
@@ -166,6 +166,7 @@ define([
         })
         selector = selector.replace(mainClassSelector, mainClass);
         selector = selector.replace(hashClassSelector, hashClass);
+
         style[selector] = style[selector] || {};
 
         // delete this rule
@@ -298,7 +299,7 @@ define([
                 function () {
                     // clean and format CSS styles with Browser API
                     $(`[href="${link}"]`).load((e) => {
-                        formatStyles(e.target, hashClass);
+                        formatStyles(e.target, mainClass);
                     })
 
                     let isInit = false;
@@ -447,16 +448,32 @@ define([
         return hashClass;
     };
 
+    const getMainClass = function () {
+        return mainClass;
+    };
+
     const setHashClass = function (cssClass) {
         hashClass = cssClass;
+    };
+
+    const setMainClass = function (cssClass) {
+        mainClass = cssClass;
     };
 
     const generateHashClass = function () {
         return (hashClass = `${taoHashClassPrefix}${Math.random().toString(36).substr(2, 9)}`);
     };
 
+    const generateMainClass = function () {
+        return (mainClass = `${taoHashClassPrefix}${Math.random().toString(36).substr(2, 9)}`);
+    };
+
     const replaceHashClass = function (selector) {
         return selector.replace(hashClassSelector, hashClass);
+    };
+
+    const replaceMainClass = function (selector) {
+        return selector.replace(mainClassSelector, mainClass);
     };
 
     const clearCache = function() {
@@ -479,6 +496,10 @@ define([
         setHashClass: setHashClass,
         generateHashClass: generateHashClass,
         replaceHashClass: replaceHashClass,
+        getMainClass: getMainClass,
+        setMainClass: setMainClass,
+        generateMainClass: generateMainClass,
+        replaceMainClass: replaceMainClass,
         clearCache: clearCache
     };
 });

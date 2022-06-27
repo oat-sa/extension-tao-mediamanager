@@ -28,9 +28,8 @@ define([
     'core/promiseQueue',
     'core/dataProvider/request',
     'util/url',
-    'taoMediaManager/qtiCreator/helper/createDummyItemData',
-    'taoMediaManager/qtiCreator/helper/formatStyles'
-], function ($, _, __, promiseQueue, request, urlUtil, creatorDummyItemData, formatStyles) {
+    'taoMediaManager/qtiCreator/helper/createDummyItemData'
+], function ($, _, __, promiseQueue, request, urlUtil, creatorDummyItemData) {
     'use strict';
 
     const serviceController = 'SharedStimulus';

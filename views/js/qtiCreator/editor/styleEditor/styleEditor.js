@@ -299,7 +299,7 @@ define([
                 function () {
                     // clean and format CSS styles with Browser API
                     $(`[href="${link}"]`).load((e) => {
-                        formatStyles(e.target, mainClass);
+                        formatStyles.formatStyles(e.target, mainClass);
                     })
 
                     let isInit = false;

@@ -23,9 +23,8 @@ define([
     'context',
     'taoQtiTestPreviewer/previewer/runner',
     'taoMediaManager/qtiCreator/helper/formatStyles',
-    'taoMediaManager/qtiCreator/editor/styleEditor/styleEditor',
     'css!taoQtiTestPreviewer/previewer/provider/item/css/item'
-], function ($, context, previewerFactory, formatStyles, styleEditor) {
+], function ($, context, previewerFactory, formatStyles) {
     'use strict';
 
     /**
@@ -83,35 +82,7 @@ define([
                     runner.itemRunner.setState(config.itemState);
                 }
                 this.trigger('preview-loaded');
-                $('link[data-serial*="preview"').each((i, style) => {
-                    if (style) {
-                        const asset = $('.qti-itemBody');
-                        let assetClassName = '';
-                        if (asset.length) {
-                            const hasClass = asset[0].className.match(/[\w-]*tao-[\w-]*/g);
-                            if (!!hasClass && hasClass.length) {
-                                assetClassName = hasClass[0];
-                            } else {
-                                assetClassName = styleEditor.generateMainClass();
-                                asset.addClass(assetClassName);
-                            }
-
-                            if (style.sheet) {
-                                const stylesheetName = style.href.split('stylesheet=');
-                                if (stylesheetName && stylesheetName[1] !== 'tao-user-styles.css') {
-                                    formatStyles(style.sheet, assetClassName);
-                                }
-                            } else {
-                                style.onload = () => {
-                                    const stylesheetName = style.href.split('stylesheet=');
-                                    if (stylesheetName && stylesheetName[1] !== 'tao-user-styles.css') {
-                                        formatStyles(style.sheet, assetClassName);
-                                    }
-                                };
-                            }
-                        }
-                    }
-                });
+                formatStyles.getStyles('preview');
             });
             if (config.itemUri) {
                 return runner.loadItem(config.itemUri);

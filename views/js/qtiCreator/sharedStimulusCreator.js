@@ -172,7 +172,7 @@ define([
                     const item = this.getItem();
                     const styles = styleEditor.getStyle();
                     if (_.size(styles) && !item.attributes.class) {
-                        item.attributes.class = this.hashClass;
+                        item.attributes.class = this.mainClass;
                     }
 
                     const xml = xmlNsHandler.restoreNs(xmlRenderer.render(item), item.getNamespaces());
@@ -284,7 +284,7 @@ define([
                             case 'sleep':
                                 if (!$itemContainer.find('.widget-box.edit-active').length) {
                                     $itemContainer.addClass('focus-border');
-                                    styleEditor.setHashClass(sharedStimulusCreator.hashClass);
+                                    styleEditor.setHashClass(sharedStimulusCreator.mainClass);
                                 }
                                 break;
                         }
@@ -317,45 +317,17 @@ define([
                                 item.attributes.class
                                     ? styleEditor.setHashClass(item.attributes.class)
                                     : styleEditor.generateMainClass();
-                                sharedStimulusCreator.hashClass = styleEditor.getMainClass();
+                                sharedStimulusCreator.mainClass = styleEditor.getMainClass();
                                 // set class on container for style editor
-                                widget.$container.find('.qti-itemBody').addClass(sharedStimulusCreator.hashClass);
+                                widget.$container.find('.qti-itemBody').addClass(sharedStimulusCreator.mainClass);
 
                                 propertiesPanel(areaBroker.getPropertyPanelArea(), widget, config.properties);
 
                                 //init event listeners:
                                 eventHelper.initElementToWidgetListeners();
                                 setTimeout(() => {
-                                    $('link[data-serial*="creator"').each((i, style) => {
-                                        if (style) {
-                                            const asset = $('.qti-itemBody');
-                                            let assetClassName = '';
-                                            if (asset.length) {
-                                                const hasClass = asset[0].className.match(/[\w-]*tao-[\w-]*/g);
-                                                if (!!hasClass && hasClass.length) {
-                                                    assetClassName = hasClass[0];
-                                                } else {
-                                                    assetClassName = styleEditor.generateMainClass();
-                                                    asset.addClass(assetClassName);
-                                                }
-
-                                                if (style.sheet) {
-                                                    const stylesheetName = style.href.split('stylesheet=');
-                                                    if (stylesheetName && stylesheetName[1] !== 'tao-user-styles.css') {
-                                                        formatStyles(style.sheet, assetClassName);
-                                                    }
-                                                } else {
-                                                    style.onload = () => {
-                                                        const stylesheetName = style.href.split('stylesheet=');
-                                                        if (stylesheetName && stylesheetName[1] !== 'tao-user-styles.css') {
-                                                            formatStyles(style.sheet, assetClassName);
-                                                        }
-                                                    };
-                                                }
-                                            }
-                                        }
-                                    });
-                                }, 1000)
+                                    formatStyles.getStyles('creator');
+                                }, 500)
 
                                 return pluginRun('render').then(function () {
                                     self.trigger('render');

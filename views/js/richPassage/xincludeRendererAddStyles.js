@@ -55,9 +55,9 @@ define([
                                 }
                                 const cssFile = $(`link[href="${link}"]`);
                                 if (cssFile) {
-                                    formatStyles(cssFile[0].sheet, passageClassName);
+                                    formatStyles.formatStyles(cssFile[0].sheet, passageClassName);
                                 }
-                            }, 1000)
+                            }, 500)
                         }
 
                     });

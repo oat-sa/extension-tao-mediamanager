@@ -30,10 +30,11 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
      * @param {JQuery} $container
      */
     const fontSizeChanger = function ($container) {
-        const $fontSizeChanger = $container.find('#item-editor-font-size-changer'),
-            itemSelector = styleEditor.replaceHashClass($fontSizeChanger.data('target')),
-            $resetBtn = $fontSizeChanger.parents('.reset-group').find('[data-role="font-size-reset"]'),
-            $input = $container.find('.item-editor-font-size-text');
+        const $fontSizeChanger = $container.find('#item-editor-font-size-changer');
+        let itemSelector = styleEditor.replaceHashClass($fontSizeChanger.data('target'));
+        itemSelector = styleEditor.replaceMainClass(itemSelector);
+        const $resetBtn = $fontSizeChanger.parents('.reset-group').find('[data-role="font-size-reset"]');
+        const $input = $container.find('.item-editor-font-size-text');
         let itemFontSize = parseInt($(itemSelector).css('font-size'), 10);
 
         // initiate font-size for Block

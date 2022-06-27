@@ -469,11 +469,11 @@ define([
     };
 
     const replaceHashClass = function (selector) {
-        return selector.replace(hashClassSelector, hashClass);
+        return hashClass && selector.replace(hashClassSelector, hashClass);
     };
 
     const replaceMainClass = function (selector) {
-        return selector.replace(mainClassSelector, mainClass);
+        return mainClass && selector.replace(mainClassSelector, mainClass);
     };
 
     const clearCache = function() {

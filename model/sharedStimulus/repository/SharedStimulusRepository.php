@@ -30,10 +30,9 @@ use oat\generis\model\data\Ontology;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
-use oat\taoMediaManager\model\MediaService;
-use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\sharedStimulus\FindQuery;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
+use oat\taoMediaManager\model\TaoMediaOntology;
 
 class SharedStimulusRepository extends ConfigurableService implements SharedStimulusRepositoryInterface
 {
@@ -47,8 +46,8 @@ class SharedStimulusRepository extends ConfigurableService implements SharedStim
 
         return new SharedStimulus(
             $query->getId(),
-            $this->getPropertyValue($resource, MediaService::PROPERTY_ALT_TEXT),
-            $this->getPropertyValue($resource, MediaService::PROPERTY_LANGUAGE),
+            $this->getPropertyValue($resource, TaoMediaOntology::PROPERTY_ALT_TEXT),
+            $this->getPropertyValue($resource, TaoMediaOntology::PROPERTY_LANGUAGE),
             $this->getContent($resource)
         );
     }
@@ -59,7 +58,11 @@ class SharedStimulusRepository extends ConfigurableService implements SharedStim
      */
     private function getContent(core_kernel_classes_Resource $resource): string
     {
-        $link = $this->getPropertyValue($resource, MediaService::PROPERTY_LINK);
+        $link = $this->getPropertyValue(
+            $resource,
+            TaoMediaOntology::PROPERTY_LINK
+        );
+
         $link = $this->getFileSourceUnserializer()->unserialize($link);
 
         return (string)$this->getFileManagement()->getFileStream($link);

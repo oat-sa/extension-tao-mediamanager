@@ -35,7 +35,9 @@ define([
             _container: 'taoQtiItem/qtiCreator/renderers/Container',
             _tooltip: 'taoQtiItem/qtiCreator/renderers/Tooltip',
             assessmentItem: 'taoMediaManager/qtiCreator/renderers/Item',
+            figure: 'taoMediaManager/qtiCreator/renderers/Figure',
             img: 'taoMediaManager/qtiCreator/renderers/Img',
+            figcaption: 'taoMediaManager/qtiCreator/renderers/Figcaption',
             math: 'taoQtiItem/qtiCreator/renderers/Math',
             object: 'taoMediaManager/qtiCreator/renderers/Object',
             table: 'taoMediaManager/qtiCreator/renderers/Table'

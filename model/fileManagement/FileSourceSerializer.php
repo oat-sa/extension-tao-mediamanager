@@ -27,6 +27,7 @@ use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\MediaService;
 use core_kernel_classes_Triple as Triple;
+use oat\taoMediaManager\model\TaoMediaOntology;
 
 class FileSourceSerializer extends ConfigurableService
 {
@@ -36,7 +37,7 @@ class FileSourceSerializer extends ConfigurableService
     public function serialize(Triple $triple): void
     {
         if (
-            $triple->predicate === MediaService::PROPERTY_LINK
+            $triple->predicate === TaoMediaOntology::PROPERTY_LINK
             && strpos($triple->object, self::FILE_PREFIX) === false
         ) {
             $fileObject = $this->getFileSystemService()

@@ -26,6 +26,9 @@ use oat\generis\model\GenerisRdf;
 use oat\oatbox\action\Action;
 use common_report_Report as Report;
 use oat\taoMediaManager\model\MediaService;
+use oat\taoMediaManager\model\TaoMediaOntology;
+use core_kernel_classes_Property;
+use core_kernel_classes_Resource;
 
 /**
  * Class UpdateMedia
@@ -46,7 +49,7 @@ class UpdateMedia implements Action
     public function __invoke($params)
     {
         $mediaInstances = MediaService::singleton()->getRootClass()->getInstances(true);
-        /** @var \core_kernel_classes_Resource $mediaInstance */
+        /** @var core_kernel_classes_Resource $mediaInstance */
         $report = Report::createSuccess(__('%s media on this environment', count($mediaInstances)));
         $count = 0;
         $success = 0;
@@ -54,15 +57,18 @@ class UpdateMedia implements Action
         $dryrun = (isset($params[0]) && strpos($params[0], 'wetrun') !== false) ? false : true;
 
         foreach ($mediaInstances as $mediaInstance) {
-            $link = $mediaInstance->getUniquePropertyValue(new \core_kernel_classes_Property(MediaService::PROPERTY_LINK));
+            $link = $mediaInstance->getUniquePropertyValue(
+                new core_kernel_classes_Property(TaoMediaOntology::PROPERTY_LINK)
+            );
 
-            if ($link instanceof \core_kernel_classes_Resource) {
+            if ($link instanceof core_kernel_classes_Resource) {
                 $count++;
-                $filename = $link->getUniquePropertyValue(new \core_kernel_classes_Property(GenerisRdf::PROPERTY_FILE_FILENAME));
-                $filename = $filename instanceof \core_kernel_classes_Resource ? $filename->getUri() : (string)$filename;
+                $filename = $link->getUniquePropertyValue(new core_kernel_classes_Property(GenerisRdf::PROPERTY_FILE_FILENAME));
+                $filename = $filename instanceof core_kernel_classes_Resource ? $filename->getUri() : (string)$filename;
 
                 if (!$dryrun) {
-                    if ($mediaInstance->editPropertyValues(new \core_kernel_classes_Property(MediaService::PROPERTY_LINK), $filename)) {
+                    if ($mediaInstance->editPropertyValues(
+                        new core_kernel_classes_Propert(TaoMediaOntology::PROPERTY_LINK), $filename)) {
                         $success++;
                     } else {
                         $report->add(Report::createFailure(__('Issue while modifying %s', $mediaInstance->getUri())));

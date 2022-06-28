@@ -31,6 +31,7 @@ use League\Flysystem\FileNotFoundException;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
+use oat\taoMediaManager\model\TaoMediaOntology;
 
 class StylesheetRepository extends ConfigurableService
 {
@@ -39,7 +40,9 @@ class StylesheetRepository extends ConfigurableService
     public function getPath(string $uri): string
     {
         $passageResource = $this->getOntology()->getResource($uri);
-        $link = $passageResource->getUniquePropertyValue($passageResource->getProperty(MediaService::PROPERTY_LINK));
+        $link = $passageResource->getUniquePropertyValue(
+            $passageResource->getProperty(TaoMediaOntology::PROPERTY_LINK)
+        );
         $link = $this->getFileSourceUnserializer()->unserialize((string) $link);
 
         return dirname((string) $link);

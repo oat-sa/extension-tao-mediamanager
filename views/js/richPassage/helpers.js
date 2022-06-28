@@ -21,9 +21,8 @@ define([
     'uri',
     'util/url',
     'core/dataProvider/request',
-    'taoMediaManager/qtiCreator/helper/formatStyles',
-    'taoMediaManager/qtiCreator/editor/styleEditor/styleEditor',
-], function (_, uri, urlUtil, request, formatStyles, styleEditor) {
+    'taoMediaManager/qtiCreator/helper/formatStyles'
+], function (_, uri, urlUtil, request, formatStyles) {
     'use strict';
 
     /**
@@ -96,14 +95,13 @@ define([
                             .then(response => {
                                 response.children.forEach((element, index) => {
                                     const serial = `stylesheet_${id}_${index}`;
-                                    const link = urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
-                                        uri: passageUri,
-                                        stylesheet: element.name
-                                    });
                                     itemData.content.data.stylesheets[serial] = {
                                         qtiClass: 'stylesheet',
                                         attributes: {
-                                            href: link,
+                                            href: urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
+                                                uri: passageUri,
+                                                stylesheet: element.name
+                                            }),
                                             media: 'all',
                                             title: '',
                                             type: 'text/css'

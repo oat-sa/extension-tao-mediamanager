@@ -24,7 +24,7 @@ define([
         const assetStyles = $(`link[data-serial*=${stylesheetPrefix}]`);
         assetStyles.each((i, style) => {
             if (style) {
-                let asset = '';
+                let assets = '';
                 let assetClassName = '';
 
                 // styles duplicates on Preview inside Authoring editor
@@ -33,51 +33,59 @@ define([
                     if (assetHref && assetHref.length > 1) {
                         assetHref.each((j, styleNone) => {
                             if (styleNone.attributes['data-serial'].value.match(/[\w-]*stylesheet_[\w-]*/g)) {
+                                // item preview inside editor reload CSS files again. Reuse CSS format from editor.
                                 styleNone.disabled = true;
                             }
                         })
                     }
-                    asset = $('.preview-content .qti-include');
+                    assets = $('.preview-content .qti-include');
                 } else {
-                    asset = $('.qti-itemBody');
+                    assets = $('.qti-itemBody');
                 }
 
-                if (asset.length) {
-                    const hasClass = asset[0].className.match(/[\w-]*tao-[\w-]*/g);
-                    if (!!hasClass && hasClass.length) {
-                        assetClassName = hasClass[0];
-                    } else {
-                        // in case Passage has no className and it is preview outside editor
-                        assetClassName = styleEditor.generateMainClass();
-                        asset.addClass(assetClassName);
-                    }
-
-                    if (style.sheet) {
-                        const stylesheetName = style.href.split('stylesheet=');
-                        if (stylesheetName && stylesheetName[1] !== 'tao-user-styles.css') {
-                            formatStyles(style.sheet, assetClassName);
+                if (assets.length) {
+                    assets.each((h, asset) => {
+                        const hasClass = asset.className.match(/[\w-]*tao-[\w-]*/g);
+                        if (!!hasClass && hasClass.length) {
+                            assetClassName = hasClass[0];
+                        } else {
+                            // in case Passage has no className and it is preview outside editor
+                            assetClassName = styleEditor.generateMainClass();
+                            $(asset).addClass(assetClassName);
                         }
-                    } else {
-                        // in case Passage has no className and it is preview inside editor
-                        const renderLayout = $('#item-editor-panel .qti-itemBody .qti-include > div');
-                        if (renderLayout.length) {
-                            const renderHasClass = renderLayout[0].className.match(/[\w-]*tao-[\w-]*/g);
-                            if (!assetClassName && renderHasClass && renderHasClass.length) {
-                                assetClassName = renderHasClass[0];
-                                asset.addClass(assetClassName);
+
+                        if (style.sheet) {
+                            const stylesheetName = style.href.split('&stylesheet=');
+                            if (stylesheetName && stylesheetName[1] !== 'tao-user-styles.css') {
+                                // check rdf matches to apply the attached CSS file to the passage
+                                const rdf_styles = stylesheetName[0].split('%23').reverse()[0];
+                                const rdf_asset = asset.dataset.href.split('_').reverse()[0];
+                                if (rdf_styles === rdf_asset) {
+                                    formatStyles(style.sheet, assetClassName);
+                                }
+                            }
+                        } else {
+                            // in case Passage has no className and it is preview inside editor
+                            const renderLayout = $('#item-editor-panel .qti-itemBody .qti-include > div');
+                            if (renderLayout.length) {
+                                const renderHasClass = renderLayout[h].className.match(/[\w-]*tao-[\w-]*/g);
+                                if (!hasClass && renderHasClass && renderHasClass.length) {
+                                    assetClassName = renderHasClass[0];
+                                    $(asset).addClass(assetClassName);
+                                }
+                            }
+                            // styles duplicated means preview on edit, already has a class from editor
+                            if (duplicated) {
+                                assetClassName = '';
+                            }
+
+                            const assetHref2 = $(`link[href="${style.href}"]:not([disabled])`);
+                            const stylesheetName = style.href.split('stylesheet=');
+                            if (stylesheetName && stylesheetName[1] !== 'tao-user-styles.css' && assetHref2.length) {
+                                formatStyles(assetHref2[0].sheet, assetClassName);
                             }
                         }
-                        // styles duplicated means preview on edit, already has a class from editor
-                        if (duplicated) {
-                            assetClassName = '';
-                        }
-
-                        const assetHref2 = $(`link[href="${style.href}"]:not([disabled])`);
-                        const stylesheetName = style.href.split('stylesheet=');
-                        if (stylesheetName && stylesheetName[1] !== 'tao-user-styles.css' && assetHref2.length) {
-                            formatStyles(assetHref2[0].sheet, assetClassName);
-                        }
-                    }
+                    })
                 }
             }
         })

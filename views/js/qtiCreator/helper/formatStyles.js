@@ -38,7 +38,11 @@ define([
                             }
                         })
                     }
-                    assets = $('.preview-content .qti-include');
+                    if ($('.preview-content .qti-include').length) {
+                        assets = $('.preview-content .qti-include');
+                    } else if ($('.previewer-test-component .qti-include').length) {
+                        assets = $('.previewer-test-component .qti-include');
+                    }
                 } else {
                     assets = $('.qti-itemBody');
                 }

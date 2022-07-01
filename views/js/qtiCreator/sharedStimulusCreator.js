@@ -283,7 +283,7 @@ define([
                             case 'sleep':
                                 if (!$itemContainer.find('.widget-box.edit-active').length) {
                                     $itemContainer.addClass('focus-border');
-                                    styleEditor.setHashClass(sharedStimulusCreator.mainClass);
+                                    styleEditor.getMainClass(item.class);
                                 }
                                 break;
                         }

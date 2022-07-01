@@ -46,26 +46,30 @@ define([
                             href: link,
                             'data-serial': passageUri
                         });
-                        head.append(styleElem[0]);
-                        if (element.name !== 'tao-user-styles.css' && serial.length) {
-                            setTimeout(() => {
-                                if (!passageClassName) {
-                                    passageClassName = styleEditor.generateMainClass();
-                                    const layout = $(`[data-serial="${serial}"] .qti-include > div`);
-                                    const hasClass = layout.className && layout.className.match(/[\w-]*tao-[\w-]*/g);
-                                    if (!hasClass) {
-                                        layout.addClass(passageClassName);
+
+                        const layout = head.find(`link[href="${link}"]`);
+                        if (!layout.length) {
+                            head.append(styleElem[0]);
+                            if (element.name !== 'tao-user-styles.css' && serial.length) {
+                                setTimeout(() => {
+                                    if (!passageClassName) {
+                                        passageClassName = styleEditor.generateMainClass();
+                                        const layout = $(`[data-serial="${serial}"] .qti-include > div`);
+                                        const hasClass = layout.className && layout.className.match(/[\w-]*tao-[\w-]*/g);
+                                        if (!hasClass) {
+                                            layout.addClass(passageClassName);
+                                        }
                                     }
-                                }
-                                const cssFile = $(`link[href="${link}"]`);
-                                cssFile.each((i, e) => {
-                                    const isFormat = e.dataset && e.dataset.format;
-                                    if (!isFormat && e) {
-                                        e.dataset.format = true;
-                                        formatStyles.formatStyles(e.sheet, passageClassName);
-                                    }
-                                })
-                            }, 500)
+                                    const cssFile = $(`link[href="${link}"]`);
+                                    cssFile.each((i, e) => {
+                                        const isFormat = e.dataset && e.dataset.format;
+                                        if (!isFormat && e) {
+                                            e.dataset.format = true;
+                                            formatStyles.formatStyles(e.sheet, passageClassName);
+                                        }
+                                    })
+                                }, 500)
+                            }
                         }
 
                     });

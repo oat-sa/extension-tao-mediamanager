@@ -81,7 +81,9 @@ define([
                     runner.itemRunner.setState(config.itemState);
                 }
                 this.trigger('preview-loaded');
-                formatStyles.getStyles('preview');
+                setTimeout(() => {
+                    formatStyles.getStyles('preview');
+                }, 500)
             });
             if (config.itemUri) {
                 return runner.loadItem(config.itemUri);

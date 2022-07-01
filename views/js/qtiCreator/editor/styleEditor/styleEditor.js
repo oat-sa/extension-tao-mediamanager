@@ -298,9 +298,9 @@ define([
             setTimeout(
                 function () {
                     // clean and format CSS styles with Browser API
-                    const cssFile = $(`[href="${link}"]`);
-                    if (cssFile) {
-                        formatStyles.formatStyles(e.target, mainClass);
+                    const cssFile = $(`[href="${link[0].href}"]`);
+                    if (cssFile && cssFile[0].sheet) {
+                        formatStyles.formatStyles(cssFile[0].sheet, mainClass);
                     }
 
                     let isInit = false;

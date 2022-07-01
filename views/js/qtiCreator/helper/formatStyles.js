@@ -16,8 +16,8 @@
  * Copyright (c) 2022 (original work) Open Assessment Technologies SA ;
  */
 define([
-    'taoMediaManager/qtiCreator/editor/styleEditor/styleEditor'
-], function (styleEditor) {
+    'jquery'
+], function ($) {
     'use strict';
 
     function getStyles (stylesheetPrefix, duplicated = false) {
@@ -50,7 +50,7 @@ define([
                             assetClassName = hasClass[0];
                         } else {
                             // in case Passage has no className and it is preview outside editor
-                            assetClassName = styleEditor.generateMainClass();
+                            assetClassName = $.generateMainClass();
                             $(asset).addClass(assetClassName);
                         }
 
@@ -60,7 +60,7 @@ define([
                                 // check rdf matches to apply the attached CSS file to the passage
                                 const rdf_styles = stylesheetName[0].split('%23').reverse()[0];
                                 const rdf_asset = asset.dataset.href && asset.dataset.href.split('_').reverse()[0];
-                                if (rdf_styles === rdf_asset) {
+                                if (rdf_styles === rdf_asset || stylesheetPrefix !== 'stylesheet') {
                                     formatStyles(style.sheet, assetClassName);
                                 }
                             }

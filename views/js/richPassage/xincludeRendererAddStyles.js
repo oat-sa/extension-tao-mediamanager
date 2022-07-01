@@ -51,12 +51,20 @@ define([
                             setTimeout(() => {
                                 if (!passageClassName) {
                                     passageClassName = styleEditor.generateMainClass();
-                                    $(`[data-serial="${serial}"] .qti-include > div`).addClass(passageClassName);
+                                    const layout = $(`[data-serial="${serial}"] .qti-include > div`);
+                                    const hasClass = layout.className && layout.className.match(/[\w-]*tao-[\w-]*/g);
+                                    if (!hasClass) {
+                                        layout.addClass(passageClassName);
+                                    }
                                 }
                                 const cssFile = $(`link[href="${link}"]`);
-                                if (cssFile) {
-                                    formatStyles.formatStyles(cssFile[0].sheet, passageClassName);
-                                }
+                                cssFile.each((i, e) => {
+                                    const isFormat = e.dataset && e.dataset.format;
+                                    if (!isFormat && e) {
+                                        e.dataset.format = true;
+                                        formatStyles.formatStyles(e.sheet, passageClassName);
+                                    }
+                                })
                             }, 500)
                         }
 

@@ -19,12 +19,11 @@
  * @author Jean-Sébastien Conan <jean-sebastien@taotesting.com>
  */
 define([
-    'jquery',
     'context',
     'taoQtiTestPreviewer/previewer/runner',
     'taoMediaManager/qtiCreator/helper/formatStyles',
     'css!taoQtiTestPreviewer/previewer/provider/item/css/item'
-], function ($, context, previewerFactory, formatStyles) {
+], function (context, previewerFactory, formatStyles) {
     'use strict';
 
     /**

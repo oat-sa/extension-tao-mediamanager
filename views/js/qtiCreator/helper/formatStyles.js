@@ -59,7 +59,7 @@ define([
                             if (stylesheetName && stylesheetName[1] !== 'tao-user-styles.css') {
                                 // check rdf matches to apply the attached CSS file to the passage
                                 const rdf_styles = stylesheetName[0].split('%23').reverse()[0];
-                                const rdf_asset = asset.dataset.href.split('_').reverse()[0];
+                                const rdf_asset = asset.dataset.href && asset.dataset.href.split('_').reverse()[0];
                                 if (rdf_styles === rdf_asset) {
                                     formatStyles(style.sheet, assetClassName);
                                 }

@@ -298,9 +298,10 @@ define([
             setTimeout(
                 function () {
                     // clean and format CSS styles with Browser API
-                    $(`[href="${link}"]`).load((e) => {
+                    const cssFile = $(`[href="${link}"]`);
+                    if (cssFile) {
                         formatStyles.formatStyles(e.target, mainClass);
-                    })
+                    }
 
                     let isInit = false;
 

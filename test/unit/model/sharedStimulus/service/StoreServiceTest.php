@@ -26,9 +26,9 @@ use oat\generis\test\MockObject;
 use oat\generis\test\TestCase;
 use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
+use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\taoMediaManager\model\sharedStimulus\service\StoreService;
-use Prophecy\Argument;
 
 class StoreServiceTest extends TestCase
 {
@@ -87,15 +87,16 @@ class StoreServiceTest extends TestCase
      */
     private function getPreparedServiceInstance(FileSystem $fileSystemMock): StoreService
     {
-        $fileSystemServiceProphecy = $this->prophesize(FileSystemService::class);
-        $fileSystemServiceProphecy->getFileSystem(Argument::any())->willReturn($fileSystemMock);
+        $fileSystemServiceMock = $this->createMock(FileSystemService::class);
+        $fileSystemServiceMock->expects(self::any())->method('getFileSystem' )->willReturn($fileSystemMock);
+
 
         $service = $this->getMockBuilder(StoreService::class)->onlyMethods(['getUniqueName'])->getMock();
         $service->setServiceLocator(
             $this->getServiceLocatorMock(
                 [
-                    FlySystemManagement::SERVICE_ID => $this->getMockBuilder(FlySystemManagement::class)->getMock(),
-                    FileSystemService::SERVICE_ID => $fileSystemServiceProphecy->reveal()
+                    FileManagement::SERVICE_ID => $this->getMockBuilder(FlySystemManagement::class)->getMock(),
+                    FileSystemService::SERVICE_ID => $fileSystemServiceMock
                 ]
             )
         );

@@ -43,6 +43,7 @@ class UploadStylesheetService extends ConfigurableService
         fclose($tmpResource);
         unlink($uploadedStylesheetDTO->getTmpFileLink());
 
+        /** Some extra data fields needed for FE component reuse  */
         return [
             'alt' => $uploadedStylesheetDTO->getFileName(),
             'link' => DIRECTORY_SEPARATOR . $uploadedStylesheetDTO->getFileName(),

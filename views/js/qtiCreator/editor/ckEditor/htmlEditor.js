@@ -21,12 +21,27 @@ define([
     'jquery',
     'ckeditor',
     'core/promise',
+    'services/features',
     'taoMediaManager/qtiCreator/helper/ckConfigurator',
     'taoQtiItem/qtiItem/core/Element',
     'taoMediaManager/qtiCreator/widgets/helpers/content',
     'taoQtiItem/qtiCreator/widgets/helpers/deletingState',
-    'taoQtiItem/qtiCreator/editor/ckEditor/featureFlag'
-], function (_, __, $, CKEditor, Promise, ckConfigurator, Element, contentHelper, deletingHelper, featureFlag) {
+    'taoQtiItem/qtiCreator/editor/ckEditor/featureFlag',
+    'taoQtiItem/qtiCreator/helper/languages'
+], function (
+    _,
+    __,
+    $,
+    CKEditor,
+    Promise,
+    features,
+    ckConfigurator,
+    Element,
+    contentHelper,
+    deletingHelper,
+    featureFlag,
+    languages
+) {
     'use strict';
 
     const _defaults = {
@@ -37,6 +52,7 @@ define([
     };
 
     const placeholderClass = 'cke-placeholder';
+    const languagePluginEnabled = features.isShow('taoQtiItem/creator/editor/ckEditor/languagePlugin');
 
     let editorFactory;
 
@@ -57,7 +73,8 @@ define([
     function _buildEditor($editable, $editableContainer, options) {
         const widget = (options.data || {}).widget,
             areaBroker = widget && widget.getAreaBroker && widget.getAreaBroker(),
-            $toolbarArea = areaBroker && areaBroker.getToolbarArea && areaBroker.getToolbarArea();
+            $toolbarArea = areaBroker && areaBroker.getToolbarArea && areaBroker.getToolbarArea(),
+            removePlugins = [];
 
         options = _.defaults(options, _defaults);
 
@@ -76,12 +93,23 @@ define([
             }
         }
 
+        if (options.removePlugins) {
+            options.removePlugins.split('').forEach(removePluginName => {
+                removePlugins.push(removePluginName.trim());
+            });
+        }
+
+        if (!languagePluginEnabled) {
+            removePlugins.push('language');
+        }
+
         const ckConfig = {
             dtdMode: 'qti',
             autoParagraph: false,
-            removePlugins: options.removePlugins || '',
+            removePlugins: removePlugins.join(','),
             enterMode: options.enterMode || CKEditor.ENTER_P,
             floatSpaceDockedOffsetY: 10,
+            language_list: options.language_list,
             sharedSpaces: {
                 top: ($toolbarArea && $toolbarArea.attr('id')) || 'toolbar-top'
             },
@@ -167,6 +195,13 @@ define([
                     $editable.trigger('editorready', [editor]);
 
                     $('.qti-item').trigger('toolbarchange');
+                },
+                menuShow: function (e) {
+                    const $languages = $('.cke_panel_frame').contents().find("[class*='cke_menubutton__language']");
+                    const $languageMenu = $languages.parents('.cke_panel_block');
+                    const isLanguage = $languageMenu.css('display') === 'block' && $languages.length > 0;
+
+                    $('.cke_panel').toggleClass('cke_panel_visible', isLanguage);
                 },
                 blur: function () {
                     if ($toolbarArea) {
@@ -539,24 +574,32 @@ define([
          * @returns {undefined}
          */
         buildEditor: function ($container, editorOptions) {
-            const buildTasks = [];
-            _find($container, 'html-editable-container').each(function () {
-                const $editableContainer = $(this),
-                    $editable = $editableContainer.find('[data-html-editable]');
+            languages
+                .getList()
+                .then(languages.useCKEFormatting)
+                .then(languagesData => {
+                    const buildTasks = [];
 
-                buildTasks.push(
-                    new Promise(function (resolve) {
-                        //need to make the element html editable to enable ck inline editing:
-                        $editable.attr('contenteditable', true);
+                    editorOptions.language_list = languagesData;
 
-                        //build it
-                        _buildEditor($editable, $editableContainer, editorOptions);
+                    _find($container, 'html-editable-container').each(function () {
+                        const $editableContainer = $(this),
+                            $editable = $editableContainer.find('[data-html-editable]');
 
-                        $editable.on('editorready', resolve);
-                    })
-                );
-            });
-            return Promise.all(buildTasks);
+                        buildTasks.push(
+                            new Promise(function (resolve) {
+                                //need to make the element html editable to enable ck inline editing:
+                                $editable.attr('contenteditable', true);
+
+                                //build it
+                                _buildEditor($editable, $editableContainer, editorOptions);
+
+                                $editable.on('editorready', resolve);
+                            })
+                        );
+                    });
+                    return Promise.all(buildTasks);
+                });
         },
         /**
          * Destroy the editor

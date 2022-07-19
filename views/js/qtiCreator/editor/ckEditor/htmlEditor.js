@@ -100,7 +100,7 @@ define([
         }
 
         if (!languagePluginEnabled) {
-            removePlugins.push('language');
+            removePlugins.push('taolanguage');
         }
 
         const ckConfig = {
@@ -195,13 +195,6 @@ define([
                     $editable.trigger('editorready', [editor]);
 
                     $('.qti-item').trigger('toolbarchange');
-                },
-                menuShow: function (e) {
-                    const $languages = $('.cke_panel_frame').contents().find("[class*='cke_menubutton__language']");
-                    const $languageMenu = $languages.parents('.cke_panel_block');
-                    const isLanguage = $languageMenu.css('display') === 'block' && $languages.length > 0;
-
-                    $('.cke_panel').toggleClass('cke_panel_visible', isLanguage);
                 },
                 blur: function () {
                     if ($toolbarArea) {

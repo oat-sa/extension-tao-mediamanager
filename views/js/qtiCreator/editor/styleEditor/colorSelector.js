@@ -71,8 +71,8 @@ define([
         const setTriggerColor = function () {
             colorTriggers.each(function () {
                 const $trigger = $(this);
-                let target = styleEditor.replaceHashClass($trigger.data('target'));
-                target = styleEditor.replaceMainClass(target);
+                let target = styleEditor.replaceMainClass($trigger.data('target'));
+                target = styleEditor.replaceHashClass(target);
                 const style = styleEditor.getStyle() || {};
                 let value;
                 // elements have a color from usage of style editor
@@ -94,8 +94,8 @@ define([
         const collectCommonAdditionalStyles = function () {
             colorTriggers.each(function () {
                 const $trigger = $(this);
-                let target = styleEditor.replaceHashClass($trigger.data('target'));
-                target = styleEditor.replaceMainClass(target);
+                let target = styleEditor.replaceMainClass($trigger.data('target'));
+                target = styleEditor.replaceHashClass(target);
                 const value = $trigger.data('value');
                 const styles = additionalStylesToObject($trigger.data('additional'));
                 Object.keys(styles).forEach(key => {
@@ -175,8 +175,8 @@ define([
         resetButtons.off('click').on('click', function () {
             const $this = $(this);
             const $colorTrigger = $this.parent().find('.color-trigger');
-            let target = styleEditor.replaceHashClass($colorTrigger.data('target'));
-            target = styleEditor.replaceMainClass(target);
+            let target = styleEditor.replaceMainClass($colorTrigger.data('target'));
+            target = styleEditor.replaceHashClass(target);
             const value = $colorTrigger.data('value');
             const additional = $colorTrigger.data('additional');
             styleEditor.apply(target, value);

@@ -31,8 +31,8 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
      */
     const fontSizeChanger = function ($container) {
         const $fontSizeChanger = $container.find('#item-editor-font-size-changer');
-        let itemSelector = styleEditor.replaceHashClass($fontSizeChanger.data('target'));
-        itemSelector = styleEditor.replaceMainClass(itemSelector);
+        let itemSelector = styleEditor.replaceMainClass($fontSizeChanger.data('target'));
+        itemSelector = styleEditor.replaceHashClass(itemSelector);
         const figcaptionSelector = `${itemSelector} figure figcaption`;
         const $resetBtn = $fontSizeChanger.parents('.reset-group').find('[data-role="font-size-reset"]');
         const $input = $container.find('.item-editor-font-size-text');

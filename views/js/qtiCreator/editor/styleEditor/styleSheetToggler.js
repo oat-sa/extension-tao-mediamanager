@@ -78,9 +78,27 @@ define([
                         filters: 'text/css'
                     },
                     select: function (e, files) {
+                        let styleListNames = [];
+                        let styleList = $('[data-css-res]');
+                        if (styleList.length > 0) {
+                            styleList.each((i, e) => {
+                                const style = e.dataset && e.dataset.cssRes && e.dataset.cssRes.match(/(?:[a-zA-Z]+\.css)/);
+                                if (style) {
+                                    styleListNames.push(`/${style}`);
+                                }
+                            })
+                        }
+
                         var i, l = files.length;
                         for (i = 0; i < l; i++) {
-                            styleEditor.addStylesheet(files[i].file, itemConfig);
+                            if (styleListNames.includes(files[i].file)) {
+                                _createInfoBox({
+                                    message: __('A stylesheet named <b>%s</b> is already attached to the passage.').replace('%s', files[i].file.substring(1)),
+                                    type: 'error'
+                                });
+                            } else {
+                                styleEditor.addStylesheet(files[i].file, itemConfig);
+                            }
                         }
                     }
                 });
@@ -97,6 +115,7 @@ define([
 
 
                 styleEditor.deleteStylesheet(context.stylesheetObj);
+                styleEditor.getItem().removeStyleSheet(context.stylesheetObj);
 
                 cssLinks.filter('[' + attr + '*="' + context.cssUri + '"]').remove();
                 context.li.remove();
@@ -126,7 +145,7 @@ define([
              * @param trigger
              */
             var downloadStylesheet = function(trigger) {
-                styleEditor.download(getContext(trigger).stylesheetObj.attributes.title);
+                styleEditor.download(getContext(trigger).stylesheetObj.attributes.href, getContext(trigger).stylesheetObj.attributes.title);
             };
 
             /**
@@ -171,8 +190,10 @@ define([
                     myLink.ready(() => {
                         if (context.isDisabled) {
                             myLink[0].sheet.disabled = false;
+                            context.li.removeClass('not-available');
                         } else {
                             myLink[0].sheet.disabled = true;
+                            context.li.addClass('not-available');
                         }
                         // add some visual feed back to the triggers
                         $(trigger).toggleClass('disabled');
@@ -188,17 +209,19 @@ define([
                     className = target.className;
 
                 // distribute click actions
-                if (className.indexOf('icon-bin') > -1) {
-                    deleteStylesheet(e.target);
-                }
-                else if (className.indexOf('file-label') > -1) {
-                    initLabelEditor(e.target);
-                }
-                else if (className.indexOf('icon-preview') > -1) {
+                if (className.indexOf('icon-preview') > -1) {
                     handleAvailability(e.target);
                 }
-                else if(className.indexOf('icon-download') > -1) {
-                    downloadStylesheet(e.target);
+                else if (target.parentElement.className !== 'not-available') {
+                    if (className.indexOf('icon-bin') > -1) {
+                        deleteStylesheet(e.target);
+                    }
+                    else if (className.indexOf('file-label') > -1) {
+                        initLabelEditor(e.target);
+                    }
+                    else if (className.indexOf('icon-download') > -1) {
+                        downloadStylesheet(e.target);
+                    }
                 }
             });
 

@@ -236,11 +236,16 @@ define([
      * Download CSS as file
      * @param {String} uri
      */
-    const download = function (uri) {
+    const download = function (uri, name) {
         verifyInit();
+        const style = uri.match(/stylesheet=(?<groupName>\w+)?/);
+        let styleName = '';
+        if (style && style.groups && style.groups.groupName) {
+            styleName = `${style.groups.groupName}.css`;
+        }
         const downloadUrl = urlUtil.build(_getUri('download'), {
             uri: globalConfig['id'],
-            stylesheet: uri
+            stylesheet: styleName
         });
 
         fetch(downloadUrl)
@@ -250,7 +255,7 @@ define([
                 const a = document.createElement('a');
                 a.style.display = 'none';
                 a.href = url;
-                a.download = uri;
+                a.download = name;
                 document.body.appendChild(a);
                 a.click();
                 window.URL.revokeObjectURL(url);
@@ -470,11 +475,11 @@ define([
     };
 
     const replaceHashClass = function (selector) {
-        return hashClass && selector.replace(hashClassSelector, hashClass);
+        return hashClass && selector.replace(hashClassSelector, hashClass) || selector;
     };
 
     const replaceMainClass = function (selector) {
-        return mainClass && selector.replace(mainClassSelector, mainClass);
+        return mainClass && selector.replace(mainClassSelector, mainClass) || selector;
     };
 
     const clearCache = function() {

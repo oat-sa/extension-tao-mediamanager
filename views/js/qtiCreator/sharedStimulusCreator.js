@@ -314,7 +314,7 @@ define([
                                 widget = item.data('widget');
 
                                 item.attributes.class
-                                    ? styleEditor.setHashClass(item.attributes.class)
+                                    ? styleEditor.setMainClass(item.attributes.class)
                                     : styleEditor.generateMainClass();
                                 sharedStimulusCreator.mainClass = styleEditor.getMainClass();
                                 // set class on container for style editor

@@ -52,10 +52,6 @@ define([
                         const hasClass = asset.className.match(/[\w-]*tao-[\w-]*/g);
                         if (!!hasClass && hasClass.length) {
                             assetClassName = hasClass[0];
-                        } else {
-                            // in case Passage has no className and it is preview outside editor
-                            assetClassName = $.generateMainClass();
-                            $(asset).addClass(assetClassName);
                         }
 
                         if (style.sheet) {

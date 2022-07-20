@@ -6,14 +6,6 @@
         <ul class="menu action-group plain item-editor-menu"></ul>
 
         <ul class="menu-right action-group plain item-editor-menu">
-            <li id="appearance-trigger" class="btn-info small rgt">
-                <span class="li-inner">
-                    <span class="icon-item"></span>
-                    <span class="icon-style"></span>
-                    <span class="menu-label" data-item="{{__ 'Item properties'}}" data-style="{{__ 'Style Editor'}}">{{__ 'Style
-                        Editor'}}</span>
-                </span>
-            </li>
         </ul>
     </nav>
     <div class="wrapper clearfix content sidebar-popup-parent" id="item-editor-wrapper">
@@ -45,7 +37,7 @@
         <div class="item-editor-sidebar-wrapper right-bar sidebar-popup-parent">
             <div class="item-editor-sidebar" id="item-editor-item-widget-bar">
                 <div class="item-editor-item-related sidebar-right-section-box" id="item-editor-item-property-bar">
-                    <section class="tool-group clearfix" id="sidebar-right-css-manager">
+                    <section class="tool-group clearfix" id="sidebar-right-css-manager" style="display: none;">
 
                         <h2>{{__ 'Style Sheet Manager'}}</h2>
 

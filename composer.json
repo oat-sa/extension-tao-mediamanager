@@ -39,6 +39,8 @@
         }
     },
     "require-dev": {
-        "mikey179/vfsstream": "~1"
+        "mikey179/vfsstream": "~1",
+        "oat-sa/generis": "dev-php8-migration as v16.0.0",
+        "oat-sa/tao-core": "dev-php8-migration as v51.0.0"
     }
 }

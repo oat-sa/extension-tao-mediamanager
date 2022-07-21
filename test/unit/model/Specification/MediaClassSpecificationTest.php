@@ -69,11 +69,13 @@ class MediaClassSpecificationTest extends TestCase
             ->with($this->rootClass)
             ->willReturn($equals);
 
-        $this->testedClass
-            ->expects($this->atMost(1))
-            ->method('isSubclassOf')
-            ->with($this->rootClass)
-            ->willReturn($isSubclass);
+        if (!$equals) {
+            $this->testedClass
+                ->expects($this->atMost(1))
+                ->method('isSubClassOf')
+                ->with($this->rootClass)
+                ->willReturn($isSubclass);
+        }
 
         $this->assertEquals(
             $expected,

@@ -31,10 +31,12 @@ define([
     'tpl!taoMediaManager/qtiCreator/tpl/toolbars/cssToggler',
     'taoMediaManager/qtiCreator/helper/formatStyles',
     'util/url',
+    'services/features',
     'jquery.fileDownload'
-], function ($, _, __, UrlParser, request, cssTpl, formatStyles, urlUtil) {
+], function ($, _, __, UrlParser, request, cssTpl, formatStyles, urlUtil, featuresService) {
     'use strict';
 
+    const styleSheetManagerVisibilityKey = 'taoMediaManager/creator/StyleSheetManager';
     let itemConfig;
 
     /**
@@ -444,6 +446,11 @@ define([
             // inform editors about custom sheet
             $(document).trigger('customcssloaded.styleeditor', [style]);
         });
+
+        if(featuresService.isVisible(styleSheetManagerVisibilityKey, false)) {
+            $('#sidebar-right-css-manager').show();
+        }
+        
     };
 
     const getStyle = function () {

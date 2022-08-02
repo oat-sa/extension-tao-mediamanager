@@ -66,6 +66,7 @@ define([
 
                 uploader.resourcemgr({
                     appendContainer: '#mediaManager',
+                    pathParam: 'path',
                     path: 'taomedia://mediamanager/',
                     root: 'local',
                     browseUrl: urlUtil.route('getStylesheets', 'SharedStimulusStyling', 'taoMediaManager'),
@@ -78,7 +79,7 @@ define([
                         filters: 'text/css'
                     },
                     select: function (e, files) {
-                        let styleListNames = [];
+                        let styleListNames = ['/tao-user-styles.css'];
                         let styleList = $('[data-css-res]');
                         if (styleList.length > 0) {
                             styleList.each((i, e) => {
@@ -215,9 +216,6 @@ define([
                 else if (target.parentElement.className !== 'not-available') {
                     if (className.indexOf('icon-bin') > -1) {
                         deleteStylesheet(e.target);
-                    }
-                    else if (className.indexOf('file-label') > -1) {
-                        initLabelEditor(e.target);
                     }
                     else if (className.indexOf('icon-download') > -1) {
                         downloadStylesheet(e.target);

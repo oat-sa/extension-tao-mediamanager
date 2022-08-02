@@ -65,6 +65,7 @@ define([
             uploader.on('click', function () {
 
                 uploader.resourcemgr({
+                    className: 'stylesheets',
                     appendContainer: '#mediaManager',
                     pathParam: 'path',
                     path: 'taomedia://mediamanager/',

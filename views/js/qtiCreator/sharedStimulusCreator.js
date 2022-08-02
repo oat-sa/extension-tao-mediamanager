@@ -319,8 +319,6 @@ define([
                                 sharedStimulusCreator.mainClass = styleEditor.getMainClass();
                                 // set class on container for style editor
                                 widget.$container.find('.qti-itemBody').addClass(sharedStimulusCreator.mainClass);
-                                // add class to hide action buttons on Media Manager
-                                $('#item-editor-scope').addClass('stylesheet-editor');
 
                                 propertiesPanel(areaBroker.getPropertyPanelArea(), widget, config.properties);
 

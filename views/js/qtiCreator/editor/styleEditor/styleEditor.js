@@ -179,6 +179,7 @@ define([
             }
         } else {
             // add this rule
+            value = value.includes('!important') ? value : `${value} !important`;
             style[selector][property] = value;
         }
 
@@ -450,7 +451,7 @@ define([
         if(featuresService.isVisible(styleSheetManagerVisibilityKey, false)) {
             $('#sidebar-right-css-manager').show();
         }
-        
+
     };
 
     const getStyle = function () {

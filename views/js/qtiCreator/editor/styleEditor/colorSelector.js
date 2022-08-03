@@ -77,7 +77,7 @@ define([
                 let value;
                 // elements have a color from usage of style editor
                 if (style[target] && style[target][$trigger.data('value')]) {
-                    value = style[target][$trigger.data('value')];
+                    value = style[target][$trigger.data('value')].replace(' !important', '');
                     $trigger.css('background-color', value);
                     $trigger.attr('title', rgbToHex(value));
                 } else {

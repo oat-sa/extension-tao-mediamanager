@@ -121,7 +121,7 @@ define([
          */
         $(document).on('customcssloaded.styleeditor', function (e, style) {
             if (style[target] && style[target]['font-family']) {
-                $selector.select2('val', style[target]['font-family']);
+                $selector.select2('val', style[target]['font-family'].replace(' !important', ''));
                 $(`${selector} option:selected`).first().attr('selected', 'selected');
             }
             applyToStylesEditor = false;

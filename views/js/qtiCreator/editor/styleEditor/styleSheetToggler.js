@@ -115,9 +115,7 @@ define([
                     attr = context.isDisabled ? 'disabled-href' : 'href',
                     cssLinks = $('head link');
 
-
                 styleEditor.deleteStylesheet(context.stylesheetObj);
-                styleEditor.getItem().removeStyleSheet(context.stylesheetObj);
 
                 cssLinks.filter('[' + attr + '*="' + context.cssUri + '"]').remove();
                 context.li.remove();
@@ -127,8 +125,6 @@ define([
                     message: __('Style Sheet <b>%s</b> removed<br> Click <i>Add Style Sheet</i> to re-apply.').replace('%s', context.label),
                     type: 'info'
                 });
-
-                $doc.trigger('customcssloaded.styleeditor', [styleEditor.getStyle()]);
             };
 
 

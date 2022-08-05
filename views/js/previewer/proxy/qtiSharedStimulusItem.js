@@ -28,8 +28,9 @@ define([
     'core/promiseQueue',
     'core/dataProvider/request',
     'util/url',
-    'taoMediaManager/qtiCreator/helper/createDummyItemData'
-], function ($, _, __, promiseQueue, request, urlUtil, creatorDummyItemData) {
+    'taoMediaManager/qtiCreator/helper/createDummyItemData',
+    'taoMediaManager/qtiCreator/helper/formatStyles'
+], function ($, _, __, promiseQueue, request, urlUtil, creatorDummyItemData, formatStyles) {
     'use strict';
 
     const serviceController = 'SharedStimulus';
@@ -113,7 +114,8 @@ define([
                                 href: link,
                                 media: 'all',
                                 title: '',
-                                type: 'text/css'
+                                type: 'text/css',
+                                onload: (e => formatStyles.handleStylesheetLoad(e, stylesheet))
                             },
                             serial,
                             getComposingElements: () => ({})

@@ -40,7 +40,6 @@ define([
     'core/request',
     'util/url',
     'taoMediaManager/qtiCreator/editor/interactionsPanel',
-    'taoMediaManager/qtiCreator/helper/formatStyles',
     'taoMediaManager/qtiCreator/editor/styleEditor/styleEditor',
     'taoQtiItem/qtiItem/core/Element'
 ], function (
@@ -59,7 +58,6 @@ define([
     request,
     urlUtil,
     interactionPanel,
-    formatStyles,
     styleEditor,
     Element
 ) {
@@ -324,9 +322,6 @@ define([
 
                                 //init event listeners:
                                 eventHelper.initElementToWidgetListeners();
-                                setTimeout(() => {
-                                    formatStyles.getStyles('creator');
-                                }, 500)
 
                                 return pluginRun('render').then(function () {
                                     self.trigger('render');

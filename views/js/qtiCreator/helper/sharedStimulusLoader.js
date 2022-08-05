@@ -22,8 +22,9 @@ define([
     'taoQtiItem/qtiCreator/model/qtiClasses',
     'taoMediaManager/qtiCreator/helper/createDummyItemData',
     'core/dataProvider/request',
-    'util/url'
-], function ($, Loader, qtiClasses, creatorDummyItemData, request, urlUtil ) {
+    'util/url',
+    'taoMediaManager/qtiCreator/helper/formatStyles'
+], function ($, Loader, qtiClasses, creatorDummyItemData, request, urlUtil, formatStyles ) {
     'use strict';
 
     const qtiNamespace = 'http://www.imsglobal.org/xsd/imsqti_v2p2';
@@ -61,7 +62,8 @@ define([
                                         href: link,
                                         media: 'all',
                                         title: stylesheet.name,
-                                        type: 'text/css'
+                                        type: 'text/css',
+                                        onload: (e => formatStyles.handleStylesheetLoad(e, stylesheet))
                                     },
                                     serial,
                                     getComposingElements: () => ({})

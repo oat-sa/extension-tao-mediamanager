@@ -93,25 +93,23 @@ define([
                             uri: passageUri
                         })
                             .then(response => {
-                                response.children.forEach((element, index) => {
+                                response.children.forEach((stylesheet, index) => {
                                     const serial = `stylesheet_${id}_${index}`;
                                     itemData.content.data.stylesheets[serial] = {
                                         qtiClass: 'stylesheet',
                                         attributes: {
                                             href: urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
                                                 uri: passageUri,
-                                                stylesheet: element.name
+                                                stylesheet: stylesheet.name
                                             }),
                                             media: 'all',
                                             title: '',
-                                            type: 'text/css'
+                                            type: 'text/css',
+                                            onload: (e => formatStyles.handleStylesheetLoad(e, stylesheet))
                                         },
                                         serial
                                     };
                                 });
-                                setTimeout(() => {
-                                    formatStyles.getStyles('stylesheet', true);
-                                }, 1000);
                             })
                             .catch()
                     );

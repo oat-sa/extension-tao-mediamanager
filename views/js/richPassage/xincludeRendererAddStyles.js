@@ -21,12 +21,11 @@ define([
     'uri',
     'util/url',
     'core/dataProvider/request',
-    'taoMediaManager/qtiCreator/helper/formatStyles',
-    'taoMediaManager/qtiCreator/editor/styleEditor/styleEditor',
-], function (_, $, uri, urlUtil, request, formatStyles, styleEditor) {
+    'taoMediaManager/qtiCreator/helper/formatStyles'
+], function (_, $, uri, urlUtil, request, formatStyles) {
     'use strict';
 
-    return function xincludeRendererAddStyles(passageHref, passageClassName, serial, head = $('head')) {
+    return function xincludeRendererAddStyles(passageHref, passageClassName, serial, head = $('head'), preview = false) {
         if (/taomedia:\/\/mediamanager\//.test(passageHref)) {
             // check rich passage styles and inject them to item
             const passageUri = uri.decode(passageHref.replace('taomedia://mediamanager/', ''));
@@ -34,11 +33,11 @@ define([
                 uri: passageUri
             })
                 .then(response => {
-                    response.children.forEach(element => {
-                        // check different names of elements
+                    response.children.forEach(stylesheet => {
+                        // check different names of stylesheets
                         const link = urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
                             uri: passageUri,
-                            stylesheet: element.name
+                            stylesheet: stylesheet.name
                         });
                         const styleElem = $('<link>', {
                             rel: 'stylesheet',
@@ -46,32 +45,11 @@ define([
                             href: link,
                             'data-serial': passageUri
                         });
-
-                        const layout = head.find(`link[href="${link}"]`);
-                        if (!layout.length) {
-                            head.append(styleElem[0]);
-                            if (element.name !== 'tao-user-styles.css' && serial.length) {
-                                setTimeout(() => {
-                                    if (!passageClassName) {
-                                        passageClassName = styleEditor.generateMainClass();
-                                        const layout = $(`[data-serial="${serial}"] .qti-include > div`);
-                                        const hasClass = layout.className && layout.className.match(/[\w-]*tao-[\w-]*/g);
-                                        if (!hasClass) {
-                                            layout.addClass(passageClassName);
-                                        }
-                                    }
-                                    const cssFile = $(`link[href="${link}"]`);
-                                    cssFile.each((i, e) => {
-                                        const isFormat = e.dataset && e.dataset.format;
-                                        if (!isFormat && e) {
-                                            e.dataset.format = true;
-                                            formatStyles.formatStyles(e.sheet, passageClassName);
-                                        }
-                                    })
-                                }, 500)
-                            }
+                        if (!preview) {
+                            styleElem[0].onload = (e => formatStyles.handleStylesheetLoad(e, stylesheet));
+                            styleElem[0].dataset['serial'] = serial;
                         }
-
+                        head.append(styleElem);
                     });
                 })
                 .catch();

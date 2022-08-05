@@ -21,9 +21,8 @@
 define([
     'context',
     'taoQtiTestPreviewer/previewer/runner',
-    'taoMediaManager/qtiCreator/helper/formatStyles',
     'css!taoQtiTestPreviewer/previewer/provider/item/css/item'
-], function (context, previewerFactory, formatStyles) {
+], function (context, previewerFactory) {
     'use strict';
 
     /**
@@ -81,9 +80,6 @@ define([
                     runner.itemRunner.setState(config.itemState);
                 }
                 this.trigger('preview-loaded');
-                setTimeout(() => {
-                    formatStyles.getStyles('preview');
-                }, 500)
             });
             if (config.itemUri) {
                 return runner.loadItem(config.itemUri);

@@ -36,6 +36,13 @@ class ListStylesheetsService extends ConfigurableService
         $list = $stylesheetRepository->listContents(
             $path . DIRECTORY_SEPARATOR . StylesheetRepository::STYLESHEETS_DIRECTORY
         );
+        /**
+         * here sorting files by creation date so that in case of css .selector collisions
+         * the rules will be applied from the last stylesheet added to the passage
+         */
+        usort($list, function ($a, $b) {
+            return ($a['timestamp'] < $b['timestamp']) ? -1 : 1;
+        });
 
         $data = [];
         foreach ($list as $file) {

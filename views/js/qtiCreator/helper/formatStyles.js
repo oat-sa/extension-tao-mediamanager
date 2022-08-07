@@ -29,52 +29,47 @@ define([
         const path = e && e.composedPath && e.composedPath();
         const linkTag = path[0];
 
-        let assets = '';
-
         if (linkTag) {
-            if ($('.qti-include').length) {
-                assets = $('.qti-include');
-            } else if ($('.qti-itemBody').length) {
-                assets = $('.qti-itemBody');
-            }
 
+            const stylesheetUrl = linkTag.href.split('&stylesheet=');
+            const rdf_styles = stylesheetUrl[0].split('%23').reverse()[0];
+
+            // Asset Preview
+            const assets = $(`[data-identifier='${rdf_styles}']`);
             if (assets.length) {
                 assets.each((h, asset) => {
-                    let assetClassName = '';
-                    const hasClass = asset.className.match(/[\w-]*tao-[\w-]*/g) || asset.children[0].className.match(/[\w-]*tao-[\w-]*/g);
-                    if (!!hasClass && hasClass.length) {
-                        assetClassName = hasClass[0];
-                    }
-
+                    const assetClassName = asset.children[0].className.match(/[\w-]*tao-[\w-]*/g)[0];
                     if (assetClassName) {
-                        // check rdf matches to apply the attached CSS file to the passage
-                        const stylesheetName = linkTag.href.split('&stylesheet=');
-                        let rdf_styles = stylesheetName[0].split('%23').reverse()[0];
-                        let rdf_asset = asset.dataset.href && asset.dataset.href.split('_').reverse()[0];
-                        if (!rdf_asset) {
-                            // On Item Authoring there is only serial
-                            rdf_styles = linkTag.dataset.serial;
-                            rdf_asset = asset.parentNode.dataset.serial;
-                        }
-                        if (rdf_styles === rdf_asset) {
-                            formatStyles(linkTag.sheet, assetClassName);
-                        }
-                    } else if (!assetClassName) {
-                        // in case Passage has no className and it is preview inside editor
-                        const renderLayout = $('#item-editor-panel .qti-itemBody .qti-include > div');
-                        if (renderLayout.length) {
-                            const renderHasClass = renderLayout[h].className.match(/[\w-]*tao-[\w-]*/g);
-                            if (!hasClass && renderHasClass && renderHasClass.length) {
-                                assetClassName = renderHasClass[0];
-                                $(asset).addClass(assetClassName);
-                            }
-                        }
-
-                        if (assetClassName) {
-                            formatStyles(linkTag.sheet, assetClassName);
-                        }
+                        formatStyles(linkTag.sheet, assetClassName);
                     }
                 })
+                return;
+            }
+
+            // Passage on Item
+            const stylesheetSerial = linkTag.dataset.serial;
+            const passagesItem = $(`div[data-serial*='${stylesheetSerial}']`);
+            if (passagesItem.length) {
+                passagesItem.each((h, passages) => {
+                    const passageWrapper = $(passages).find('.qti-include > div');
+                    const passageItemClassName = passageWrapper[0] && passageWrapper[0].className && passageWrapper[0].className.match(/[\w-]*tao-[\w-]*/g)[0];
+                    if (passageItemClassName) {
+                        formatStyles(linkTag.sheet, passageItemClassName);
+                    }
+                })
+                return;
+            }
+
+            // Item Preview
+            const passagesPreview = $(`[data-href*='${rdf_styles}']`);
+            if (passagesPreview.length) {
+                passagesPreview.each((h, passages) => {
+                    const passagePreviewClassName = passages.className.match(/[\w-]*tao-[\w-]*/g)[0];
+                    if (passagePreviewClassName) {
+                        formatStyles(linkTag.sheet, passagePreviewClassName);
+                    }
+                })
+                return;
             }
         }
     }
@@ -84,13 +79,14 @@ define([
          * @type {CSSRuleList}
          * @see https://developer.mozilla.org/en-US/docs/Web/API/CSSRuleList
          */
-        const { cssRules } = linkTag && linkTag.sheet || linkTag || {};
-        const CSSStyleSheet = linkTag && linkTag.sheet || linkTag || {};
+        const { cssRules } = linkTag || {};
+        const CSSStyleSheet = linkTag || {};
         const classNameFormated = className && className.length ? `.${className}` : '';
+
         // prefix rules
         const scopedCssRules = _scopeStyles(cssRules, classNameFormated, ['body html *']);
 
-        if (cssRules) {
+        if (cssRules && scopedCssRules) {
             Object.values(cssRules).map((index, rule) => {
                 CSSStyleSheet.deleteRule(index);
             })
@@ -122,6 +118,7 @@ define([
 
         const scopedStyles = Object.values(cssRules).map(rule => {
             // avoid @import, @media, @keyframes etc
+
             if (!rule.selectorText) {
                 return '';
             }

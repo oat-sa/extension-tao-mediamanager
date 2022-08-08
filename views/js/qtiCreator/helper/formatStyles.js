@@ -42,7 +42,7 @@ define([
                     if (assetClassName) {
                         formatStyles(linkTag.sheet, assetClassName);
                     }
-                })
+                });
                 return;
             }
 
@@ -56,7 +56,7 @@ define([
                     if (passageItemClassName) {
                         formatStyles(linkTag.sheet, passageItemClassName);
                     }
-                })
+                });
                 return;
             }
 
@@ -68,7 +68,7 @@ define([
                     if (passagePreviewClassName) {
                         formatStyles(linkTag.sheet, passagePreviewClassName);
                     }
-                })
+                });
                 return;
             }
         }
@@ -89,11 +89,11 @@ define([
         if (cssRules && scopedCssRules) {
             Object.values(cssRules).map((index, rule) => {
                 CSSStyleSheet.deleteRule(index);
-            })
+            });
             const newRules = scopedCssRules.split('\n');
             Object.values(newRules).map(rule => {
                 CSSStyleSheet.insertRule(rule);
-            })
+            });
         }
 
         return;

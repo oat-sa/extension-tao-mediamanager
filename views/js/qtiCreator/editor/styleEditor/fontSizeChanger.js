@@ -51,7 +51,7 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
          */
         const resizeFont = function () {
             styleEditor.apply(itemSelector, 'font-size', `${itemFontSize.toString()}px`);
-            const figcaptionSize = itemFontSize > 14 ? (itemFontSize -2).toString() : Math.min(itemFontSize, 12).toString()
+            const figcaptionSize = itemFontSize > 14 ? (itemFontSize - 2).toString() : Math.min(itemFontSize, 12).toString();
             styleEditor.apply(figcaptionSelector, 'font-size', `${figcaptionSize}px`);
         };
 

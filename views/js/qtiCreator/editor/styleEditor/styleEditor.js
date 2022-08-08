@@ -161,7 +161,7 @@ define([
     const apply = function (selector, property, value) {
         const itemBodyClass = document.querySelector('.qti-itemBody').classList;
         itemBodyClass.forEach(function (className) {
-            const searchClass = className.match(/(?<className>tao-\w+)?/);
+            const searchClass = className.match(/(?<className>tao-\w+)?/); // eslint-disable-line
             if (searchClass.groups.className) {
                 mainClass = searchClass.groups.className;
             }

@@ -34,28 +34,47 @@ define([
 
         var init = function (itemConfig) {
 
-            var cssToggler = $('#style-sheet-toggler'),
-                uploader = $('#stylesheet-uploader'),
-                customCssToggler = $('[data-custom-css]'),
-                getContext = function (trigger) {
-                    trigger = $(trigger);
-                    var li = trigger.closest('li'),
-                        stylesheetObj = li.data('stylesheetObj') || new Stylesheet({href : li.data('css-res')}),
-                        input = li.find('.style-sheet-label-editor'),
-                        labelBox = input.prev('.file-label'),
-                        label = input.val();
+            const _createInfoBox = function (data) {
+                var $messageBox = $(genericFeedbackPopup(data)),
+                    closeTrigger = $messageBox.find('.close-trigger');
 
-                    return {
-                        li: li,
-                        input: input,
-                        label: label,
-                        labelBox: labelBox,
-                        isCustomCss: !!li.data('custom-css'),
-                        isDisabled: li.find('.icon-preview').hasClass('disabled'),
-                        stylesheetObj: stylesheetObj,
-                        cssUri: stylesheetObj.attr('href')
-                    };
+                $('body').append($messageBox);
+
+                closeTrigger.on('click', function () {
+                    $messageBox.fadeOut(function () {
+                        $(this).remove();
+                    });
+                });
+
+                setTimeout(function () {
+                    closeTrigger.trigger('click');
+                }, 4523);
+
+                return $messageBox;
+            };
+
+            const cssToggler = $('#style-sheet-toggler');
+            const uploader = $('#stylesheet-uploader');
+            const customCssToggler = $('[data-custom-css]');
+            const getContext = function (trigger) {
+                trigger = $(trigger);
+                const li = trigger.closest('li');
+                const stylesheetObj = li.data('stylesheetObj') || new Stylesheet({ href: li.data('css-res') });
+                const input = li.find('.style-sheet-label-editor');
+                const labelBox = input.prev('.file-label');
+                const label = input.val();
+
+                return {
+                    li: li,
+                    input: input,
+                    label: label,
+                    labelBox: labelBox,
+                    isCustomCss: !!li.data('custom-css'),
+                    isDisabled: li.find('.icon-preview').hasClass('disabled'),
+                    stylesheetObj: stylesheetObj,
+                    cssUri: stylesheetObj.attr('href')
                 };
+            };
 
 
 
@@ -83,16 +102,16 @@ define([
                         let styleListNames = ['/tao-user-styles.css'];
                         let styleList = $('[data-css-res]');
                         if (styleList.length > 0) {
-                            styleList.each((i, e) => {
-                                const style = e.dataset && e.dataset.cssRes && e.dataset.cssRes.match(/(?:[a-zA-Z]+\.css)/);
-                                if (style) {
-                                    styleListNames.push(`/${style}`);
+                            styleList.each((i, style) => {
+                                const styleName = style.dataset && style.dataset.cssRes && style.dataset.cssRes.match(/(?:[a-zA-Z]+\.css)/);
+                                if (styleName) {
+                                    styleListNames.push(`/${styleName}`);
                                 }
-                            })
+                            });
                         }
 
-                        var i, l = files.length;
-                        for (i = 0; i < l; i++) {
+                        const l = files.length;
+                        for (let i = 0; i < l; i++) {
                             if (styleListNames.includes(files[i].file)) {
                                 _createInfoBox({
                                     message: __('A stylesheet named <b>%s</b> is already attached to the passage.').replace('%s', files[i].file.substring(1)),
@@ -106,18 +125,18 @@ define([
                 });
             });
 
-
             /**
              * Confirm to save the item
+             * @param {Object} trigger
              */
-            var deleteStylesheet = function(trigger) {
+            const deleteStylesheet = function(trigger) {
                 var context = getContext(trigger),
                     attr = context.isDisabled ? 'disabled-href' : 'href',
                     cssLinks = $('head link');
 
                 styleEditor.deleteStylesheet(context.stylesheetObj);
 
-                cssLinks.filter('[' + attr + '*="' + context.cssUri + '"]').remove();
+                cssLinks.filter(`[${  attr  }*="${  context.cssUri  }"]`).remove();
                 context.li.remove();
 
                 $('.feedback-info').hide();
@@ -129,27 +148,20 @@ define([
 
 
             /**
-             * Modify stylesheet title (enable)
-             */
-            var initLabelEditor = function (trigger) {
-                var context = getContext(trigger);
-                context.labelBox.hide();
-                context.input.show();
-            };
-
-            /**
              * Download current stylesheet
              *
-             * @param trigger
+             * @param {Object} trigger
              */
-            var downloadStylesheet = function(trigger) {
+            const downloadStylesheet = function(trigger) {
                 styleEditor.download(getContext(trigger).stylesheetObj.attributes.href, getContext(trigger).stylesheetObj.attributes.title);
             };
 
             /**
              * Modify stylesheet title (save modification)
+             * @param {Object} trigger
+             * @returns {Boolean}
              */
-            var saveLabel = function (trigger) {
+            const saveLabel = function (trigger) {
                 var context = getContext(trigger),
                     title = $.trim(context.input.val());
 
@@ -165,8 +177,9 @@ define([
 
             /**
              * Dis/enable style sheets
+             * @param {Object} trigger
              */
-            var handleAvailability = function (trigger) {
+            const handleAvailability = function (trigger) {
                 const context = getContext(trigger);
 
                 // custom styles are handled in a style element, not in a link
@@ -174,16 +187,14 @@ define([
                     if (context.isDisabled) {
                         $('#item-editor-user-styles')[0].disabled = false;
                         customCssToggler.removeClass('not-available');
-                    }
-                    else {
+                    } else {
                         $('#item-editor-user-styles')[0].disabled = true;
                         customCssToggler.addClass('not-available');
                     }
                     // add some visual feed back to the triggers
                     $(trigger).toggleClass('disabled');
-                }
-                // all other styles are handled via their link element
-                else {
+                } else {
+                    // all other styles are handled via their link element
                     const myLink = $(`link[data-serial=${context.stylesheetObj.serial}`);
                     myLink.ready(() => {
                         if (context.isDisabled) {
@@ -195,7 +206,7 @@ define([
                         }
                         // add some visual feed back to the triggers
                         $(trigger).toggleClass('disabled');
-                    })
+                    });
                 }
             };
 
@@ -209,12 +220,10 @@ define([
                 // distribute click actions
                 if (className.indexOf('icon-preview') > -1) {
                     handleAvailability(e.target);
-                }
-                else if (target.parentElement.className !== 'not-available') {
+                } else if (target.parentElement.className !== 'not-available') {
                     if (className.indexOf('icon-bin') > -1) {
                         deleteStylesheet(e.target);
-                    }
-                    else if (className.indexOf('icon-download') > -1) {
+                    } else if (className.indexOf('icon-download') > -1) {
                         downloadStylesheet(e.target);
                     }
                 }
@@ -238,26 +247,6 @@ define([
             });
 
 
-        };
-
-
-        var _createInfoBox = function(data){
-            var $messageBox = $(genericFeedbackPopup(data)),
-                closeTrigger = $messageBox.find('.close-trigger');
-
-            $('body').append($messageBox);
-
-            closeTrigger.on('click', function(){
-                $messageBox.fadeOut(function(){
-                    $(this).remove();
-                });
-            });
-
-            setTimeout(function() {
-                closeTrigger.trigger('click');
-            }, 4523);
-
-            return $messageBox;
         };
 
         return {

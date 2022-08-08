@@ -68,7 +68,7 @@ define([
      * @param {String} id - the Shared Stimulus ID
      * @param {String} uri - the Shared Stimulus URI
      * @param {String} assetDataUrl - the data url
-     *
+     * @param {String} assetDataStyles
      * @returns {Promise} that resolve with the loaded item model
      */
     const loadSharedStimulus = function loadSharedStimulus(id, uri, assetDataUrl, assetDataStyles) {

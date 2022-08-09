@@ -38,9 +38,9 @@ define([
             const assets = $(`[data-identifier='${rdf_styles}']`);
             if (assets.length) {
                 assets.each((h, asset) => {
-                    const assetClassName = asset.children[0].className.match(/[\w-]*tao-[\w-]*/g)[0];
+                    const assetClassName = asset.children[0].className.match(/[\w-]*tao-[\w-]*/g);
                     if (assetClassName) {
-                        formatStyles(linkTag.sheet, assetClassName);
+                        formatStyles(linkTag.sheet, assetClassName[0]);
                     }
                 });
                 return;
@@ -52,9 +52,9 @@ define([
             if (passagesItem.length) {
                 passagesItem.each((h, passages) => {
                     const passageWrapper = $(passages).find('.qti-include > div');
-                    const passageItemClassName = passageWrapper[0] && passageWrapper[0].className && passageWrapper[0].className.match(/[\w-]*tao-[\w-]*/g)[0];
+                    const passageItemClassName = passageWrapper[0] && passageWrapper[0].className && passageWrapper[0].className.match(/[\w-]*tao-[\w-]*/g);
                     if (passageItemClassName) {
-                        formatStyles(linkTag.sheet, passageItemClassName);
+                        formatStyles(linkTag.sheet, passageItemClassName[0]);
                     }
                 });
                 return;
@@ -64,9 +64,9 @@ define([
             const passagesPreview = $(`[data-href*='${rdf_styles}']`);
             if (passagesPreview.length) {
                 passagesPreview.each((h, passages) => {
-                    const passagePreviewClassName = passages.className.match(/[\w-]*tao-[\w-]*/g)[0];
+                    const passagePreviewClassName = passages.className.match(/[\w-]*tao-[\w-]*/g);
                     if (passagePreviewClassName) {
-                        formatStyles(linkTag.sheet, passagePreviewClassName);
+                        formatStyles(linkTag.sheet, passagePreviewClassName[0]);
                     }
                 });
                 return;

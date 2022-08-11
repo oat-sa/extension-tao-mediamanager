@@ -34,13 +34,13 @@ define([
             const stylesheetUrl = linkTag.href.split('&stylesheet=');
             const rdf_styles = stylesheetUrl[0].split('%23').reverse()[0];
 
-            // Asset Preview
+            // Asset & Asset Preview
             const assets = $(`[data-identifier='${rdf_styles}']`);
             if (assets.length) {
                 assets.each((h, asset) => {
-                    const assetClassName = asset.children[0].className.match(/[\w-]*tao-[\w-]*/g);
+                    const assetClassName = asset.children[0].className.match(/[\w-]*tao-[\w-]*/g) || asset.children[1].className.match(/[\w-]*tao-[\w-]*/g);
                     if (assetClassName) {
-                        formatStyles(linkTag.sheet, assetClassName[0]);
+                        _formatStyles(linkTag.sheet, assetClassName[0]);
                     }
                 });
                 return;
@@ -54,7 +54,7 @@ define([
                     const passageWrapper = $(passages).find('.qti-include > div');
                     const passageItemClassName = passageWrapper[0] && passageWrapper[0].className && passageWrapper[0].className.match(/[\w-]*tao-[\w-]*/g);
                     if (passageItemClassName) {
-                        formatStyles(linkTag.sheet, passageItemClassName[0]);
+                        _formatStyles(linkTag.sheet, passageItemClassName[0]);
                     }
                 });
                 return;
@@ -66,7 +66,7 @@ define([
                 passagesPreview.each((h, passages) => {
                     const passagePreviewClassName = passages.className.match(/[\w-]*tao-[\w-]*/g);
                     if (passagePreviewClassName) {
-                        formatStyles(linkTag.sheet, passagePreviewClassName[0]);
+                        _formatStyles(linkTag.sheet, passagePreviewClassName[0]);
                     }
                 });
                 return;
@@ -74,7 +74,7 @@ define([
         }
     }
 
-    function formatStyles(linkTag, className) {
+    function _formatStyles(linkTag, className) {
         /**
          * @type {CSSRuleList}
          * @see https://developer.mozilla.org/en-US/docs/Web/API/CSSRuleList
@@ -175,7 +175,6 @@ define([
     }
 
     return {
-        formatStyles,
         handleStylesheetLoad
     };
 });

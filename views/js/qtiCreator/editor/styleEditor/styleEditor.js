@@ -305,14 +305,7 @@ define([
             // time difference between loading the css file and applying the styles
             setTimeout(
                 function () {
-                    // clean and format CSS styles with Browser API
-                    const cssFile = $(`[href="${link[0].href}"]`);
-                    if (cssFile && cssFile[0].sheet) {
-                        formatStyles.formatStyles(cssFile[0].sheet, mainClass);
-                    }
-
                     let isInit = false;
-
                     $(document).trigger('customcssloaded.styleeditor', [style]);
                     $(window).trigger('resize');
                     if (currentItem.pendingStylesheetsInit) {
@@ -344,6 +337,7 @@ define([
             const _href = itemConfig && urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', { uri: itemConfig.id, stylesheet: fileName }) || _link.attr('href');
             const _sep = _href.indexOf('?') > -1 ? '&' : '?';
             _link.attr('href', _href + _sep + new Date().getTime().toString());
+            _link[0].onload = (e => formatStyles.handleStylesheetLoad(e, stylesheet));
             return _link;
         })();
 

@@ -229,7 +229,7 @@ define([
             _getUri('save'),
             _.extend({}, itemConfig, {
                 cssJson: JSON.stringify({}),
-                stylesheetUri: `css/${stylesheet.attr('title')}`
+                stylesheetUri: `css/${stylesheet}`
             }),
             'POST'
         );

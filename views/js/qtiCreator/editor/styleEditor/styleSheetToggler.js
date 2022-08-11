@@ -134,9 +134,14 @@ define([
                     attr = context.isDisabled ? 'disabled-href' : 'href',
                     cssLinks = $('head link');
 
-                styleEditor.deleteStylesheet(context.stylesheetObj);
+                let cssUri = context.cssUri;
+                if (context.cssUri[0] === '/') {
+                    cssUri = context.cssUri.split('/').reverse()[0];
+                }
+                const deleteFile = context.stylesheetObj.attr('title') || cssUri;
+                styleEditor.deleteStylesheet(deleteFile);
 
-                cssLinks.filter(`[${  attr  }*="${  context.cssUri  }"]`).remove();
+                cssLinks.filter(`[${  attr  }*="${  cssUri  }"]`).remove();
                 context.li.remove();
 
                 $('.feedback-info').hide();

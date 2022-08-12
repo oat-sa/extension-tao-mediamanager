@@ -94,14 +94,19 @@ define([
                         })
                             .then(response => {
                                 response.children.forEach((stylesheet, index) => {
+                                    const stylesheetHref = urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
+                                        uri: passageUri,
+                                        stylesheet: stylesheet.name
+                                    });
+                                    if ($(`link[href*='${stylesheetHref}']`).length) {
+                                        //avoid load repeated CSS files on Item authoring Preview
+                                        return false;
+                                    }
                                     const serial = `stylesheet_${id}_${index}`;
                                     itemData.content.data.stylesheets[serial] = {
                                         qtiClass: 'stylesheet',
                                         attributes: {
-                                            href: urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
-                                                uri: passageUri,
-                                                stylesheet: stylesheet.name
-                                            }),
+                                            href: stylesheetHref,
                                             media: 'all',
                                             title: '',
                                             type: 'text/css',

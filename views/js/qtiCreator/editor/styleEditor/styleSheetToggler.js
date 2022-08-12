@@ -141,8 +141,15 @@ define([
                 const deleteFile = context.stylesheetObj.attr('title') || cssUri;
                 styleEditor.deleteStylesheet(deleteFile);
 
-                cssLinks.filter(`[${  attr  }*="${  cssUri  }"]`).remove();
+                // remove file from resourceMgr if it is cached
+                const mediaManager = $('#mediaManager');
+                if (mediaManager.children.length) {
+                    $('#mediaManager').children().trigger('filedelete.resourcemgr', [`/${context.label}`]);
+                }
+
+                cssLinks.filter(`[${attr}*="${cssUri}"]`).remove();
                 context.li.remove();
+
 
                 $('.feedback-info').hide();
                 _createInfoBox({

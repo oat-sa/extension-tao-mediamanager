@@ -241,15 +241,19 @@ define([
      */
     const download = function (uri, name) {
         verifyInit();
-        const style = uri.match(/stylesheet=(?<groupName>\w+)?/);
+        const style = uri.match(/stylesheet=(?<groupName>.+\.css)?/);
         let styleName = '';
         if (style && style.groups && style.groups.groupName) {
-            styleName = `${style.groups.groupName}.css`;
+            styleName = decodeURIComponent(style.groups.groupName);
         }
         const downloadUrl = urlUtil.build(_getUri('download'), {
             uri: globalConfig['id'],
             stylesheet: styleName
         });
+
+        if (!name.length) {
+            name = styleName;
+        }
 
         fetch(downloadUrl)
             .then(resp => resp.blob())

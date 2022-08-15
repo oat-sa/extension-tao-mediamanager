@@ -103,7 +103,11 @@ define([
                         let styleList = $('[data-css-res]');
                         if (styleList.length > 0) {
                             styleList.each((i, style) => {
-                                const styleGroup = style.dataset && style.dataset.cssRes && style.dataset.cssRes.match(/stylesheet=(?<groupName>.+\.css)?/);
+                                let styleGroup = style.dataset && style.dataset.cssRes && style.dataset.cssRes.match(/stylesheet=(?<groupName>.+\.css)?/);
+                                if (!styleGroup) {
+                                    // new added files, don't have 'stylesheet=' in cssRes
+                                    styleGroup = style.dataset && style.dataset.cssRes && style.dataset.cssRes.match(/(?<groupName>.+\.css)?/);
+                                }
                                 if (styleGroup && styleGroup.groups && styleGroup.groups.groupName) {
                                     styleListNames.push(`/${decodeURIComponent(styleGroup.groups.groupName)}`);
                                 }

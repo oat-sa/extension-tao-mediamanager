@@ -106,7 +106,7 @@ define([
                                 let styleGroup = style.dataset && style.dataset.cssRes && style.dataset.cssRes.match(/stylesheet=(?<groupName>.+\.css)?/);
                                 if (!styleGroup) {
                                     // new added files, don't have 'stylesheet=' in cssRes
-                                    styleGroup = style.dataset && style.dataset.cssRes && style.dataset.cssRes.match(/(?<groupName>.+\.css)?/);
+                                    styleGroup = style.dataset && style.dataset.cssRes && style.dataset.cssRes.match(/\/(?<groupName>.+\.css)?/);
                                 }
                                 if (styleGroup && styleGroup.groups && styleGroup.groups.groupName) {
                                     styleListNames.push(`/${decodeURIComponent(styleGroup.groups.groupName)}`);

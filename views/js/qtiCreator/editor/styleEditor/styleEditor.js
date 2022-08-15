@@ -243,7 +243,7 @@ define([
         verifyInit();
         let style = uri.match(/stylesheet=(?<groupName>.+\.css)?/);
         if (!style) {
-            uri.match(/(?<groupName>.+\.css)?/);
+            style = uri.match(/\/(?<groupName>.+\.css)?/);
         }
         let styleName = '';
         if (style && style.groups && style.groups.groupName) {

@@ -77,15 +77,15 @@ define([
         customStylesheet = '';
     // DOM element to hold the style
     const $styleElem = (function () {
-        let styleElem = $('#item-editor-user-styles');
-        if (!styleElem.length) {
-            styleElem = $('<style>', { id: 'item-editor-user-styles' });
-            $('head').append(styleElem);
-        } else {
-            styleElem.empty();
-        }
-        return styleElem;
-    })(),
+            let styleElem = $('#item-editor-user-styles');
+            if (!styleElem.length) {
+                styleElem = $('<style>', { id: 'item-editor-user-styles' });
+                $('head').append(styleElem);
+            } else {
+                styleElem.empty();
+            }
+            return styleElem;
+        })(),
         common = {
             title: __('Disable this stylesheet temporarily'),
             deleteTxt: __('Remove this stylesheet'),
@@ -165,7 +165,7 @@ define([
             if (searchClass.groups.className) {
                 mainClass = searchClass.groups.className;
             }
-        })
+        });
         selector = selector.replace(mainClassSelector, mainClass);
         selector = selector.replace(hashClassSelector, hashClass);
 
@@ -278,6 +278,11 @@ define([
     const addStylesheet = function (stylesheet, itemConfig) {
         let fileName, link, listEntry, parser;
         function loadStylesheet(linkElement, stylesheetObject, isLocal, isValid) {
+            // asynhroniusly loaded stylesheets should be inserted in right order
+            // relays on data-serial="creator_X" attribute, where X is order number
+            // see taoMediaManager/views/js/qtiCreator/helper/sharedStimulusLoader.js
+            const serialNumber = Number(linkElement.data('serial').replace('creator_', ''));
+            
             // in the given scenario we cannot test whether a remote stylesheet really exists
             // this would require to pipe all remote css via php curl
             const isInvalidLocal = isLocal && !isValid,
@@ -287,7 +292,8 @@ define([
                     title: common.title,
                     deleteTxt: common.deleteTxt,
                     downloadTxt: common.downloadTxt,
-                    editLabelTxt: isInvalidLocal ? common.isInValidLocalTxt : common.editLabelTxt
+                    editLabelTxt: isInvalidLocal ? common.isInValidLocalTxt : common.editLabelTxt,
+                    order: serialNumber
                 };
 
             // create list entry
@@ -296,15 +302,37 @@ define([
             listEntry.data('stylesheetObj', stylesheetObject);
 
             // initialize download button
-            $('#style-sheet-toggler').append(listEntry);
+            const listLinks = $('#style-sheet-toggler').find('[data-order]');
+            let insertedInList = false;
+            listLinks.each(function (){
+                const order = Number($(this).data('order'));
+                if (!insertedInList && order > serialNumber) {
+                    $(this).before(listEntry);
+                    insertedInList = true;
+                }
+            });
+            if (!insertedInList) {
+                $('#style-sheet-toggler').append(listEntry);
+            }
 
             if (isInvalidLocal) {
                 listEntry.addClass('not-available');
                 listEntry.find('[data-role="css-download"], .style-sheet-toggler').css('visibility', 'hidden');
                 return;
             }
-
-            $styleElem.before(linkElement);
+            // insert link according order
+            const cssLinks = $('link[data-serial^="creator"]');
+            let inserted = false;
+            cssLinks.each(function (){
+                const serialCur = Number($(this).data('serial').replace('creator_', ''));
+                if (!inserted && serialCur > serialNumber) {
+                    $(this).before(linkElement);
+                    inserted = true;
+                }
+            });
+            if (!inserted) {
+                $styleElem.before(linkElement);
+            }
 
             // time difference between loading the css file and applying the styles
             setTimeout(
@@ -338,10 +366,16 @@ define([
         // link with cache buster
         link = (function () {
             const _link = $(stylesheet.render());
-            const _href = itemConfig && urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', { uri: itemConfig.id, stylesheet: fileName }) || _link.attr('href');
+            const _href =
+                (itemConfig &&
+                    urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
+                        uri: itemConfig.id,
+                        stylesheet: fileName
+                    })) ||
+                _link.attr('href');
             const _sep = _href.indexOf('?') > -1 ? '&' : '?';
             _link.attr('href', _href + _sep + new Date().getTime().toString());
-            _link[0].onload = (e => formatStyles.handleStylesheetLoad(e, stylesheet));
+            _link[0].onload = e => formatStyles.handleStylesheetLoad(e, stylesheet);
             return _link;
         })();
 
@@ -446,10 +480,9 @@ define([
             $(document).trigger('customcssloaded.styleeditor', [style]);
         });
 
-        if(featuresService.isVisible(styleSheetManagerVisibilityKey, false)) {
+        if (featuresService.isVisible(styleSheetManagerVisibilityKey, false)) {
             $('#sidebar-right-css-manager').show();
         }
-
     };
 
     const getStyle = function () {
@@ -481,14 +514,14 @@ define([
     };
 
     const replaceHashClass = function (selector) {
-        return hashClass && selector.replace(hashClassSelector, hashClass) || selector;
+        return (hashClass && selector.replace(hashClassSelector, hashClass)) || selector;
     };
 
     const replaceMainClass = function (selector) {
-        return mainClass && selector.replace(mainClassSelector, mainClass) || selector;
+        return (mainClass && selector.replace(mainClassSelector, mainClass)) || selector;
     };
 
-    const clearCache = function() {
+    const clearCache = function () {
         removeOrphanedStylesheets();
         $(document).off('customcssloaded.styleeditor');
     };

@@ -24,7 +24,6 @@ namespace oat\taoMediaManager\model\classes\ServiceProvider;
 
 use oat\generis\model\data\Ontology;
 use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
-use oat\oatbox\event\EventManager;
 use oat\tao\model\accessControl\ActionAccessControl;
 use oat\tao\model\accessControl\PermissionChecker;
 use oat\tao\model\resources\Service\ClassCopierProxy;
@@ -42,7 +41,6 @@ use oat\taoMediaManager\model\classes\Copier\AssetContentCopier;
 use oat\taoMediaManager\model\classes\Copier\AssetMetadataCopier;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
-use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\sharedStimulus\css\repository\StylesheetRepository;
 use oat\taoMediaManager\model\sharedStimulus\css\service\ListStylesheetsService;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
@@ -55,6 +53,7 @@ use oat\taoMediaManager\model\Specification\MediaClassSpecification;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_iterator;
 
 class MediaServiceProvider implements ContainerServiceProviderInterface
 {
@@ -135,6 +134,12 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                 [
                     service(AssetContentCopier::class),
                 ]
+            )
+            ->call(
+                'withPermissionCopiers',
+                [
+                    tagged_iterator('tao.copier.permissions.instance.assets'),
+                ]
             );
 
         $services
@@ -146,6 +151,12 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                     service(ClassMetadataCopier::class),
                     service(InstanceCopier::class . '::ASSETS'),
                     service(ClassMetadataMapper::class),
+                ]
+            )
+            ->call(
+                'withPermissionCopiers',
+                [
+                    tagged_iterator('tao.copier.permissions.class.assets'),
                 ]
             );
 

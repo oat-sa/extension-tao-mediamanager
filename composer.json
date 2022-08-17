@@ -29,7 +29,7 @@
         "oat-sa/generis": ">=15.20.0",
         "oat-sa/tao-core": ">=50.21.0",
         "oat-sa/extension-tao-item": ">=11.13.4",
-        "oat-sa/extension-tao-itemqti": ">=29.9.0",
+        "oat-sa/extension-tao-itemqti": ">=29.12.0",
         "oat-sa/extension-tao-test": ">=15.0.0",
         "oat-sa/extension-tao-testqti-previewer": "*"
     },

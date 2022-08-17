@@ -22,8 +22,9 @@ define([
     'taoQtiItem/qtiCreator/model/qtiClasses',
     'taoMediaManager/qtiCreator/helper/createDummyItemData',
     'core/dataProvider/request',
-    'util/url'
-], function($, Loader, qtiClasses, creatorDummyItemData, request, urlUtil) {
+    'util/url',
+    'taoMediaManager/qtiCreator/helper/formatStyles'
+], function ($, Loader, qtiClasses, creatorDummyItemData, request, urlUtil, formatStyles ) {
     'use strict';
 
     const qtiNamespace = 'http://www.imsglobal.org/xsd/imsqti_v2p2';
@@ -39,11 +40,38 @@ define([
 
             if (config.id) {
                 const languagesList = request(languagesUrl);
-                const assetData = request(config.assetDataUrl, { id : config.id });
-                Promise.all([languagesList, assetData]).then((values) => {
+                const assetData = request(config.assetDataUrl, { id: config.id });
+                const assetStyles = request(config.assetDataStyles, { uri: config.id });
+                Promise.all([languagesList, assetData, assetStyles]).then((values) => {
                     let loader, itemData;
 
                     itemData = creatorDummyItemData(values[1]);
+
+                    if (values[2].children.length) {
+                        values[2].children.forEach((stylesheet, index) => {
+                            if (stylesheet.name !== 'tao-user-styles.css') {
+                                const serial = `creator_${index}`;
+                                const link = urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
+                                    uri: config.id,
+                                    stylesheet: stylesheet.name
+                                });
+                                // avoid adding the CSS file on Preview list everytime Asset is clicked
+                                itemData.stylesheets[serial] = {
+                                    qtiClass: 'stylesheet',
+                                    attributes: {
+                                        href: link,
+                                        media: 'all',
+                                        title: stylesheet.name,
+                                        type: 'text/css',
+                                        onload: (e => formatStyles.handleStylesheetLoad(e, stylesheet))
+                                    },
+                                    serial,
+                                    getComposingElements: () => ({})
+                                };
+                            }
+                        });
+                    }
+
 
                     loader = new Loader().setClassesLocation(qtiClasses);
                     loader.loadItemData(itemData, function(loadedItem) {

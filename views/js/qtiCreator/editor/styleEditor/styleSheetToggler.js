@@ -21,10 +21,11 @@ define([
     'taoMediaManager/qtiCreator/editor/styleEditor/styleEditor',
     'i18n',
     'lodash',
+    'util/url',
     'taoQtiItem/qtiCreator/model/Stylesheet',
     'tpl!taoQtiItem/qtiCreator/tpl/notifications/genericFeedbackPopup',
     'ui/resourcemgr'
-], function ($, styleEditor, __, _, Stylesheet, genericFeedbackPopup) {
+], function ($, styleEditor, __, _, urlUtil, Stylesheet, genericFeedbackPopup) {
     'use strict';
 
     var $doc = $(document);
@@ -33,28 +34,47 @@ define([
 
         var init = function (itemConfig) {
 
-            var cssToggler = $('#style-sheet-toggler'),
-                uploader = $('#stylesheet-uploader'),
-                customCssToggler = $('[data-custom-css]'),
-                getContext = function (trigger) {
-                    trigger = $(trigger);
-                    var li = trigger.closest('li'),
-                        stylesheetObj = li.data('stylesheetObj') || new Stylesheet({href : li.data('css-res')}),
-                        input = li.find('.style-sheet-label-editor'),
-                        labelBox = input.prev('.file-label'),
-                        label = input.val();
+            const _createInfoBox = function (data) {
+                var $messageBox = $(genericFeedbackPopup(data)),
+                    closeTrigger = $messageBox.find('.close-trigger');
 
-                    return {
-                        li: li,
-                        input: input,
-                        label: label,
-                        labelBox: labelBox,
-                        isCustomCss: !!li.data('custom-css'),
-                        isDisabled: li.find('.icon-preview').hasClass('disabled'),
-                        stylesheetObj: stylesheetObj,
-                        cssUri: stylesheetObj.attr('href')
-                    };
+                $('body').append($messageBox);
+
+                closeTrigger.on('click', function () {
+                    $messageBox.fadeOut(function () {
+                        $(this).remove();
+                    });
+                });
+
+                setTimeout(function () {
+                    closeTrigger.trigger('click');
+                }, 4000);
+
+                return $messageBox;
+            };
+
+            const cssToggler = $('#style-sheet-toggler');
+            const uploader = $('#stylesheet-uploader');
+            const customCssToggler = $('[data-custom-css]');
+            const getContext = function (trigger) {
+                trigger = $(trigger);
+                const li = trigger.closest('li');
+                const stylesheetObj = li.data('stylesheetObj') || new Stylesheet({ href: li.data('css-res') });
+                const input = li.find('.style-sheet-label-editor');
+                const labelBox = input.prev('.file-label');
+                const label = input.val();
+
+                return {
+                    li: li,
+                    input: input,
+                    label: label,
+                    labelBox: labelBox,
+                    isCustomCss: !!li.data('custom-css'),
+                    isDisabled: li.find('.icon-preview').hasClass('disabled'),
+                    stylesheetObj: stylesheetObj,
+                    cssUri: stylesheetObj.attr('href')
                 };
+            };
 
 
 
@@ -64,76 +84,100 @@ define([
             uploader.on('click', function () {
 
                 uploader.resourcemgr({
+                    className: 'stylesheets',
                     appendContainer: '#mediaManager',
-                    path: '/',
+                    pathParam: 'path',
+                    path: 'taomedia://mediamanager/',
                     root: 'local',
-                    browseUrl: itemConfig.getFilesUrl,
-                    uploadUrl: itemConfig.fileUploadUrl,
-                    deleteUrl: itemConfig.fileDeleteUrl,
-                    downloadUrl: itemConfig.fileDownloadUrl,
-                    fileExistsUrl : itemConfig.fileExistsUrl,
+                    browseUrl: urlUtil.route('getStylesheets', 'SharedStimulusStyling', 'taoMediaManager'),
+                    uploadUrl: urlUtil.route('upload', 'SharedStimulusStyling', 'taoMediaManager'),
+                    deleteUrl: urlUtil.route('fileDeleteUrl', 'SharedStimulusStyling', 'taoMediaManager'),
+                    downloadUrl: urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager'),
                     params: {
-                        uri: itemConfig.uri,
+                        uri: itemConfig.id,
                         lang: itemConfig.lang,
                         filters: 'text/css'
                     },
-                    pathParam: 'path',
                     select: function (e, files) {
-                        var i, l = files.length;
-                        for (i = 0; i < l; i++) {
-                            styleEditor.addStylesheet(files[i].file);
+                        let styleListNames = ['/tao-user-styles.css'];
+                        let styleList = $('[data-css-res]');
+                        if (styleList.length > 0) {
+                            styleList.each((i, style) => {
+                                let styleGroup = style.dataset && style.dataset.cssRes && style.dataset.cssRes.match(/stylesheet=(?<groupName>.+\.css)?/);
+                                if (!styleGroup) {
+                                    // new added files, don't have 'stylesheet=' in cssRes
+                                    styleGroup = style.dataset && style.dataset.cssRes && style.dataset.cssRes.match(/\/(?<groupName>.+\.css)?/);
+                                }
+                                if (styleGroup && styleGroup.groups && styleGroup.groups.groupName) {
+                                    styleListNames.push(`/${decodeURIComponent(styleGroup.groups.groupName)}`);
+                                }
+                            });
+                        }
+
+                        const l = files.length;
+                        for (let i = 0; i < l; i++) {
+                            if (styleListNames.includes(files[i].file)) {
+                                _createInfoBox({
+                                    message: __('A stylesheet named <b>%s</b> is already attached to the passage.').replace('%s', files[i].file.substring(1)),
+                                    type: 'error'
+                                });
+                            } else {
+                                styleEditor.addStylesheet(files[i].file, itemConfig);
+                            }
                         }
                     }
                 });
             });
 
-
             /**
              * Confirm to save the item
+             * @param {Object} trigger
              */
-            var deleteStylesheet = function(trigger) {
+            const deleteStylesheet = function(trigger) {
                 var context = getContext(trigger),
                     attr = context.isDisabled ? 'disabled-href' : 'href',
                     cssLinks = $('head link');
 
+                let cssUri = context.cssUri;
+                if (context.cssUri[0] === '/') {
+                    cssUri = context.cssUri.split('/').reverse()[0];
+                }
+                const deleteFile = context.stylesheetObj.attr('title') || cssUri;
+                styleEditor.deleteStylesheet(deleteFile);
 
-                styleEditor.getItem().removeStyleSheet(context.stylesheetObj);
+                // remove file from resourceMgr if it is cached
+                const mediaManager = $('#mediaManager');
+                if (mediaManager.children.length) {
+                    $('#mediaManager').children().trigger('filedelete.resourcemgr', [`/${context.label}`]);
+                }
 
-                cssLinks.filter('[' + attr + '*="' + context.cssUri + '"]').remove();
+                cssLinks.filter(`[${attr}*="${cssUri}"]`).remove();
                 context.li.remove();
+
 
                 $('.feedback-info').hide();
                 _createInfoBox({
                     message: __('Style Sheet <b>%s</b> removed<br> Click <i>Add Style Sheet</i> to re-apply.').replace('%s', context.label),
                     type: 'info'
                 });
-
-                $doc.trigger('customcssloaded.styleeditor', [styleEditor.getStyle()]);
             };
 
-
-            /**
-             * Modify stylesheet title (enable)
-             */
-            var initLabelEditor = function (trigger) {
-                var context = getContext(trigger);
-                context.labelBox.hide();
-                context.input.show();
-            };
 
             /**
              * Download current stylesheet
              *
-             * @param trigger
+             * @param {Object} trigger
              */
-            var downloadStylesheet = function(trigger) {
-                styleEditor.download(getContext(trigger).cssUri);
+            const downloadStylesheet = function(trigger) {
+                styleEditor.download(getContext(trigger).stylesheetObj.attributes.href, getContext(trigger).stylesheetObj.attributes.title);
             };
 
             /**
              * Modify stylesheet title (save modification)
+             * @param {Object} trigger
+             * @returns {Boolean}
              */
-            var saveLabel = function (trigger) {
+            const saveLabel = function (trigger) {
                 var context = getContext(trigger),
                     title = $.trim(context.input.val());
 
@@ -149,37 +193,37 @@ define([
 
             /**
              * Dis/enable style sheets
+             * @param {Object} trigger
              */
-            var handleAvailability = function (trigger) {
-                var context = getContext(trigger),
-                    link,
-                    attrTo = 'disabled-href',
-                    attrFrom = 'href';
+            const handleAvailability = function (trigger) {
+                const context = getContext(trigger);
 
                 // custom styles are handled in a style element, not in a link
-                if (context.isCustomCss) {
+                if (context.isCustomCss || context.label === 'tao-user-styles.css') {
                     if (context.isDisabled) {
-                        styleEditor.create();
+                        $('#item-editor-user-styles')[0].disabled = false;
                         customCssToggler.removeClass('not-available');
-                    }
-                    else {
-                        styleEditor.erase();
+                    } else {
+                        $('#item-editor-user-styles')[0].disabled = true;
                         customCssToggler.addClass('not-available');
                     }
+                    // add some visual feed back to the triggers
+                    $(trigger).toggleClass('disabled');
+                } else {
+                    // all other styles are handled via their link element
+                    const myLink = $(`link[data-serial=${context.stylesheetObj.serial}`);
+                    myLink.ready(() => {
+                        if (context.isDisabled) {
+                            myLink[0].sheet.disabled = false;
+                            context.li.removeClass('not-available');
+                        } else {
+                            myLink[0].sheet.disabled = true;
+                            context.li.addClass('not-available');
+                        }
+                        // add some visual feed back to the triggers
+                        $(trigger).toggleClass('disabled');
+                    });
                 }
-                // all other styles are handled via their link element
-                else {
-                    if (context.isDisabled) {
-                        attrTo = 'href';
-                        attrFrom = 'disabled-href';
-                    }
-
-                    link = $('link[' + attrFrom + '$="' + context.cssUri + '"]');
-                    link.attr(attrTo, link.attr(attrFrom)).removeAttr(attrFrom);
-                }
-
-                // add some visual feed back to the triggers
-                $(trigger).toggleClass('disabled');
             };
 
             /**
@@ -190,17 +234,14 @@ define([
                     className = target.className;
 
                 // distribute click actions
-                if (className.indexOf('icon-bin') > -1) {
-                    deleteStylesheet(e.target);
-                }
-                else if (className.indexOf('file-label') > -1) {
-                    initLabelEditor(e.target);
-                }
-                else if (className.indexOf('icon-preview') > -1) {
+                if (className.indexOf('icon-preview') > -1) {
                     handleAvailability(e.target);
-                }
-                else if(className.indexOf('icon-download') > -1) {
-                    downloadStylesheet(e.target);
+                } else if (target.parentElement.className !== 'not-available') {
+                    if (className.indexOf('icon-bin') > -1) {
+                        deleteStylesheet(e.target);
+                    } else if (className.indexOf('icon-download') > -1) {
+                        downloadStylesheet(e.target);
+                    }
                 }
             });
 
@@ -222,26 +263,6 @@ define([
             });
 
 
-        };
-
-
-        var _createInfoBox = function(data){
-            var $messageBox = $(genericFeedbackPopup(data)),
-                closeTrigger = $messageBox.find('.close-trigger');
-
-            $('body').append($messageBox);
-
-            closeTrigger.on('click', function(){
-                $messageBox.fadeOut(function(){
-                    $(this).remove();
-                });
-            });
-
-            setTimeout(function() {
-                closeTrigger.trigger('click');
-            }, 4523);
-
-            return $messageBox;
         };
 
         return {

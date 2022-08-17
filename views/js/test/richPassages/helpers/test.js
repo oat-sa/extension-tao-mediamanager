@@ -25,7 +25,7 @@ define([
     'taoMediaManager/richPassage/helpers',
     'json!taoMediaManager/test/richPassages/helpers/mock-itemData.json',
     'lib/jquery.mockjax/jquery.mockjax'
-], function($, _, richPassages, itemData) {
+], function ($, _, richPassages, itemData) {
     'use strict';
 
     // prevent the AJAX mocks to pollute the logs
@@ -84,7 +84,7 @@ define([
             url: '*/getStylesheets',
             response: function(request) {
                 assert.deepEqual(request.data, {uri: 'https://tao.docker.localhost/ontologies/tao.rdf#i60efee99dc8d4248f60586bdcf2dc3f5'}, 'The provider has sent the request');
-                this.responseText = '{"success":true,"data":["tao-user-styles.css"]}';
+                this.responseText = '{"success":true,"data":{"path":"\/","label":"Passage stylesheets","childrenLimit":100,"total":2,"children":[{"name":"newAsset.css","uri":"\/newAsset.css","mime":"text\/css","filePath":"\/newAsset.css","size":1},{"name":"tao-user-styles.css","uri":"\/tao-user-styles.css","mime":"text\/css","filePath":"\/tao-user-styles.css","size":6}]}}';
             }
         });
 
@@ -92,12 +92,12 @@ define([
         const itemDataClone = _.clone(itemData);
         richPassages.injectPassagesStylesInItemData(passage, itemDataClone)
             .then(data => {
-                assert.equal(_.size(data.content.data.stylesheets), 2, 'Injected 1 stylesheet');
+                assert.equal(_.size(data.content.data.stylesheets), 3, 'Injected 2 stylesheet');
                 ready();
             });
     });
 
-    QUnit.test('checkAndInjectStylesInItemData', function(assert) {
+    QUnit.test('checkAndInjectStylesInItemData', function (assert) {
         var ready = assert.async();
         assert.expect(2);
 
@@ -105,14 +105,14 @@ define([
         $.mockjax({
             url: '*/getStylesheets',
             response: function() {
-                this.responseText = '{"success":true,"data":["tao-user-styles.css"]}';
+                this.responseText = '{"success":true,"data":{"path":"\/","label":"Passage stylesheets","childrenLimit":100,"total":0,"children":[]}}';
             }
         });
         assert.ok(richPassages.checkAndInjectStylesInItemData() instanceof Promise, 'The promise is provided');
         const itemDataClone = _.clone(itemData);
         richPassages.checkAndInjectStylesInItemData(itemDataClone)
             .then(data => {
-                assert.equal(_.size(data.content.data.stylesheets), 3, 'Injected 2 stylesheets');
+                assert.equal(_.size(data.content.data.stylesheets), 3, 'Injected 0 stylesheets');
                 ready();
             });
     });

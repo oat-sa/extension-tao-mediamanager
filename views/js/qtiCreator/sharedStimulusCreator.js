@@ -68,12 +68,12 @@ define([
      * @param {String} id - the Shared Stimulus ID
      * @param {String} uri - the Shared Stimulus URI
      * @param {String} assetDataUrl - the data url
-     *
+     * @param {String} assetDataStyles
      * @returns {Promise} that resolve with the loaded item model
      */
-    const loadSharedStimulus = function loadSharedStimulus(id, uri, assetDataUrl) {
+    const loadSharedStimulus = function loadSharedStimulus(id, uri, assetDataUrl, assetDataStyles) {
         return new Promise(function (resolve, reject) {
-            sharedStimulusLoader.loadSharedStimulus({ id, uri, assetDataUrl }, function (item) {
+            sharedStimulusLoader.loadSharedStimulus({ id, uri, assetDataUrl, assetDataStyles }, function (item) {
                 if (!item) {
                     reject(new Error('Unable to load the Shared Stimulus'));
                 }
@@ -168,9 +168,8 @@ define([
                  */
                 this.on('save', silent => {
                     const item = this.getItem();
-                    const styles = styleEditor.getStyle();
-                    if (_.size(styles) && !item.attributes.class) {
-                        item.attributes.class = this.hashClass;
+                    if (!item.attributes.class) {
+                        item.attributes.class = sharedStimulusCreator.mainClass;
                     }
 
                     const xml = xmlNsHandler.restoreNs(xmlRenderer.render(item), item.getNamespaces());
@@ -207,7 +206,7 @@ define([
                     this.destroy();
                 });
 
-                loadSharedStimulus(config.properties.id, config.properties.uri, config.properties.assetDataUrl)
+                loadSharedStimulus(config.properties.id, config.properties.uri, config.properties.assetDataUrl, config.properties.assetDataStyles)
                     .then(item => {
                         if (!_.isObject(item)) {
                             this.trigger('error', new Error(`Unable to load the item ${config.properties.label}`));
@@ -282,7 +281,7 @@ define([
                             case 'sleep':
                                 if (!$itemContainer.find('.widget-box.edit-active').length) {
                                     $itemContainer.addClass('focus-border');
-                                    styleEditor.setHashClass(sharedStimulusCreator.hashClass);
+                                    styleEditor.getMainClass(item.class);
                                 }
                                 break;
                         }
@@ -313,11 +312,11 @@ define([
                                 widget = item.data('widget');
 
                                 item.attributes.class
-                                    ? styleEditor.setHashClass(item.attributes.class)
-                                    : styleEditor.generateHashClass();
-                                sharedStimulusCreator.hashClass = styleEditor.getHashClass();
+                                    ? styleEditor.setMainClass(item.attributes.class)
+                                    : styleEditor.generateMainClass();
+                                sharedStimulusCreator.mainClass = styleEditor.getMainClass();
                                 // set class on container for style editor
-                                widget.$container.find('.qti-itemBody').addClass(sharedStimulusCreator.hashClass);
+                                widget.$container.find('.qti-itemBody').addClass(sharedStimulusCreator.mainClass);
 
                                 propertiesPanel(areaBroker.getPropertyPanelArea(), widget, config.properties);
 

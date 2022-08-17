@@ -1,4 +1,4 @@
-<li data-css-res="{{path}}">
+<li data-css-res="{{path}}" data-order="{{order}}">
     <span class="icon-preview style-sheet-toggler" title="{{title}}"></span>
     <span class="file-label truncate" title="{{editLabelTxt}}">{{label}}</span>
     <input type="text" class="style-sheet-label-editor" value="{{label}}">

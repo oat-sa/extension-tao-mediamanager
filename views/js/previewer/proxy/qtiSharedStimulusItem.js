@@ -28,8 +28,9 @@ define([
     'core/promiseQueue',
     'core/dataProvider/request',
     'util/url',
-    'taoMediaManager/qtiCreator/helper/createDummyItemData'
-], function ($, _, __, promiseQueue, request, urlUtil, creatorDummyItemData) {
+    'taoMediaManager/qtiCreator/helper/createDummyItemData',
+    'taoMediaManager/qtiCreator/helper/formatStyles'
+], function ($, _, __, promiseQueue, request, urlUtil, creatorDummyItemData, formatStyles) {
     'use strict';
 
     const serviceController = 'SharedStimulus';
@@ -93,22 +94,33 @@ define([
                     type: 'qti',
                     data: itemData
                 };
-                styles.forEach((stylesheet, index) => {
-                    const serial = `stylesheet_${index}`;
-                    data.content.data.stylesheets[serial] = {
-                        qtiClass: 'stylesheet',
-                        attributes: {
-                            href: urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
-                                uri: identifier,
-                                stylesheet: stylesheet
-                            }),
-                            media: 'all',
-                            title: '',
-                            type: 'text/css'
-                        },
-                        serial,
-                        getComposingElements: () => ({})
-                    };
+                const assetStyles = $('link[data-serial*="preview"]');
+                if (assetStyles.length) {
+                    assetStyles.remove();
+                }
+
+                styles.children.forEach((stylesheet, index) => {
+                    const serial = `preview_${index}`;
+                    const link = urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
+                        uri: identifier,
+                        stylesheet: stylesheet.name
+                    });
+                    let cssFile = Object.values(document.styleSheets).find(sheet => typeof sheet.href === 'string' && sheet.href === link);
+                    if (!cssFile) {
+                        // avoid adding the CSS file on Preview list everytime Asset is clicked
+                        data.content.data.stylesheets[serial] = {
+                            qtiClass: 'stylesheet',
+                            attributes: {
+                                href: link,
+                                media: 'all',
+                                title: '',
+                                type: 'text/css',
+                                onload: (e => formatStyles.handleStylesheetLoad(e, stylesheet))
+                            },
+                            serial,
+                            getComposingElements: () => ({})
+                        };
+                    }
                 });
                 return data;
             });

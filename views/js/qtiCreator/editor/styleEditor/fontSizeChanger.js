@@ -40,8 +40,12 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
 
         // initiate font-size for Block
         const styles = styleEditor.getStyle() || {};
+        const itemSelectorOld = itemSelector.replace(' *', ''); // previous version was without *
         if (styles[itemSelector] && styles[itemSelector]['font-size']) {
             itemFontSize = parseInt(styles[itemSelector]['font-size'], 10);
+            $input.val(itemFontSize);
+        }  if (styles[itemSelectorOld] && styles[itemSelectorOld]['font-size']) {
+            itemFontSize = parseInt(styles[itemSelectorOld]['font-size'], 10);
             $input.val(itemFontSize);
         } else {
             $input.val('');
@@ -117,6 +121,9 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
         $(document).on('customcssloaded.styleeditor', function (e, style) {
             if (style[itemSelector] && style[itemSelector]['font-size']) {
                 itemFontSize = parseInt(style[itemSelector]['font-size'], 10);
+                $input.val(itemFontSize);
+            } if (style[itemSelectorOld] && style[itemSelectorOld]['font-size']) {
+                itemFontSize = parseInt(style[itemSelectorOld]['font-size'], 10);
                 $input.val(itemFontSize);
             } else {
                 $input.val('');

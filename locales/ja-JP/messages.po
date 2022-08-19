@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 2022.01\n"
-"PO-Revision-Date: 2022-01-24T17:24:46\n"
+"Project-Id-Version: TAO 2022.09\n"
+"PO-Revision-Date: 2022-08-12T16:45:58\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ja-JP\n"
@@ -12,6 +12,12 @@ msgstr ""
 "X-Poedit-Basepath: ../../\n"
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
+
+msgid "%d shared stimulus media not exists"
+msgstr ""
+
+msgid "%s errors while processing shared stimulus media"
+msgstr ""
 
 msgid "%s media on this environment"
 msgstr "この環境の %s メディア"
@@ -38,7 +44,7 @@ msgid "Are you sure you want to delete this \"%s\"?"
 msgstr "「%s」を削除してもよろしいですか？"
 
 msgid "Are you sure you want to delete this class and all of its content?"
-msgstr ""
+msgstr "このクラスとその内容をすべて削除してよいのですか？"
 
 #, tao-public
 msgid "Assets"
@@ -61,6 +67,10 @@ msgid "Border color"
 msgstr ""
 
 msgid "Center"
+msgstr ""
+
+#, tao-public
+msgid "Copy To"
 msgstr ""
 
 msgid "Current path: %s"
@@ -110,10 +120,10 @@ msgstr "エクスポート"
 msgid "Export Media as Zip file"
 msgstr "メディアをZIPファイルにエクスポート"
 
-msgid "Fail to edit shared stimulus"
+msgid "Fail to edit Shared Stimulus"
 msgstr "シェアードスティミュラスの編集に失敗しました。"
 
-msgid "Fail to edit Shared Stimulus"
+msgid "Fail to edit shared stimulus"
 msgstr "シェアードスティミュラスの編集に失敗しました。"
 
 msgid "Fail to import media"
@@ -156,8 +166,11 @@ msgstr "インスタンスが保存されました"
 msgid "Issue while modifying %s"
 msgstr "%s の変更中に問題が発生しました"
 
-msgid "Language"
+msgid "Issue while processing \"%s"
 msgstr ""
+
+msgid "Language"
+msgstr "言語"
 
 msgid "Left"
 msgstr ""
@@ -259,7 +272,7 @@ msgid "Remove this stylesheet"
 msgstr ""
 
 msgid "Replace Asset"
-msgstr ""
+msgstr "アセット入替"
 
 msgid "Request should provide a media identifier as the id or instanceUri parameter"
 msgstr ""

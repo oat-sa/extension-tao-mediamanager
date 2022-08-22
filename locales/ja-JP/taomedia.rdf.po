@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 2022.01\n"
-"PO-Revision-Date: 2022-01-24T17:24:46\n"
+"Project-Id-Version: TAO 2022.09\n"
+"PO-Revision-Date: 2022-08-12T16:45:58\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ja-JP\n"
@@ -23,22 +23,22 @@ msgstr ""
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#AltText
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Alternative Text"
-msgstr ""
+msgstr "代替テキスト"
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#AltText
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Alternative Text"
-msgstr ""
+msgstr "代替テキスト"
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#Language
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Language"
-msgstr ""
+msgstr "言語"
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#Language
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Language"
-msgstr ""
+msgstr "言語"
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"

@@ -86,8 +86,9 @@ define([
                 uploader.resourcemgr({
                     className: 'stylesheets',
                     appendContainer: '#mediaManager',
-                    pathParam: 'path',
+                    pathParam: 'stylesheet',
                     path: 'taomedia://mediamanager/',
+                    stylesheet: 'taomedia://mediamanager/',
                     root: 'local',
                     browseUrl: urlUtil.route('getStylesheets', 'SharedStimulusStyling', 'taoMediaManager'),
                     uploadUrl: urlUtil.route('upload', 'SharedStimulusStyling', 'taoMediaManager'),

@@ -136,6 +136,14 @@
                 }
             }
         }
+        .file-preview {
+            h2[data-toggle*=".actions"] {
+                display: none;
+                & + .actions {
+                    display: none;
+                }
+            }
+        }
     }
 }
 

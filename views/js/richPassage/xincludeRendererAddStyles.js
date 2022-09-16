@@ -15,10 +15,17 @@
  *
  * Copyright (c) 2021 (original work) Open Assessment Technologies SA ;
  */
-define(['jquery', 'uri', 'util/url', 'core/dataProvider/request'], function ($, uri, urlUtil, request) {
+define([
+    'lodash',
+    'jquery',
+    'uri',
+    'util/url',
+    'core/dataProvider/request',
+    'taoMediaManager/qtiCreator/helper/formatStyles'
+], function (_, $, uri, urlUtil, request, formatStyles) {
     'use strict';
 
-    return function xincludeRendererAddStyles(passageHref, head = $('head')) {
+    return function xincludeRendererAddStyles(passageHref, passageClassName, serial, head = $('head'), preview = false) {
         if (/taomedia:\/\/mediamanager\//.test(passageHref)) {
             // check rich passage styles and inject them to item
             const passageUri = uri.decode(passageHref.replace('taomedia://mediamanager/', ''));
@@ -26,16 +33,22 @@ define(['jquery', 'uri', 'util/url', 'core/dataProvider/request'], function ($, 
                 uri: passageUri
             })
                 .then(response => {
-                    response.forEach(element => {
+                    response.children.forEach(stylesheet => {
+                        // check different names of stylesheets
+                        const link = urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
+                            uri: passageUri,
+                            stylesheet: stylesheet.name
+                        });
                         const styleElem = $('<link>', {
                             rel: 'stylesheet',
                             type: 'text/css',
-                            href: urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
-                                uri: passageUri,
-                                stylesheet: element
-                            }),
+                            href: link,
                             'data-serial': passageUri
                         });
+                        if (!preview) {
+                            styleElem[0].onload = (e => formatStyles.handleStylesheetLoad(e, stylesheet));
+                            styleElem[0].dataset['serial'] = serial;
+                        }
                         head.append(styleElem);
                     });
                 })

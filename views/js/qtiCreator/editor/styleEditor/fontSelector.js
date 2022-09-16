@@ -46,9 +46,10 @@ define([
      */
     const fontSelector = function ($container) {
         const selector = 'select#item-editor-font-selector',
-            $selector = $container.find(selector),
-            target = styleEditor.replaceHashClass($selector.data('target')),
-            normalize = function (font) {
+            $selector = $container.find(selector);
+        let target = styleEditor.replaceMainClass($selector.data('target'));
+        target = styleEditor.replaceHashClass(target);
+        let normalize = function (font) {
                 return font.replace(/"/g, "'").replace(/, /g, ',');
             },
             clean = function (font) {
@@ -120,7 +121,7 @@ define([
          */
         $(document).on('customcssloaded.styleeditor', function (e, style) {
             if (style[target] && style[target]['font-family']) {
-                $selector.select2('val', style[target]['font-family']);
+                $selector.select2('val', style[target]['font-family'].replace(' !important', ''));
                 $(`${selector} option:selected`).first().attr('selected', 'selected');
             }
             applyToStylesEditor = false;

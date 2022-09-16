@@ -52,7 +52,7 @@
                 &:before {
                     font-size: 1.2rem;
                 }
-                
+
             }
             .icon-larger {
                 &:before {
@@ -60,8 +60,6 @@
                 }
             }
         }
-    }
-    .item-editor-sidebar {
         .item-editor-color-picker {
             .color-trigger {
                 background: none;
@@ -74,6 +72,29 @@
             .reset-button {
                 background: none;
                 color: black;
+            }
+        }
+        #style-sheet-toggler {
+            .file-label {
+                cursor: default;
+                &:hover {
+                    color: inherit;
+                }
+            }
+            [data-custom-css="custom-css"] span:last-child {
+                cursor: default;
+            }
+        }
+    }
+    #mediaManager {
+        .stylesheets {
+            .file-selector {
+                .actions {
+                    text-align: right;
+                    a:not(.select) {
+                        display: none;
+                    }
+                }
             }
         }
     }

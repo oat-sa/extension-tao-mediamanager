@@ -29,10 +29,14 @@ define([
     'util/urlParser',
     'core/dataProvider/request',
     'tpl!taoMediaManager/qtiCreator/tpl/toolbars/cssToggler',
+    'taoMediaManager/qtiCreator/helper/formatStyles',
+    'util/url',
+    'services/features',
     'jquery.fileDownload'
-], function ($, _, __, UrlParser, request, cssTpl) {
+], function ($, _, __, UrlParser, request, cssTpl, formatStyles, urlUtil, featuresService) {
     'use strict';
 
+    const styleSheetManagerVisibilityKey = 'taoMediaManager/creator/StyleSheetManager';
     let itemConfig;
 
     /**
@@ -61,9 +65,11 @@ define([
     };
 
     // hash class for shared stimulus styles
+    const mainClassSelector = 'mainClass';
     const hashClassSelector = 'hashClass';
     const taoHashClassPrefix = 'tao-';
     let hashClass = '';
+    let mainClass = '';
 
     // stylesheet as object
     let style = {},
@@ -153,7 +159,16 @@ define([
      * @param {{string}} value
      */
     const apply = function (selector, property, value) {
+        const itemBodyClass = document.querySelector('.qti-itemBody').classList;
+        itemBodyClass.forEach(function (className) {
+            const searchClass = className.match(/(?<className>tao-\w+)?/); // eslint-disable-line
+            if (searchClass.groups.className) {
+                mainClass = searchClass.groups.className;
+            }
+        });
+        selector = selector.replace(mainClassSelector, mainClass);
         selector = selector.replace(hashClassSelector, hashClass);
+
         style[selector] = style[selector] || {};
 
         // delete this rule
@@ -164,6 +179,7 @@ define([
             }
         } else {
             // add this rule
+            value = value.includes('!important') ? value : `${value} !important`;
             style[selector][property] = value;
         }
 
@@ -207,19 +223,54 @@ define([
         );
     };
 
+    const deleteStylesheet = function (stylesheet) {
+        verifyInit();
+        return request(
+            _getUri('save'),
+            _.extend({}, itemConfig, {
+                cssJson: JSON.stringify({}),
+                stylesheetUri: `css/${stylesheet}`
+            }),
+            'POST'
+        );
+    };
+
     /**
      * Download CSS as file
      * @param {String} uri
      */
-    const download = function (uri) {
+    const download = function (uri, name) {
         verifyInit();
-        $.fileDownload(_getUri('download'), {
-            preparingMessageHtml: common.preparingMessageHtml,
-            failMessageHtml: common.failMessageHtml,
-            successCallback: function () {},
-            httpMethod: 'POST',
-            data: _.extend({}, itemConfig, { stylesheetUri: uri })
+        let style = uri.match(/stylesheet=(?<groupName>.+\.css)?/);
+        if (!style) {
+            style = uri.match(/\/(?<groupName>.+\.css)?/);
+        }
+        let styleName = '';
+        if (style && style.groups && style.groups.groupName) {
+            styleName = decodeURIComponent(style.groups.groupName);
+        }
+        const downloadUrl = urlUtil.build(_getUri('download'), {
+            uri: globalConfig['id'],
+            stylesheet: styleName
         });
+
+        if (!name.length) {
+            name = styleName;
+        }
+
+        fetch(downloadUrl)
+            .then(resp => resp.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = name;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(() => common.failMessageHtml);
     };
 
     /**
@@ -227,9 +278,14 @@ define([
      *
      * @param {Object} stylesheet
      */
-    const addStylesheet = function (stylesheet) {
+    const addStylesheet = function (stylesheet, itemConfig) {
         let fileName, link, listEntry, parser;
         function loadStylesheet(linkElement, stylesheetObject, isLocal, isValid) {
+            // asynhroniusly loaded stylesheets should be inserted in right order
+            // relays on data-serial="creator_X" attribute, where X is order number
+            // see taoMediaManager/views/js/qtiCreator/helper/sharedStimulusLoader.js
+            const serialNumber = Number(linkElement.data('serial').replace('creator_', ''));
+            
             // in the given scenario we cannot test whether a remote stylesheet really exists
             // this would require to pipe all remote css via php curl
             const isInvalidLocal = isLocal && !isValid,
@@ -239,7 +295,8 @@ define([
                     title: common.title,
                     deleteTxt: common.deleteTxt,
                     downloadTxt: common.downloadTxt,
-                    editLabelTxt: isInvalidLocal ? common.isInValidLocalTxt : common.editLabelTxt
+                    editLabelTxt: isInvalidLocal ? common.isInValidLocalTxt : common.editLabelTxt,
+                    order: serialNumber
                 };
 
             // create list entry
@@ -248,21 +305,42 @@ define([
             listEntry.data('stylesheetObj', stylesheetObject);
 
             // initialize download button
-            $('#style-sheet-toggler').append(listEntry);
+            const listLinks = $('#style-sheet-toggler').find('[data-order]');
+            let insertedInList = false;
+            listLinks.each(function (){
+                const order = Number($(this).data('order'));
+                if (!insertedInList && order > serialNumber) {
+                    $(this).before(listEntry);
+                    insertedInList = true;
+                }
+            });
+            if (!insertedInList) {
+                $('#style-sheet-toggler').append(listEntry);
+            }
 
             if (isInvalidLocal) {
                 listEntry.addClass('not-available');
                 listEntry.find('[data-role="css-download"], .style-sheet-toggler').css('visibility', 'hidden');
                 return;
             }
-
-            $styleElem.before(linkElement);
+            // insert link according order
+            const cssLinks = $('link[data-serial^="creator"]');
+            let inserted = false;
+            cssLinks.each(function (){
+                const serialCur = Number($(this).data('serial').replace('creator_', ''));
+                if (!inserted && serialCur > serialNumber) {
+                    $(this).before(linkElement);
+                    inserted = true;
+                }
+            });
+            if (!inserted) {
+                $styleElem.before(linkElement);
+            }
 
             // time difference between loading the css file and applying the styles
             setTimeout(
                 function () {
                     let isInit = false;
-
                     $(document).trigger('customcssloaded.styleeditor', [style]);
                     $(window).trigger('resize');
                     if (currentItem.pendingStylesheetsInit) {
@@ -290,10 +368,17 @@ define([
         fileName = _basename(stylesheet.attr('href'));
         // link with cache buster
         link = (function () {
-            const _link = $(stylesheet.render()),
-                _href = _link.attr('href'),
-                _sep = _href.indexOf('?') > -1 ? '&' : '?';
+            const _link = $(stylesheet.render());
+            const _href =
+                (itemConfig &&
+                    urlUtil.route('loadStylesheet', 'SharedStimulusStyling', 'taoMediaManager', {
+                        uri: itemConfig.id,
+                        stylesheet: fileName
+                    })) ||
+                _link.attr('href');
+            const _sep = _href.indexOf('?') > -1 ? '&' : '?';
             _link.attr('href', _href + _sep + new Date().getTime().toString());
+            _link[0].onload = e => formatStyles.handleStylesheetLoad(e, stylesheet);
             return _link;
         })();
 
@@ -397,6 +482,10 @@ define([
             // inform editors about custom sheet
             $(document).trigger('customcssloaded.styleeditor', [style]);
         });
+
+        if (featuresService.isVisible(styleSheetManagerVisibilityKey, false)) {
+            $('#sidebar-right-css-manager').show();
+        }
     };
 
     const getStyle = function () {
@@ -407,19 +496,35 @@ define([
         return hashClass;
     };
 
+    const getMainClass = function () {
+        return mainClass;
+    };
+
     const setHashClass = function (cssClass) {
         hashClass = cssClass;
+    };
+
+    const setMainClass = function (cssClass) {
+        mainClass = cssClass;
     };
 
     const generateHashClass = function () {
         return (hashClass = `${taoHashClassPrefix}${Math.random().toString(36).substr(2, 9)}`);
     };
 
-    const replaceHashClass = function (selector) {
-        return selector.replace(hashClassSelector, hashClass);
+    const generateMainClass = function () {
+        return (mainClass = `${taoHashClassPrefix}${Math.random().toString(36).substr(2, 9)}`);
     };
 
-    const clearCache = function() {
+    const replaceHashClass = function (selector) {
+        return (hashClass && selector.replace(hashClassSelector, hashClass)) || selector;
+    };
+
+    const replaceMainClass = function (selector) {
+        return (mainClass && selector.replace(mainClassSelector, mainClass)) || selector;
+    };
+
+    const clearCache = function () {
         removeOrphanedStylesheets();
         $(document).off('customcssloaded.styleeditor');
     };
@@ -427,6 +532,7 @@ define([
     return {
         apply: apply,
         save: save,
+        deleteStylesheet: deleteStylesheet,
         download: download,
         erase: erase,
         init: init,
@@ -438,6 +544,10 @@ define([
         setHashClass: setHashClass,
         generateHashClass: generateHashClass,
         replaceHashClass: replaceHashClass,
+        getMainClass: getMainClass,
+        setMainClass: setMainClass,
+        generateMainClass: generateMainClass,
+        replaceMainClass: replaceMainClass,
         clearCache: clearCache
     };
 });

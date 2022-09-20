@@ -39,7 +39,6 @@
         }
     },
     "require-dev": {
-        "mikey179/vfsstream": "~1",
-        "phpspec/prophecy": "*"
+        "mikey179/vfsstream": "~1"
     }
 }

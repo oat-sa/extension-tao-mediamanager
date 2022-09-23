@@ -88,7 +88,7 @@
                                         <button class="icon-eraser reset-button" data-value="color"
                                               aria-label="{{__ 'Remove custom text color'}}"></button>
                                         <button class="color-trigger" id="initial-color" data-value="color"
-                                              data-target="body div.qti-item .mainClass *"></button>
+                                              data-target="body div.qti-item .mainClass"></button>
                                     </div>
                                     <div class="clearfix">
                                         <label for="initial-color" class="truncate">{{__ 'Border color'}}</label>
@@ -204,7 +204,7 @@
 
                             <div class="reset-group">
                                 <select
-                                    data-target="body div.qti-item .mainClass .custom-text-box.hashClass .custom-text-box.hashClass *"
+                                    data-target="body div.qti-item .mainClass .custom-text-box.hashClass *"
                                     id="item-editor-font-selector"
                                     data-has-search="false"
                                     data-placeholder="{{__ 'Default'}}"

@@ -36,7 +36,7 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
         const figcaptionSelector = `${itemSelector} figure figcaption`;
         const $resetBtn = $fontSizeChanger.parents('.reset-group').find('[data-role="font-size-reset"]');
         const $input = $container.find('.item-editor-font-size-text');
-        let itemFontSize = parseInt($(itemSelector).css('font-size'), 10);
+        let itemFontSize = parseInt($(itemSelector).css('font-size'), 10) || 14;
 
         // initiate font-size for Block
         const styles = styleEditor.getStyle() || {};

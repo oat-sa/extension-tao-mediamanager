@@ -44,7 +44,7 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
         if (styles[itemSelector] && styles[itemSelector]['font-size']) {
             itemFontSize = parseInt(styles[itemSelector]['font-size'], 10);
             $input.val(itemFontSize);
-        }  if (styles[itemSelectorOld] && styles[itemSelectorOld]['font-size']) {
+        } else if (styles[itemSelectorOld] && styles[itemSelectorOld]['font-size']) {
             itemFontSize = parseInt(styles[itemSelectorOld]['font-size'], 10);
             $input.val(itemFontSize);
         } else {
@@ -122,7 +122,7 @@ define(['jquery', 'lodash', 'taoMediaManager/qtiCreator/editor/styleEditor/style
             if (style[itemSelector] && style[itemSelector]['font-size']) {
                 itemFontSize = parseInt(style[itemSelector]['font-size'], 10);
                 $input.val(itemFontSize);
-            } if (style[itemSelectorOld] && style[itemSelectorOld]['font-size']) {
+            } else if (style[itemSelectorOld] && style[itemSelectorOld]['font-size']) {
                 itemFontSize = parseInt(style[itemSelectorOld]['font-size'], 10);
                 $input.val(itemFontSize);
             } else {

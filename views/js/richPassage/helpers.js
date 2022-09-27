@@ -17,12 +17,13 @@
  */
 
 define([
+    'jquery',
     'lodash',
     'uri',
     'util/url',
     'core/dataProvider/request',
     'taoMediaManager/qtiCreator/helper/formatStyles'
-], function (_, uri, urlUtil, request, formatStyles) {
+], function ($, _, uri, urlUtil, request, formatStyles) {
     'use strict';
 
     /**
@@ -107,6 +108,8 @@ define([
                                         qtiClass: 'stylesheet',
                                         attributes: {
                                             href: stylesheetHref,
+                                            includeHref: passageHref,
+                                            includeSerial: elem.serial,
                                             media: 'all',
                                             title: '',
                                             type: 'text/css',
@@ -114,6 +117,7 @@ define([
                                         },
                                         serial
                                     };
+                                    elem.stylesheets = {[serial]: stylesheetHref};
                                 });
                             })
                             .catch()

@@ -204,7 +204,7 @@
 
                             <div class="reset-group">
                                 <select
-                                    data-target="body div.qti-item .mainClass .custom-text-box.hashClass .custom-text-box.hashClass *"
+                                    data-target="body div.qti-item .mainClass .custom-text-box.hashClass *"
                                     id="item-editor-font-selector"
                                     data-has-search="false"
                                     data-placeholder="{{__ 'Default'}}"

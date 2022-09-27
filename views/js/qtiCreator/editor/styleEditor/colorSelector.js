@@ -81,7 +81,7 @@ define([
                     value = style[target][$trigger.data('value')].replace(' !important', '');
                     $trigger.css('background-color', value);
                     $trigger.attr('title', rgbToHex(value));
-                } if (style[targetOld] && style[targetOld][$trigger.data('value')]) {
+                } else if (style[targetOld] && style[targetOld][$trigger.data('value')]) {
                     value = style[targetOld][$trigger.data('value')].replace(' !important', '');
                     $trigger.css('background-color', value);
                     $trigger.attr('title', rgbToHex(value));

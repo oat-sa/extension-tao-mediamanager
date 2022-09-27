@@ -108,8 +108,6 @@ define([
                                         qtiClass: 'stylesheet',
                                         attributes: {
                                             href: stylesheetHref,
-                                            includeHref: passageHref,
-                                            includeSerial: elem.serial,
                                             media: 'all',
                                             title: '',
                                             type: 'text/css',
@@ -117,7 +115,12 @@ define([
                                         },
                                         serial
                                     };
-                                    elem.stylesheets = {[serial]: stylesheetHref};
+                                    if (stylesheet.name !== 'tao-user-styles.css') {
+                                        // only for uploaded stylesheets
+                                        itemData.content.data.stylesheets[serial].attributes.includeHref = passageHref;
+                                        itemData.content.data.stylesheets[serial].attributes.includeSerial = elem.serial;
+                                        elem.stylesheets = {[serial]: stylesheetHref};
+                                    }
                                 });
                             })
                             .catch()

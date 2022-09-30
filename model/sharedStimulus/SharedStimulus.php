@@ -65,7 +65,7 @@ class SharedStimulus implements JsonSerializable
             'id' => $this->id,
             'languageId' => $this->languageId,
             'name' => $this->name,
-            'body' => str_replace(PHP_EOL, '', $this->body),
+            'body' => str_replace(PHP_EOL, '', (string)$this->body),
         ];
     }
 }

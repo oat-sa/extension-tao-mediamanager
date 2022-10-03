@@ -171,14 +171,14 @@
                                         <button class="icon-eraser reset-button" data-value="background-color"
                                               aria-label="{{__ 'Remove custom background color'}}"></button>
                                         <button class="color-trigger" id="initial-bg" data-value="background-color"
-                                              data-target="body div.qti-item .mainClass .custom-text-box.hashClass " data-additional="padding:20px;margin-bottom: 0;"></button>
+                                              data-target="body div.qti-item .mainClass .custom-text-box.hashClass" data-additional="padding:20px;margin-bottom: 0;"></button>
                                     </div>
                                     <div class="clearfix">
                                         <label for="initial-color" class="truncate">{{__ 'Text color'}}</label>
                                         <button class="icon-eraser reset-button" data-value="color"
                                               aria-label="{{__ 'Remove custom text color'}}"></button>
                                         <button class="color-trigger" id="initial-color" data-value="color"
-                                              data-target="body div.qti-item .mainClass .custom-text-box.hashClass "></button>
+                                              data-target="body div.qti-item .mainClass .custom-text-box.hashClass"></button>
                                     </div>
                                     <div class="clearfix">
                                         <label for="initial-color" class="truncate">{{__ 'Border color'}}</label>

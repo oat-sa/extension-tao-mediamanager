@@ -84,7 +84,7 @@ define([
         const classNameFormated = className && className.length ? `.${className}` : '';
 
         // prefix rules
-        const scopedCssRules = _scopeStyles(cssRules, classNameFormated, ['body html *']);
+        const scopedCssRules = _scopeStyles(cssRules, classNameFormated, ['body', 'html', 'div.qti-item']);
 
         if (cssRules && scopedCssRules) {
             Object.values(cssRules).map((index, rule) => {
@@ -135,18 +135,23 @@ define([
 
             for (let singleSelectorText of selectors) {
                 // avoid the most obvious top level single selectors that won't work even if scoped
-                if (['html', 'body', '*'].includes(singleSelectorText)) {
+                if (['html', 'body', 'div.qti-item'].includes(singleSelectorText)) {
                     continue;
                 }
 
                 // make the replacements
+                let numRepeat = 0;
                 if (scopeSelector && toReplace) {
                     for (let toReplaceSelector of toReplace) {
                         if (singleSelectorText.includes(toReplaceSelector)) {
+                            if (numRepeat > 0) {
+                                replacementSelector = '';
+                            }
                             singleSelectorText = singleSelectorText.replace(
                                 new RegExp(toReplaceSelector, 'ig'),
                                 replacementSelector
                             );
+                            numRepeat++;
                         }
                     }
                 }

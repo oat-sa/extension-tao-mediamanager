@@ -17,12 +17,13 @@
  */
 
 define([
+    'jquery',
     'lodash',
     'uri',
     'util/url',
     'core/dataProvider/request',
     'taoMediaManager/qtiCreator/helper/formatStyles'
-], function (_, uri, urlUtil, request, formatStyles) {
+], function ($, _, uri, urlUtil, request, formatStyles) {
     'use strict';
 
     /**
@@ -114,6 +115,12 @@ define([
                                         },
                                         serial
                                     };
+                                    if (stylesheet.name !== 'tao-user-styles.css') {
+                                        // only for uploaded stylesheets
+                                        itemData.content.data.stylesheets[serial].attributes.includeHref = passageHref;
+                                        itemData.content.data.stylesheets[serial].attributes.includeSerial = elem.serial;
+                                        elem.stylesheets = {[serial]: stylesheetHref};
+                                    }
                                 });
                             })
                             .catch()

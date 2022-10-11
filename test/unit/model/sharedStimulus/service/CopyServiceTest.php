@@ -230,13 +230,34 @@ class CopyServiceTest extends TestCase
             ->expects($this->once())
             ->method('getList')
             ->willReturnCallback(function (ListStylesheets $dto) {
-                if ($dto->getUri() != 'http://example.com/resource1') {
+                if ($dto->getUri() !== 'http://example.com/resource1') {
                     $this->fail(
                         "Unexpected call to getList for URI {$dto->getUri()}"
                     );
                 }
             })
-            ->willReturn(['cssBasename1', 'cssBasename2']);
+            ->willReturn([
+                'path' => DIRECTORY_SEPARATOR,
+                'label' => 'Passage stylesheets',
+                'childrenLimit' => 100,
+                'total' => 2,
+                'children' => [
+                    [
+                        'name' => 'cssBasename1',
+                        'uri' => DIRECTORY_SEPARATOR . 'cssBasename1',
+                        'mime' => 'text/css',
+                        'filePath' => DIRECTORY_SEPARATOR . 'cssBasename1',
+                        'size' => 100,
+                    ],
+                    [
+                        'name' => 'cssBasename2',
+                        'uri' => DIRECTORY_SEPARATOR . 'cssBasename2',
+                        'mime' => 'text/css',
+                        'filePath' => DIRECTORY_SEPARATOR . 'cssBasename2',
+                        'size' => 200,
+                    ],
+                ],
+            ]);
 
         $this->tempFileWriter
             ->expects($this->exactly(2))

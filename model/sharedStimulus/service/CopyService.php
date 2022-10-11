@@ -111,14 +111,14 @@ class CopyService
 
         $newCssFiles = [];
 
-        foreach ($cssFiles as $baseName) {
+        foreach ($cssFiles['children'] as $child) {
             $newCssFiles[] = $this->tempFileWriter->writeFile(
                 self::NAMESPACE_TEMP_FILES,
-                $baseName,
+                $child['name'],
                 $this->stylesheetRepository->read(
                     implode(
                         DIRECTORY_SEPARATOR,
-                        [$cssPath , StoreService::CSS_DIR_NAME, $baseName]
+                        [$cssPath , StoreService::CSS_DIR_NAME, $child['name']]
                     )
                 )
             );

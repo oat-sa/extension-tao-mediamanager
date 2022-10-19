@@ -47,8 +47,7 @@ define([
     const fontSelector = function ($container) {
         const selector = 'select#item-editor-font-selector',
             $selector = $container.find(selector);
-        let target = styleEditor.replaceMainClass($selector.data('target'));
-        target = styleEditor.replaceHashClass(target);
+        let target = styleEditor.replaceHashClass($selector.data('target'));
         let normalize = function (font) {
                 return font.replace(/"/g, "'").replace(/, /g, ',');
             },

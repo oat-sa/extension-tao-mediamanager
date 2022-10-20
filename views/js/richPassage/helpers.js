@@ -114,6 +114,9 @@ define([
                                         },
                                         serial
                                     };
+                                    itemData.content.data.stylesheets[serial].attributes.includeHref = passageHref;
+                                    itemData.content.data.stylesheets[serial].attributes.includeSerial = elem.serial;
+                                    elem.stylesheets = {[serial]: stylesheetHref};
                                 });
                             })
                             .catch()

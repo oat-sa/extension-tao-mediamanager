@@ -378,7 +378,7 @@ define([
                 _link.attr('href');
             const _sep = _href.indexOf('?') > -1 ? '&' : '?';
             _link.attr('href', _href + _sep + new Date().getTime().toString());
-            _link[0].onload = e => formatStyles.handleStylesheetLoad(e, stylesheet);
+            _link[0].onload = e => formatStyles.handleStylesheetLoad(e);
             return _link;
         })();
 

@@ -20,11 +20,7 @@ define([
 ], function ($) {
     'use strict';
 
-    function handleStylesheetLoad(e, stylesheet) {
-        if (stylesheet && stylesheet.name === 'tao-user-styles.css') {
-            return false;
-        }
-
+    function handleStylesheetLoad(e) {
         // get cssRules from owner link tag, referenced in load event
         const path = e && e.composedPath && e.composedPath();
         const linkTag = path[0];

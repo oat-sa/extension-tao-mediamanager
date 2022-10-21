@@ -46,7 +46,7 @@ define([
                             'data-serial': passageUri
                         });
                         if (!preview) {
-                            styleElem[0].onload = (e => formatStyles.handleStylesheetLoad(e, stylesheet));
+                            styleElem[0].onload = (e => formatStyles.handleStylesheetLoad(e));
                             styleElem[0].dataset['serial'] = serial;
                         }
                         head.append(styleElem);

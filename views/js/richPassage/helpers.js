@@ -111,16 +111,13 @@ define([
                                             media: 'all',
                                             title: '',
                                             type: 'text/css',
-                                            onload: (e => formatStyles.handleStylesheetLoad(e, stylesheet))
+                                            onload: (e => formatStyles.handleStylesheetLoad(e))
                                         },
                                         serial
                                     };
-                                    if (stylesheet.name !== 'tao-user-styles.css') {
-                                        // only for uploaded stylesheets
-                                        itemData.content.data.stylesheets[serial].attributes.includeHref = passageHref;
-                                        itemData.content.data.stylesheets[serial].attributes.includeSerial = elem.serial;
-                                        elem.stylesheets = {[serial]: stylesheetHref};
-                                    }
+                                    itemData.content.data.stylesheets[serial].attributes.includeHref = passageHref;
+                                    itemData.content.data.stylesheets[serial].attributes.includeSerial = elem.serial;
+                                    elem.stylesheets = {[serial]: stylesheetHref};
                                 });
                             })
                             .catch()

@@ -20,11 +20,7 @@ define([
 ], function ($) {
     'use strict';
 
-    function handleStylesheetLoad(e, stylesheet) {
-        if (stylesheet && stylesheet.name === 'tao-user-styles.css') {
-            return false;
-        }
-
+    function handleStylesheetLoad(e) {
         // get cssRules from owner link tag, referenced in load event
         const path = e && e.composedPath && e.composedPath();
         const linkTag = path[0];
@@ -41,6 +37,8 @@ define([
                     const assetClassName = asset.children[0].className.match(/[\w-]*tao-[\w-]*/g) || asset.children[1].className.match(/[\w-]*tao-[\w-]*/g);
                     if (assetClassName) {
                         _formatStyles(linkTag.sheet, assetClassName[0]);
+                    } else {
+                        _hideStyles(linkTag.sheet);
                     }
                 });
                 return;
@@ -72,6 +70,23 @@ define([
                 return;
             }
         }
+    }
+
+    function _hideStyles(linkTag) {
+        /**
+         * @type {CSSRuleList}
+         * @see https://developer.mozilla.org/en-US/docs/Web/API/CSSRuleList
+         */
+        const { cssRules } = linkTag || {};
+        const CSSStyleSheet = linkTag || {};
+
+        if (cssRules) {
+            Object.values(cssRules).map((index, rule) => {
+                CSSStyleSheet.deleteRule(index);
+            });
+        }
+
+        return;
     }
 
     function _formatStyles(linkTag, className) {

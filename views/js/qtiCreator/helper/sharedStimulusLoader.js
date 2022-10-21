@@ -63,7 +63,7 @@ define([
                                         media: 'all',
                                         title: stylesheet.name,
                                         type: 'text/css',
-                                        onload: (e => formatStyles.handleStylesheetLoad(e, stylesheet))
+                                        onload: (e => formatStyles.handleStylesheetLoad(e))
                                     },
                                     serial,
                                     getComposingElements: () => ({})

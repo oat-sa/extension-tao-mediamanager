@@ -474,7 +474,16 @@ define([
 
         request(_getUri('load'), _.extend({}, itemConfig, { stylesheetUri: href })).then(function (_style) {
             // copy style to global style
-            style = _style;
+            style = {};
+
+            Object.keys(_style).forEach(key => {
+                if (!key.includes(mainClass)) {
+                    style[key] = _style[key];
+                } else {
+                    const selectorWithoutMainClass = key.replace(`.${mainClass}`, '').trim();
+                    style[selectorWithoutMainClass] = _style[key];
+                }
+            })
 
             // apply rules
             create();

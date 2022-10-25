@@ -480,7 +480,7 @@ define([
                 if (!key.includes(mainClass)) {
                     style[key] = _style[key];
                 } else {
-                    const selectorWithoutMainClass = key.replace(`.${mainClass}`, '').trim();
+                    const selectorWithoutMainClass = key.replace(` .${mainClass}`, '').trim();
                     style[selectorWithoutMainClass] = _style[key];
                 }
             })

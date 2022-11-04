@@ -378,7 +378,7 @@ define([
                 _link.attr('href');
             const _sep = _href.indexOf('?') > -1 ? '&' : '?';
             _link.attr('href', _href + _sep + new Date().getTime().toString());
-            _link[0].onload = e => formatStyles.handleStylesheetLoad(e, stylesheet);
+            _link[0].onload = e => formatStyles.handleStylesheetLoad(e);
             return _link;
         })();
 
@@ -474,7 +474,16 @@ define([
 
         request(_getUri('load'), _.extend({}, itemConfig, { stylesheetUri: href })).then(function (_style) {
             // copy style to global style
-            style = _style;
+            style = {};
+
+            Object.keys(_style).forEach(key => {
+                if (!key.includes(mainClass)) {
+                    style[key] = _style[key];
+                } else {
+                    const selectorWithoutMainClass = key.replace(` .${mainClass}`, '').trim();
+                    style[selectorWithoutMainClass] = _style[key];
+                }
+            })
 
             // apply rules
             create();

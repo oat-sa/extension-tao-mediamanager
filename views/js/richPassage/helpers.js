@@ -110,10 +110,13 @@ define([
                                             media: 'all',
                                             title: '',
                                             type: 'text/css',
-                                            onload: (e => formatStyles.handleStylesheetLoad(e, stylesheet))
+                                            onload: (e => formatStyles.handleStylesheetLoad(e))
                                         },
                                         serial
                                     };
+                                    itemData.content.data.stylesheets[serial].attributes.includeHref = passageHref;
+                                    itemData.content.data.stylesheets[serial].attributes.includeSerial = elem.serial;
+                                    elem.stylesheets = {[serial]: stylesheetHref};
                                 });
                             })
                             .catch()

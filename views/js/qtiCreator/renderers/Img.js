@@ -19,8 +19,11 @@
 define([
     'lodash',
     'taoQtiItem/qtiCommonRenderer/renderers/Img',
-    'taoMediaManager/qtiCreator/widgets/static/img/Widget'
-], function (_, Renderer, Widget) {
+    'taoMediaManager/qtiCreator/widgets/static/img/Widget',
+    'taoQtiItem/qtiCreator/widgets/static/figure/Widget',
+    'taoQtiItem/qtiCreator/model/Figure',
+    'taoQtiItem/qtiCreator/helper/findParentElement'
+], function (_, Renderer, Widget, FigureWidget, FigureModel, findParentElement) {
     'use strict';
 
     const CreatorImg = _.clone(Renderer);
@@ -42,7 +45,35 @@ define([
         options.mediaManager = this.getOption('mediaManager');
         options.assetManager = this.getAssetManager();
 
-        Widget.build(img, Renderer.getContainer(img), this.getOption('bodyElementOptionForm'), options);
+        if (
+            !$container.closest('.qti-choice, .qti-flow-container').length &&
+            !$container.closest('.qti-table caption').length
+        ) {
+            const parent = findParentElement(img.rootElement, img.serial);
+            parent.removeElement(img);
+            const figure = new FigureModel();
+            parent.setElement(figure);
+            const figureRenderer = parent.getRenderer();
+            if (figureRenderer) {
+                figure.setRenderer(figureRenderer);
+                figureRenderer.load(() => { }, ['figure']);
+            }
+            figure.setElement(img);
+            const $wrap = $container.wrap(`<span data-serial="${figure.serial}">`).parent();
+            FigureWidget.build(
+                figure,
+                $wrap,
+                this.getOption('bodyElementOptionForm'),
+                options
+            );
+        } else {
+            Widget.build(
+                img,
+                Renderer.getContainer(img),
+                this.getOption('bodyElementOptionForm'),
+                options
+            );
+        }
     };
 
     return CreatorImg;

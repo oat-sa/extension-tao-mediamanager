@@ -151,6 +151,7 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                     service(ClassMetadataCopier::class),
                     service(InstanceCopier::class . '::ASSETS'),
                     service(ClassMetadataMapper::class),
+                    service(Ontology::SERVICE_ID),
                 ]
             )
             ->call(

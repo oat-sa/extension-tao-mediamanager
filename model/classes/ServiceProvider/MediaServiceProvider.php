@@ -127,6 +127,7 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
             ->args(
                 [
                     service(AssetMetadataCopier::class),
+                    service(Ontology::SERVICE_ID)
                 ]
             )
             ->call(

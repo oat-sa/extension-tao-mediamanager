@@ -29,11 +29,10 @@ use oat\tao\model\accessControl\PermissionChecker;
 use oat\tao\model\resources\Service\ClassCopierProxy;
 use oat\tao\model\resources\Service\ClassMetadataCopier;
 use oat\tao\model\resources\Service\ClassMetadataMapper;
-use oat\tao\model\resources\Service\ClassPropertyCopier;
 use oat\tao\model\resources\Service\InstanceCopier;
+use oat\tao\model\resources\Service\InstanceCopierProxy;
 use oat\tao\model\resources\Service\InstanceMetadataCopier;
 use oat\tao\model\resources\Service\RootClassesListService;
-use oat\taoItems\model\Copier\ClassCopier;
 use oat\tao\model\resources\Service\ClassCopier as TaoClassCopier;
 use oat\taoMediaManager\model\accessControl\MediaPermissionService;
 use oat\taoMediaManager\model\classes\Copier\AssetClassCopier;
@@ -180,6 +179,16 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                 [
                     TaoMediaOntology::CLASS_URI_MEDIA_ROOT,
                     service(AssetClassCopier::class),
+                ]
+            );
+
+        $services
+            ->get(InstanceCopierProxy::class)
+            ->call(
+                'addInstanceCopier',
+                [
+                    TaoMediaOntology::CLASS_URI_MEDIA_ROOT,
+                    service(InstanceCopier::class . '::ASSETS'),
                 ]
             );
     }

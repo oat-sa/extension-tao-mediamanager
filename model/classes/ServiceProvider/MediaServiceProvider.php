@@ -138,7 +138,7 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
             ->call(
                 'withPermissionCopiers',
                 [
-                    tagged_iterator('tao.copier.permissions.instance.assets'),
+                    tagged_iterator('tao.copier.permissions'),
                 ]
             );
 
@@ -157,7 +157,7 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
             ->call(
                 'withPermissionCopiers',
                 [
-                    tagged_iterator('tao.copier.permissions.class.assets'),
+                    tagged_iterator('tao.copier.permissions'),
                 ]
             );
 

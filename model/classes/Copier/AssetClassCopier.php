@@ -76,7 +76,7 @@ class AssetClassCopier implements ClassCopierInterface, ResourceTransferInterfac
         if (!$this->mediaClassSpecification->isSatisfiedBy($class)) {
             throw new InvalidArgumentException(
                 sprintf(
-                    'Selected class (%s) is not supported because it is not part of the media assets root class (%s).',
+                    'Class (%s) is not supported. Only classes from (%s) are supported',
                     $class->getUri(),
                     TaoMediaOntology::CLASS_URI_MEDIA_ROOT
                 )

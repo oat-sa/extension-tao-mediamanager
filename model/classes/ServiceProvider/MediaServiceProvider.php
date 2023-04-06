@@ -166,9 +166,9 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
             ->share(false)
             ->args(
                 [
-                    service(RootClassesListService::class),
                     service(MediaClassSpecification::class),
                     service(TaoClassCopier::class . '::ASSETS'),
+                    service(Ontology::SERVICE_ID),
                 ]
             );
 

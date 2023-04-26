@@ -1,0 +1,278 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: tao-3x\n"
+"PO-Revision-Date: 2023-04-21 15:46\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: pt\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: tao-3x\n"
+"X-Crowdin-Project-ID: 582145\n"
+"X-Crowdin-Language: pt-BR\n"
+"X-Crowdin-File: /taoMediaManager/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 1567\n"
+"Language-Team: Portuguese, Brazilian\n"
+
+msgid "%s media on this environment"
+msgstr "%s mídia neste ambiente"
+
+msgid "%s media successfully modified"
+msgstr "%s mídia modificada com sucesso"
+
+msgid "%s media to modify"
+msgstr "%s mídia a modificar"
+
+msgid "Add a media file"
+msgstr "Adicionar um arquivo de mídia"
+
+msgid "An error has occurred. Please contact your administrator."
+msgstr "Um erro ocorreu. Por favor, contate o administrador."
+
+msgid "Are you sure you want to delete this"
+msgstr "Tem certeza que deseja excluir isto"
+
+msgid "Are you sure you want to delete this class and all of its content?"
+msgstr "Tem certeza que deseja excluir esta classe e todo o seu conteúdo?"
+
+#, tao-public
+msgid "Assets"
+msgstr "Mídias"
+
+#, tao-public
+msgid "Authoring"
+msgstr "Autoria"
+
+msgid "Back to Manage Assets"
+msgstr "Voltar para Gerenciar Ativos"
+
+msgid "Block"
+msgstr "Bloquear"
+
+msgid "Center"
+msgstr "Centralizar"
+
+msgid "Define item language."
+msgstr "Defina idioma do item."
+
+#, tao-public
+msgid "Delete"
+msgstr "excluir"
+
+msgid "Deleting this class will break the items and the tests that are currently using them."
+msgstr "Excluindo esta classe irá quebrar os itens e os testes que estão atualmente em uso."
+
+msgid "Edit Instance"
+msgstr "Editar instância"
+
+msgid "Edited %s"
+msgstr "Editado %s"
+
+msgid "Element Properties"
+msgstr "Propriedades do Elemento"
+
+#, tao-public
+msgid "Export"
+msgstr "Exportação"
+
+msgid "Export Media as Zip file"
+msgstr "Exportar mídia como arquivo Zip"
+
+msgid "Fail to edit shared stimulus"
+msgstr "Falha ao editar o estímulo compartilhado"
+
+msgid "Fail to edit Shared Stimulus"
+msgstr "Falha ao editar o Estimulante Compartilhado"
+
+msgid "Fail to import media"
+msgstr "Falha ao importar mídia"
+
+msgid "Fail to import Shared Stimulus"
+msgstr "Falha ao importar o Stimulus Compartilhado"
+
+msgid "File"
+msgstr "Arquivo"
+
+msgid "File name"
+msgstr "Nome do arquivo"
+
+msgid "Forbidden action"
+msgstr "Ação proibida"
+
+#, tao-public
+msgid "Import"
+msgstr "Importação"
+
+msgid "Imported %s"
+msgstr "Importado %s"
+
+msgid "Imported new file"
+msgstr "Novo arquivo importado"
+
+msgid "Initial import"
+msgstr "Importação inicial"
+
+msgid "Inline Interactions"
+msgstr "Interações Embutidas"
+
+msgid "Instance saved"
+msgstr "Instância salva"
+
+msgid "is currently used in"
+msgstr "é usado atualmente em"
+
+msgid "Issue while modifying %s"
+msgstr "Problema ao modificar %s"
+
+msgid "item(s)"
+msgstr "itens"
+
+msgid "Language"
+msgstr "IDIOMA"
+
+msgid "Left"
+msgstr "Esquerda"
+
+#, tao-public
+msgid "Manage Assets"
+msgstr "Gerenciar Ativos"
+
+#, tao-public
+msgid "Manage Schema"
+msgstr "Gerenciar esquema"
+
+msgid "Media imported"
+msgstr "Mídia importada"
+
+msgid "Media imported successfully"
+msgstr "Mídia importada com sucesso"
+
+#, tao-public
+msgid "Media Manager"
+msgstr "Gerenciador de Mídia"
+
+#, tao-public
+msgid "Media Manager extension"
+msgstr "Extensão do Media Manager"
+
+msgid "Media Options"
+msgstr "Opções de mídia"
+
+msgid "Media successfully exported."
+msgstr "Mídia exportada com sucesso."
+
+#, tao-public
+msgid "Move"
+msgstr "Mover-se"
+
+#, tao-public
+msgid "New class"
+msgstr "Nova classe"
+
+#, tao-public
+msgid "New passage"
+msgstr "Nova passagem"
+
+msgid "No file found for this media"
+msgstr "Nenhum arquivo encontrado para esta mídia"
+
+msgid "Passage Properties"
+msgstr "Propriedades da passagem"
+
+msgid "Please delete the subclasses before."
+msgstr "Por favor, exclua as subclasses antes."
+
+msgid "Preview"
+msgstr "Pré-visualizar"
+
+msgid "Preview the item"
+msgstr "Pré-visualizar o item"
+
+#, tao-public
+msgid "Properties"
+msgstr "propriedades"
+
+msgid "Replace Asset"
+msgstr "Replace Asset"
+
+msgid "Resource deleted"
+msgstr "Recurso excluído"
+
+msgid "Right"
+msgstr "Direita"
+
+msgid "Save"
+msgstr "Guardar"
+
+msgid "Save the asset"
+msgstr "Salvar o ativo"
+
+msgid "Set a CSS class name in order to customize the display style."
+msgstr "Definir um nome de classe CSS para personalizar o estilo de exibição."
+
+msgid "Shared Stimulus"
+msgstr "Estimulante Compartilhado"
+
+msgid "Shared Stimulus edited successfully"
+msgstr "Estimulos compartilhados editados com sucesso"
+
+msgid "Shared Stimulus imported successfully"
+msgstr "Estimulante Compartilhado importado com sucesso"
+
+msgid "some text ..."
+msgstr "algum texto..."
+
+msgid "Text Block"
+msgstr "Bloco de texto"
+
+msgid "Text Block CSS Class"
+msgstr "Classe CSS do Bloco de Texto"
+
+msgid "The class"
+msgstr "A aula"
+
+msgid "This"
+msgstr "Esta"
+
+msgid "Unable to delete the selected resource"
+msgstr "Não é possível excluir o recurso selecionado"
+
+msgid "Unable to extract the archive"
+msgstr "Não foi possível extrair o arquivo"
+
+msgid "Unable to import"
+msgstr "Não é possível importar"
+
+msgid "Upload Media"
+msgstr "Carregar Mídia"
+
+msgid "Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
+msgstr "Uso: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
+
+msgid "Warning"
+msgstr "ATENÇÃO"
+
+msgid "which contains assets that are in use elsewhere."
+msgstr "que contém ativos que estão em uso em outro lugar."
+
+msgid "You are about to delete the class"
+msgstr "Você está prestes a excluir a aula"
+
+msgid "you are trying to delete is too large and contains too many subclasses."
+msgstr "você está tentando excluir é muito grande e contém muitas subclasses."
+
+msgid "You can\\'t upload a zip file as a media"
+msgstr "Você não pode carregar um arquivo zip como uma mídia"
+
+msgid "Your passage is saved"
+msgstr "Sua passagem está salva"
+
+msgid "Zip"
+msgstr "CEP"
+

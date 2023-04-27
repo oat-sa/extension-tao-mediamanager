@@ -29,11 +29,10 @@ use oat\tao\model\accessControl\PermissionChecker;
 use oat\tao\model\resources\Service\ClassCopierProxy;
 use oat\tao\model\resources\Service\ClassMetadataCopier;
 use oat\tao\model\resources\Service\ClassMetadataMapper;
-use oat\tao\model\resources\Service\ClassPropertyCopier;
 use oat\tao\model\resources\Service\InstanceCopier;
+use oat\tao\model\resources\Service\InstanceCopierProxy;
 use oat\tao\model\resources\Service\InstanceMetadataCopier;
 use oat\tao\model\resources\Service\RootClassesListService;
-use oat\taoItems\model\Copier\ClassCopier;
 use oat\tao\model\resources\Service\ClassCopier as TaoClassCopier;
 use oat\taoMediaManager\model\accessControl\MediaPermissionService;
 use oat\taoMediaManager\model\classes\Copier\AssetClassCopier;
@@ -55,6 +54,9 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_iterator;
 
+/**
+ * @codeCoverageIgnore
+ */
 class MediaServiceProvider implements ContainerServiceProviderInterface
 {
     public function __invoke(ContainerConfigurator $configurator): void
@@ -127,6 +129,7 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
             ->args(
                 [
                     service(AssetMetadataCopier::class),
+                    service(Ontology::SERVICE_ID)
                 ]
             )
             ->call(
@@ -138,7 +141,7 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
             ->call(
                 'withPermissionCopiers',
                 [
-                    tagged_iterator('tao.copier.permissions.instance.assets'),
+                    tagged_iterator('tao.copier.permissions'),
                 ]
             );
 
@@ -151,12 +154,13 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                     service(ClassMetadataCopier::class),
                     service(InstanceCopier::class . '::ASSETS'),
                     service(ClassMetadataMapper::class),
+                    service(Ontology::SERVICE_ID),
                 ]
             )
             ->call(
                 'withPermissionCopiers',
                 [
-                    tagged_iterator('tao.copier.permissions.class.assets'),
+                    tagged_iterator('tao.copier.permissions'),
                 ]
             );
 
@@ -165,9 +169,9 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
             ->share(false)
             ->args(
                 [
-                    service(RootClassesListService::class),
                     service(MediaClassSpecification::class),
                     service(TaoClassCopier::class . '::ASSETS'),
+                    service(Ontology::SERVICE_ID),
                 ]
             );
 
@@ -178,6 +182,16 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                 [
                     TaoMediaOntology::CLASS_URI_MEDIA_ROOT,
                     service(AssetClassCopier::class),
+                ]
+            );
+
+        $services
+            ->get(InstanceCopierProxy::class)
+            ->call(
+                'addInstanceCopier',
+                [
+                    TaoMediaOntology::CLASS_URI_MEDIA_ROOT,
+                    service(InstanceCopier::class . '::ASSETS'),
                 ]
             );
     }

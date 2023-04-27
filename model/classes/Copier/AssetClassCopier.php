@@ -22,44 +22,53 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\classes\Copier;
 
+use oat\generis\model\data\Ontology;
+use oat\tao\model\resources\Command\ResourceTransferCommand;
 use oat\tao\model\resources\Contract\ClassCopierInterface;
-use oat\tao\model\resources\Contract\ClassPropertyCopierInterface;
-use oat\tao\model\resources\Contract\RootClassesListServiceInterface;
-use oat\tao\model\resources\Service\ClassPropertyCopier;
+use oat\tao\model\resources\Contract\ResourceTransferInterface;
+use oat\tao\model\resources\ResourceTransferResult;
 use oat\tao\model\Specification\ClassSpecificationInterface;
 use oat\taoMediaManager\model\TaoMediaOntology;
 use core_kernel_classes_Class;
 use InvalidArgumentException;
 
-class AssetClassCopier implements ClassCopierInterface
+class AssetClassCopier implements ClassCopierInterface, ResourceTransferInterface
 {
-    /** @var RootClassesListServiceInterface */
-    private $rootClassesListService;
-
-    /** @var ClassSpecificationInterface */
-    private $mediaClassSpecification;
-
-    /** @var ClassCopierInterface */
-    private $taoClassCopier;
+    private ClassSpecificationInterface $mediaClassSpecification;
+    private ResourceTransferInterface $taoClassCopier;
+    private Ontology $ontology;
 
     public function __construct(
-        RootClassesListServiceInterface $rootClassesListService,
         ClassSpecificationInterface $mediaClassSpecification,
-        ClassCopierInterface $taoClassCopier
+        ResourceTransferInterface $taoClassCopier,
+        Ontology $ontology
     ) {
-        $this->rootClassesListService = $rootClassesListService;
         $this->mediaClassSpecification = $mediaClassSpecification;
         $this->taoClassCopier = $taoClassCopier;
+        $this->ontology = $ontology;
+    }
+
+    public function transfer(ResourceTransferCommand $command): ResourceTransferResult
+    {
+        $this->assertInAssetsRootClass($this->ontology->getClass($command->getFrom()));
+
+        return $this->taoClassCopier->transfer($command);
     }
 
     public function copy(
         core_kernel_classes_Class $class,
         core_kernel_classes_Class $destinationClass
     ): core_kernel_classes_Class {
-        $this->assertInAssetsRootClass($class);
-        $this->assertInAssetsRootClass($destinationClass);
+        $result = $this->transfer(
+            new ResourceTransferCommand(
+                $class->getUri(),
+                $destinationClass->getUri(),
+                ResourceTransferCommand::ACL_KEEP_ORIGINAL,
+                ResourceTransferCommand::TRANSFER_MODE_COPY
+            )
+        );
 
-        return $this->taoClassCopier->copy($class, $destinationClass);
+        return $this->ontology->getClass($result->getDestination());
     }
 
     private function assertInAssetsRootClass(core_kernel_classes_Class $class): void
@@ -67,7 +76,7 @@ class AssetClassCopier implements ClassCopierInterface
         if (!$this->mediaClassSpecification->isSatisfiedBy($class)) {
             throw new InvalidArgumentException(
                 sprintf(
-                    'Selected class (%s) is not supported because it is not part of the media assets root class (%s).',
+                    'Class (%s) is not supported. Only classes from (%s) are supported',
                     $class->getUri(),
                     TaoMediaOntology::CLASS_URI_MEDIA_ROOT
                 )

@@ -79,7 +79,7 @@ msgstr "Propriedades do Elemento"
 
 #, tao-public
 msgid "Export"
-msgstr "Exportação"
+msgstr "Exportar"
 
 msgid "Export Media as Zip file"
 msgstr "Exportar mídia como arquivo Zip"
@@ -107,7 +107,7 @@ msgstr "Ação proibida"
 
 #, tao-public
 msgid "Import"
-msgstr "Importação"
+msgstr "Importar"
 
 msgid "Imported %s"
 msgstr "Importado %s"
@@ -208,7 +208,7 @@ msgid "Right"
 msgstr "Direita"
 
 msgid "Save"
-msgstr "Guardar"
+msgstr "Salvar"
 
 msgid "Save the asset"
 msgstr "Salvar o ativo"

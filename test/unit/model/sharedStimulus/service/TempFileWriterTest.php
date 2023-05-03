@@ -28,7 +28,7 @@ use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use RuntimeException;
 
-class TempFileWriterTest  extends TestCase
+class TempFileWriterTest extends TestCase
 {
     /**
      * @var vfsStreamDirectory

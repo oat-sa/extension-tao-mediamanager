@@ -89,7 +89,7 @@ class FileImportForm extends \tao_helpers_form_FormContainer
                 $dataLang = $lang->getUri();
             }
         }
-        
+
         $langOptions = [];
         foreach ($langService->getAvailableLanguagesByUsage($dataUsage) as $lang) {
             $langOptions[\tao_helpers_Uri::encode($lang->getUri())] = $lang->getLabel();

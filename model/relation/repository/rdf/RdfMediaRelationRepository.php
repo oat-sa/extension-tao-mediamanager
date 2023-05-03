@@ -43,6 +43,7 @@ use oat\taoMediaManager\model\TaoMediaOntology;
 class RdfMediaRelationRepository extends ConfigurableService implements MediaRelationRepositoryInterface
 {
     use OntologyAwareTrait;
+
     private const CLASS_MEDIA_LIMIT = 20;
     private const NESTED_CLASS_LIMIT = 10;
 
@@ -188,16 +189,15 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
 
         return new MediaRelationCollection(
             ... $this->mapTargetRelations(
-            MediaRelation::ITEM_TYPE,
-            $rdfMediaRelations[self::ITEM_RELATION_PROPERTY],
-            $mediaId
-        )->getIterator(),
-
+                MediaRelation::ITEM_TYPE,
+                $rdfMediaRelations[self::ITEM_RELATION_PROPERTY],
+                $mediaId
+            )->getIterator(),
             ... $this->mapTargetRelations(
-            MediaRelation::MEDIA_TYPE,
-            $rdfMediaRelations[self::MEDIA_RELATION_PROPERTY],
-            $mediaId
-        )->getIterator()
+                MediaRelation::MEDIA_TYPE,
+                $rdfMediaRelations[self::MEDIA_RELATION_PROPERTY],
+                $mediaId
+            )->getIterator()
         );
     }
 
@@ -226,7 +226,6 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
     private function applyQueryTargetType(QueryInterface $query, $targetId, $type)
     {
         switch ($type) {
-
             case MediaRelation::ITEM_TYPE:
                 $query
                     ->add(self::ITEM_RELATION_PROPERTY)
@@ -241,7 +240,6 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
 
             default:
                 throw new LogicException('MediaRelation query type is unknown.');
-
         }
     }
 

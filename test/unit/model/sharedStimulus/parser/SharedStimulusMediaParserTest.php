@@ -38,7 +38,7 @@ class SharedStimulusMediaParserTest extends TestCase
     /** @var TaoMediaResolver */
     private $resolver;
 
-    public function setUp() :void
+    public function setUp(): void
     {
         $this->resolver = $this->createMock(TaoMediaResolver::class);
         $this->subject = new SharedStimulusMediaParser();
@@ -61,7 +61,7 @@ class SharedStimulusMediaParserTest extends TestCase
         $xml .= '<object data="' . $objectHttp . '" type="video" />';
         $xml .= '</div>';
 
-        $processor = function(MediaAsset $mediaAsset) {
+        $processor = function (MediaAsset $mediaAsset) {
             return 'processed::' . $mediaAsset->getMediaIdentifier();
         };
 
@@ -96,7 +96,8 @@ class SharedStimulusMediaParserTest extends TestCase
         $invalidXml = '<?xml version="1.0" encoding="UTF-8"?><div><img src="fixture.tao"/>';
 
         $this->expectException(TaoMediaException::class);
-        $this->subject->extractMedia($invalidXml, function () {});
+        $this->subject->extractMedia($invalidXml, function () {
+        });
     }
 
     private function createMediaAsset(string $path, string $sourceClass): MediaAsset

@@ -75,8 +75,10 @@ class PatchService extends ConfigurableService
         $this->validateXml($file);
 
         /* @var core_kernel_classes_Literal */
-        $link = $resource->getUniquePropertyValue($this->getProperty(
-            TaoMediaOntology::PROPERTY_LINK)
+        $link = $resource->getUniquePropertyValue(
+            $this->getProperty(
+                TaoMediaOntology::PROPERTY_LINK
+            )
         );
         $sharedStimulusStoredSourceFile = $this->getFileSourceUnserializer()->unserialize((string)$link);
 
@@ -84,7 +86,8 @@ class PatchService extends ConfigurableService
 
         $content = $file->read();
         $resource->editPropertyValues(
-            $this->getProperty(TaoMediaOntology::PROPERTY_MD5), md5($content)
+            $this->getProperty(TaoMediaOntology::PROPERTY_MD5),
+            md5($content)
         );
 
         $this->getMediaService()->dispatchMediaSavedEvent(

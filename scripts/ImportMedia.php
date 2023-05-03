@@ -38,7 +38,6 @@ use oat\taoMediaManager\model\TaoMediaOntology;
  */
 class ImportMedia implements Action
 {
-
     /**
      * @param $params
      * @return Report
@@ -48,9 +47,9 @@ class ImportMedia implements Action
         if (count($params) < 1) {
             return new Report(Report::TYPE_ERROR, __('Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]'));
         };
-        
+
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager');
-        
+
         $file = array_shift($params);
         $destinationClassUri = count($params) > 0
             ? array_shift($params)

@@ -49,7 +49,7 @@ abstract class AbstractRdsSearcher extends ConfigurableService implements Result
         );
 
         $resultUnitCollection = new ResultUnitCollection();
-        foreach ($results as $result){
+        foreach ($results as $result) {
             $resultUnitCollection->add(new ResultUnit($this->getResource($result['subject'])));
         }
 

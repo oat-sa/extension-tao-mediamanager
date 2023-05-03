@@ -146,7 +146,7 @@ class MediaSavedEventDispatcherTest extends TestCase
             ->method('trigger')
             ->with(
                 $this->callback(
-                    function($event) use ($id, $referenceIds) {
+                    function ($event) use ($id, $referenceIds) {
                         return ($event instanceof MediaSavedEvent)
                             && ($event->getMediaId() == $id)
                             && ($event->getReferencedMediaIds() == $referenceIds);

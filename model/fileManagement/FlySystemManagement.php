@@ -31,7 +31,7 @@ use oat\oatbox\filesystem\FileSystemService;
 
 class FlySystemManagement extends ConfigurableService implements FileManagement
 {
-    const OPTION_FS = 'fs';
+    public const OPTION_FS = 'fs';
 
     /**
      * @param string|File $fileSource
@@ -72,7 +72,7 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
         $resource = $this->getFilesystem()->readStream($link);
         return new Stream($resource);
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see \oat\taoMediaManager\model\fileManagement\FileManagement::retrieveFile()
@@ -91,7 +91,7 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
     {
         return $this->getFilesystem()->delete($link);
     }
-    
+
     /**
      * @return Filesystem
      */
@@ -115,7 +115,7 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
         if (!empty($ext)) {
             $returnValue .= '.' . $ext;
         }
-    
+
         return $returnValue;
     }
 }

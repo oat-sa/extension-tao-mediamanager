@@ -40,7 +40,7 @@ class SaveStylesheetClassesService extends ConfigurableService
         $path = $this->getStylesheetRepository()->getPath($saveStylesheetClassesDTO->getUri());
 
         if ($path === '.') {
-            throw new Exception ('Shared stimulus stored as single file');
+            throw new Exception('Shared stimulus stored as single file');
         }
 
         $cssClassesArray = $saveStylesheetClassesDTO->getCssClassesArray();

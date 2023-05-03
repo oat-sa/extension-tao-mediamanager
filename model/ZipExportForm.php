@@ -31,7 +31,6 @@ namespace oat\taoMediaManager\model;
  */
 class ZipExportForm extends \tao_helpers_form_FormContainer
 {
-
     public function initForm()
     {
 

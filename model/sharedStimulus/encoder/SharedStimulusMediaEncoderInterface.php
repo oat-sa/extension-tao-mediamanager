@@ -24,5 +24,5 @@ interface SharedStimulusMediaEncoderInterface
 {
     public const SERVICE_ID = 'taoMediaManager/sharedStimulusMediaEncoder';
 
-    public function encodeAssets (string $passageXmlFilePath): string;
+    public function encodeAssets(string $passageXmlFilePath): string;
 }

@@ -173,7 +173,14 @@ class MediaService extends ConfigurableService
         $instance = $clazz->createInstanceWithProperties($properties);
         $id = $instance->getUri();
 
-        $this->dispatchMediaSavedEvent('Initial import', $instance, $link, self::SHARED_STIMULUS_MIME_TYPE, $userId, $content);
+        $this->dispatchMediaSavedEvent(
+            'Initial import',
+            $instance,
+            $link,
+            self::SHARED_STIMULUS_MIME_TYPE,
+            $userId,
+            $content
+        );
 
         return $id;
     }

@@ -38,11 +38,15 @@ use function GuzzleHttp\Psr7\stream_for;
 
 class MediaResourcePreparerTest extends TestCase
 {
+    // phpcs:disable Generic.Files.LineLength
     private const REMOTE_IMAGE = 'taomedia://mediamanager/http_2_test_0_org_1_tao_0_rdf_3_i5ed8fb7fdec668fa42f651de12e1d1';
+    // phpcs:enable Generic.Files.LineLength
     private const REMOTE_IMAGE_CONTENTS = 'remote_image';
     private const REMOTE_IMAGE_BASE_64 = 'data:image/png;base64,cmVtb3RlX2ltYWdl';
 
+    // phpcs:disable Generic.Files.LineLength
     private const REMOTE_OBJECT = 'taomedia://mediamanager/http_2_test_0_org_1_tao_0_rdf_3_i5ed8fb7fdec668fa42f651de12e1d2';
+    // phpcs:enable Generic.Files.LineLength
     private const REMOTE_OBJECT_CONTENTS = 'remote_video';
     private const REMOTE_OBJECT_BASE_64 = 'data:video/quicktime;base64,cmVtb3RlX3ZpZGVv';
 
@@ -206,6 +210,7 @@ class MediaResourcePreparerTest extends TestCase
 
     private function getFileContent(): string
     {
+        // phpcs:disable Generic.Files.LineLength
         return '<?xml version="1.0" encoding="UTF-8"?>
             <div xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/qti/qtiv2p1/imsqti_v2p1.xsd">
                 <img alt="test" src="%s"/>
@@ -215,5 +220,6 @@ class MediaResourcePreparerTest extends TestCase
                 <object data="%s" type="video/quicktime"/>
                 <object data="%s" type="video/quicktime"/>
             </div>';
+        // phpcs:enable Generic.Files.LineLength
     }
 }

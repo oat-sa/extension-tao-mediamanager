@@ -33,7 +33,8 @@ use oat\taoMediaManager\model\TaoMediaOntology;
  * Used to import media from the command line
  *
  * ```
- * sudo -u www-data php index.php 'oat\taoMediaManager\scripts\ImportMedia' big_bad_video.mp4 'http://sample/mediaclass.rdf#i1464967192451980'
+ * sudo -u www-data php index.php 'oat\taoMediaManager\scripts\ImportMedia' big_bad_video.mp4
+ * 'http://sample/mediaclass.rdf#i1464967192451980'
  * ```
  */
 class ImportMedia implements Action

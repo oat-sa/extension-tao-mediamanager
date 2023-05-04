@@ -27,10 +27,10 @@
         "oat-sa/oatbox-extension-installer": "~1.1||dev-master",
         "oat-sa/lib-generis-search": "2.1.2",
         "oat-sa/generis": ">=15.22",
-        "oat-sa/tao-core": "dev-feature/AUT-2995",
-        "oat-sa/extension-tao-item": "dev-feature/AUT-2995",
-        "oat-sa/extension-tao-itemqti": "dev-feature/AUT-2995",
-        "oat-sa/extension-tao-test": "dev-feature/AUT-2995",
+        "oat-sa/tao-core": ">=50.27.0",
+        "oat-sa/extension-tao-item": ">=11.13.4",
+        "oat-sa/extension-tao-itemqti": ">=29.14.5",
+        "oat-sa/extension-tao-test": ">=15.0.0",
         "oat-sa/extension-tao-testqti-previewer": "*"
     },
     "autoload": {

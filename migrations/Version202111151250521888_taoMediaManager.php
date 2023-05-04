@@ -53,4 +53,3 @@ final class Version202111151250521888_taoMediaManager extends AbstractMigration
         );
     }
 }
-

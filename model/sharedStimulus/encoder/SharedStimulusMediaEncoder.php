@@ -108,7 +108,6 @@ class SharedStimulusMediaEncoder extends ConfigurableService implements SharedSt
         $components = parse_url($source);
 
         if (!isset($components['scheme'])) {
-
             return 'data:' . tao_helpers_File::getMimeType($basedir . $source) . ';'
                 . 'base64,' . base64_encode(file_get_contents($basedir . $source));
         }

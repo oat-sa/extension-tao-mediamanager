@@ -226,7 +226,10 @@ class SharedStimulusPackageImporterTest extends TestCase
     {
         $sampleDir = dirname(__DIR__) . '/sample/sharedStimulus/';
         return [
-            [$sampleDir . 'UnknowFile.zip', new \common_Exception('Unable to open archive ' . $sampleDir . 'UnknowFile.zip')],
+            [
+                $sampleDir . 'UnknowFile.zip',
+                new \common_Exception('Unable to open archive ' . $sampleDir . 'UnknowFile.zip'),
+            ],
             [$sampleDir . 'missingXmlArchive.zip', new \common_Exception('XML not found in the package')],
             [$sampleDir . 'stimulusPackage.zip', null],
             [$sampleDir . 'encodedImage.zip', null],

@@ -36,7 +36,9 @@ use Prophecy\Argument;
 use Psr\Http\Message\StreamInterface;
 use ReflectionProperty;
 
+// phpcs:disable PSR1.Files.SideEffects
 include __DIR__ . '/../../../includes/raw_start.php';
+// phpcs:enable PSR1.Files.SideEffects
 
 /**
  * Class MediaSourceTest

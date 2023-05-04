@@ -34,7 +34,9 @@ use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
 use oat\generis\test\MockObject;
 
+// phpcs:disable PSR1.Files.SideEffects
 include __DIR__ . '/../../../includes/raw_start.php';
+// phpcs:enable PSR1.Files.SideEffects
 
 class SharedStimulusImporterTest extends TestCase
 {

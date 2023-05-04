@@ -53,7 +53,11 @@ class MediaManagerBrowserTest extends TestCase
 
         $mediaSource = $this->initializeMediaSource();
 
-        $directory = $mediaSource->getDirectory(\tao_helpers_Uri::encode($this->rootClass->getUri()), $acceptableMime, $depth);
+        $directory = $mediaSource->getDirectory(
+            \tao_helpers_Uri::encode($this->rootClass->getUri()),
+            $acceptableMime,
+            $depth
+        );
 
         $this->assertIsArray($directory, 'The result should be an array');
         $this->assertArrayHasKey('label', $directory, 'The result should contain "label"');
@@ -62,12 +66,20 @@ class MediaManagerBrowserTest extends TestCase
 
         $this->assertIsArray($directory['children'], 'Children should be an array');
         $this->assertEquals('myRootClass', $directory['label'], 'The label is not correct');
-        $this->assertEquals('taomedia://mediamanager/' . \tao_helpers_Uri::encode($this->rootClass->getUri()), $directory['path'], 'The path is not correct');
+        $this->assertEquals(
+            'taomedia://mediamanager/' . \tao_helpers_Uri::encode($this->rootClass->getUri()),
+            $directory['path'],
+            'The path is not correct'
+        );
 
         $this->rootClass->createSubClass('mySubClass1');
         $this->rootClass->createSubClass('mySubClass0');
 
-        $newDirectory = $mediaSource->getDirectory(\tao_helpers_Uri::encode($this->rootClass->getUri()), $acceptableMime, $depth);
+        $newDirectory = $mediaSource->getDirectory(
+            \tao_helpers_Uri::encode($this->rootClass->getUri()),
+            $acceptableMime,
+            $depth
+        );
         $this->assertIsArray($newDirectory['children'], 'Children should be an array');
         $this->assertNotEmpty($newDirectory['children'], 'Children should not be empty');
 
@@ -94,7 +106,10 @@ class MediaManagerBrowserTest extends TestCase
     {
         $instance = $this->rootClass->createInstance('Brazil.png');
         $instance->setPropertyValue(new core_kernel_classes_Property(TaoMediaOntology::PROPERTY_LINK), 'myGreatLink');
-        $instance->setPropertyValue(new core_kernel_classes_Property(TaoMediaOntology::PROPERTY_MIME_TYPE), 'image/png');
+        $instance->setPropertyValue(
+            new core_kernel_classes_Property(TaoMediaOntology::PROPERTY_MIME_TYPE),
+            'image/png'
+        );
 
         $uri = $instance->getUri();
 
@@ -108,7 +123,11 @@ class MediaManagerBrowserTest extends TestCase
 
         $this->assertEquals($instance->getLabel(), $fileInfo['name'], 'The file name is not correct');
         $this->assertEquals('image/png', $fileInfo['mime'], 'The mime type is not correct');
-        $this->assertEquals('taomedia://mediamanager/' . \tao_helpers_Uri::encode($uri), $fileInfo['uri'], 'The uri is not correct');
+        $this->assertEquals(
+            'taomedia://mediamanager/' . \tao_helpers_Uri::encode($uri),
+            $fileInfo['uri'],
+            'The uri is not correct'
+        );
     }
 
     public function testGetFileInfoFail()

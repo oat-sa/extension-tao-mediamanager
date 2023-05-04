@@ -14,7 +14,6 @@ use oat\tao\model\ClientLibConfigRegistry;
  */
 final class Version202107261356101888_taoMediaManager extends AbstractMigration
 {
-
     public function getDescription(): string
     {
         return 'Register Rich passage handler to previewer/proxy. It will add passage custom styles to itemData';

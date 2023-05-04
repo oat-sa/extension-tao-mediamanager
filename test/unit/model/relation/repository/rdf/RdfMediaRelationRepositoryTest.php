@@ -106,7 +106,8 @@ class RdfMediaRelationRepositoryTest extends TestCase
 
         $class->method('getUri')->willReturn('http://resource/example');
         $class->method('getLabel')->willReturnOnConsecutiveCalls(
-            'label 1', 'label 2'
+            'label 1',
+            'label 2'
         );
 
         $this->ontology
@@ -170,7 +171,7 @@ class RdfMediaRelationRepositoryTest extends TestCase
     private function getArrayWithLenght(int $lenght): array
     {
         $arrayMock = [];
-        for ($i = 1; $i <= $lenght; $i++){
+        for ($i = 1; $i <= $lenght; $i++) {
             $arrayMock[] = sprintf('sublcass_%d', $i);
         }
         return $arrayMock;

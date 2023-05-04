@@ -88,7 +88,8 @@ class ItemToMediaRelationMigrationTaskTest extends TestCase
                 SpawnMigrationConfigService::class => $this->spawnMigrationConfigServiceMock,
                 ResultFilterFactory::class => $this->resultFilterFactoryMock,
                 MigrationConfigFactory::class => $this->migrationConfigFactoryMock,
-            ]));
+            ])
+        );
     }
 
     public function testInvokeWithRespawnConfig(): void

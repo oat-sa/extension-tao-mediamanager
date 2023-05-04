@@ -49,7 +49,7 @@ abstract class AbstractRdsSearcher extends ConfigurableService implements Result
         );
 
         $resultUnitCollection = new ResultUnitCollection();
-        foreach ($results as $result){
+        foreach ($results as $result) {
             $resultUnitCollection->add(new ResultUnit($this->getResource($result['subject'])));
         }
 
@@ -67,7 +67,8 @@ abstract class AbstractRdsSearcher extends ConfigurableService implements Result
             );
         }
 
-        $query = 'SELECT id, subject FROM statements WHERE (id BETWEEN :start AND :end) AND predicate = :predicate AND object IN (:class) ORDER BY id';
+        $query = 'SELECT id, subject FROM statements WHERE (id BETWEEN :start AND :end) AND predicate = :predicate AND '
+            . 'object IN (:class) ORDER BY id';
         $type['class'] = Connection::PARAM_STR_ARRAY;
 
         return new common_persistence_sql_QueryIterator(

@@ -33,12 +33,12 @@ use oat\taoMediaManager\model\TaoMediaOntology;
  * Used to import media from the command line
  *
  * ```
- * sudo -u www-data php index.php 'oat\taoMediaManager\scripts\ImportMedia' big_bad_video.mp4 'http://sample/mediaclass.rdf#i1464967192451980'
+ * sudo -u www-data php index.php 'oat\taoMediaManager\scripts\ImportMedia' big_bad_video.mp4
+ * 'http://sample/mediaclass.rdf#i1464967192451980'
  * ```
  */
 class ImportMedia implements Action
 {
-
     /**
      * @param $params
      * @return Report
@@ -48,9 +48,9 @@ class ImportMedia implements Action
         if (count($params) < 1) {
             return new Report(Report::TYPE_ERROR, __('Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]'));
         };
-        
+
         \common_ext_ExtensionsManager::singleton()->getExtensionById('taoMediaManager');
-        
+
         $file = array_shift($params);
         $destinationClassUri = count($params) > 0
             ? array_shift($params)

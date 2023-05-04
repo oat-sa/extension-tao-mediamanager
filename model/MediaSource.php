@@ -38,7 +38,10 @@ use tao_models_classes_FileNotFoundException;
 
 use function GuzzleHttp\Psr7\stream_for;
 
-class MediaSource extends Configurable implements MediaManagement, ProcessedFileStreamAware, AccessControlEnablerInterface
+class MediaSource extends Configurable implements
+    MediaManagement,
+    ProcessedFileStreamAware,
+    AccessControlEnablerInterface
 {
     use LoggerAwareTrait;
     use OntologyAwareTrait;
@@ -314,7 +317,9 @@ class MediaSource extends Configurable implements MediaManagement, ProcessedFile
 
     protected function getRootClassUri()
     {
-        return $this->hasOption('rootClass') ? $this->getOption('rootClass') : MediaService::singleton()->getRootClass();
+        return $this->hasOption('rootClass')
+            ? $this->getOption('rootClass')
+            : MediaService::singleton()->getRootClass();
     }
 
     protected function getLang()

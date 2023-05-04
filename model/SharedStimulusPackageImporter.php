@@ -294,7 +294,7 @@ class SharedStimulusPackageImporter extends ZipImporter
         return $this->getServiceLocator()->get(StoreService::class);
     }
 
-    private function getSharedStimulusMediaEncoderService (): SharedStimulusMediaEncoderInterface
+    private function getSharedStimulusMediaEncoderService(): SharedStimulusMediaEncoderInterface
     {
         return $this->getServiceLocator()->get(SharedStimulusMediaEncoderInterface::SERVICE_ID);
     }

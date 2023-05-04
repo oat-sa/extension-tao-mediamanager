@@ -84,7 +84,7 @@ class TempFileWriter
 
         if (!@file_put_contents($path, $data)) {
             throw new RuntimeException(
-                'Error writing data to temp file: '.
+                'Error writing data to temp file: ' .
                 error_get_last()['message']
             );
         }

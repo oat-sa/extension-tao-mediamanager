@@ -146,7 +146,8 @@ class SharedStimulusImporter extends ConfigurableService implements
                             $report = Report::createSuccess(__('Shared Stimulus imported successfully'));
                             $report->add(Report::createSuccess(
                                 __('Imported %s', $fileInfo['name']),
-                                ['uriResource' => $mediaResourceUri] // 'uriResource' key is needed by javascript in tao/views/templates/form/import.tpl
+                                // 'uriResource' key is needed by javascript in tao/views/templates/form/import.tpl
+                                ['uriResource' => $mediaResourceUri]
                             ));
                         }
                     } catch (XmlStorageException $e) {
@@ -196,7 +197,11 @@ class SharedStimulusImporter extends ConfigurableService implements
 
                     $report->setData(['uriResource' => $instanceUri]);
                 } else {
-                    $report = $this->getZipImporter()->edit(new core_kernel_classes_Resource($instanceUri), $form, $userId);
+                    $report = $this->getZipImporter()->edit(
+                        new core_kernel_classes_Resource($instanceUri),
+                        $form,
+                        $userId
+                    );
                 }
             }
         } catch (Exception $e) {

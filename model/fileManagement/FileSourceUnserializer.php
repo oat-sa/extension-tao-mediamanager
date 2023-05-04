@@ -27,7 +27,6 @@ use oat\oatbox\service\ConfigurableService;
 
 class FileSourceUnserializer extends ConfigurableService
 {
-
     private const FILE_PREFIX = 'file://';
     private const MEDIA_MANAGER_FOLDER = 'mediaManager';
 

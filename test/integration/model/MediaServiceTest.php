@@ -31,7 +31,9 @@ use core_kernel_classes_Property as RdfProperty;
 use oat\taoMediaManager\model\TaoMediaOntology;
 use oat\taoRevision\model\RepositoryService;
 
+// phpcs:disable PSR1.Files.SideEffects
 include_once dirname(__FILE__) . '/../../../includes/raw_start.php';
+// phpcs:enable PSR1.Files.SideEffects
 
 class MediaServiceTest extends TestCase
 {

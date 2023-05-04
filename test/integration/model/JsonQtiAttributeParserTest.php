@@ -58,11 +58,13 @@ class JsonQtiAttributeParserTest extends TestCase
 
     public function testRenderSimpleSharedStimulus()
     {
+        // phpcs:disable Generic.Files.LineLength
         $xml = '<?xml version="1.0" encoding="UTF-8"?>
 <div xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" class="stimulus_content" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/qti/qtiv2p1/imsqti_v2p1.xsd">
     <p>Lorem ip sum</p>
 </div>
 ';
+        // phpcs:enable Generic.Files.LineLength
         $body = $this->renderXmlBody($xml);
         $this->assertSame('<p>Lorem ip sum</p>', trim($body));
     }

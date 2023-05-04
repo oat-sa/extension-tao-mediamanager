@@ -36,7 +36,7 @@ class LoadStylesheetClassesService extends ConfigurableService
         $path = $stylesheetRepository->getPath($loadStylesheetDTO->getUri());
 
         if ($path === '.') {
-            throw new \Exception ('Shared stimulus stored as single file');
+            throw new \Exception('Shared stimulus stored as single file');
         }
 
         try {

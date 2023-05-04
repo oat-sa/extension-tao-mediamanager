@@ -41,7 +41,6 @@ use core_kernel_classes_Resource;
  */
 class UpdateMedia implements Action
 {
-
     /**
      * @param $params
      * @return Report
@@ -63,12 +62,18 @@ class UpdateMedia implements Action
 
             if ($link instanceof core_kernel_classes_Resource) {
                 $count++;
-                $filename = $link->getUniquePropertyValue(new core_kernel_classes_Property(GenerisRdf::PROPERTY_FILE_FILENAME));
+                $filename = $link->getUniquePropertyValue(
+                    new core_kernel_classes_Property(GenerisRdf::PROPERTY_FILE_FILENAME)
+                );
                 $filename = $filename instanceof core_kernel_classes_Resource ? $filename->getUri() : (string)$filename;
 
                 if (!$dryrun) {
-                    if ($mediaInstance->editPropertyValues(
-                        new core_kernel_classes_Propert(TaoMediaOntology::PROPERTY_LINK), $filename)) {
+                    if (
+                        $mediaInstance->editPropertyValues(
+                            new core_kernel_classes_Propert(TaoMediaOntology::PROPERTY_LINK),
+                            $filename
+                        )
+                    ) {
                         $success++;
                     } else {
                         $report->add(Report::createFailure(__('Issue while modifying %s', $mediaInstance->getUri())));

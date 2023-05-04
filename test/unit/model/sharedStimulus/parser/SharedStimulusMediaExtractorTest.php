@@ -43,7 +43,7 @@ class SharedStimulusMediaExtractorTest extends TestCase
     /** @var TaoMediaResolver */
     private $resolver;
 
-    public function setUp() :void
+    public function setUp(): void
     {
         $this->ontology = $this->createMock(Ontology::class);
         $this->resolver = $this->createMock(TaoMediaResolver::class);
@@ -77,7 +77,8 @@ class SharedStimulusMediaExtractorTest extends TestCase
                 [$this->equalTo($videoPath)]
             )
             ->willReturn(
-                $resource, $resource
+                $resource,
+                $resource
             );
 
         $expected = [
@@ -174,7 +175,7 @@ class SharedStimulusMediaExtractorTest extends TestCase
     private function loadResolver(string $imagePath, string $videoPath): void
     {
         $mediaSource = $this->createConfiguredMock(MediaSource::class, ['getFileInfo' => 'info']);
-;
+        ;
         $imageAsset = $this->createConfiguredMock(MediaAsset::class, [
             'getMediaSource' => $mediaSource,
             'getMediaIdentifier' => $imagePath

@@ -31,7 +31,6 @@ use oat\taoMediaManager\model\TaoMediaOntology;
 
 class FileSourceSerializer extends ConfigurableService
 {
-
     private const FILE_PREFIX = 'file://';
 
     public function serialize(Triple $triple): void

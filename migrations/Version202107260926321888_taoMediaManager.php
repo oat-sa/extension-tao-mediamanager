@@ -14,7 +14,6 @@ use oat\tao\model\ClientLibConfigRegistry;
  */
 final class Version202107260926321888_taoMediaManager extends AbstractMigration
 {
-
     public function getDescription(): string
     {
         return 'Register Rich passage handler to xincludeRenderer. It will add passage custom styles to head';

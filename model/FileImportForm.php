@@ -47,7 +47,10 @@ class FileImportForm extends \tao_helpers_form_FormContainer
     {
         $this->form = new \tao_helpers_form_xhtml_Form('export');
         $submitElt = \tao_helpers_form_FormFactory::getElement('import', 'Free');
-        $submitElt->setValue('<a href="#" class="form-submitter btn-success small"><span class="icon-import"></span> ' . __('Import') . '</a>');
+        $submitElt->setValue(
+            '<a href="#" class="form-submitter btn-success small"><span class="icon-import"></span> '
+                . __('Import') . '</a>'
+        );
 
         $this->form->setActions([$submitElt], 'bottom');
         $this->form->setActions([], 'top');
@@ -89,7 +92,7 @@ class FileImportForm extends \tao_helpers_form_FormContainer
                 $dataLang = $lang->getUri();
             }
         }
-        
+
         $langOptions = [];
         foreach ($langService->getAvailableLanguagesByUsage($dataUsage) as $lang) {
             $langOptions[\tao_helpers_Uri::encode($lang->getUri())] = $lang->getLabel();

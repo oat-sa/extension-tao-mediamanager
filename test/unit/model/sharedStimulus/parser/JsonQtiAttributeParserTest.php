@@ -48,7 +48,8 @@ class JsonQtiAttributeParserTest extends TestCase
 
     public function testParseWithLanguage(): void
     {
-        $body = '<?xml version="1.0" encoding="UTF-8"?><div xmlns="http://www.imsglobal.org/xsd/imsqti_v2p2" xml:lang="es-MX"></div>';
+        $body = '<?xml version="1.0" encoding="UTF-8"?><div xmlns="http://www.imsglobal.org/xsd/imsqti_v2p2" '
+            . 'xml:lang="es-MX"></div>';
         $sharedStimulus = new SharedStimulus('id', '', '', $body);
         $result = $this->subject->parse($sharedStimulus);
         $this->assertSame('es-MX', $result['attributes']['xml:lang']);

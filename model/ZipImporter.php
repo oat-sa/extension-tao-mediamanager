@@ -57,7 +57,11 @@ class ZipImporter implements ServiceLocatorAwareInterface, TaoLoggerAwareInterfa
     {
         try {
             $uploadedFile = $this->fetchUploadedFile($form);
-            $resource = new core_kernel_classes_Class($form instanceof Form ? $form->getValue('classUri') : $form['classUri']);
+            $resource = new core_kernel_classes_Class(
+                $form instanceof Form
+                    ? $form->getValue('classUri')
+                    : $form['classUri']
+            );
 
             // unzip the file
             try {
@@ -71,7 +75,10 @@ class ZipImporter implements ServiceLocatorAwareInterface, TaoLoggerAwareInterfa
 
             // get list of directory in order to create classes
             $iterator = new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator($directory, \RecursiveDirectoryIterator::CURRENT_AS_FILEINFO | \RecursiveDirectoryIterator::SKIP_DOTS),
+                new \RecursiveDirectoryIterator(
+                    $directory,
+                    \RecursiveDirectoryIterator::CURRENT_AS_FILEINFO | \RecursiveDirectoryIterator::SKIP_DOTS
+                ),
                 \RecursiveIteratorIterator::LEAVES_ONLY
             );
 
@@ -93,10 +100,18 @@ class ZipImporter implements ServiceLocatorAwareInterface, TaoLoggerAwareInterfa
                         $classUri = $this->createClass($file->getPath());
                     }
 
-                    $mediaResourceUri = $service->createMediaInstance($file->getRealPath(), $classUri, $language, $file->getFilename(), null, $userId);
+                    $mediaResourceUri = $service->createMediaInstance(
+                        $file->getRealPath(),
+                        $classUri,
+                        $language,
+                        $file->getFilename(),
+                        null,
+                        $userId
+                    );
                     $report->add(Report::createSuccess(
                         __('Imported %s', substr($file->getRealPath(), strlen($directory))),
-                        ['uriResource' => $mediaResourceUri] // 'uriResource' key is needed by javascript in tao/views/templates/form/import.tpl
+                        // 'uriResource' key is needed by javascript in tao/views/templates/form/import.tpl
+                        ['uriResource' => $mediaResourceUri]
                     ));
                 }
             }

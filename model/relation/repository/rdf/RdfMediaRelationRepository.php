@@ -43,6 +43,7 @@ use oat\taoMediaManager\model\TaoMediaOntology;
 class RdfMediaRelationRepository extends ConfigurableService implements MediaRelationRepositoryInterface
 {
     use OntologyAwareTrait;
+
     private const CLASS_MEDIA_LIMIT = 20;
     private const NESTED_CLASS_LIMIT = 10;
 
@@ -78,7 +79,11 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
 
         $includedMedia = [];
         $includedMediaQueryBuilder = $this->getComplexSearchService()->query();
-        $includedMediaQuery = $this->getComplexSearchService()->searchType($includedMediaQueryBuilder, $class->getUri(), true);
+        $includedMediaQuery = $this->getComplexSearchService()->searchType(
+            $includedMediaQueryBuilder,
+            $class->getUri(),
+            true
+        );
         $includedMediaQueryBuilder->setCriteria($includedMediaQuery);
         $includedMediaResult = $this->getComplexSearchService()->getGateway()->search($includedMediaQueryBuilder);
 
@@ -188,16 +193,15 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
 
         return new MediaRelationCollection(
             ... $this->mapTargetRelations(
-            MediaRelation::ITEM_TYPE,
-            $rdfMediaRelations[self::ITEM_RELATION_PROPERTY],
-            $mediaId
-        )->getIterator(),
-
+                MediaRelation::ITEM_TYPE,
+                $rdfMediaRelations[self::ITEM_RELATION_PROPERTY],
+                $mediaId
+            )->getIterator(),
             ... $this->mapTargetRelations(
-            MediaRelation::MEDIA_TYPE,
-            $rdfMediaRelations[self::MEDIA_RELATION_PROPERTY],
-            $mediaId
-        )->getIterator()
+                MediaRelation::MEDIA_TYPE,
+                $rdfMediaRelations[self::MEDIA_RELATION_PROPERTY],
+                $mediaId
+            )->getIterator()
         );
     }
 
@@ -226,7 +230,6 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
     private function applyQueryTargetType(QueryInterface $query, $targetId, $type)
     {
         switch ($type) {
-
             case MediaRelation::ITEM_TYPE:
                 $query
                     ->add(self::ITEM_RELATION_PROPERTY)
@@ -241,7 +244,6 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
 
             default:
                 throw new LogicException('MediaRelation query type is unknown.');
-
         }
     }
 
@@ -255,8 +257,11 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
      * @param Resource[]
      * @param string $sourceId
      */
-    private function mapTargetRelations(string $type, array $rdfMediaRelations, string $sourceId): MediaRelationCollection
-    {
+    private function mapTargetRelations(
+        string $type,
+        array $rdfMediaRelations,
+        string $sourceId
+    ): MediaRelationCollection {
         $collection = new MediaRelationCollection();
 
         foreach ($rdfMediaRelations as $target) {
@@ -268,8 +273,12 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
         return $collection;
     }
 
-    private function mapSourceRelations(string $type, array $rdfMediaRelations, string $targetId, string $targetLabel = ''): MediaRelationCollection
-    {
+    private function mapSourceRelations(
+        string $type,
+        array $rdfMediaRelations,
+        string $targetId,
+        string $targetLabel = ''
+    ): MediaRelationCollection {
         $collection = new MediaRelationCollection();
 
         foreach ($rdfMediaRelations as $source) {
@@ -281,8 +290,12 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
         return $collection;
     }
 
-    private function createMediaRelation(string $type, string $targetId, string $mediaId, string $targetLabel = ''): MediaRelation
-    {
+    private function createMediaRelation(
+        string $type,
+        string $targetId,
+        string $mediaId,
+        string $targetLabel = ''
+    ): MediaRelation {
         return (new MediaRelation($type, $targetId, $targetLabel))
             ->withSourceId($mediaId);
     }

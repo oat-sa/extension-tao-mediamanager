@@ -19,26 +19,25 @@
 
 define([
     'lodash',
-    'util/locale',
+    'taoQtiItem/qtiCreator/helper/languages',
     'taoQtiItem/qtiCreator/widgets/states/factory',
     'taoMediaManager/qtiCreator/widgets/states/Active',
     'tpl!taoMediaManager/qtiCreator/tpl/forms/item',
     'taoQtiItem/qtiCreator/widgets/helpers/formElement',
     'taoQtiItem/qtiCreator/editor/gridEditor/content',
     'select2'
-], function(_, locale, stateFactory, Active, formTpl, formElement, contentHelper){
+], function(_, languages, stateFactory, Active, formTpl, formElement, contentHelper){
     'use strict';
 
     const ItemStateActive = stateFactory.create(Active, function enterActiveState() {
         const _widget = this.widget;
         const item = _widget.element;
         const $form = _widget.$form;
-        const rtl = locale.getConfig().rtl || [];
+        const $itemBody = _widget.$container.find('.qti-itemBody');
         //build form:
         $form.html(formTpl({
             'xml:lang' : item.attr('xml:lang'),
-            languagesList : item.data('languagesList'),
-            rtl
+            languagesList : item.data('languagesList')
         }));
 
         //init widget
@@ -48,16 +47,22 @@ define([
         formElement.setChangeCallbacks($form, item, {
             'xml:lang' : function langChange(i, lang){
                 item.attr('xml:lang', lang);
-                const $itemBody = _widget.$container.find('.qti-itemBody');
-                if (rtl.includes(lang)) {
-                    item.attr('dir', 'rtl');
-                    $itemBody.find('.grid-row').attr('dir', 'rtl');
-                } else {
-                    item.removeAttr('dir');
-                    $itemBody.find('.grid-row').removeAttr('dir');
-                }
-                //need to update item body
-                item.body(contentHelper.getContent($itemBody));
+                languages
+                    .isRTLbyLanguageCode(lang)
+                    .then((isRTL) => {
+                        if (isRTL) {
+                            item.bdy.attr('dir', 'rtl');
+                            $itemBody.attr('dir', 'rtl');
+                        } else {
+                            item.bdy.removeAttr('dir');
+                            $itemBody.removeAttr('dir');
+                        }
+
+                        $itemBody.trigger('item-dir-changed');
+                    }
+                );
+                
+                
             }
         });
 
@@ -74,12 +79,6 @@ define([
                 return data.text;
             }
         });
-
-        // set dir='rtl' if 'xml:lang' in rtl array
-        if (rtl.includes(item.attr('xml:lang'))) {
-            item.attr('dir', 'rtl');
-        }
-
     }, _.noop);
 
     return ItemStateActive;

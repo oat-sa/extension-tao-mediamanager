@@ -23,8 +23,9 @@ define([
     'taoMediaManager/qtiCreator/helper/createDummyItemData',
     'core/dataProvider/request',
     'util/url',
-    'taoMediaManager/qtiCreator/helper/formatStyles'
-], function ($, Loader, qtiClasses, creatorDummyItemData, request, urlUtil, formatStyles ) {
+    'taoMediaManager/qtiCreator/helper/formatStyles',
+    'taoQtiItem/qtiCreator/helper/languages'
+], function ($, Loader, qtiClasses, creatorDummyItemData, request, urlUtil, formatStyles, languages) {
     'use strict';
 
     const qtiNamespace = 'http://www.imsglobal.org/xsd/imsqti_v2p2';
@@ -33,13 +34,11 @@ define([
         'http://www.imsglobal.org/xsd/imsqti_v2p2' : 'http://www.imsglobal.org/xsd/qti/qtiv2p2/imsqti_v2p2.xsd'
     };
 
-    const languagesUrl = urlUtil.route('index', 'Languages', 'tao');
-
     const creatorLoader = {
         loadSharedStimulus(config, callback) {
 
             if (config.id) {
-                const languagesList = request(languagesUrl);
+                const languagesList = languages.getList();
                 const assetData = request(config.assetDataUrl, { id: config.id });
                 const assetStyles = request(config.assetDataStyles, { uri: config.id });
                 Promise.all([languagesList, assetData, assetStyles]).then((values) => {

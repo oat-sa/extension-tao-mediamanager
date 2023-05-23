@@ -9,7 +9,7 @@
         </span>
         <select name="xml:lang" class="select2" data-has-search="false">
             {{#each languagesList}}
-                <option value="{{@key}}"{{#equal @key ../xml:lang}} selected="selected"{{/equal}}>{{this}}</option>
+                <option value="{{@key}}"{{#equal @key ../xml:lang}} selected="selected"{{/equal}}{{#includes ../rtl @key}} class="rtl-lang"{{/includes}}>{{this}}</option>
             {{/each}}
         </select>
     </div>

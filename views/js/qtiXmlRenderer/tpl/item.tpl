@@ -3,7 +3,7 @@
     {{#each namespaces}}{{#if @key}}xmlns:{{@key}}="{{.}}"{{else}}xmlns="{{.}}"{{/if}} {{/each}}
     {{#if attributes}}{{{join attributes '=' ' ' '"'}}}{{/if}}>
     {{#if empty}}
-        <div class="empty"></div>
+        <div class="empty"{{#if dir}} dir="{{dir}}"{{/if}}></div>
     {{else}}
         {{{body}}}
     {{/if}}

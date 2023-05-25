@@ -43,6 +43,7 @@ class JsonQtiAttributeParser extends ConfigurableService
         $xinclude = $this->createXInclude($document);
         $this->addLanguageAttribute($document, $xinclude);
         $this->addClassAttribute($document, $xinclude);
+        $this->addDirAttribute($document, $xinclude);
 
         return $xinclude->toArray();
     }
@@ -108,6 +109,22 @@ class JsonQtiAttributeParser extends ConfigurableService
             $xinclude->setAttribute(
                 'class',
                 $classAttr->nodeValue
+            );
+        }
+    }
+
+    /**
+     * @throws QtiModelException
+     */
+    private function addDirAttribute(DOMDocument $document, XInclude $xinclude): void
+    {
+        $rootNode = $document->firstChild;
+        $dirAttribute = trim($rootNode->getAttribute('dir'));
+
+        if ($dirAttribute) {
+            $xinclude->setAttribute(
+                'dir',
+                $dirAttribute
             );
         }
     }

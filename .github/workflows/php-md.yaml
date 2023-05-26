@@ -21,7 +21,7 @@ jobs:
         uses: php-actions/phpmd@v1.0.0
         with:
           php_version: 8.1
-          #path: .
+          path: .
           output: github
           #ruleset: cleancode,codesize,controversial,design,naming,unusedcode
           ruleset: .github/phpmd-ruleset.xml

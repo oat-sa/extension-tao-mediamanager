@@ -18,10 +18,12 @@ jobs:
           tools: phpmd
 
       - name: PHP Mess Detector
-        uses: php-actions/phpmd@v1.0.0
-        with:
-          php_version: 8.1
-          path: controller/HighCC.php
-          output: github
-          #ruleset: cleancode,codesize,controversial,design,naming,unusedcode
-          ruleset: .github/phpmd-ruleset.xml
+        #uses: php-actions/phpmd@v1.0.0
+        #with:
+        #  php_version: 8.1
+        #  path: controller/HighCC.php
+        #  output: github
+        #  #ruleset: cleancode,codesize,controversial,design,naming,unusedcode
+        #  ruleset: .github/phpmd-ruleset.xml
+        # Try calling it directly
+        run: phpmd . github .github/phpmd.ruleset.xml --exclude 'vendor/*'

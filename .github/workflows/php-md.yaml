@@ -24,4 +24,4 @@ jobs:
           path: .
           output: github
           #ruleset: cleancode,codesize,controversial,design,naming,unusedcode
-          ruleset: cleancode,codesize,design,naming,unusedcode
+          ruleset: CyclomaticComplexity

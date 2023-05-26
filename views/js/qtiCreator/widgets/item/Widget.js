@@ -164,7 +164,7 @@ define([
 
             if (element.attr('dir') === 'rtl') {
                 // add dir='rtl' to new div.grid-row
-                $placeholder.parent('.col-12').parent('.grid-row').attr('dir', 'rtl');
+                $placeholder.attr('dir', 'rtl');
             }
 
             if (!element || !$editable.length) {

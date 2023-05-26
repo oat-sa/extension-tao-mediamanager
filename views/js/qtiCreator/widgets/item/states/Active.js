@@ -54,6 +54,7 @@ define([
                             item.bdy.attr('dir', 'rtl');
                             $itemBody.attr('dir', 'rtl');
                         } else {
+                            delete item.attributes.dir;
                             item.bdy.removeAttr('dir');
                             $itemBody.removeAttr('dir');
                         }

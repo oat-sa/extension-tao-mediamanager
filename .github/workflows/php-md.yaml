@@ -19,4 +19,8 @@ jobs:
 
       - name: PHP Mess Detector
         uses: php-actions/phpmd@v1.0.0
-        # run: phpmd . github phpmd.ruleset.xml --exclude 'tests/*,vendor/*'
+        with:
+          php_version: 8.1
+          path: .
+          output: github
+          ruleset: cleancode,codesize,controversial,design,naming,unusedcode

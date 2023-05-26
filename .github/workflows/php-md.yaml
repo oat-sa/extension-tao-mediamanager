@@ -26,4 +26,4 @@ jobs:
         #  #ruleset: cleancode,codesize,controversial,design,naming,unusedcode
         #  ruleset: .github/phpmd-ruleset.xml
         # Try calling it directly
-        run: phpmd . github .github/phpmd.ruleset.xml --exclude 'vendor/*'
+        run: phpmd . github .github/phpmd-ruleset.xml --exclude 'vendor/*'

@@ -17,9 +17,6 @@ jobs:
           coverage: none
           tools: phpmd
 
-      - name: Dump dirs
-        run: ls -lR
-
       - name: PHP Mess Detector
         uses: php-actions/phpmd@v1.0.0
         with:
@@ -27,4 +24,4 @@ jobs:
           path: .
           output: github
           #ruleset: cleancode,codesize,controversial,design,naming,unusedcode
-          ruleset: .github/workflows/phpmd-ruleset.xml
+          ruleset: .github/phpmd-ruleset.xml

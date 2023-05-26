@@ -24,4 +24,4 @@ jobs:
           path: .
           output: github
           #ruleset: cleancode,codesize,controversial,design,naming,unusedcode
-          ruleset: ../phpmd-ruleset.xml
+          ruleset: .github/workflows/phpmd-ruleset.xml

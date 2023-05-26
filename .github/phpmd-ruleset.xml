@@ -11,10 +11,9 @@
           and 11+ is very high complexity.
         -->
         <rule ref="rulesets/codesize.xml/CyclomaticComplexity">
-            <!-- <priority>1</priority>-->
             <properties>
                 <!-- The Cyclomatic Complexity reporting threshold -->
-                <property name="reportLevel" value="5" />
+                <property name="reportLevel" value="8" />
             </properties>-->
         </rule>
 

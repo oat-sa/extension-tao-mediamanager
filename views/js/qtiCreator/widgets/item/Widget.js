@@ -163,7 +163,6 @@ define([
             const container = Element.isA(element, '_container') ? element : element.getBody();
 
             if (element.attr('dir') === 'rtl') {
-                // add dir='rtl' to new div.grid-row
                 $placeholder.attr('dir', 'rtl');
             }
 

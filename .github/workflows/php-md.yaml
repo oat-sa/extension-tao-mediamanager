@@ -17,6 +17,9 @@ jobs:
           coverage: none
           tools: phpmd
 
+      - name: Dump dirs
+        run: ls -lR
+
       - name: PHP Mess Detector
         uses: php-actions/phpmd@v1.0.0
         with:

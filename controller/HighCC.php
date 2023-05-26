@@ -7,6 +7,10 @@ class HighCC
 {
     public function example()
     {
+        $a=$b=2;
+        $a1=$a2=$b1=$b2=$c=$d=1;
+        $e=$f=$h=$z=1;
+
         if ($a == $b) {
             if ($a1 == $b1) {
                 fiddle();

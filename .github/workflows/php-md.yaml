@@ -1,4 +1,4 @@
-name: Continuous integration
+name: PHP Mess Detector
 
 on:
   push:
@@ -10,24 +10,6 @@ jobs:
   ci:
     runs-on: ${{ matrix.operating-system }}
 
-    strategy:
-      fail-fast: false
-      matrix:
-        operating-system: [ ubuntu-latest ]
-        php-version: [ '7.4', '8.0', '8.1' ]
-        include:
-          - php-version: '8.1'
-            coverage: true
-
-    steps:
-      - name: CI
-        uses: oat-sa/tao-extension-ci-action@v1
-        with:
-          php: ${{ matrix.php-version }}
-          coverage: ${{ matrix.coverage }}
-
-  code-quality:
-    runs-on: ${{ matrix.operating-system }}
     steps:
       - name: PHP Mess Detector
         uses: php-actions/phpmd@v1.0.0

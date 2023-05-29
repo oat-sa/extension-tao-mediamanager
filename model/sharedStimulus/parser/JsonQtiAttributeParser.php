@@ -119,13 +119,15 @@ class JsonQtiAttributeParser extends ConfigurableService
     private function addDirAttribute(DOMDocument $document, XInclude $xinclude): void
     {
         $rootNode = $document->firstChild;
-        $dirAttribute = trim($rootNode->getAttribute('dir'));
+        if ($rootNode) {
+            $dirAttribute = trim($rootNode->getAttribute('dir'));
 
-        if ($dirAttribute) {
-            $xinclude->setAttribute(
-                'dir',
-                $dirAttribute
-            );
-        }
+            if ($dirAttribute) {
+                $xinclude->setAttribute(
+                    'dir',
+                    $dirAttribute
+                );
+            }
+        }        
     }
 }

@@ -62,8 +62,6 @@ define([
                         $itemBody.trigger('item-dir-changed');
                     }
                 );
-                
-                
             }
         });
 

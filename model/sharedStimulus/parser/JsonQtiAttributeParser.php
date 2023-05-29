@@ -128,6 +128,6 @@ class JsonQtiAttributeParser extends ConfigurableService
                     $dirAttribute
                 );
             }
-        }        
+        }
     }
 }

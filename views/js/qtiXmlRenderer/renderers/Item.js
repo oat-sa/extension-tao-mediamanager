@@ -26,7 +26,7 @@ define(['lodash', 'tpl!taoMediaManager/qtiXmlRenderer/tpl/item'], function(_, tp
         getData : function getData(item, data){
             const defaultData = {
                 'class' : data.attributes.class || '',
-                dir: item.bdy.attributes.dir || '',
+                dir : item.bdy.attributes.dir || '',
                 namespaces : item.getNamespaces(),
                 schemaLocations : '',
                 xsi: 'xsi:',//the standard namespace prefix for xml schema

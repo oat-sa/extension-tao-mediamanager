@@ -34,4 +34,5 @@ interface TaoAssetRoles
     public const ASSET_RESOURCE_CREATOR = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetResourceCreatorRole';
     public const ASSET_IMPORTER = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetImporterRole';
     public const ASSET_DELETER = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetDeleterRole';
+    public const ASSET_CLASS_EDITOR_ROLE = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetClassEditorRole';
 }

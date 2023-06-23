@@ -19,22 +19,16 @@
 define([
     'lodash',
     'taoQtiItem/qtiCommonRenderer/renderers/Img',
-    'taoMediaManager/qtiCreator/widgets/static/img/Widget',
-    'taoQtiItem/qtiCreator/widgets/static/figure/Widget',
-    'taoQtiItem/qtiCreator/model/Figure',
-    'taoQtiItem/qtiCreator/helper/findParentElement'
-], function (_, Renderer, Widget, FigureWidget, FigureModel, findParentElement) {
+    'taoMediaManager/qtiCreator/widgets/static/img/Widget'
+], function (_, Renderer, Widget) {
     'use strict';
 
     const CreatorImg = _.clone(Renderer);
 
     CreatorImg.render = function render(img, options) {
         const $container = Renderer.getContainer(img);
-        if ($container.parent('figure').length || $container.parent('span').length && $container.parent('span').data('figure')) {
+        if ($container.parent('figure').length) {
             // don't create widget if has figure parent
-            if (!$container.parent('figure').length && $container.siblings('figcaption').length) {
-                $container.siblings('figcaption').remove();
-            }
             return CreatorImg;
         }
 
@@ -45,35 +39,7 @@ define([
         options.mediaManager = this.getOption('mediaManager');
         options.assetManager = this.getAssetManager();
 
-        if (
-            !$container.closest('.qti-choice, .qti-flow-container').length &&
-            !$container.closest('.qti-table caption').length
-        ) {
-            const parent = findParentElement(img.rootElement, img.serial);
-            parent.removeElement(img);
-            const figure = new FigureModel();
-            parent.setElement(figure);
-            const figureRenderer = parent.getRenderer();
-            if (figureRenderer) {
-                figure.setRenderer(figureRenderer);
-                figureRenderer.load(() => { }, ['figure']);
-            }
-            figure.setElement(img);
-            const $wrap = $container.wrap(`<span data-serial="${figure.serial}">`).parent();
-            FigureWidget.build(
-                figure,
-                $wrap,
-                this.getOption('bodyElementOptionForm'),
-                options
-            );
-        } else {
-            Widget.build(
-                img,
-                Renderer.getContainer(img),
-                this.getOption('bodyElementOptionForm'),
-                options
-            );
-        }
+        Widget.build(img, Renderer.getContainer(img), this.getOption('bodyElementOptionForm'), options);
     };
 
     return CreatorImg;

@@ -89,7 +89,7 @@ class QtiTestDeletedListener
     private function deleteAssets(array $assetIds): void
     {
         $this->logger->debug(
-            sprintf('Removing referenced assets: %s', implode(', ',  $assetIds))
+            sprintf('Removing referenced assets: %s', implode(', ', $assetIds))
         );
 
         $classesToDelete = [];
@@ -110,7 +110,7 @@ class QtiTestDeletedListener
                 if ($this->resourceHasNoSiblings($resource)) {
                     $this->logger->debug(
                         sprintf(
-                            'Class %s for media %s only contains the resource being'.
+                            'Class %s for media %s only contains the resource being' .
                             'deleted, deferring deletion for the class as well',
                             $type->getUri(),
                             $resource->getUri()

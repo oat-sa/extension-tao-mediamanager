@@ -215,6 +215,5 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                     service(TaoMediaResolver::class),
                 ]
             );
-
     }
 }

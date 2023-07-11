@@ -39,6 +39,9 @@ use Psr\Log\LoggerInterface;
 
 class QtiTestDeletedListenerTest extends TestCase
 {
+    private const MEDIA_ID = 'https_2_host_1_ontologies_1_tao_0_rdf_3_i123456789abcdef0123456789abcdef01';
+    private const MEDIA_URI = 'https://host/ontologies/tao.rdf#i123456789abcdef0123456789abcdef01';
+
     /** @var LoggerInterface|MockObject */
     private LoggerInterface $logger;
 
@@ -121,12 +124,12 @@ class QtiTestDeletedListenerTest extends TestCase
         $asset
             ->expects($this->once())
             ->method('getMediaIdentifier')
-            ->willReturn('https_2_host_1_ontologies_1_tao_0_rdf_3_i123456789abcdef0123456789abcdef01');
+            ->willReturn(self::MEDIA_ID);
 
         $mediaResource = $this->createMock(core_kernel_classes_Resource::class);
         $mediaResource
             ->method('getUri')
-            ->willReturn('https://host/ontologies/tao.rdf#i123456789abcdef0123456789abcdef01');
+            ->willReturn(self::MEDIA_URI);
         $mediaResource
             ->expects($this->atLeastOnce())
             ->method('getTypes')
@@ -143,7 +146,7 @@ class QtiTestDeletedListenerTest extends TestCase
         $this->ontology
             ->expects($this->once())
             ->method('getResource')
-            ->with('https://host/ontologies/tao.rdf#i123456789abcdef0123456789abcdef01')
+            ->with(self::MEDIA_URI)
             ->willReturn($mediaResource);
 
         $this->mediaSubclass
@@ -189,12 +192,12 @@ class QtiTestDeletedListenerTest extends TestCase
         $asset
             ->expects($this->once())
             ->method('getMediaIdentifier')
-            ->willReturn('https_2_host_1_ontologies_1_tao_0_rdf_3_i123456789abcdef0123456789abcdef01');
+            ->willReturn(self::MEDIA_ID);
 
         $mediaResource = $this->createMock(core_kernel_classes_Resource::class);
         $mediaResource
             ->method('getUri')
-            ->willReturn('https://host/ontologies/tao.rdf#i123456789abcdef0123456789abcdef01');
+            ->willReturn(self::MEDIA_URI);
         $mediaResource
             ->expects($this->atLeastOnce())
             ->method('getTypes')
@@ -211,7 +214,7 @@ class QtiTestDeletedListenerTest extends TestCase
         $this->ontology
             ->expects($this->once())
             ->method('getResource')
-            ->with('https://host/ontologies/tao.rdf#i123456789abcdef0123456789abcdef01')
+            ->with(self::MEDIA_URI)
             ->willReturn($mediaResource);
 
         $this->mediaSubclass
@@ -255,12 +258,12 @@ class QtiTestDeletedListenerTest extends TestCase
         $asset
             ->expects($this->once())
             ->method('getMediaIdentifier')
-            ->willReturn('https_2_host_1_ontologies_1_tao_0_rdf_3_i123456789abcdef0123456789abcdef01');
+            ->willReturn(self::MEDIA_ID);
 
         $mediaResource = $this->createMock(core_kernel_classes_Resource::class);
         $mediaResource
             ->method('getUri')
-            ->willReturn('https://host/ontologies/tao.rdf#i123456789abcdef0123456789abcdef01');
+            ->willReturn(self::MEDIA_URI);
         $mediaResource
             ->expects($this->atLeastOnce())
             ->method('getTypes')
@@ -277,7 +280,7 @@ class QtiTestDeletedListenerTest extends TestCase
         $this->ontology
             ->expects($this->once())
             ->method('getResource')
-            ->with('https://host/ontologies/tao.rdf#i123456789abcdef0123456789abcdef01')
+            ->with(self::MEDIA_URI)
             ->willReturn($mediaResource);
 
         $this->mediaType
@@ -317,12 +320,12 @@ class QtiTestDeletedListenerTest extends TestCase
         $asset
             ->expects($this->once())
             ->method('getMediaIdentifier')
-            ->willReturn('https_2_host_1_ontologies_1_tao_0_rdf_3_i123456789abcdef0123456789abcdef01');
+            ->willReturn(self::MEDIA_ID);
 
         $mediaResource = $this->createMock(core_kernel_classes_Resource::class);
         $mediaResource
             ->method('getUri')
-            ->willReturn('https://host/ontologies/tao.rdf#i123456789abcdef0123456789abcdef01');
+            ->willReturn(self::MEDIA_URI);
         $mediaResource
             ->expects($this->atLeastOnce())
             ->method('getTypes')
@@ -339,7 +342,7 @@ class QtiTestDeletedListenerTest extends TestCase
         $this->ontology
             ->expects($this->once())
             ->method('getResource')
-            ->with('https://host/ontologies/tao.rdf#i123456789abcdef0123456789abcdef01')
+            ->with(self::MEDIA_URI)
             ->willReturn($mediaResource);
 
         $this->mediaType
@@ -382,12 +385,12 @@ class QtiTestDeletedListenerTest extends TestCase
         $asset
             ->expects($this->once())
             ->method('getMediaIdentifier')
-            ->willReturn('https_2_host_1_ontologies_1_tao_0_rdf_3_i123456789abcdef0123456789abcdef01');
+            ->willReturn(self::MEDIA_ID);
 
         $mediaResource = $this->createMock(core_kernel_classes_Resource::class);
         $mediaResource
             ->method('getUri')
-            ->willReturn('https://host/ontologies/tao.rdf#i123456789abcdef0123456789abcdef01');
+            ->willReturn(self::MEDIA_URI);
         $mediaResource
             ->expects($this->atLeastOnce())
             ->method('getTypes')
@@ -404,7 +407,7 @@ class QtiTestDeletedListenerTest extends TestCase
         $this->ontology
             ->expects($this->once())
             ->method('getResource')
-            ->with('https://host/ontologies/tao.rdf#i123456789abcdef0123456789abcdef01')
+            ->with(self::MEDIA_URI)
             ->willReturn($mediaResource);
 
         $this->mediaType

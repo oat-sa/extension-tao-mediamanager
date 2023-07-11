@@ -59,7 +59,6 @@ class QtiTestDeletedListener
         $this->taoMediaResolver = $taoMediaResolver;
     }
 
-
     /**
      * @throws PartialClassDeletionException
      * @throws ClassDeletionException

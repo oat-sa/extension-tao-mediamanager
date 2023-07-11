@@ -31,6 +31,7 @@
         "oat-sa/extension-tao-item": ">=11.3",
         "oat-sa/extension-tao-itemqti": ">=29.14.5",
         "oat-sa/extension-tao-test": ">=15.16",
+        "oat-sa/extension-tao-testqti" : ">=46.2.0",
         "oat-sa/extension-tao-testqti-previewer": "*"
     },
     "autoload": {

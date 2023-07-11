@@ -54,13 +54,8 @@ use oat\taoMediaManager\model\sharedStimulus\service\TempFileWriter;
 use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourceSpecification;
 use oat\taoMediaManager\model\TaoMediaOntology;
 use oat\taoMediaManager\model\Specification\MediaClassSpecification;
-use oat\taoQtiItem\model\qti\parser\ElementReferencesExtractor;
-use oat\taoQtiItem\model\qti\Service;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-use taoItems_models_classes_ItemsService;
-use taoTests_models_classes_TestsService;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_iterator;
 
@@ -218,10 +213,6 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                     service(Ontology::SERVICE_ID),
                     service(ClassDeleter::class),
                     service(TaoMediaResolver::class),
-                    service(ElementReferencesExtractor::class),
-                    service(Service::class),
-                    service(taoItems_models_classes_ItemsService::class),
-                    service(taoTests_models_classes_TestsService::class),
                 ]
             );
 

@@ -20,9 +20,6 @@
 
 namespace oat\taoMediaManager\model;
 
-use core_kernel_classes_Class;
-use core_kernel_classes_Resource;
-use Exception;
 use oat\generis\model\data\Ontology;
 use oat\tao\model\media\TaoMediaException;
 use oat\tao\model\media\TaoMediaResolver;
@@ -30,24 +27,19 @@ use oat\tao\model\resources\Exception\ClassDeletionException;
 use oat\tao\model\resources\Exception\PartialClassDeletionException;
 use oat\tao\model\resources\Service\ClassDeleter;
 use oat\taoMediaManager\model\Specification\MediaClassSpecification;
-use oat\taoQtiItem\model\qti\parser\ElementReferencesExtractor;
-use oat\taoQtiItem\model\qti\Service;
 use oat\taoQtiTest\models\event\QtiTestDeletedEvent;
-use Psr\Log\LoggerInterface;
+use core_kernel_classes_Class;
+use core_kernel_classes_Resource;
 use tao_helpers_Uri;
-use taoItems_models_classes_ItemsService;
-use taoTests_models_classes_TestsService;
+use Psr\Log\LoggerInterface;
+use Exception;
 
 class QtiTestDeletedListener
 {
     private LoggerInterface $logger;
     private Ontology $ontology;
-    private Service $qtiItemService;
     private ClassDeleter $classDeleter;
     private TaoMediaResolver $taoMediaResolver;
-    private taoTests_models_classes_TestsService $testsService;
-    private taoItems_models_classes_ItemsService $itemsService;
-    private ElementReferencesExtractor $elementReferencesExtractor;
     private MediaClassSpecification $mediaClassSpecification;
     private MediaService $mediaService;
 
@@ -57,11 +49,7 @@ class QtiTestDeletedListener
         MediaClassSpecification $mediaClassSpecification,
         Ontology $ontology,
         ClassDeleter $classDeleter,
-        TaoMediaResolver $taoMediaResolver,
-        ElementReferencesExtractor $elementReferencesExtractor,
-        Service $qtiItemService,
-        taoItems_models_classes_ItemsService $itemTreeService,
-        taoTests_models_classes_TestsService $testsService
+        TaoMediaResolver $taoMediaResolver
     ) {
         $this->logger = $logger;
         $this->mediaService = $mediaService;
@@ -69,13 +57,12 @@ class QtiTestDeletedListener
         $this->ontology = $ontology;
         $this->classDeleter = $classDeleter;
         $this->taoMediaResolver = $taoMediaResolver;
-        $this->elementReferencesExtractor = $elementReferencesExtractor;
-        $this->qtiItemService = $qtiItemService;
-        $this->itemsService = $itemTreeService;
-        $this->testsService = $testsService;
     }
 
+
     /**
+     * @throws PartialClassDeletionException
+     * @throws ClassDeletionException
      * @throws Exception
      */
     public function handleQtiTestDeletedEvent(QtiTestDeletedEvent $event): void
@@ -96,6 +83,10 @@ class QtiTestDeletedListener
         $this->deleteAssets($assetIds);
     }
 
+    /**
+     * @throws PartialClassDeletionException
+     * @throws ClassDeletionException
+     */
     private function deleteAssets(array $assetIds): void
     {
         $this->logger->debug(
@@ -130,7 +121,6 @@ class QtiTestDeletedListener
                     $classesToDelete[] = $type;
                 }
 
-                // Using mediaService in order to have the asset files removed as well
                 $this->mediaService->deleteResource($resource);
             }
         }
@@ -147,6 +137,7 @@ class QtiTestDeletedListener
     private function deleteClasses(array $classes): void
     {
         if (empty($classes)) {
+            $this->logger->debug('No deferred class deletions to be performed');
             return;
         }
 

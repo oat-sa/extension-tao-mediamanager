@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2014-2023 (original work) Open Assessment Technologies SA;
  */
 
 use oat\taoItems\model\user\TaoItemsRoles;
@@ -23,6 +23,7 @@ use oat\taoMediaManager\controller\Middleware\MiddlewareConfig;
 use oat\taoMediaManager\model\export\service\MediaResourcePreparer;
 use oat\taoMediaManager\model\sharedStimulus\encoder\SharedStimulusMediaEncoder;
 use oat\taoMediaManager\scripts\install\RegisterMediaResourcePreparer;
+use oat\taoMediaManager\scripts\install\RegisterQtiTestDeletedListener;
 use oat\taoMediaManager\scripts\install\RegisterSharedStimulusMediaEncoder;
 use oat\taoMediaManager\scripts\install\SetMediaManager;
 use oat\taoMediaManager\scripts\install\RegisterXinludeHandler;
@@ -174,7 +175,8 @@ return [
             SetRolesPermissions::class,
             SetupMiddlewares::class,
             [RegisterMediaResourcePreparer::class, ['service' => MediaResourcePreparer::class]],
-            [RegisterSharedStimulusMediaEncoder::class, ['service' => SharedStimulusMediaEncoder::class]]
+            [RegisterSharedStimulusMediaEncoder::class, ['service' => SharedStimulusMediaEncoder::class]],
+            RegisterQtiTestDeletedListener::class,
         ]
     ],
     'update' => 'oat\\taoMediaManager\\scripts\\update\\Updater',

@@ -24,9 +24,12 @@ namespace oat\taoMediaManager\model\classes\ServiceProvider;
 
 use oat\generis\model\data\Ontology;
 use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
+use oat\oatbox\log\LoggerService;
 use oat\tao\model\accessControl\ActionAccessControl;
 use oat\tao\model\accessControl\PermissionChecker;
+use oat\tao\model\media\TaoMediaResolver;
 use oat\tao\model\resources\Service\ClassCopierProxy;
+use oat\tao\model\resources\Service\ClassDeleter;
 use oat\tao\model\resources\Service\ClassMetadataCopier;
 use oat\tao\model\resources\Service\ClassMetadataMapper;
 use oat\tao\model\resources\Service\InstanceCopier;
@@ -40,6 +43,8 @@ use oat\taoMediaManager\model\classes\Copier\AssetContentCopier;
 use oat\taoMediaManager\model\classes\Copier\AssetMetadataCopier;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
+use oat\taoMediaManager\model\MediaService;
+use oat\taoMediaManager\model\QtiTestDeletedListener;
 use oat\taoMediaManager\model\sharedStimulus\css\repository\StylesheetRepository;
 use oat\taoMediaManager\model\sharedStimulus\css\service\ListStylesheetsService;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
@@ -49,8 +54,13 @@ use oat\taoMediaManager\model\sharedStimulus\service\TempFileWriter;
 use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourceSpecification;
 use oat\taoMediaManager\model\TaoMediaOntology;
 use oat\taoMediaManager\model\Specification\MediaClassSpecification;
+use oat\taoQtiItem\model\qti\parser\ElementReferencesExtractor;
+use oat\taoQtiItem\model\qti\Service;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
+use taoItems_models_classes_ItemsService;
+use taoTests_models_classes_TestsService;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_iterator;
 
@@ -194,5 +204,26 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                     service(InstanceCopier::class . '::ASSETS'),
                 ]
             );
+
+        $services->set(TaoMediaResolver::class, TaoMediaResolver::class);
+
+        $services
+            ->set(QtiTestDeletedListener::class, QtiTestDeletedListener::class)
+            ->public()
+            ->args(
+                [
+                    service(LoggerService::SERVICE_ID),
+                    service(MediaService::class),
+                    service(MediaClassSpecification::class),
+                    service(Ontology::SERVICE_ID),
+                    service(ClassDeleter::class),
+                    service(TaoMediaResolver::class),
+                    service(ElementReferencesExtractor::class),
+                    service(Service::class),
+                    service(taoItems_models_classes_ItemsService::class),
+                    service(taoTests_models_classes_TestsService::class),
+                ]
+            );
+
     }
 }

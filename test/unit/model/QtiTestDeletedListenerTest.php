@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\test\unit\model;
 
 use core_kernel_classes_Class;
+use core_kernel_classes_Resource;
 use oat\generis\model\data\Ontology;
 use oat\tao\model\media\MediaAsset;
 use oat\tao\model\media\TaoMediaResolver;
@@ -30,6 +31,7 @@ use oat\tao\model\resources\Service\ClassDeleter;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\QtiTestDeletedListener;
 use oat\taoMediaManager\model\Specification\MediaClassSpecification;
+use oat\taoMediaManager\model\TaoMediaOntology;
 use oat\taoQtiTest\models\event\QtiTestDeletedEvent;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -121,10 +123,16 @@ class QtiTestDeletedListenerTest extends TestCase
             ->method('getMediaIdentifier')
             ->willReturn('https_2_host_1_ontologies_1_tao_0_rdf_3_i123456789abcdef0123456789abcdef01');
 
-        $mediaResource = $this->createMock(\core_kernel_classes_Resource::class);
+        $mediaResource = $this->createMock(core_kernel_classes_Resource::class);
         $mediaResource
             ->method('getUri')
             ->willReturn('https://host/ontologies/tao.rdf#i123456789abcdef0123456789abcdef01');
+        $mediaResource
+            ->expects($this->atLeastOnce())
+            ->method('getTypes')
+            ->willReturn([
+                $this->mediaSubclass,
+            ]);
 
         $this->taoMediaResolver
             ->expects($this->once())
@@ -138,24 +146,14 @@ class QtiTestDeletedListenerTest extends TestCase
             ->with('https://host/ontologies/tao.rdf#i123456789abcdef0123456789abcdef01')
             ->willReturn($mediaResource);
 
-        // @todo Test that it does not try to delete the class if there are more instances
         $this->mediaSubclass
             ->expects($this->once())
             ->method('countInstances')
             ->willReturn(1);
-
-        // @todo Test that it does not try to delete the root class
         $this->mediaSubclass
             ->expects($this->atLeastOnce())
             ->method('getUri')
             ->willReturn('https://host/ontologies/tao.rdf#subclass');
-
-        $mediaResource
-            ->expects($this->atLeastOnce())
-            ->method('getTypes')
-            ->willReturn([
-                $this->mediaSubclass,
-            ]);
 
         $this->mediaClassSpecification
             ->expects($this->once())
@@ -178,21 +176,260 @@ class QtiTestDeletedListenerTest extends TestCase
 
     public function testEventWithDuplicatedReferencesDoesNotDeleteAssetsTwice(): void
     {
-        $this->markTestSkipped('Not implemented');
+        $this->event
+            ->expects($this->once())
+            ->method('getReferencedResources')
+            ->willReturn([
+                'taomedia://asset/1',
+                'taomedia://asset/1',
+                'taomedia://asset/1',
+            ]);
+
+        $asset = $this->createMock(MediaAsset::class);
+        $asset
+            ->expects($this->once())
+            ->method('getMediaIdentifier')
+            ->willReturn('https_2_host_1_ontologies_1_tao_0_rdf_3_i123456789abcdef0123456789abcdef01');
+
+        $mediaResource = $this->createMock(core_kernel_classes_Resource::class);
+        $mediaResource
+            ->method('getUri')
+            ->willReturn('https://host/ontologies/tao.rdf#i123456789abcdef0123456789abcdef01');
+        $mediaResource
+            ->expects($this->atLeastOnce())
+            ->method('getTypes')
+            ->willReturn([
+                $this->mediaSubclass,
+            ]);
+
+        $this->taoMediaResolver
+            ->expects($this->once())
+            ->method('resolve')
+            ->with('taomedia://asset/1')
+            ->willReturn($asset);
+
+        $this->ontology
+            ->expects($this->once())
+            ->method('getResource')
+            ->with('https://host/ontologies/tao.rdf#i123456789abcdef0123456789abcdef01')
+            ->willReturn($mediaResource);
+
+        $this->mediaSubclass
+            ->expects($this->once())
+            ->method('countInstances')
+            ->willReturn(1);
+        $this->mediaSubclass
+            ->expects($this->atLeastOnce())
+            ->method('getUri')
+            ->willReturn('https://host/ontologies/tao.rdf#subclass');
+
+        $this->mediaClassSpecification
+            ->expects($this->once())
+            ->method('isSatisfiedBy')
+            ->with($this->mediaSubclass)
+            ->willReturn(true);
+
+        $this->mediaService
+            ->expects($this->once())
+            ->method('deleteResource')
+            ->with($mediaResource);
+
+        $this->classDeleter
+            ->expects($this->once())
+            ->method('delete')
+            ->with($this->mediaSubclass);
+
+        $this->sut->handleQtiTestDeletedEvent($this->event);
     }
 
     public function testEventReferencingNonMediaResourcesTriggersNoDeletions(): void
     {
-        $this->markTestSkipped('Not implemented');
+        $this->event
+            ->expects($this->once())
+            ->method('getReferencedResources')
+            ->willReturn([
+                'taomedia://asset/1',
+            ]);
+
+        $asset = $this->createMock(MediaAsset::class);
+        $asset
+            ->expects($this->once())
+            ->method('getMediaIdentifier')
+            ->willReturn('https_2_host_1_ontologies_1_tao_0_rdf_3_i123456789abcdef0123456789abcdef01');
+
+        $mediaResource = $this->createMock(core_kernel_classes_Resource::class);
+        $mediaResource
+            ->method('getUri')
+            ->willReturn('https://host/ontologies/tao.rdf#i123456789abcdef0123456789abcdef01');
+        $mediaResource
+            ->expects($this->atLeastOnce())
+            ->method('getTypes')
+            ->willReturn([
+                $this->mediaType,
+            ]);
+
+        $this->taoMediaResolver
+            ->expects($this->once())
+            ->method('resolve')
+            ->with('taomedia://asset/1')
+            ->willReturn($asset);
+
+        $this->ontology
+            ->expects($this->once())
+            ->method('getResource')
+            ->with('https://host/ontologies/tao.rdf#i123456789abcdef0123456789abcdef01')
+            ->willReturn($mediaResource);
+
+        $this->mediaType
+            ->expects($this->never())
+            ->method('countInstances');
+        $this->mediaType
+            ->expects($this->never())
+            ->method('getUri');
+
+        $this->mediaClassSpecification
+            ->expects($this->once())
+            ->method('isSatisfiedBy')
+            ->with($this->mediaType)
+            ->willReturn(false);
+
+        $this->mediaService
+            ->expects($this->never())
+            ->method('deleteResource');
+
+        $this->classDeleter
+            ->expects($this->never())
+            ->method('delete');
+
+        $this->sut->handleQtiTestDeletedEvent($this->event);
     }
 
-    public function testEventReferencingAssetInTheAssetsRootSkipsClassDeletetion(): void
+    public function testEventReferencingAssetInTheAssetsRootSkipsClassDeletion(): void
     {
-        $this->markTestSkipped('Not implemented');
+        $this->event
+            ->expects($this->once())
+            ->method('getReferencedResources')
+            ->willReturn([
+                'taomedia://asset/1',
+            ]);
+
+        $asset = $this->createMock(MediaAsset::class);
+        $asset
+            ->expects($this->once())
+            ->method('getMediaIdentifier')
+            ->willReturn('https_2_host_1_ontologies_1_tao_0_rdf_3_i123456789abcdef0123456789abcdef01');
+
+        $mediaResource = $this->createMock(core_kernel_classes_Resource::class);
+        $mediaResource
+            ->method('getUri')
+            ->willReturn('https://host/ontologies/tao.rdf#i123456789abcdef0123456789abcdef01');
+        $mediaResource
+            ->expects($this->atLeastOnce())
+            ->method('getTypes')
+            ->willReturn([
+                $this->mediaType,
+            ]);
+
+        $this->taoMediaResolver
+            ->expects($this->once())
+            ->method('resolve')
+            ->with('taomedia://asset/1')
+            ->willReturn($asset);
+
+        $this->ontology
+            ->expects($this->once())
+            ->method('getResource')
+            ->with('https://host/ontologies/tao.rdf#i123456789abcdef0123456789abcdef01')
+            ->willReturn($mediaResource);
+
+        $this->mediaType
+            ->expects($this->atLeastOnce())
+            ->method('countInstances')
+            ->willReturn(1);
+        $this->mediaType
+            ->expects($this->atLeastOnce())
+            ->method('getUri')
+            ->willReturn(TaoMediaOntology::CLASS_URI_MEDIA_ROOT);
+
+        $this->mediaClassSpecification
+            ->expects($this->once())
+            ->method('isSatisfiedBy')
+            ->with($this->mediaType)
+            ->willReturn(true);
+
+        $this->mediaService
+            ->expects($this->once())
+            ->method('deleteResource')
+            ->with($mediaResource);
+
+        $this->classDeleter
+            ->expects($this->never())
+            ->method('delete');
+
+        $this->sut->handleQtiTestDeletedEvent($this->event);
     }
 
     public function testEventReferencingAssetWithSiblingsTriggersNoDeletions(): void
     {
-        $this->markTestSkipped('Not implemented');
+        $this->event
+            ->expects($this->once())
+            ->method('getReferencedResources')
+            ->willReturn([
+                'taomedia://asset/1',
+            ]);
+
+        $asset = $this->createMock(MediaAsset::class);
+        $asset
+            ->expects($this->once())
+            ->method('getMediaIdentifier')
+            ->willReturn('https_2_host_1_ontologies_1_tao_0_rdf_3_i123456789abcdef0123456789abcdef01');
+
+        $mediaResource = $this->createMock(core_kernel_classes_Resource::class);
+        $mediaResource
+            ->method('getUri')
+            ->willReturn('https://host/ontologies/tao.rdf#i123456789abcdef0123456789abcdef01');
+        $mediaResource
+            ->expects($this->atLeastOnce())
+            ->method('getTypes')
+            ->willReturn([
+                $this->mediaType,
+            ]);
+
+        $this->taoMediaResolver
+            ->expects($this->once())
+            ->method('resolve')
+            ->with('taomedia://asset/1')
+            ->willReturn($asset);
+
+        $this->ontology
+            ->expects($this->once())
+            ->method('getResource')
+            ->with('https://host/ontologies/tao.rdf#i123456789abcdef0123456789abcdef01')
+            ->willReturn($mediaResource);
+
+        $this->mediaType
+            ->expects($this->atLeastOnce())
+            ->method('countInstances')
+            ->willReturn(2);
+        $this->mediaType
+            ->method('getUri')
+            ->willReturn(TaoMediaOntology::CLASS_URI_MEDIA_ROOT);
+
+        $this->mediaClassSpecification
+            ->expects($this->once())
+            ->method('isSatisfiedBy')
+            ->with($this->mediaType)
+            ->willReturn(true);
+
+        $this->mediaService
+            ->expects($this->once())
+            ->method('deleteResource')
+            ->with($mediaResource);
+
+        $this->classDeleter
+            ->expects($this->never())
+            ->method('delete');
+
+        $this->sut->handleQtiTestDeletedEvent($this->event);
     }
 }

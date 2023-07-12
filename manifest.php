@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014-2023 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
  */
 
 use oat\taoItems\model\user\TaoItemsRoles;
@@ -176,7 +176,7 @@ return [
             SetupMiddlewares::class,
             [RegisterMediaResourcePreparer::class, ['service' => MediaResourcePreparer::class]],
             [RegisterSharedStimulusMediaEncoder::class, ['service' => SharedStimulusMediaEncoder::class]],
-            AddAssetClassEditorRolePermission::class,
+            AddAssetClassEditorRolePermission::class
         ]
     ],
     'update' => 'oat\\taoMediaManager\\scripts\\update\\Updater',

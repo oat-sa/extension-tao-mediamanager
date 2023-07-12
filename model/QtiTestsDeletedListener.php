@@ -71,8 +71,7 @@ class QtiTestsDeletedListener
 
         foreach (array_unique($event->getReferencedResources()) as $ref) {
             try {
-                $asset = $this->taoMediaResolver->resolve($ref);
-                $id = $asset->getMediaIdentifier();
+                $id = $this->taoMediaResolver->resolve($ref)->getMediaIdentifier();
 
                 if (!isset($assetIds[$id])) {
                     $assetIds[$id] = $id;

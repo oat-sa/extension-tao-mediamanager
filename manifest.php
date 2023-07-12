@@ -24,7 +24,6 @@ use oat\taoMediaManager\model\export\service\MediaResourcePreparer;
 use oat\taoMediaManager\model\sharedStimulus\encoder\SharedStimulusMediaEncoder;
 use oat\taoMediaManager\scripts\install\AddAssetClassEditorRolePermission;
 use oat\taoMediaManager\scripts\install\RegisterMediaResourcePreparer;
-use oat\taoMediaManager\scripts\install\RegisterQtiTestsDeletedListener;
 use oat\taoMediaManager\scripts\install\RegisterSharedStimulusMediaEncoder;
 use oat\taoMediaManager\scripts\install\SetMediaManager;
 use oat\taoMediaManager\scripts\install\RegisterXinludeHandler;
@@ -178,7 +177,6 @@ return [
             [RegisterMediaResourcePreparer::class, ['service' => MediaResourcePreparer::class]],
             [RegisterSharedStimulusMediaEncoder::class, ['service' => SharedStimulusMediaEncoder::class]],
             AddAssetClassEditorRolePermission::class,
-            RegisterQtiTestsDeletedListener::class,
         ]
     ],
     'update' => 'oat\\taoMediaManager\\scripts\\update\\Updater',

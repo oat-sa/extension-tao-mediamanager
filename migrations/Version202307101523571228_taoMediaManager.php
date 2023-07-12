@@ -23,9 +23,12 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\migrations;
 
 use Doctrine\DBAL\Schema\Schema;
+use oat\oatbox\event\EventManager;
+use oat\oatbox\reporting\Report;
 use oat\tao\scripts\tools\migrations\AbstractMigration;
 use Doctrine\Migrations\Exception\IrreversibleMigration;
-use oat\taoMediaManager\scripts\install\RegisterQtiTestsDeletedListener;
+use oat\taoMediaManager\model\QtiTestsDeletedListener;
+use oat\taoQtiTest\models\event\QtiTestsDeletedEvent;
 
 final class Version202307101523571228_taoMediaManager extends AbstractMigration
 {
@@ -36,8 +39,23 @@ final class Version202307101523571228_taoMediaManager extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $action = $this->propagate(new RegisterQtiTestsDeletedListener());
-        $this->addReport($action());
+        $eventManager = $this->getEventManager();
+        $eventManager->attach(
+            QtiTestsDeletedEvent::class,
+            [QtiTestsDeletedListener::class, 'handle']
+        );
+
+        $this->persistEventManagerConfig($eventManager);
+
+        $this->addReport(
+            Report::createSuccess(
+                sprintf(
+                    'Successfully registered listener %s for event %s',
+                    QtiTestsDeletedListener::class . '::handle',
+                    QtiTestsDeletedEvent::class
+                )
+            )
+        );
     }
 
     public function down(Schema $schema): void
@@ -45,5 +63,10 @@ final class Version202307101523571228_taoMediaManager extends AbstractMigration
         throw new IrreversibleMigration(
             'Reverting this migration requires a code change'
         );
+    }
+
+    private function getEventManager(): EventManager
+    {
+        return $this->getServiceManager()->get(EventManager::SERVICE_ID);
     }
 }

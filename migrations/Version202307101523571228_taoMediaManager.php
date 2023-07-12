@@ -45,7 +45,7 @@ final class Version202307101523571228_taoMediaManager extends AbstractMigration
             [QtiTestsDeletedListener::class, 'handle']
         );
 
-        $this->persistEventManagerConfig($eventManager);
+        $this->getServiceManager()->register(EventManager::SERVICE_ID, $eventManager);
 
         $this->addReport(
             Report::createSuccess(

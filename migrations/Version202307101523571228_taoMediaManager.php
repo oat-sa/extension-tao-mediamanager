@@ -25,7 +25,7 @@ namespace oat\taoMediaManager\migrations;
 use Doctrine\DBAL\Schema\Schema;
 use oat\tao\scripts\tools\migrations\AbstractMigration;
 use Doctrine\Migrations\Exception\IrreversibleMigration;
-use oat\taoMediaManager\scripts\install\RegisterQtiTestDeletedListener;
+use oat\taoMediaManager\scripts\install\RegisterQtiTestsDeletedListener;
 
 final class Version202307101523571228_taoMediaManager extends AbstractMigration
 {
@@ -36,7 +36,7 @@ final class Version202307101523571228_taoMediaManager extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $action = $this->propagate(new RegisterQtiTestDeletedListener());
+        $action = $this->propagate(new RegisterQtiTestsDeletedListener());
         $this->addReport($action());
     }
 

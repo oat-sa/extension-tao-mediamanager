@@ -30,15 +30,15 @@ use oat\tao\model\media\TaoMediaException;
 use oat\tao\model\media\TaoMediaResolver;
 use oat\tao\model\resources\Service\ClassDeleter;
 use oat\taoMediaManager\model\MediaService;
-use oat\taoMediaManager\model\QtiTestDeletedListener;
+use oat\taoMediaManager\model\QtiTestsDeletedListener;
 use oat\taoMediaManager\model\Specification\MediaClassSpecification;
 use oat\taoMediaManager\model\TaoMediaOntology;
-use oat\taoQtiTest\models\event\QtiTestDeletedEvent;
+use oat\taoQtiTest\models\event\QtiTestsDeletedEvent;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-class QtiTestDeletedListenerTest extends TestCase
+class QtiTestsDeletedListenerTest extends TestCase
 {
     private const MEDIA_ID = 'https_2_host_1_ontologies_1_tao_0_rdf_3_i123456789abcdef0123456789abcdef01';
     private const MEDIA_URI = 'https://host/ontologies/tao.rdf#i123456789abcdef0123456789abcdef01';
@@ -67,10 +67,10 @@ class QtiTestDeletedListenerTest extends TestCase
     /** @var MediaService|MockObject */
     private MediaService $mediaService;
 
-    /** @var QtiTestDeletedEvent|MockObject */
-    private QtiTestDeletedEvent $event;
+    /** @var QtiTestsDeletedEvent|MockObject */
+    private QtiTestsDeletedEvent $event;
 
-    private QtiTestDeletedListener $sut;
+    private QtiTestsDeletedListener $sut;
 
     protected function setUp(): void
     {
@@ -82,9 +82,9 @@ class QtiTestDeletedListenerTest extends TestCase
         $this->taoMediaResolver = $this->createMock(TaoMediaResolver::class);
         $this->mediaClassSpecification = $this->createMock(MediaClassSpecification::class);
         $this->mediaService = $this->createMock(MediaService::class);
-        $this->event = $this->createMock(QtiTestDeletedEvent::class);
+        $this->event = $this->createMock(QtiTestsDeletedEvent::class);
 
-        $this->sut = new QtiTestDeletedListener(
+        $this->sut = new QtiTestsDeletedListener(
             $this->logger,
             $this->mediaService,
             $this->mediaClassSpecification,
@@ -109,7 +109,7 @@ class QtiTestDeletedListenerTest extends TestCase
             ->expects($this->never())
             ->method('delete');
 
-        $this->sut->handleQtiTestDeletedEvent($this->event);
+        $this->sut->handle($this->event);
     }
 
     public function testEventReferencingAnAssetWithNoSiblingsTriggersClassDeletions(): void
@@ -175,7 +175,7 @@ class QtiTestDeletedListenerTest extends TestCase
             ->method('delete')
             ->with($this->mediaSubclass);
 
-        $this->sut->handleQtiTestDeletedEvent($this->event);
+        $this->sut->handle($this->event);
     }
 
     public function testEventWithDuplicatedReferencesDoesNotDeleteAssetsTwice(): void
@@ -243,7 +243,7 @@ class QtiTestDeletedListenerTest extends TestCase
             ->method('delete')
             ->with($this->mediaSubclass);
 
-        $this->sut->handleQtiTestDeletedEvent($this->event);
+        $this->sut->handle($this->event);
     }
 
     public function testEventReferencingNonMediaResourcesTriggersNoDeletions(): void
@@ -305,7 +305,7 @@ class QtiTestDeletedListenerTest extends TestCase
             ->expects($this->never())
             ->method('delete');
 
-        $this->sut->handleQtiTestDeletedEvent($this->event);
+        $this->sut->handle($this->event);
     }
 
     public function testEventReferencingAssetInTheAssetsRootSkipsClassDeletion(): void
@@ -370,7 +370,7 @@ class QtiTestDeletedListenerTest extends TestCase
             ->expects($this->never())
             ->method('delete');
 
-        $this->sut->handleQtiTestDeletedEvent($this->event);
+        $this->sut->handle($this->event);
     }
 
     public function testEventReferencingAssetWithSiblingsTriggersNoDeletions(): void
@@ -434,7 +434,7 @@ class QtiTestDeletedListenerTest extends TestCase
             ->expects($this->never())
             ->method('delete');
 
-        $this->sut->handleQtiTestDeletedEvent($this->event);
+        $this->sut->handle($this->event);
     }
 
     public function testResolveErrorsDontHaltExecution(): void
@@ -507,6 +507,6 @@ class QtiTestDeletedListenerTest extends TestCase
             ->expects($this->never())
             ->method('delete');
 
-        $this->sut->handleQtiTestDeletedEvent($this->event);
+        $this->sut->handle($this->event);
     }
 }

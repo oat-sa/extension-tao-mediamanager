@@ -27,14 +27,15 @@ use oat\tao\model\resources\Exception\ClassDeletionException;
 use oat\tao\model\resources\Exception\PartialClassDeletionException;
 use oat\tao\model\resources\Service\ClassDeleter;
 use oat\taoMediaManager\model\Specification\MediaClassSpecification;
-use oat\taoQtiTest\models\event\QtiTestDeletedEvent;
+use oat\taoQtiTest\models\event\QtiTestsDeletedEvent;
 use core_kernel_classes_Class;
 use core_kernel_classes_Resource;
 use tao_helpers_Uri;
 use Psr\Log\LoggerInterface;
 use Exception;
+use Throwable;
 
-class QtiTestDeletedListener
+class QtiTestsDeletedListener
 {
     private LoggerInterface $logger;
     private Ontology $ontology;
@@ -64,95 +65,78 @@ class QtiTestDeletedListener
      * @throws ClassDeletionException
      * @throws Exception
      */
-    public function handleQtiTestDeletedEvent(QtiTestDeletedEvent $event): void
+    public function handle(QtiTestsDeletedEvent $event): void
     {
         $assetIds = [];
 
         foreach (array_unique($event->getReferencedResources()) as $ref) {
             try {
                 $asset = $this->taoMediaResolver->resolve($ref);
-                $assetIds[] = $asset->getMediaIdentifier();
-            } catch (TaoMediaException $e) {
-                $this->logger->debug(
-                    sprintf('Unable to resolve "%s": %s', $ref, $e->getMessage())
-                );
-            }
-        }
+                $id = $asset->getMediaIdentifier();
 
-        $this->deleteAssets($assetIds);
-    }
+                if (!isset($assetIds[$id])) {
+                    $assetIds[$id] = $id;
 
-    /**
-     * @throws PartialClassDeletionException
-     * @throws ClassDeletionException
-     */
-    private function deleteAssets(array $assetIds): void
-    {
-        $this->logger->debug(
-            sprintf('Removing referenced assets: %s', implode(', ', $assetIds))
-        );
-
-        $classesToDelete = [];
-
-        foreach ($assetIds as $assetId) {
-            $uri = tao_helpers_Uri::decode($assetId);
-
-            $this->logger->debug(sprintf('Remove asset: %s', $uri));
-            $resource = $this->ontology->getResource($uri);
-
-            if ($this->isMediaResource($resource)) {
-                $this->logger->debug(
-                    sprintf('isMedia=true, deleting %s', $resource->getUri())
-                );
-
-                $type = current($resource->getTypes());
-
-                if ($this->resourceHasNoSiblings($resource)) {
-                    $this->logger->debug(
-                        sprintf(
-                            'Class %s for media %s only contains the resource being' .
-                            'deleted, deferring deletion for the class as well',
-                            $type->getUri(),
-                            $resource->getUri()
-                        )
-                    );
-
-                    $classesToDelete[] = $type;
+                    $this->deleteAsset($id);
                 }
-
-                $this->mediaService->deleteResource($resource);
+            } catch (TaoMediaException $e) {
+                // This is expected: Some media may not come from MediaManager
+                $this->logger->info(
+                    sprintf(
+                        'Media "%s" is not handled by MediaManager: %s',
+                        $ref,
+                        $e->getMessage()
+                    )
+                );
+            } catch (Throwable $e) {
+                $this->logger->error(
+                    sprintf(
+                        '%s exception deleting "%s": %s',
+                        get_class($e),
+                        $ref,
+                        $e->getMessage()
+                    )
+                );
             }
         }
-
-        $this->deleteClasses($classesToDelete);
     }
 
     /**
-     * @param core_kernel_classes_Class[] $classes
-     *
-     * @throws ClassDeletionException
      * @throws PartialClassDeletionException
+     * @throws ClassDeletionException
      */
-    private function deleteClasses(array $classes): void
+    private function deleteAsset(string $assetId): void
     {
-        if (empty($classes)) {
-            $this->logger->debug('No deferred class deletions to be performed');
-            return;
-        }
+        $uri = tao_helpers_Uri::decode($assetId);
 
-        $this->logger->debug(
-            sprintf(
-                'Performing deferred deletions for %s empty classes',
-                count($classes)
-            )
-        );
+        $this->logger->debug(sprintf('Remove asset: %s', $uri));
+        $resource = $this->ontology->getResource($uri);
 
-        foreach ($classes as $class) {
+        if ($this->isMediaResource($resource)) {
             $this->logger->debug(
-                sprintf('Deleting class %s [%s]', $class->getLabel(), $class->getUri())
+                sprintf('isMedia=true, deleting %s', $resource->getUri())
             );
 
-            $this->classDeleter->delete($class);
+            $type = current($resource->getTypes());
+
+            if ($this->resourceHasNoSiblings($resource)) {
+                $this->logger->debug(
+                    sprintf(
+                        'Class %s for media %s only contains the resource being' .
+                        'deleted, deferring deletion for the class as well',
+                        $type->getUri(),
+                        $resource->getUri()
+                    )
+                );
+
+                $this->logger->debug(
+                    sprintf('Deleting class %s [%s]', $type->getLabel(), $type->getUri())
+                );
+
+                $this->classDeleter->delete($type);
+            }
+
+            $this->mediaService->deleteResource($resource);
         }
     }
 

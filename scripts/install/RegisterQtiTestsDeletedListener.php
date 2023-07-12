@@ -25,17 +25,17 @@ namespace oat\taoMediaManager\scripts\install;
 use oat\oatbox\event\EventManager;
 use oat\oatbox\extension\InstallAction;
 use oat\oatbox\reporting\Report;
-use oat\taoMediaManager\model\QtiTestDeletedListener;
-use oat\taoQtiTest\models\event\QtiTestDeletedEvent;
+use oat\taoMediaManager\model\QtiTestsDeletedListener;
+use oat\taoQtiTest\models\event\QtiTestsDeletedEvent;
 
-class RegisterQtiTestDeletedListener extends InstallAction
+class RegisterQtiTestsDeletedListener extends InstallAction
 {
     public function __invoke($params = []): Report
     {
         $eventManager = $this->getEventManager();
         $eventManager->attach(
-            QtiTestDeletedEvent::class,
-            [QtiTestDeletedListener::class, 'handleQtiTestDeletedEvent']
+            QtiTestsDeletedEvent::class,
+            [QtiTestsDeletedListener::class, 'handle']
         );
 
         $this->persistEventManagerConfig($eventManager);
@@ -43,8 +43,8 @@ class RegisterQtiTestDeletedListener extends InstallAction
         return Report::createSuccess(
             sprintf(
                 'Successfully registered listener %s for event %s',
-                QtiTestDeletedListener::class . '::handleQtiTestDeletedEvent',
-                QtiTestDeletedEvent::class
+                QtiTestsDeletedListener::class . '::handle',
+                QtiTestsDeletedEvent::class
             )
         );
     }

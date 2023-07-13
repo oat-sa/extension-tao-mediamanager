@@ -25,25 +25,18 @@ namespace oat\taoMediaManager\test\unit\model;
 use core_kernel_classes_Class;
 use core_kernel_classes_Resource;
 use oat\generis\model\data\Ontology;
-// use oat\tao\model\media\MediaAsset;
-// use oat\tao\model\media\TaoMediaException;
-// use oat\tao\model\media\TaoMediaResolver;
 use oat\tao\model\resources\Service\ClassDeleter;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\QtiTestsDeleter;
 use oat\taoMediaManager\model\Specification\MediaClassSpecification;
 use oat\taoMediaManager\model\TaoMediaOntology;
-// use oat\taoQtiTest\models\event\QtiTestsDeletedEvent;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @fixme Subject under test to be renamed or removed
- */
 class QtiTestsDeleterTest extends TestCase
 {
-    //private const MEDIA_ID = 'https_2_host_1_ontologies_1_tao_0_rdf_3_i123456789abcdef0123456789abcdef01';
+
     private const MEDIA_URI = 'https://host/ontologies/tao.rdf#i123456789abcdef0123456789abcdef01';
 
     /** @var LoggerInterface|MockObject */
@@ -85,7 +78,6 @@ class QtiTestsDeleterTest extends TestCase
             $this->mediaClassSpecification,
             $this->ontology,
             $this->classDeleter
-            //$this->taoMediaResolver
         );
     }
 

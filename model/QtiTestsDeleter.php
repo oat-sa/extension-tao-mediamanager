@@ -29,7 +29,6 @@ use core_kernel_classes_Class;
 use core_kernel_classes_Resource;
 use tao_helpers_Uri;
 use Psr\Log\LoggerInterface;
-use Exception;
 use Throwable;
 
 class QtiTestsDeleter
@@ -53,48 +52,6 @@ class QtiTestsDeleter
         $this->ontology = $ontology;
         $this->classDeleter = $classDeleter;
     }
-
-    /**
-     * @throws PartialClassDeletionException
-     * @throws ClassDeletionException
-     * @throws Exception
-     *
-     * @todo To be deleted
-     */
-    /*public function handle(QtiTestsDeletedEvent $event): void
-    {
-        $assetIds = [];
-
-        foreach (array_unique($event->getReferencedResources()) as $ref) {
-            try {
-                $id = $this->taoMediaResolver->resolve($ref)->getMediaIdentifier();
-
-                if (!isset($assetIds[$id])) {
-                    $assetIds[$id] = $id;
-
-                    $this->deleteAsset($id);
-                }
-            } catch (TaoMediaException $e) {
-                // This is expected: Some media may not come from MediaManager
-                $this->logger->info(
-                    sprintf(
-                        'Media "%s" is not handled by MediaManager: %s',
-                        $ref,
-                        $e->getMessage()
-                    )
-                );
-            } catch (Throwable $e) {
-                $this->logger->error(
-                    sprintf(
-                        '%s exception deleting "%s": %s',
-                        get_class($e),
-                        $ref,
-                        $e->getMessage()
-                    )
-                );
-            }
-        }
-    }*/
 
     public function deleteAssetsByURIs(array $ids): void
     {
@@ -122,30 +79,12 @@ class QtiTestsDeleter
     {
         $uri = tao_helpers_Uri::decode($assetId);
 
-        //$this->logger->debug(sprintf('Remove asset: %s', $uri));
         $resource = $this->ontology->getResource($uri);
 
         if ($this->isMediaResource($resource)) {
-            /*$this->logger->debug(
-                sprintf('isMedia=true, deleting %s', $resource->getUri())
-            );*/
-
             $type = current($resource->getTypes());
 
             if ($this->resourceHasNoSiblings($resource)) {
-                /*$this->logger->debug(
-                    sprintf(
-                        'Class %s for media %s only contains the resource being' .
-                        'deleted, deferring deletion for the class as well',
-                        $type->getUri(),
-                        $resource->getUri()
-                    )
-                );
-
-                $this->logger->debug(
-                    sprintf('Deleting class %s [%s]', $type->getLabel(), $type->getUri())
-                );*/
-
                 $this->classDeleter->delete($type);
             }
 

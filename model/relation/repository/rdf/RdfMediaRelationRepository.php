@@ -125,11 +125,6 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
         return $this->findAllMediaByTarget($findAllQuery->getTargetId(), $findAllQuery->getType());
     }
 
-    public function findAllBySource(FindAllByTargetQuery $findAllQuery): MediaRelationCollection
-    {
-        //return $this->findAllMediaByTarget($findAllQuery->getTargetId(), $findAllQuery->getType());
-    }
-
     public function save(MediaRelation $relation): void
     {
         $mediaResource = $this->getResource($relation->getSourceId());

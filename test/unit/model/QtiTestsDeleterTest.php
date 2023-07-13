@@ -36,7 +36,6 @@ use Psr\Log\LoggerInterface;
 
 class QtiTestsDeleterTest extends TestCase
 {
-
     private const MEDIA_URI = 'https://media#i123';
 
     /** @var LoggerInterface|MockObject */

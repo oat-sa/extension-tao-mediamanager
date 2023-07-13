@@ -42,7 +42,6 @@ class ItemRemovedEventProcessor extends ConfigurableService implements EventProc
         }
 
         $data = $event->jsonSerialize();
-
         $id = $data['itemUri'] ?? null;
         $deleteAssets = $data['deleteAssets'] ?? false;
 

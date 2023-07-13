@@ -41,6 +41,7 @@ use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterfa
 use oat\taoMediaManager\model\relation\repository\query\FindAllByTargetQuery;
 use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
 use oat\taoMediaManager\model\TaoMediaOntology;
+use PDO;
 
 class RdfMediaRelationRepository extends ConfigurableService implements MediaRelationRepositoryInterface
 {
@@ -231,21 +232,13 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
 
     public function getItemAssetUris(string $itemUri): array
     {
-        /** @var PersistenceManager $persistenceManager */
-        $persistenceManager = $this->getServiceManager()->get(PersistenceManager::SERVICE_ID);
-
-        /** @var common_persistence_SqlPersistence $persistence */
-        $persistence = $persistenceManager->getPersistenceById('default');
-
-        $statement = $persistence->query(
-            sprintf(
-                "SELECT subject FROM statements WHERE predicate = '%s' AND object = '%s'",
-                self::ITEM_RELATION_PROPERTY,
-                $itemUri
-            )
+        $statement = $this->getPersistence()->query(
+            'SELECT subject FROM statements WHERE predicate = ? AND object = ?',
+            self::ITEM_RELATION_PROPERTY,
+            $itemUri
         );
 
-        return array_values($statement->fetchAll(\PDO::FETCH_COLUMN));
+        return array_values($statement->fetchAll(PDO::FETCH_COLUMN));
     }
 
     private function applyQueryTargetType(QueryInterface $query, $targetId, $type)
@@ -319,5 +312,13 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
     ): MediaRelation {
         return (new MediaRelation($type, $targetId, $targetLabel))
             ->withSourceId($mediaId);
+    }
+
+    private function getPersistence(): common_persistence_SqlPersistence
+    {
+        /** @var PersistenceManager $persistenceManager */
+        $persistenceManager = $this->getServiceManager()->get(PersistenceManager::SERVICE_ID);
+
+        return $persistenceManager->getPersistenceById('default');
     }
 }

@@ -21,13 +21,10 @@
 namespace oat\taoMediaManager\model;
 
 use oat\generis\model\data\Ontology;
-use oat\tao\model\media\TaoMediaException;
-use oat\tao\model\media\TaoMediaResolver;
 use oat\tao\model\resources\Exception\ClassDeletionException;
 use oat\tao\model\resources\Exception\PartialClassDeletionException;
 use oat\tao\model\resources\Service\ClassDeleter;
 use oat\taoMediaManager\model\Specification\MediaClassSpecification;
-use oat\taoQtiTest\models\event\QtiTestsDeletedEvent;
 use core_kernel_classes_Class;
 use core_kernel_classes_Resource;
 use tao_helpers_Uri;
@@ -35,12 +32,11 @@ use Psr\Log\LoggerInterface;
 use Exception;
 use Throwable;
 
-class QtiTestsDeletedListener
+class QtiTestsDeleter
 {
     private LoggerInterface $logger;
     private Ontology $ontology;
     private ClassDeleter $classDeleter;
-    private TaoMediaResolver $taoMediaResolver;
     private MediaClassSpecification $mediaClassSpecification;
     private MediaService $mediaService;
 
@@ -49,23 +45,23 @@ class QtiTestsDeletedListener
         MediaService $mediaService,
         MediaClassSpecification $mediaClassSpecification,
         Ontology $ontology,
-        ClassDeleter $classDeleter,
-        TaoMediaResolver $taoMediaResolver
+        ClassDeleter $classDeleter
     ) {
         $this->logger = $logger;
         $this->mediaService = $mediaService;
         $this->mediaClassSpecification = $mediaClassSpecification;
         $this->ontology = $ontology;
         $this->classDeleter = $classDeleter;
-        $this->taoMediaResolver = $taoMediaResolver;
     }
 
     /**
      * @throws PartialClassDeletionException
      * @throws ClassDeletionException
      * @throws Exception
+     *
+     * @todo To be deleted
      */
-    public function handle(QtiTestsDeletedEvent $event): void
+    /*public function handle(QtiTestsDeletedEvent $event): void
     {
         $assetIds = [];
 
@@ -98,6 +94,24 @@ class QtiTestsDeletedListener
                 );
             }
         }
+    }*/
+
+    public function deleteAssetsByURIs(array $ids): void
+    {
+        foreach (array_unique($ids) as $id) {
+            try {
+                $this->deleteAsset($id);
+            } catch (Throwable $e) {
+                $this->logger->error(
+                    sprintf(
+                        '%s exception deleting "%s": %s',
+                        get_class($e),
+                        $id,
+                        $e->getMessage()
+                    )
+                );
+            }
+        }
     }
 
     /**
@@ -108,18 +122,18 @@ class QtiTestsDeletedListener
     {
         $uri = tao_helpers_Uri::decode($assetId);
 
-        $this->logger->debug(sprintf('Remove asset: %s', $uri));
+        //$this->logger->debug(sprintf('Remove asset: %s', $uri));
         $resource = $this->ontology->getResource($uri);
 
         if ($this->isMediaResource($resource)) {
-            $this->logger->debug(
+            /*$this->logger->debug(
                 sprintf('isMedia=true, deleting %s', $resource->getUri())
-            );
+            );*/
 
             $type = current($resource->getTypes());
 
             if ($this->resourceHasNoSiblings($resource)) {
-                $this->logger->debug(
+                /*$this->logger->debug(
                     sprintf(
                         'Class %s for media %s only contains the resource being' .
                         'deleted, deferring deletion for the class as well',
@@ -130,7 +144,7 @@ class QtiTestsDeletedListener
 
                 $this->logger->debug(
                     sprintf('Deleting class %s [%s]', $type->getLabel(), $type->getUri())
-                );
+                );*/
 
                 $this->classDeleter->delete($type);
             }

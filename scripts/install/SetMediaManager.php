@@ -32,7 +32,6 @@ use oat\taoItems\model\event\ItemUpdatedEvent;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\taoMediaManager\model\MediaSource;
-use oat\taoMediaManager\model\QtiTestsDeletedListener;
 use oat\taoMediaManager\model\relation\event\MediaRelationListener;
 use oat\taoMediaManager\model\relation\event\MediaRemovedEvent;
 use oat\taoMediaManager\model\relation\event\MediaSavedEvent;
@@ -40,7 +39,6 @@ use oat\taoMediaManager\model\relation\MediaRelationService;
 use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
 use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRelationRepository;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
-use oat\taoQtiTest\models\event\QtiTestsDeletedEvent;
 
 class SetMediaManager extends InstallAction
 {
@@ -67,7 +65,6 @@ class SetMediaManager extends InstallAction
         $eventManager->attach(ItemRemovedEvent::class, [MediaRelationListener::class, 'whenItemIsRemoved']);
         $eventManager->attach(MediaRemovedEvent::class, [MediaRelationListener::class, 'whenMediaIsRemoved']);
         $eventManager->attach(MediaSavedEvent::class, [MediaRelationListener::class, 'whenMediaIsSaved']);
-        $eventManager->attach(QtiTestsDeletedEvent::class, [QtiTestsDeletedListener::class, 'handle']);
 
         $this->getServiceManager()->register(EventManager::SERVICE_ID, $eventManager);
 

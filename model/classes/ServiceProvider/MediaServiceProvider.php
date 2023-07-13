@@ -44,7 +44,7 @@ use oat\taoMediaManager\model\classes\Copier\AssetMetadataCopier;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
 use oat\taoMediaManager\model\MediaService;
-use oat\taoMediaManager\model\QtiTestsDeletedListener;
+use oat\taoMediaManager\model\QtiTestsDeleter;
 use oat\taoMediaManager\model\sharedStimulus\css\repository\StylesheetRepository;
 use oat\taoMediaManager\model\sharedStimulus\css\service\ListStylesheetsService;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
@@ -203,7 +203,7 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
         $services->set(TaoMediaResolver::class, TaoMediaResolver::class);
 
         $services
-            ->set(QtiTestsDeletedListener::class, QtiTestsDeletedListener::class)
+            ->set(QtiTestsDeleter::class, QtiTestsDeleter::class)
             ->public()
             ->args(
                 [
@@ -212,7 +212,6 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                     service(MediaClassSpecification::class),
                     service(Ontology::SERVICE_ID),
                     service(ClassDeleter::class),
-                    service(TaoMediaResolver::class),
                 ]
             );
     }

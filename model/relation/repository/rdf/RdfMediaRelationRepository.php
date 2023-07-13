@@ -23,15 +23,18 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\relation\repository\rdf;
 
 use common_exception_Error;
+use common_persistence_SqlPersistence;
 use core_kernel_classes_Class as ClassResource;
 use core_kernel_classes_Property;
 use LogicException;
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\generis\model\OntologyAwareTrait;
+use oat\generis\persistence\PersistenceManager;
 use oat\oatbox\service\ConfigurableService;
 use oat\search\base\exception\SearchGateWayExeption;
 use oat\search\base\QueryInterface;
 use oat\search\helper\SupportedOperatorHelper;
+use oat\tao\model\TaoOntology;
 use oat\taoMediaManager\model\exception\ComplexSearchLimitException;
 use oat\taoMediaManager\model\relation\MediaRelation;
 use oat\taoMediaManager\model\relation\MediaRelationCollection;
@@ -39,6 +42,7 @@ use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterfa
 use oat\taoMediaManager\model\relation\repository\query\FindAllByTargetQuery;
 use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
 use oat\taoMediaManager\model\TaoMediaOntology;
+use function Webmozart\Assert\Tests\StaticAnalysis\true;
 
 class RdfMediaRelationRepository extends ConfigurableService implements MediaRelationRepositoryInterface
 {
@@ -121,6 +125,11 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
     public function findAllByTarget(FindAllByTargetQuery $findAllQuery): MediaRelationCollection
     {
         return $this->findAllMediaByTarget($findAllQuery->getTargetId(), $findAllQuery->getType());
+    }
+
+    public function findAllBySource(FindAllByTargetQuery $findAllQuery): MediaRelationCollection
+    {
+        //return $this->findAllMediaByTarget($findAllQuery->getTargetId(), $findAllQuery->getType());
     }
 
     public function save(MediaRelation $relation): void
@@ -225,6 +234,25 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
             ->search($queryBuilder);
 
         return $this->mapSourceRelations($type, (array)$result, $targetId);
+    }
+
+    public function getItemAssetUris(string $itemUri): array
+    {
+        /** @var PersistenceManager $persistenceManager */
+        $persistenceManager = $this->getServiceManager()->get(PersistenceManager::SERVICE_ID);
+
+        /** @var common_persistence_SqlPersistence $persistence */
+        $persistence = $persistenceManager->getPersistenceById('default');
+
+        $statement = $persistence->query(
+            sprintf(
+                "SELECT subject FROM statements WHERE predicate = '%s' AND object = '%s'",
+                self::ITEM_RELATION_PROPERTY,
+                $itemUri
+            )
+        );
+
+        return array_values($statement->fetchAll(\PDO::FETCH_COLUMN));
     }
 
     private function applyQueryTargetType(QueryInterface $query, $targetId, $type)

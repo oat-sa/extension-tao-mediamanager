@@ -25,22 +25,25 @@ namespace oat\taoMediaManager\test\unit\model;
 use core_kernel_classes_Class;
 use core_kernel_classes_Resource;
 use oat\generis\model\data\Ontology;
-use oat\tao\model\media\MediaAsset;
-use oat\tao\model\media\TaoMediaException;
-use oat\tao\model\media\TaoMediaResolver;
+// use oat\tao\model\media\MediaAsset;
+// use oat\tao\model\media\TaoMediaException;
+// use oat\tao\model\media\TaoMediaResolver;
 use oat\tao\model\resources\Service\ClassDeleter;
 use oat\taoMediaManager\model\MediaService;
-use oat\taoMediaManager\model\QtiTestsDeletedListener;
+use oat\taoMediaManager\model\QtiTestsDeleter;
 use oat\taoMediaManager\model\Specification\MediaClassSpecification;
 use oat\taoMediaManager\model\TaoMediaOntology;
-use oat\taoQtiTest\models\event\QtiTestsDeletedEvent;
+// use oat\taoQtiTest\models\event\QtiTestsDeletedEvent;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-class QtiTestsDeletedListenerTest extends TestCase
+/**
+ * @fixme Subject under test to be renamed or removed
+ */
+class QtiTestsDeleterTest extends TestCase
 {
-    private const MEDIA_ID = 'https_2_host_1_ontologies_1_tao_0_rdf_3_i123456789abcdef0123456789abcdef01';
+    //private const MEDIA_ID = 'https_2_host_1_ontologies_1_tao_0_rdf_3_i123456789abcdef0123456789abcdef01';
     private const MEDIA_URI = 'https://host/ontologies/tao.rdf#i123456789abcdef0123456789abcdef01';
 
     /** @var LoggerInterface|MockObject */
@@ -58,19 +61,13 @@ class QtiTestsDeletedListenerTest extends TestCase
     /** @var ClassDeleter|MockObject */
     private ClassDeleter $classDeleter;
 
-    /** @var TaoMediaResolver|MockObject */
-    private TaoMediaResolver $taoMediaResolver;
-
     /** @var MediaClassSpecification|MockObject */
     private MediaClassSpecification $mediaClassSpecification;
 
     /** @var MediaService|MockObject */
     private MediaService $mediaService;
 
-    /** @var QtiTestsDeletedEvent|MockObject */
-    private QtiTestsDeletedEvent $event;
-
-    private QtiTestsDeletedListener $sut;
+    private QtiTestsDeleter $sut;
 
     protected function setUp(): void
     {
@@ -79,28 +76,21 @@ class QtiTestsDeletedListenerTest extends TestCase
         $this->mediaType = $this->createMock(core_kernel_classes_Class::class);
         $this->mediaSubclass = $this->createMock(core_kernel_classes_Class::class);
         $this->classDeleter = $this->createMock(ClassDeleter::class);
-        $this->taoMediaResolver = $this->createMock(TaoMediaResolver::class);
         $this->mediaClassSpecification = $this->createMock(MediaClassSpecification::class);
         $this->mediaService = $this->createMock(MediaService::class);
-        $this->event = $this->createMock(QtiTestsDeletedEvent::class);
 
-        $this->sut = new QtiTestsDeletedListener(
+        $this->sut = new QtiTestsDeleter(
             $this->logger,
             $this->mediaService,
             $this->mediaClassSpecification,
             $this->ontology,
-            $this->classDeleter,
-            $this->taoMediaResolver
+            $this->classDeleter
+            //$this->taoMediaResolver
         );
     }
 
     public function testEventWithNoReferencesTriggersNoDeletions(): void
     {
-        $this->event
-            ->expects($this->once())
-            ->method('getReferencedResources')
-            ->willReturn([]);
-
         $this->mediaService
             ->expects($this->never())
             ->method('deleteResource');
@@ -109,24 +99,11 @@ class QtiTestsDeletedListenerTest extends TestCase
             ->expects($this->never())
             ->method('delete');
 
-        $this->sut->handle($this->event);
+        $this->sut->deleteAssetsByURIs([]);
     }
 
     public function testEventReferencingAnAssetWithNoSiblingsTriggersClassDeletions(): void
     {
-        $this->event
-            ->expects($this->once())
-            ->method('getReferencedResources')
-            ->willReturn([
-                'taomedia://asset/1',
-            ]);
-
-        $asset = $this->createMock(MediaAsset::class);
-        $asset
-            ->expects($this->once())
-            ->method('getMediaIdentifier')
-            ->willReturn(self::MEDIA_ID);
-
         $mediaResource = $this->createMock(core_kernel_classes_Resource::class);
         $mediaResource
             ->method('getUri')
@@ -137,12 +114,6 @@ class QtiTestsDeletedListenerTest extends TestCase
             ->willReturn([
                 $this->mediaSubclass,
             ]);
-
-        $this->taoMediaResolver
-            ->expects($this->once())
-            ->method('resolve')
-            ->with('taomedia://asset/1')
-            ->willReturn($asset);
 
         $this->ontology
             ->expects($this->once())
@@ -175,26 +146,13 @@ class QtiTestsDeletedListenerTest extends TestCase
             ->method('delete')
             ->with($this->mediaSubclass);
 
-        $this->sut->handle($this->event);
+        $this->sut->deleteAssetsByURIs([
+            self::MEDIA_URI
+        ]);
     }
 
     public function testEventWithDuplicatedReferencesDoesNotDeleteAssetsTwice(): void
     {
-        $this->event
-            ->expects($this->once())
-            ->method('getReferencedResources')
-            ->willReturn([
-                'taomedia://asset/1',
-                'taomedia://asset/1',
-                'taomedia://asset/1',
-            ]);
-
-        $asset = $this->createMock(MediaAsset::class);
-        $asset
-            ->expects($this->once())
-            ->method('getMediaIdentifier')
-            ->willReturn(self::MEDIA_ID);
-
         $mediaResource = $this->createMock(core_kernel_classes_Resource::class);
         $mediaResource
             ->method('getUri')
@@ -205,12 +163,6 @@ class QtiTestsDeletedListenerTest extends TestCase
             ->willReturn([
                 $this->mediaSubclass,
             ]);
-
-        $this->taoMediaResolver
-            ->expects($this->once())
-            ->method('resolve')
-            ->with('taomedia://asset/1')
-            ->willReturn($asset);
 
         $this->ontology
             ->expects($this->once())
@@ -243,24 +195,15 @@ class QtiTestsDeletedListenerTest extends TestCase
             ->method('delete')
             ->with($this->mediaSubclass);
 
-        $this->sut->handle($this->event);
+        $this->sut->deleteAssetsByURIs([
+            self::MEDIA_URI,
+            self::MEDIA_URI,
+            self::MEDIA_URI,
+        ]);
     }
 
     public function testEventReferencingNonMediaResourcesTriggersNoDeletions(): void
     {
-        $this->event
-            ->expects($this->once())
-            ->method('getReferencedResources')
-            ->willReturn([
-                'taomedia://asset/1',
-            ]);
-
-        $asset = $this->createMock(MediaAsset::class);
-        $asset
-            ->expects($this->once())
-            ->method('getMediaIdentifier')
-            ->willReturn(self::MEDIA_ID);
-
         $mediaResource = $this->createMock(core_kernel_classes_Resource::class);
         $mediaResource
             ->method('getUri')
@@ -271,12 +214,6 @@ class QtiTestsDeletedListenerTest extends TestCase
             ->willReturn([
                 $this->mediaType,
             ]);
-
-        $this->taoMediaResolver
-            ->expects($this->once())
-            ->method('resolve')
-            ->with('taomedia://asset/1')
-            ->willReturn($asset);
 
         $this->ontology
             ->expects($this->once())
@@ -305,24 +242,13 @@ class QtiTestsDeletedListenerTest extends TestCase
             ->expects($this->never())
             ->method('delete');
 
-        $this->sut->handle($this->event);
+        $this->sut->deleteAssetsByURIs([
+            self::MEDIA_URI,
+        ]);
     }
 
     public function testEventReferencingAssetInTheAssetsRootSkipsClassDeletion(): void
     {
-        $this->event
-            ->expects($this->once())
-            ->method('getReferencedResources')
-            ->willReturn([
-                'taomedia://asset/1',
-            ]);
-
-        $asset = $this->createMock(MediaAsset::class);
-        $asset
-            ->expects($this->once())
-            ->method('getMediaIdentifier')
-            ->willReturn(self::MEDIA_ID);
-
         $mediaResource = $this->createMock(core_kernel_classes_Resource::class);
         $mediaResource
             ->method('getUri')
@@ -333,12 +259,6 @@ class QtiTestsDeletedListenerTest extends TestCase
             ->willReturn([
                 $this->mediaType,
             ]);
-
-        $this->taoMediaResolver
-            ->expects($this->once())
-            ->method('resolve')
-            ->with('taomedia://asset/1')
-            ->willReturn($asset);
 
         $this->ontology
             ->expects($this->once())
@@ -370,24 +290,13 @@ class QtiTestsDeletedListenerTest extends TestCase
             ->expects($this->never())
             ->method('delete');
 
-        $this->sut->handle($this->event);
+        $this->sut->deleteAssetsByURIs([
+            self::MEDIA_URI,
+        ]);
     }
 
     public function testEventReferencingAssetWithSiblingsTriggersNoDeletions(): void
     {
-        $this->event
-            ->expects($this->once())
-            ->method('getReferencedResources')
-            ->willReturn([
-                'taomedia://asset/1',
-            ]);
-
-        $asset = $this->createMock(MediaAsset::class);
-        $asset
-            ->expects($this->once())
-            ->method('getMediaIdentifier')
-            ->willReturn(self::MEDIA_ID);
-
         $mediaResource = $this->createMock(core_kernel_classes_Resource::class);
         $mediaResource
             ->method('getUri')
@@ -398,12 +307,6 @@ class QtiTestsDeletedListenerTest extends TestCase
             ->willReturn([
                 $this->mediaType,
             ]);
-
-        $this->taoMediaResolver
-            ->expects($this->once())
-            ->method('resolve')
-            ->with('taomedia://asset/1')
-            ->willReturn($asset);
 
         $this->ontology
             ->expects($this->once())
@@ -434,79 +337,8 @@ class QtiTestsDeletedListenerTest extends TestCase
             ->expects($this->never())
             ->method('delete');
 
-        $this->sut->handle($this->event);
-    }
-
-    public function testResolveErrorsDontHaltExecution(): void
-    {
-        $this->event
-            ->expects($this->once())
-            ->method('getReferencedResources')
-            ->willReturn([
-                'taomedia://asset/1',
-                'taomedia://asset/2',
-            ]);
-
-        $asset = $this->createMock(MediaAsset::class);
-        $asset
-            ->expects($this->once())
-            ->method('getMediaIdentifier')
-            ->willReturn(self::MEDIA_ID);
-
-        $mediaResource = $this->createMock(core_kernel_classes_Resource::class);
-        $mediaResource
-            ->method('getUri')
-            ->willReturn(self::MEDIA_URI);
-        $mediaResource
-            ->expects($this->atLeastOnce())
-            ->method('getTypes')
-            ->willReturn([
-                $this->mediaType,
-            ]);
-
-        $this->taoMediaResolver
-            ->expects($this->exactly(2))
-            ->method('resolve')
-            ->willReturnCallback(function (string $uri) use ($asset) {
-                if ($uri === 'taomedia://asset/1') {
-                    return $asset;
-                }
-                if ($uri === 'taomedia://asset/2') {
-                    throw new TaoMediaException('resolve error');
-                }
-
-                $this->fail("Unexpected resolve call for {$uri}");
-            });
-
-        $this->ontology
-            ->expects($this->once())
-            ->method('getResource')
-            ->with(self::MEDIA_URI)
-            ->willReturn($mediaResource);
-
-        $this->mediaType
-            ->expects($this->atLeastOnce())
-            ->method('countInstances')
-            ->willReturn(2);
-        $this->mediaType
-            ->method('getUri')
-            ->willReturn(TaoMediaOntology::CLASS_URI_MEDIA_ROOT);
-
-        $this->mediaClassSpecification
-            ->expects($this->once())
-            ->method('isSatisfiedBy')
-            ->with($this->mediaType)
-            ->willReturn(true);
-
-        $this->mediaService
-            ->expects($this->once())
-            ->method('deleteResource')
-            ->with($mediaResource);
-
-        $this->classDeleter
-            ->expects($this->never())
-            ->method('delete');
-
-        $this->sut->handle($this->event);
+        $this->sut->deleteAssetsByURIs([
+            self::MEDIA_URI,
+        ]);
     }
 }

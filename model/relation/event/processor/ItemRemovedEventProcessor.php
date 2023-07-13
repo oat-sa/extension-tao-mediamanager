@@ -52,8 +52,11 @@ class ItemRemovedEventProcessor extends ConfigurableService implements EventProc
         if ($deleteAssets) {
             $collection = $this->getMediaRelationRepository()->getItemAssetUris($id);
 
-            $this->getLogger()->debug(
-                '====================== collection: ' . json_encode($collection)
+            $this->getLogger()->info(
+               sprintf(
+                    'Assets "%s" removed after Item "%s" using them was removed ',
+                    json_encode($collection),
+                    $id
             );
 
             $this->getQtiTestsDeleter()->deleteAssetsByURIs($collection);

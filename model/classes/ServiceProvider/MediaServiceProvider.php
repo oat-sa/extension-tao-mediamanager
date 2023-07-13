@@ -27,7 +27,6 @@ use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
 use oat\oatbox\log\LoggerService;
 use oat\tao\model\accessControl\ActionAccessControl;
 use oat\tao\model\accessControl\PermissionChecker;
-use oat\tao\model\media\TaoMediaResolver;
 use oat\tao\model\resources\Service\ClassCopierProxy;
 use oat\tao\model\resources\Service\ClassDeleter;
 use oat\tao\model\resources\Service\ClassMetadataCopier;
@@ -199,8 +198,6 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                     service(InstanceCopier::class . '::ASSETS'),
                 ]
             );
-
-        $services->set(TaoMediaResolver::class, TaoMediaResolver::class);
 
         $services
             ->set(QtiTestsDeleter::class, QtiTestsDeleter::class)

@@ -37,7 +37,7 @@ use Psr\Log\LoggerInterface;
 class QtiTestsDeleterTest extends TestCase
 {
 
-    private const MEDIA_URI = 'https://host/ontologies/tao.rdf#i123456789abcdef0123456789abcdef01';
+    private const MEDIA_URI = 'https://media#i123';
 
     /** @var LoggerInterface|MockObject */
     private LoggerInterface $logger;

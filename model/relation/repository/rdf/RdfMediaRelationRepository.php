@@ -34,7 +34,6 @@ use oat\oatbox\service\ConfigurableService;
 use oat\search\base\exception\SearchGateWayExeption;
 use oat\search\base\QueryInterface;
 use oat\search\helper\SupportedOperatorHelper;
-use oat\tao\model\TaoOntology;
 use oat\taoMediaManager\model\exception\ComplexSearchLimitException;
 use oat\taoMediaManager\model\relation\MediaRelation;
 use oat\taoMediaManager\model\relation\MediaRelationCollection;
@@ -42,7 +41,6 @@ use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterfa
 use oat\taoMediaManager\model\relation\repository\query\FindAllByTargetQuery;
 use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
 use oat\taoMediaManager\model\TaoMediaOntology;
-use function Webmozart\Assert\Tests\StaticAnalysis\true;
 
 class RdfMediaRelationRepository extends ConfigurableService implements MediaRelationRepositoryInterface
 {

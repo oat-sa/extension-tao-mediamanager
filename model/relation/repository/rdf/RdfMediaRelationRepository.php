@@ -234,11 +234,10 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
     {
         $statement = $this->getPersistence()->query(
             'SELECT subject FROM statements WHERE predicate = ? AND object = ?',
-            self::ITEM_RELATION_PROPERTY,
-            $itemUri
+            [self::ITEM_RELATION_PROPERTY, $itemUri]
         );
 
-        return array_values($statement->fetchAll(PDO::FETCH_COLUMN));
+        return $statement->fetchAll(PDO::FETCH_COLUMN);
     }
 
     private function applyQueryTargetType(QueryInterface $query, $targetId, $type)

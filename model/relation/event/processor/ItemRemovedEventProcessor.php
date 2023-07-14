@@ -57,6 +57,7 @@ class ItemRemovedEventProcessor extends ConfigurableService implements EventProc
                     'Assets "%s" removed after Item "%s" using them was removed ',
                     json_encode($collection),
                     $id
+               )
             );
 
             $this->getQtiTestsDeleter()->deleteAssetsByURIs($collection);

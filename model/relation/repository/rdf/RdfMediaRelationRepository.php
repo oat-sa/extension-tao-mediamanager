@@ -240,6 +240,16 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
         return $statement->fetchAll(PDO::FETCH_COLUMN);
     }
 
+    public function getRelatedItemUrisByAssetUri(string $assetUri): array
+    {
+        $statement = $this->getPersistence()->query(
+            'SELECT DISTINCT object FROM statements WHERE predicate = ? AND subject = ?',
+            [self::ITEM_RELATION_PROPERTY, $assetUri]
+        );
+
+        return $statement->fetchAll(PDO::FETCH_COLUMN);
+    }
+
     private function applyQueryTargetType(QueryInterface $query, $targetId, $type)
     {
         switch ($type) {

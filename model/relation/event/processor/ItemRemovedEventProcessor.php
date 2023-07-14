@@ -50,17 +50,30 @@ class ItemRemovedEventProcessor extends ConfigurableService implements EventProc
         }
 
         if ($deleteRelatedAssets) {
-            $collection = $this->getMediaRelationRepository()->getItemAssetUris($id);
+            $assetsToDelete = [];
 
-            $this->getAssetDeleter()->deleteAssetsByURIs($collection);
+            $mediaRelationRepository = $this->getMediaRelationRepository();
+            foreach ($mediaRelationRepository->getItemAssetUris($id) as $assetUri) {
+                $relatedItemUris = array_unique(
+                    $mediaRelationRepository->getRelatedItemUrisByAssetUri($assetUri)
+                );
 
-            $this->getLogger()->info(
-                sprintf(
-                    'Assets "%s" removed after Item "%s" using them was removed ',
-                    json_encode($collection),
-                    $id
-                )
-            );
+                if ((count($relatedItemUris) === 1) && (current($relatedItemUris) === $id)) {
+                    $assetsToDelete[] = $assetUri;
+                }
+            }
+
+            if (!empty($assetsToDelete)) {
+                $this->getAssetDeleter()->deleteAssetsByURIs($assetsToDelete);
+
+                $this->getLogger()->info(
+                    sprintf(
+                        'Assets "%s" removed after Item "%s" using them was removed ',
+                        json_encode($assetsToDelete),
+                        $id
+                    )
+                );
+            }
         }
 
         $this->getItemRelationUpdateService()

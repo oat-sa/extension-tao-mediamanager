@@ -52,7 +52,7 @@ class ItemRemovedEventProcessor extends ConfigurableService implements EventProc
         if ($deleteRelatedAssets) {
             $collection = $this->getMediaRelationRepository()->getItemAssetUris($id);
 
-            $this->getQtiTestsDeleter()->deleteAssetsByURIs($collection);
+            $this->getAssetDeleter()->deleteAssetsByURIs($collection);
 
             $this->getLogger()->info(
                 sprintf(
@@ -67,7 +67,7 @@ class ItemRemovedEventProcessor extends ConfigurableService implements EventProc
             ->updateByTargetId((string)$id);
     }
 
-    private function getQtiTestsDeleter(): AssetDeleter
+    private function getAssetDeleter(): AssetDeleter
     {
         return $this->getServiceLocator()->getContainer()->get(AssetDeleter::class);
     }

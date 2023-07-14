@@ -28,7 +28,6 @@ use oat\generis\model\data\Ontology;
 use oat\tao\model\resources\Service\ClassDeleter;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\QtiTestsDeleter;
-use oat\taoMediaManager\model\Specification\MediaClassSpecification;
 use oat\taoMediaManager\model\TaoMediaOntology;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -53,9 +52,6 @@ class QtiTestsDeleterTest extends TestCase
     /** @var ClassDeleter|MockObject */
     private ClassDeleter $classDeleter;
 
-    /** @var MediaClassSpecification|MockObject */
-    private MediaClassSpecification $mediaClassSpecification;
-
     /** @var MediaService|MockObject */
     private MediaService $mediaService;
 
@@ -68,13 +64,11 @@ class QtiTestsDeleterTest extends TestCase
         $this->mediaType = $this->createMock(core_kernel_classes_Class::class);
         $this->mediaSubclass = $this->createMock(core_kernel_classes_Class::class);
         $this->classDeleter = $this->createMock(ClassDeleter::class);
-        $this->mediaClassSpecification = $this->createMock(MediaClassSpecification::class);
         $this->mediaService = $this->createMock(MediaService::class);
 
         $this->sut = new QtiTestsDeleter(
             $this->logger,
             $this->mediaService,
-            $this->mediaClassSpecification,
             $this->ontology,
             $this->classDeleter
         );
@@ -121,12 +115,6 @@ class QtiTestsDeleterTest extends TestCase
             ->method('getUri')
             ->willReturn('https://host/ontologies/tao.rdf#subclass');
 
-        $this->mediaClassSpecification
-            ->expects($this->once())
-            ->method('isSatisfiedBy')
-            ->with($this->mediaSubclass)
-            ->willReturn(true);
-
         $this->mediaService
             ->expects($this->once())
             ->method('deleteResource')
@@ -139,51 +127,6 @@ class QtiTestsDeleterTest extends TestCase
 
         $this->sut->deleteAssetsByURIs([
             self::MEDIA_URI
-        ]);
-    }
-
-    public function testEventReferencingNonMediaResourcesTriggersNoDeletions(): void
-    {
-        $mediaResource = $this->createMock(core_kernel_classes_Resource::class);
-        $mediaResource
-            ->method('getUri')
-            ->willReturn(self::MEDIA_URI);
-        $mediaResource
-            ->expects($this->atLeastOnce())
-            ->method('getTypes')
-            ->willReturn([
-                $this->mediaType,
-            ]);
-
-        $this->ontology
-            ->expects($this->once())
-            ->method('getResource')
-            ->with(self::MEDIA_URI)
-            ->willReturn($mediaResource);
-
-        $this->mediaType
-            ->expects($this->never())
-            ->method('countInstances');
-        $this->mediaType
-            ->expects($this->never())
-            ->method('getUri');
-
-        $this->mediaClassSpecification
-            ->expects($this->once())
-            ->method('isSatisfiedBy')
-            ->with($this->mediaType)
-            ->willReturn(false);
-
-        $this->mediaService
-            ->expects($this->never())
-            ->method('deleteResource');
-
-        $this->classDeleter
-            ->expects($this->never())
-            ->method('delete');
-
-        $this->sut->deleteAssetsByURIs([
-            self::MEDIA_URI,
         ]);
     }
 
@@ -214,12 +157,6 @@ class QtiTestsDeleterTest extends TestCase
             ->expects($this->atLeastOnce())
             ->method('getUri')
             ->willReturn(TaoMediaOntology::CLASS_URI_MEDIA_ROOT);
-
-        $this->mediaClassSpecification
-            ->expects($this->once())
-            ->method('isSatisfiedBy')
-            ->with($this->mediaType)
-            ->willReturn(true);
 
         $this->mediaService
             ->expects($this->once())
@@ -261,12 +198,6 @@ class QtiTestsDeleterTest extends TestCase
         $this->mediaType
             ->method('getUri')
             ->willReturn(TaoMediaOntology::CLASS_URI_MEDIA_ROOT);
-
-        $this->mediaClassSpecification
-            ->expects($this->once())
-            ->method('isSatisfiedBy')
-            ->with($this->mediaType)
-            ->willReturn(true);
 
         $this->mediaService
             ->expects($this->once())

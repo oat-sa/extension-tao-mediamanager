@@ -206,7 +206,6 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                 [
                     service(LoggerService::SERVICE_ID),
                     service(MediaService::class),
-                    service(MediaClassSpecification::class),
                     service(Ontology::SERVICE_ID),
                     service(ClassDeleter::class),
                 ]

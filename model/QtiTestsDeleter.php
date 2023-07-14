@@ -24,7 +24,6 @@ use oat\generis\model\data\Ontology;
 use oat\tao\model\resources\Exception\ClassDeletionException;
 use oat\tao\model\resources\Exception\PartialClassDeletionException;
 use oat\tao\model\resources\Service\ClassDeleter;
-use oat\taoMediaManager\model\Specification\MediaClassSpecification;
 use core_kernel_classes_Class;
 use core_kernel_classes_Resource;
 use tao_helpers_Uri;
@@ -36,19 +35,16 @@ class QtiTestsDeleter
     private LoggerInterface $logger;
     private Ontology $ontology;
     private ClassDeleter $classDeleter;
-    private MediaClassSpecification $mediaClassSpecification;
     private MediaService $mediaService;
 
     public function __construct(
         LoggerInterface $logger,
         MediaService $mediaService,
-        MediaClassSpecification $mediaClassSpecification,
         Ontology $ontology,
         ClassDeleter $classDeleter
     ) {
         $this->logger = $logger;
         $this->mediaService = $mediaService;
-        $this->mediaClassSpecification = $mediaClassSpecification;
         $this->ontology = $ontology;
         $this->classDeleter = $classDeleter;
     }
@@ -80,27 +76,13 @@ class QtiTestsDeleter
         $uri = tao_helpers_Uri::decode($assetId);
 
         $resource = $this->ontology->getResource($uri);
+        $type = current($resource->getTypes());
 
-        if ($this->isMediaResource($resource)) {
-            $type = current($resource->getTypes());
-
-            if ($this->resourceHasNoSiblings($resource)) {
-                $this->classDeleter->delete($type);
-            }
-
-            $this->mediaService->deleteResource($resource);
-        }
-    }
-
-    private function isMediaResource(core_kernel_classes_Resource $resource): bool
-    {
-        foreach ($resource->getTypes() as $type) {
-            if ($this->mediaClassSpecification->isSatisfiedBy($type)) {
-                return true;
-            }
+        if ($this->resourceHasNoSiblings($resource)) {
+            $this->classDeleter->delete($type);
         }
 
-        return false;
+        $this->mediaService->deleteResource($resource);
     }
 
     private function resourceHasNoSiblings(core_kernel_classes_Resource $resource): bool

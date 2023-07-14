@@ -42,15 +42,18 @@ class ItemRemovedEventProcessor extends ConfigurableService implements EventProc
         }
 
         $data = $event->jsonSerialize();
-        $id = $data['itemUri'] ?? null;
-        $deleteAssets = $data['deleteAssets'] ?? false;
+        $id = $data[ItemRemovedEvent::PAYLOAD_KEY_DELETE_RELATED_ASSETS] ?? null;
+        $deleteRelatedAssets = $data[ItemRemovedEvent::PAYLOAD_KEY_DELETE_RELATED_ASSETS] ?? false;
 
         if (empty($id)) {
             throw new InvalidEventException($event, 'Missing itemUri');
         }
 
-        if ($deleteAssets) {
+        if ($deleteRelatedAssets) {
             $collection = $this->getMediaRelationRepository()->getItemAssetUris($id);
+
+            $this->getQtiTestsDeleter()->deleteAssetsByURIs($collection);
+
             $this->getLogger()->info(
                 sprintf(
                     'Assets "%s" removed after Item "%s" using them was removed ',
@@ -58,8 +61,6 @@ class ItemRemovedEventProcessor extends ConfigurableService implements EventProc
                     $id
                 )
             );
-
-            $this->getQtiTestsDeleter()->deleteAssetsByURIs($collection);
         }
 
         $this->getItemRelationUpdateService()

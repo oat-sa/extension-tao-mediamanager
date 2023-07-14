@@ -55,7 +55,7 @@ class QtiTestsDeleter
 
     public function deleteAssetsByURIs(array $ids): void
     {
-        foreach (array_unique($ids) as $id) {
+        foreach ($ids as $id) {
             try {
                 $this->deleteAsset($id);
             } catch (Throwable $e) {

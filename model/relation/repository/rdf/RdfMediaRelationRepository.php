@@ -233,7 +233,7 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
     public function getItemAssetUris(string $itemUri): array
     {
         $statement = $this->getPersistence()->query(
-            'SELECT subject FROM statements WHERE predicate = ? AND object = ?',
+            'SELECT DISTINCT subject FROM statements WHERE predicate = ? AND object = ?',
             [self::ITEM_RELATION_PROPERTY, $itemUri]
         );
 

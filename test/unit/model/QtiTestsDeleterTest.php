@@ -142,57 +142,6 @@ class QtiTestsDeleterTest extends TestCase
         ]);
     }
 
-    public function testEventWithDuplicatedReferencesDoesNotDeleteAssetsTwice(): void
-    {
-        $mediaResource = $this->createMock(core_kernel_classes_Resource::class);
-        $mediaResource
-            ->method('getUri')
-            ->willReturn(self::MEDIA_URI);
-        $mediaResource
-            ->expects($this->atLeastOnce())
-            ->method('getTypes')
-            ->willReturn([
-                $this->mediaSubclass,
-            ]);
-
-        $this->ontology
-            ->expects($this->once())
-            ->method('getResource')
-            ->with(self::MEDIA_URI)
-            ->willReturn($mediaResource);
-
-        $this->mediaSubclass
-            ->expects($this->once())
-            ->method('countInstances')
-            ->willReturn(1);
-        $this->mediaSubclass
-            ->expects($this->atLeastOnce())
-            ->method('getUri')
-            ->willReturn('https://host/ontologies/tao.rdf#subclass');
-
-        $this->mediaClassSpecification
-            ->expects($this->once())
-            ->method('isSatisfiedBy')
-            ->with($this->mediaSubclass)
-            ->willReturn(true);
-
-        $this->mediaService
-            ->expects($this->once())
-            ->method('deleteResource')
-            ->with($mediaResource);
-
-        $this->classDeleter
-            ->expects($this->once())
-            ->method('delete')
-            ->with($this->mediaSubclass);
-
-        $this->sut->deleteAssetsByURIs([
-            self::MEDIA_URI,
-            self::MEDIA_URI,
-            self::MEDIA_URI,
-        ]);
-    }
-
     public function testEventReferencingNonMediaResourcesTriggersNoDeletions(): void
     {
         $mediaResource = $this->createMock(core_kernel_classes_Resource::class);

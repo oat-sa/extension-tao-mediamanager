@@ -25,7 +25,7 @@ namespace oat\taoMediaManager\model\relation\event\processor;
 use oat\oatbox\event\Event;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoItems\model\event\ItemRemovedEvent;
-use oat\taoMediaManager\model\QtiTestsDeleter;
+use oat\taoMediaManager\model\AssetDeleter;
 use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
 use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRelationRepository;
 use oat\taoMediaManager\model\relation\service\update\ItemRelationUpdateService;
@@ -67,9 +67,9 @@ class ItemRemovedEventProcessor extends ConfigurableService implements EventProc
             ->updateByTargetId((string)$id);
     }
 
-    private function getQtiTestsDeleter(): QtiTestsDeleter
+    private function getQtiTestsDeleter(): AssetDeleter
     {
-        return $this->getServiceLocator()->getContainer()->get(QtiTestsDeleter::class);
+        return $this->getServiceLocator()->getContainer()->get(AssetDeleter::class);
     }
 
     private function getItemRelationUpdateService(): ItemRelationUpdateService

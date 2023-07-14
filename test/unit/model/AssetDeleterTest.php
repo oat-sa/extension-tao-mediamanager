@@ -27,13 +27,13 @@ use core_kernel_classes_Resource;
 use oat\generis\model\data\Ontology;
 use oat\tao\model\resources\Service\ClassDeleter;
 use oat\taoMediaManager\model\MediaService;
-use oat\taoMediaManager\model\QtiTestsDeleter;
+use oat\taoMediaManager\model\AssetDeleter;
 use oat\taoMediaManager\model\TaoMediaOntology;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-class QtiTestsDeleterTest extends TestCase
+class AssetDeleterTest extends TestCase
 {
     private const MEDIA_URI = 'https://media#i123';
 
@@ -55,7 +55,7 @@ class QtiTestsDeleterTest extends TestCase
     /** @var MediaService|MockObject */
     private MediaService $mediaService;
 
-    private QtiTestsDeleter $sut;
+    private AssetDeleter $sut;
 
     protected function setUp(): void
     {
@@ -66,7 +66,7 @@ class QtiTestsDeleterTest extends TestCase
         $this->classDeleter = $this->createMock(ClassDeleter::class);
         $this->mediaService = $this->createMock(MediaService::class);
 
-        $this->sut = new QtiTestsDeleter(
+        $this->sut = new AssetDeleter(
             $this->logger,
             $this->mediaService,
             $this->ontology,

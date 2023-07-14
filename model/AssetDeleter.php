@@ -30,7 +30,7 @@ use tao_helpers_Uri;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
-class QtiTestsDeleter
+class AssetDeleter
 {
     private LoggerInterface $logger;
     private Ontology $ontology;

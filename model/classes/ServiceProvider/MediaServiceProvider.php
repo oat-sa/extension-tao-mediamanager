@@ -43,7 +43,7 @@ use oat\taoMediaManager\model\classes\Copier\AssetMetadataCopier;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
 use oat\taoMediaManager\model\MediaService;
-use oat\taoMediaManager\model\QtiTestsDeleter;
+use oat\taoMediaManager\model\AssetDeleter;
 use oat\taoMediaManager\model\sharedStimulus\css\repository\StylesheetRepository;
 use oat\taoMediaManager\model\sharedStimulus\css\service\ListStylesheetsService;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
@@ -200,7 +200,7 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
             );
 
         $services
-            ->set(QtiTestsDeleter::class, QtiTestsDeleter::class)
+            ->set(AssetDeleter::class, AssetDeleter::class)
             ->public()
             ->args(
                 [

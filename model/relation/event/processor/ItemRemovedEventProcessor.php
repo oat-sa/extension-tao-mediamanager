@@ -54,11 +54,9 @@ class ItemRemovedEventProcessor extends ConfigurableService implements EventProc
 
             $mediaRelationRepository = $this->getMediaRelationRepository();
             foreach ($mediaRelationRepository->getItemAssetUris($id) as $assetUri) {
-                $relatedItemUris = array_unique(
-                    $mediaRelationRepository->getRelatedItemUrisByAssetUri($assetUri)
-                );
+                $relatedItemUris = $mediaRelationRepository->getRelatedItemUrisByAssetUri($assetUri);
 
-                if ((count($relatedItemUris) === 1) && (current($relatedItemUris) === $id)) {
+                if (count($relatedItemUris) == 1) {
                     $assetsToDelete[] = $assetUri;
                 }
             }

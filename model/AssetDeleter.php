@@ -26,6 +26,7 @@ use oat\tao\model\resources\Exception\PartialClassDeletionException;
 use oat\tao\model\resources\Service\ClassDeleter;
 use core_kernel_classes_Class;
 use core_kernel_classes_Resource;
+use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRelationRepository;
 use tao_helpers_Uri;
 use Psr\Log\LoggerInterface;
 use Throwable;
@@ -36,35 +37,61 @@ class AssetDeleter
     private Ontology $ontology;
     private ClassDeleter $classDeleter;
     private MediaService $mediaService;
+    private RdfMediaRelationRepository $mediaRelationRepository;
 
     public function __construct(
         LoggerInterface $logger,
         MediaService $mediaService,
         Ontology $ontology,
-        ClassDeleter $classDeleter
+        ClassDeleter $classDeleter,
+        RdfMediaRelationRepository $mediaRelationRepository
     ) {
         $this->logger = $logger;
         $this->mediaService = $mediaService;
         $this->ontology = $ontology;
         $this->classDeleter = $classDeleter;
+        $this->mediaRelationRepository = $mediaRelationRepository;
     }
 
-    public function deleteAssetsByURIs(array $ids): void
+    public function deleteByItemUri(string $itemUri): void
     {
-        foreach ($ids as $id) {
+        foreach ($this->getAssetsToDeleteByItemUri($itemUri) as $assetUri) {
             try {
-                $this->deleteAsset($id);
+                $this->deleteAsset($assetUri);
+
+                $this->logger->info(
+                    sprintf(
+                        'Assets "%s" removed after Item "%s" using them was removed',
+                        $assetUri,
+                        $itemUri
+                    )
+                );
             } catch (Throwable $e) {
                 $this->logger->error(
                     sprintf(
-                        '%s exception deleting "%s": %s',
+                        'ItemRemovedEventProcessor: CAUGHT %s exception removing assets: %s - trace: %s',
                         get_class($e),
-                        $id,
-                        $e->getMessage()
+                        $e->getMessage(),
+                        $e->getTraceAsString()
                     )
                 );
             }
         }
+    }
+
+    private function getAssetsToDeleteByItemUri(string $itemUri): array
+    {
+        $assetsToDelete = [];
+
+        foreach ($this->mediaRelationRepository->getItemAssetUris($itemUri) as $assetUri) {
+            $relatedItemUris = $this->mediaRelationRepository->getRelatedItemUrisByAssetUri($assetUri);
+
+            if (count($relatedItemUris) == 1) {
+                $assetsToDelete[] = $assetUri;
+            }
+        }
+
+        return $assetsToDelete;
     }
 
     /**

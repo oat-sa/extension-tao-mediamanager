@@ -28,6 +28,8 @@ use oat\generis\model\data\Ontology;
 use oat\tao\model\resources\Service\ClassDeleter;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\AssetDeleter;
+use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
+use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRelationRepository;
 use oat\taoMediaManager\model\TaoMediaOntology;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -36,6 +38,7 @@ use Psr\Log\LoggerInterface;
 class AssetDeleterTest extends TestCase
 {
     private const MEDIA_URI = 'https://media#i123';
+    private const ITEM_URI = 'https://item#i123';
 
     /** @var LoggerInterface|MockObject */
     private LoggerInterface $logger;
@@ -55,7 +58,11 @@ class AssetDeleterTest extends TestCase
     /** @var MediaService|MockObject */
     private MediaService $mediaService;
 
+    /** @var MediaRelationRepositoryInterface|MockObject */
+    private MediaRelationRepositoryInterface $mediaRelationRepository;
+
     private AssetDeleter $sut;
+
 
     protected function setUp(): void
     {
@@ -65,26 +72,26 @@ class AssetDeleterTest extends TestCase
         $this->mediaSubclass = $this->createMock(core_kernel_classes_Class::class);
         $this->classDeleter = $this->createMock(ClassDeleter::class);
         $this->mediaService = $this->createMock(MediaService::class);
+        $this->mediaRelationRepository = $this->createMock(RdfMediaRelationRepository::class);
 
         $this->sut = new AssetDeleter(
             $this->logger,
             $this->mediaService,
             $this->ontology,
-            $this->classDeleter
+            $this->classDeleter,
+            $this->mediaRelationRepository
         );
-    }
 
-    public function testEventWithNoReferencesTriggersNoDeletions(): void
-    {
-        $this->mediaService
-            ->expects($this->never())
-            ->method('deleteResource');
+        $this->mediaRelationRepository
+            ->expects($this->once())
+            ->method('getItemAssetUris')
+            ->willReturn([self::MEDIA_URI]);
 
-        $this->classDeleter
-            ->expects($this->never())
-            ->method('delete');
-
-        $this->sut->deleteAssetsByURIs([]);
+        $this->mediaRelationRepository
+            ->expects($this->once())
+            ->method('getRelatedItemUrisByAssetUri')
+            ->with(self::MEDIA_URI)
+            ->willReturn([self::ITEM_URI]);
     }
 
     public function testEventReferencingAnAssetWithNoSiblingsTriggersClassDeletions(): void
@@ -125,9 +132,7 @@ class AssetDeleterTest extends TestCase
             ->method('delete')
             ->with($this->mediaSubclass);
 
-        $this->sut->deleteAssetsByURIs([
-            self::MEDIA_URI
-        ]);
+        $this->sut->deleteByItemUri(self::ITEM_URI);
     }
 
     public function testEventReferencingAssetInTheAssetsRootSkipsClassDeletion(): void
@@ -167,9 +172,7 @@ class AssetDeleterTest extends TestCase
             ->expects($this->never())
             ->method('delete');
 
-        $this->sut->deleteAssetsByURIs([
-            self::MEDIA_URI,
-        ]);
+        $this->sut->deleteByItemUri(self::ITEM_URI);
     }
 
     public function testEventReferencingAssetWithSiblingsTriggersNoDeletions(): void
@@ -208,8 +211,6 @@ class AssetDeleterTest extends TestCase
             ->expects($this->never())
             ->method('delete');
 
-        $this->sut->deleteAssetsByURIs([
-            self::MEDIA_URI,
-        ]);
+        $this->sut->deleteByItemUri(self::ITEM_URI);
     }
 }

@@ -44,6 +44,7 @@ use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\AssetDeleter;
+use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRelationRepository;
 use oat\taoMediaManager\model\sharedStimulus\css\repository\StylesheetRepository;
 use oat\taoMediaManager\model\sharedStimulus\css\service\ListStylesheetsService;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
@@ -208,6 +209,7 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                     service(MediaService::class),
                     service(Ontology::SERVICE_ID),
                     service(ClassDeleter::class),
+                    service(RdfMediaRelationRepository::class),
                 ]
             );
     }

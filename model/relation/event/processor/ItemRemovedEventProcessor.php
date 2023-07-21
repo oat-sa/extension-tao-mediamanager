@@ -26,10 +26,7 @@ use oat\oatbox\event\Event;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoItems\model\event\ItemRemovedEvent;
 use oat\taoMediaManager\model\AssetDeleter;
-use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
-use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRelationRepository;
 use oat\taoMediaManager\model\relation\service\update\ItemRelationUpdateService;
-use Throwable;
 
 class ItemRemovedEventProcessor extends ConfigurableService implements EventProcessorInterface
 {
@@ -43,58 +40,19 @@ class ItemRemovedEventProcessor extends ConfigurableService implements EventProc
         }
 
         $data = $event->jsonSerialize();
-        $id = $data[ItemRemovedEvent::PAYLOAD_KEY_ITEM_URI] ?? null;
+        $itemUri = $data[ItemRemovedEvent::PAYLOAD_KEY_ITEM_URI] ?? null;
         $deleteRelatedAssets = $data[ItemRemovedEvent::PAYLOAD_KEY_DELETE_RELATED_ASSETS] ?? false;
 
-        if (empty($id)) {
+        if (empty($itemUri)) {
             throw new InvalidEventException($event, 'Missing itemUri');
         }
 
         if ($deleteRelatedAssets) {
-            $this->deleteRelatedAssets($id);
+            $this->getAssetDeleter()->deleteByItemUri($itemUri);
         }
 
         $this->getItemRelationUpdateService()
-            ->updateByTargetId((string)$id);
-    }
-
-    private function deleteRelatedAssets(string $itemUri): void
-    {
-        try {
-            $assetsToDelete = [];
-
-            $mediaRelationRepository = $this->getMediaRelationRepository();
-            foreach ($mediaRelationRepository->getItemAssetUris($itemUri) as $assetUri) {
-                $relatedItemUris = $mediaRelationRepository->getRelatedItemUrisByAssetUri($assetUri);
-
-                if (count($relatedItemUris) == 1) {
-                    $assetsToDelete[] = $assetUri;
-                }
-            }
-
-            if (!empty($assetsToDelete)) {
-                $this->getAssetDeleter()->deleteAssetsByURIs($assetsToDelete);
-
-                $this->getLogger()->info(
-                    sprintf(
-                        'Assets "%s" removed after Item "%s" using them was removed',
-                        json_encode($assetsToDelete),
-                        $itemUri
-                    )
-                );
-            }
-        } catch (Throwable $e) {
-            $this->getLogger()->error(
-                sprintf(
-                    'ItemRemovedEventProcessor: CAUGHT %s exception removing assets: %s',
-                    get_class($e),
-                    $e->getMessage()
-                )
-            );
-            $this->getLogger()->error(
-                sprintf('ItemRemovedEventProcessor: BACKTRACE: %s', $e->getTraceAsString())
-            );
-        }
+            ->updateByTargetId($itemUri);
     }
 
     private function getAssetDeleter(): AssetDeleter
@@ -105,10 +63,5 @@ class ItemRemovedEventProcessor extends ConfigurableService implements EventProc
     private function getItemRelationUpdateService(): ItemRelationUpdateService
     {
         return $this->getServiceLocator()->get(ItemRelationUpdateService::class);
-    }
-
-    private function getMediaRelationRepository(): MediaRelationRepositoryInterface
-    {
-        return $this->getServiceLocator()->get(RdfMediaRelationRepository::class);
     }
 }

@@ -29,6 +29,7 @@ use oat\taoMediaManager\model\AssetDeleter;
 use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
 use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRelationRepository;
 use oat\taoMediaManager\model\relation\service\update\ItemRelationUpdateService;
+use Throwable;
 
 class ItemRemovedEventProcessor extends ConfigurableService implements EventProcessorInterface
 {
@@ -50,10 +51,20 @@ class ItemRemovedEventProcessor extends ConfigurableService implements EventProc
         }
 
         if ($deleteRelatedAssets) {
+            $this->deleteRelatedAssets($id);
+        }
+
+        $this->getItemRelationUpdateService()
+            ->updateByTargetId((string)$id);
+    }
+
+    private function deleteRelatedAssets(string $itemUri): void
+    {
+        try {
             $assetsToDelete = [];
 
             $mediaRelationRepository = $this->getMediaRelationRepository();
-            foreach ($mediaRelationRepository->getItemAssetUris($id) as $assetUri) {
+            foreach ($mediaRelationRepository->getItemAssetUris($itemUri) as $assetUri) {
                 $relatedItemUris = $mediaRelationRepository->getRelatedItemUrisByAssetUri($assetUri);
 
                 if (count($relatedItemUris) == 1) {
@@ -66,16 +77,24 @@ class ItemRemovedEventProcessor extends ConfigurableService implements EventProc
 
                 $this->getLogger()->info(
                     sprintf(
-                        'Assets "%s" removed after Item "%s" using them was removed ',
+                        'Assets "%s" removed after Item "%s" using them was removed',
                         json_encode($assetsToDelete),
-                        $id
+                        $itemUri
                     )
                 );
             }
+        } catch (Throwable $e) {
+            $this->getLogger()->error(
+                sprintf(
+                    'ItemRemovedEventProcessor: CAUGHT %s exception removing assets: %s',
+                    get_class($e),
+                    $e->getMessage()
+                )
+            );
+            $this->getLogger()->error(
+                sprintf('ItemRemovedEventProcessor: BACKTRACE: %s', $e->getTraceAsString())
+            );
         }
-
-        $this->getItemRelationUpdateService()
-            ->updateByTargetId((string)$id);
     }
 
     private function getAssetDeleter(): AssetDeleter

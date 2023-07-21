@@ -23,7 +23,11 @@ namespace oat\taoMediaManager\model;
 use oat\generis\model\data\Ontology;
 use oat\tao\model\resources\Exception\ClassDeletionException;
 use oat\tao\model\resources\Exception\PartialClassDeletionException;
+use oat\tao\model\resources\relation\ResourceRelation;
 use oat\tao\model\resources\Service\ClassDeleter;
+use oat\taoMediaManager\model\relation\MediaRelation;
+use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
+use oat\taoMediaManager\model\relation\repository\query\FindAllByTargetQuery;
 use core_kernel_classes_Class;
 use core_kernel_classes_Resource;
 use tao_helpers_Uri;
@@ -36,17 +40,20 @@ class AssetDeleter
     private Ontology $ontology;
     private ClassDeleter $classDeleter;
     private MediaService $mediaService;
+    private MediaRelationRepositoryInterface $mediaRelationRepository;
 
     public function __construct(
         LoggerInterface $logger,
         MediaService $mediaService,
         Ontology $ontology,
-        ClassDeleter $classDeleter
+        ClassDeleter $classDeleter,
+        MediaRelationRepositoryInterface $mediaRelationRepository
     ) {
         $this->logger = $logger;
         $this->mediaService = $mediaService;
         $this->ontology = $ontology;
         $this->classDeleter = $classDeleter;
+        $this->mediaRelationRepository = $mediaRelationRepository;
     }
 
     public function deleteAssetsByURIs(array $ids): void
@@ -79,10 +86,28 @@ class AssetDeleter
         $type = current($resource->getTypes());
 
         $hasNoSiblings = $this->resourceHasNoSiblings($resource);
+
+        $this->deleteAssetRelations($uri);
         $this->mediaService->deleteResource($resource);
 
         if ($hasNoSiblings) {
             $this->classDeleter->delete($type);
+        }
+    }
+
+    private function deleteAssetRelations(string $assetUri): void
+    {
+        $relations = $this->mediaRelationRepository->findAllByTarget(
+            new FindAllByTargetQuery($assetUri, MediaRelation::MEDIA_TYPE)
+        );
+
+        $logger = \common_Logger::singleton()->getLogger();
+
+        foreach ($relations as $relation) {
+            /** @var ResourceRelation $relation */
+            $logger->info("sourceId: {$relation->getSourceId()}");
+
+            // @todo Remove the relation
         }
     }
 

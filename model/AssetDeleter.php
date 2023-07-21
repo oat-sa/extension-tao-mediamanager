@@ -78,11 +78,12 @@ class AssetDeleter
         $resource = $this->ontology->getResource($uri);
         $type = current($resource->getTypes());
 
-        if ($this->resourceHasNoSiblings($resource)) {
+        $hasNoSiblings = $this->resourceHasNoSiblings($resource);
+        $this->mediaService->deleteResource($resource);
+
+        if ($hasNoSiblings) {
             $this->classDeleter->delete($type);
         }
-
-        $this->mediaService->deleteResource($resource);
     }
 
     private function resourceHasNoSiblings(core_kernel_classes_Resource $resource): bool

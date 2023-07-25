@@ -23,11 +23,13 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\relation\repository\rdf;
 
 use common_exception_Error;
+use common_persistence_SqlPersistence;
 use core_kernel_classes_Class as ClassResource;
 use core_kernel_classes_Property;
 use LogicException;
 use oat\generis\model\kernel\persistence\smoothsql\search\ComplexSearchService;
 use oat\generis\model\OntologyAwareTrait;
+use oat\generis\persistence\PersistenceManager;
 use oat\oatbox\service\ConfigurableService;
 use oat\search\base\exception\SearchGateWayExeption;
 use oat\search\base\QueryInterface;
@@ -39,6 +41,7 @@ use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterfa
 use oat\taoMediaManager\model\relation\repository\query\FindAllByTargetQuery;
 use oat\taoMediaManager\model\relation\repository\query\FindAllQuery;
 use oat\taoMediaManager\model\TaoMediaOntology;
+use PDO;
 
 class RdfMediaRelationRepository extends ConfigurableService implements MediaRelationRepositoryInterface
 {
@@ -227,6 +230,26 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
         return $this->mapSourceRelations($type, (array)$result, $targetId);
     }
 
+    public function getItemAssetUris(string $itemUri): array
+    {
+        $statement = $this->getPersistence()->query(
+            'SELECT DISTINCT subject FROM statements WHERE predicate = ? AND object = ?',
+            [self::ITEM_RELATION_PROPERTY, $itemUri]
+        );
+
+        return $statement->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    public function getRelatedItemUrisByAssetUri(string $assetUri): array
+    {
+        $statement = $this->getPersistence()->query(
+            'SELECT DISTINCT object FROM statements WHERE predicate = ? AND subject = ?',
+            [self::ITEM_RELATION_PROPERTY, $assetUri]
+        );
+
+        return $statement->fetchAll(PDO::FETCH_COLUMN);
+    }
+
     private function applyQueryTargetType(QueryInterface $query, $targetId, $type)
     {
         switch ($type) {
@@ -298,5 +321,13 @@ class RdfMediaRelationRepository extends ConfigurableService implements MediaRel
     ): MediaRelation {
         return (new MediaRelation($type, $targetId, $targetLabel))
             ->withSourceId($mediaId);
+    }
+
+    private function getPersistence(): common_persistence_SqlPersistence
+    {
+        /** @var PersistenceManager $persistenceManager */
+        $persistenceManager = $this->getServiceManager()->get(PersistenceManager::SERVICE_ID);
+
+        return $persistenceManager->getPersistenceById('default');
     }
 }

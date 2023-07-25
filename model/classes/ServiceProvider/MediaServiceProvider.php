@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2021-2022 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2021-2023 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
@@ -24,9 +24,11 @@ namespace oat\taoMediaManager\model\classes\ServiceProvider;
 
 use oat\generis\model\data\Ontology;
 use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
+use oat\oatbox\log\LoggerService;
 use oat\tao\model\accessControl\ActionAccessControl;
 use oat\tao\model\accessControl\PermissionChecker;
 use oat\tao\model\resources\Service\ClassCopierProxy;
+use oat\tao\model\resources\Service\ClassDeleter;
 use oat\tao\model\resources\Service\ClassMetadataCopier;
 use oat\tao\model\resources\Service\ClassMetadataMapper;
 use oat\tao\model\resources\Service\InstanceCopier;
@@ -40,6 +42,9 @@ use oat\taoMediaManager\model\classes\Copier\AssetContentCopier;
 use oat\taoMediaManager\model\classes\Copier\AssetMetadataCopier;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
+use oat\taoMediaManager\model\MediaService;
+use oat\taoMediaManager\model\AssetDeleter;
+use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRelationRepository;
 use oat\taoMediaManager\model\sharedStimulus\css\repository\StylesheetRepository;
 use oat\taoMediaManager\model\sharedStimulus\css\service\ListStylesheetsService;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
@@ -192,6 +197,19 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                 [
                     TaoMediaOntology::CLASS_URI_MEDIA_ROOT,
                     service(InstanceCopier::class . '::ASSETS'),
+                ]
+            );
+
+        $services
+            ->set(AssetDeleter::class, AssetDeleter::class)
+            ->public()
+            ->args(
+                [
+                    service(LoggerService::SERVICE_ID),
+                    service(MediaService::class),
+                    service(Ontology::SERVICE_ID),
+                    service(ClassDeleter::class),
+                    service(RdfMediaRelationRepository::class),
                 ]
             );
     }

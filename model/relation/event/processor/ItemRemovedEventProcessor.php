@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2020 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2020-2023 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
@@ -25,6 +25,7 @@ namespace oat\taoMediaManager\model\relation\event\processor;
 use oat\oatbox\event\Event;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoItems\model\event\ItemRemovedEvent;
+use oat\taoMediaManager\model\AssetDeleter;
 use oat\taoMediaManager\model\relation\service\update\ItemRelationUpdateService;
 
 class ItemRemovedEventProcessor extends ConfigurableService implements EventProcessorInterface
@@ -38,14 +39,25 @@ class ItemRemovedEventProcessor extends ConfigurableService implements EventProc
             throw new InvalidEventException($event);
         }
 
-        $id = $event->jsonSerialize()['itemUri'] ?? null;
+        $data = $event->jsonSerialize();
+        $itemUri = $data[ItemRemovedEvent::PAYLOAD_KEY_ITEM_URI] ?? null;
+        $deleteRelatedAssets = $data[ItemRemovedEvent::PAYLOAD_KEY_DELETE_RELATED_ASSETS] ?? false;
 
-        if (empty($id)) {
+        if (empty($itemUri)) {
             throw new InvalidEventException($event, 'Missing itemUri');
         }
 
+        if ($deleteRelatedAssets) {
+            $this->getAssetDeleter()->deleteByItemUri($itemUri);
+        }
+
         $this->getItemRelationUpdateService()
-            ->updateByTargetId((string)$id);
+            ->updateByTargetId($itemUri);
+    }
+
+    private function getAssetDeleter(): AssetDeleter
+    {
+        return $this->getServiceLocator()->getContainer()->get(AssetDeleter::class);
     }
 
     private function getItemRelationUpdateService(): ItemRelationUpdateService

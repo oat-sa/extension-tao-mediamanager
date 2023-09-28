@@ -102,6 +102,8 @@ class ZipExporterTest extends TestCase
 
     public function tearDown(): void
     {
-        unlink(self::TMP_TAO_EXPORT_TEST_ZIP);
+        if (is_file(self::TMP_TAO_EXPORT_TEST_ZIP)) {
+            unlink(self::TMP_TAO_EXPORT_TEST_ZIP);
+        }
     }
 }

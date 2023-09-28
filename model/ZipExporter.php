@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model;
 
 use common_Exception;
+use common_exception_UserReadableException;
 use common_report_Report as Report;
 use core_kernel_classes_Class;
 use core_kernel_classes_Container;
@@ -148,6 +149,7 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
         }
 
         if ($zip->numFiles === 0) {
+            $errors = [];
             foreach ($exportFiles as $label => $files) {
                 $archivePath = '';
 
@@ -162,16 +164,24 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
 
                 /** @var core_kernel_classes_Resource $fileResource */
                 foreach ($files as $fileResource) {
-                    $link = $this->getResourceLink($fileResource);
+                    try {
+                        $link = $this->getResourceLink($fileResource);
 
-                    $fileContent = $this->getFileManagement()
-                        ->getFileStream($link);
+                        $fileContent = $this->getFileManagement()
+                            ->getFileStream($link);
 
-                    $preparedFileContent = $this->getMediaResourcePreparer()->prepare($fileResource, $fileContent);
-                    $zip->addFromString($archivePath . $fileResource->getLabel(), $preparedFileContent);
+                        $preparedFileContent = $this->getMediaResourcePreparer()->prepare($fileResource, $fileContent);
+                        $zip->addFromString($archivePath . $fileResource->getLabel(), $preparedFileContent);
 
-                    $this->getSharedStimulusCSSExporter()->pack($fileResource, $link, $zip);
+                        $this->getSharedStimulusCSSExporter()->pack($fileResource, $link, $zip);
+                    } catch (common_exception_UserReadableException $exception) {
+                        $errors[] = sprintf("Error in Asset class \"%s\": %s", $label, $exception->getUserMessage());
+                    }
                 }
+            }
+
+            if (!empty($errors)) {
+                throw new ZipExporterException($errors);
             }
         }
 

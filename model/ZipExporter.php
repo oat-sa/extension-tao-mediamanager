@@ -181,7 +181,7 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
             }
 
             if (!empty($errors)) {
-                throw new ZipExporterException($errors);
+                throw new ZipExporterFileErrorList($errors);
             }
         }
 

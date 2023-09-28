@@ -17,6 +17,6 @@ class MediaReferencesNotFoundException extends LogicException implements UserRea
 
     public function getUserMessage(): string
     {
-        return sprintf('Media references to %s could not be found.', join(', ', $this->mediaReferences));
+        return sprintf('Media references to %s could not be found.', implode(', ', $this->mediaReferences));
     }
 }

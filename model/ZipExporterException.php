@@ -4,6 +4,7 @@ namespace oat\taoMediaManager\model;
 
 use common_exception_UserReadableException as UserReadableException;
 use LogicException;
+
 class ZipExporterException extends LogicException implements UserReadableException
 {
     private array $errors;

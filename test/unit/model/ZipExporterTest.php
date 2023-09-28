@@ -95,7 +95,10 @@ class ZipExporterTest extends TestCase
             ->willReturnOnConsecutiveCalls($this->fileManagementMock, $this->mediaResourcePreparerMock);
 
         $this->expectException(ZipExporterFileErrorList::class);
-        $this->expectExceptionMessage('Errors in zip file: <br>Error in Asset class "foo": Media references to Image: foo.jpg FilePath: foo.jpg could not be found.');
+        $this->expectExceptionMessage(
+            'Errors in zip file: <br>' .
+            'Error in Asset class "foo": Media references to Image: foo.jpg FilePath: foo.jpg could not be found.'
+        );
 
         $this->sut->createZipFile(self::FILENAME, $exportClasses, $exportFiles);
     }

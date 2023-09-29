@@ -54,7 +54,7 @@ class ZipExporterTest extends TestCase
     /**
      * @throws common_Exception
      */
-    public function testCreateZipFile(): void
+    public function testCreateZipFileThrowsMediaReferencesNotFoundException(): void
     {
         $exportClasses = [
             'foo'

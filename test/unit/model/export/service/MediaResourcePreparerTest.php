@@ -54,7 +54,7 @@ class MediaResourcePreparerTest extends TestCase
         $this->sut = $this->sut->withMediaResolver($this->mediaResolverMock);
     }
 
-    public function testPrepare(): void
+    public function testPrepareThrowsMediaReferencesNotFoundException(): void
     {
         $contents = file_get_contents(__DIR__ . '../../../../../resources/passage.xml');
 

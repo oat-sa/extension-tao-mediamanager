@@ -106,7 +106,7 @@ class MoveResources extends ScriptAction
         }
         $this->report->add(
             Report::createInfo(
-                __('Moved %d assets to %s', $count, $this->getOption(self::OPTION_DESTINATION_CLASS_URI))
+                __('Moved %d resource/s.', $count)
             )
         );
 

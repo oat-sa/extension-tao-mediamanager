@@ -131,7 +131,6 @@ class MoveResources extends ScriptAction
                         self::OPTION_RESOURCE_NAME_PATTERN
                     )
                 )
-
             );
             return false;
         }

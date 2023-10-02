@@ -80,18 +80,20 @@ class MoveResources extends ScriptAction
      */
     protected function run(): Report
     {
-        $this->report = Report::createInfo('Move resource script start.');
+        $this->report = Report::createInfo(__('Move resource script start.'));
         $preflightCheck = $this->checkRequiredOptions();
         if ($preflightCheck === false) {
             return $this->report;
         }
         $destinationClassId = $this->getOption(self::OPTION_DESTINATION_CLASS_URI);
 
-        $mediaInstances = $this->getMediaService()->getRootClass()->getInstances(true);
+        $mediaInstances = $this->getMediaService()->getRootClass()->getSubClasses(true);
         $this->report->add(Report::createInfo(__('Destination class: %s', $destinationClassId)));
 
         $pattern = $this->getOption(self::OPTION_RESOURCE_NAME_PATTERN);
         $id = $this->getOption(self::OPTION_RESOURCE_ID);
+
+        $count = 0;
         foreach ($mediaInstances as $mediaInstance) {
             if ($pattern != null && str_contains($mediaInstance->getLabel(), $pattern) === false) {
                 continue;
@@ -100,7 +102,13 @@ class MoveResources extends ScriptAction
                 continue;
             }
             $this->moveResource($mediaInstance);
+            $count++;
         }
+        $this->report->add(
+            Report::createInfo(
+                __('Moved %d assets to %s', $count, $this->getOption(self::OPTION_DESTINATION_CLASS_URI))
+            )
+        );
 
         return $this->report;
     }
@@ -117,12 +125,13 @@ class MoveResources extends ScriptAction
         if (empty($id) && empty($pattern)) {
             $this->report->add(
                 Report::createError(
-                    sprintf(
-                    __('One of options, %s or %s, is required.'),
+                    __(
+                        'One of options, %s or %s, is required.',
                         self::OPTION_RESOURCE_ID,
                         self::OPTION_RESOURCE_NAME_PATTERN
                     )
                 )
+
             );
             return false;
         }
@@ -146,7 +155,7 @@ class MoveResources extends ScriptAction
                 ResourceTransferCommand::TRANSFER_MODE_MOVE
             )
         );
-        $this->report->add(Report::createSuccess(sprintf(__('Moved resource, id %s'), $result->getDestination())));
+        $this->report->add(Report::createSuccess(__('Moved resource, id %s', $result->getDestination())));
     }
 
 

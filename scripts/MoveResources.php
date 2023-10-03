@@ -31,7 +31,7 @@ use oat\tao\model\resources\Command\ResourceTransferCommand;
 use oat\tao\model\resources\Contract\ResourceTransferInterface;
 
 /**
- * sudo -u www-data php index.php 'oat\taoMediaManager\scripts\MoveResource' [--id] [--namePattern] [--destinationClass]
+ * sudo -u www-data php index.php 'oat\taoMediaManager\scripts\MoveResources' [--id] [--namePattern] [--destinationClass]
  */
 class MoveResources extends ScriptAction
 {
@@ -93,6 +93,17 @@ class MoveResources extends ScriptAction
         $pattern = $this->getOption(self::OPTION_RESOURCE_NAME_PATTERN);
         $id = $this->getOption(self::OPTION_RESOURCE_ID);
 
+        $destinationClassFound = false;
+        foreach ($mediaInstances as $mediaInstance) {
+            if ($mediaInstance->getUri() === $destinationClassId) {
+                $destinationClassFound = true;
+                break;
+            }
+        }
+        if ($destinationClassFound === false) {
+            $this->report->add(Report::createError(__('Destination class uri "%s" not found!', $destinationClassId)));
+            return $this->report;
+        }
         $count = 0;
         foreach ($mediaInstances as $mediaInstance) {
             if ($pattern != null && str_contains($mediaInstance->getLabel(), $pattern) === false) {

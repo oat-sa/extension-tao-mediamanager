@@ -171,11 +171,11 @@ class MoveResources extends ScriptAction
 
     private function getMediaService(): MediaService
     {
-        return $this->getServiceManager()->getContainer()->get(MediaService::class);
+        return $this->getServiceLocator()->getContainer()->get(MediaService::class);
     }
 
     private function getResourceTransfer(): ResourceTransferInterface
     {
-        return $this->getServiceManager()->getContainer()->get(ResourceTransferProxy::class);
+        return $this->getServiceLocator()->getContainer()->get(ResourceTransferProxy::class);
     }
 }

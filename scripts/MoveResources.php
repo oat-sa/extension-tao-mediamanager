@@ -31,17 +31,20 @@ use oat\tao\model\resources\Command\ResourceTransferCommand;
 use oat\tao\model\resources\Contract\ResourceTransferInterface;
 
 /**
- * sudo -u www-data php index.php 'oat\taoMediaManager\scripts\MoveResources' [--id][--namePattern][--destinationClass]
+ * Usage:
+ * php index.php 'oat\taoMediaManager\scripts\MoveResources' --destinationClass [--id][--namePattern][--dryRun]
  */
 class MoveResources extends ScriptAction
 {
     use ServiceLocatorAwareTrait;
 
     private const OPTION_RESOURCE_ID = 'id';
+    private const OPTION_DRY_RUN_FLAG = 'dryRun';
     private const OPTION_RESOURCE_NAME_PATTERN = 'namePattern';
     private const OPTION_DESTINATION_CLASS_URI = 'destinationClassUri';
 
     private Report $report;
+    private bool $dryRun = false;
 
     protected function provideOptions(): array
     {
@@ -52,6 +55,14 @@ class MoveResources extends ScriptAction
                 'flag' => false,
                 'required' => false,
                 'description' => __('Set the resource id to move.'),
+            ],
+            self::OPTION_DRY_RUN_FLAG => [
+                'prefix' => self::OPTION_DRY_RUN_FLAG,
+                'longPrefix' => self::OPTION_DRY_RUN_FLAG,
+                'required' => false,
+                'cast' => 'boolean',
+                'flag' => true,
+                'description' => __('Specify if you need only preview the supposed result'),
             ],
             self::OPTION_RESOURCE_NAME_PATTERN => [
                 'prefix' => 'np',
@@ -112,8 +123,17 @@ class MoveResources extends ScriptAction
             if ($id !== null && $mediaInstance->getUri() !== $id) {
                 continue;
             }
-            $this->moveResource($mediaInstance);
-            $count++;
+
+            $this->report->add(Report::createInfo(__(
+                'Found resource to be moved %s id: %s',
+                $mediaInstance->getLabel(),
+                $mediaInstance->getUri()
+            )));
+
+            if (!$this->dryRun) {
+                $this->moveResource($mediaInstance);
+                $count++;
+            }
         }
         $this->report->add(
             Report::createInfo(
@@ -133,6 +153,7 @@ class MoveResources extends ScriptAction
     {
         $id = $this->getOption(self::OPTION_RESOURCE_ID);
         $pattern = $this->getOption(self::OPTION_RESOURCE_NAME_PATTERN);
+        $this->dryRun = (bool) $this->getOption(self::OPTION_DRY_RUN_FLAG);
         if (empty($id) && empty($pattern)) {
             $this->report->add(
                 Report::createError(

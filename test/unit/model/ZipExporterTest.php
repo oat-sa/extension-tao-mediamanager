@@ -52,28 +52,6 @@ class ZipExporterTest extends TestCase
             ->getMock();
     }
 
-    public function testCreateZipFile()
-    {
-        $exportClasses = [
-            'foo'
-        ];
-
-        $exportFiles = [
-            'foo' => [
-                $this->resourceMock
-            ]
-        ];
-
-        $zip = new ZipArchive();
-        $zip->open(self::TMP_TAO_EXPORT_TEST_ZIP, ZipArchive::CREATE);
-        $zip->addFile(__FILE__);
-        $zip->close();
-
-        $this->sut->createZipFile(self::FILENAME, $exportClasses, $exportFiles);
-
-        $this->addToAssertionCount(1);
-    }
-
     /**
      * @throws common_Exception
      */

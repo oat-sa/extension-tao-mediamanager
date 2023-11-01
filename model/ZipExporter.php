@@ -31,6 +31,7 @@ use core_kernel_classes_EmptyProperty;
 use core_kernel_classes_Literal;
 use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
+use Exception;
 use oat\oatbox\service\ServiceManager;
 use oat\taoMediaManager\model\export\service\MediaResourcePreparerInterface;
 use oat\taoMediaManager\model\export\service\SharedStimulusCSSExporter;
@@ -138,17 +139,27 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
         return $safePath;
     }
 
+    /**
+     * @throws common_Exception
+     * @throws Exception
+     */
     protected function createZipFile($filename, array $exportClasses = [], array $exportFiles = []): string
     {
-        $zip = new ZipArchive();
         $baseDir = tao_helpers_Export::getExportPath();
         $path = $baseDir . '/' . $filename . '.zip';
 
+        $zip = new ZipArchive();
         if ($zip->open($path, ZipArchive::CREATE) !== true) {
             throw new common_Exception('Unable to create zipfile ' . $path);
         }
 
-        if ($zip->numFiles === 0) {
+        if ($zip->numFiles !== 0) {
+            $zip->close();
+
+            return $path;
+        }
+
+        try {
             $errors = [];
             foreach ($exportFiles as $label => $files) {
                 $archivePath = '';
@@ -183,11 +194,17 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
             if (!empty($errors)) {
                 throw new ZipExporterFileErrorList($errors);
             }
+
+            $zip->close();
+
+            return $path;
+        } catch (Exception $e) {
+            $zip->close();
+
+            unlink($path);
+
+            throw $e;
         }
-
-        $zip->close();
-
-        return $path;
     }
 
     public function getServiceManager()

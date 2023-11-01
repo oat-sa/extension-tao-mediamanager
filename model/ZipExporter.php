@@ -201,7 +201,9 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
         } catch (Exception $e) {
             $zip->close();
 
-            unlink($path);
+            if (is_file($path)) {
+                unlink($path);
+            }
 
             throw $e;
         }

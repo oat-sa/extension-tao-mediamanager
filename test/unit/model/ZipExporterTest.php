@@ -13,6 +13,7 @@ use oat\taoMediaManager\model\ZipExporterFileErrorList;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
+use ZipArchive;
 
 class ZipExporterTest extends TestCase
 {
@@ -49,6 +50,28 @@ class ZipExporterTest extends TestCase
             ->getMockBuilder(ZipExporterTester::class)
             ->onlyMethods(['getServiceManager'])
             ->getMock();
+    }
+
+    public function testCreateZipFile()
+    {
+        $exportClasses = [
+            'foo'
+        ];
+
+        $exportFiles = [
+            'foo' => [
+                $this->resourceMock
+            ]
+        ];
+
+        $zip = new ZipArchive();
+        $zip->open(self::TMP_TAO_EXPORT_TEST_ZIP, ZipArchive::CREATE);
+        $zip->addFile(__FILE__);
+        $zip->close();
+
+        $this->sut->createZipFile(self::FILENAME, $exportClasses, $exportFiles);
+
+        $this->addToAssertionCount(1);
     }
 
     /**

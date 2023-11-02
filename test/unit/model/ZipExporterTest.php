@@ -22,6 +22,7 @@ class ZipExporterTest extends TestCase
     private const FILENAME = 'test';
 
     private const TMP_TAO_EXPORT_TEST_ZIP = '/tmp/tao_export/test.zip';
+    const RESOURCES_DIR = __DIR__ . '/../../resources/';
 
     private StreamInterface $streamMock;
 
@@ -50,6 +51,28 @@ class ZipExporterTest extends TestCase
             ->getMockBuilder(ZipExporterTester::class)
             ->onlyMethods(['getServiceManager'])
             ->getMock();
+    }
+
+    /**
+     * @throws common_Exception
+     */
+    public function testCreateZipFile()
+    {
+        $exportClasses = [
+            'foo'
+        ];
+
+        $exportFiles = [
+            'foo' => [
+                $this->resourceMock
+            ]
+        ];
+
+        copy(self::RESOURCES_DIR . 'test.zip', self::TMP_TAO_EXPORT_TEST_ZIP);
+
+        $this->sut->createZipFile(self::FILENAME, $exportClasses, $exportFiles);
+
+        $this->addToAssertionCount(1);
     }
 
     /**
@@ -100,6 +123,8 @@ class ZipExporterTest extends TestCase
             'Errors in zip file: <br>' .
             'Error in Asset class "foo": Media references to Image: foo.jpg FilePath: foo.jpg could not be found.'
         );
+
+        copy(self::RESOURCES_DIR . 'empty.zip', self::TMP_TAO_EXPORT_TEST_ZIP);
 
         $this->sut->createZipFile(self::FILENAME, $exportClasses, $exportFiles);
     }

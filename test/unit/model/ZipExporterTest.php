@@ -21,8 +21,13 @@ class ZipExporterTest extends TestCase
 
     private const FILENAME = 'test';
 
-    private const TMP_TAO_EXPORT_TEST_ZIP = '/tmp/tao_export/test.zip';
-    const RESOURCES_DIR = __DIR__ . '/../../resources/';
+    private const EXPORT_DIR = '/tmp/tao_export/';
+
+    private const RESOURCES_DIR = __DIR__ . '/../../resources/';
+
+    private const TEST_ZIP = 'test.zip';
+
+    private const EMPTY_ZIP = 'empty.zip';
 
     private StreamInterface $streamMock;
 
@@ -41,6 +46,10 @@ class ZipExporterTest extends TestCase
      */
     public function setUp(): void
     {
+        if (!is_dir(self::EXPORT_DIR)) {
+            mkdir(self::EXPORT_DIR);
+        }
+
         $this->streamMock = $this->createMock(StreamInterface::class);
         $this->resourceMock = $this->createMock(core_kernel_classes_Resource::class);
         $this->fileManagementMock = $this->createMock(FileManagement::class);
@@ -68,7 +77,7 @@ class ZipExporterTest extends TestCase
             ]
         ];
 
-        copy(self::RESOURCES_DIR . 'test.zip', self::TMP_TAO_EXPORT_TEST_ZIP);
+        copy(self::RESOURCES_DIR . self::TEST_ZIP, self::EXPORT_DIR . self::TEST_ZIP);
 
         $this->sut->createZipFile(self::FILENAME, $exportClasses, $exportFiles);
 
@@ -124,15 +133,15 @@ class ZipExporterTest extends TestCase
             'Error in Asset class "foo": Media references to Image: foo.jpg FilePath: foo.jpg could not be found.'
         );
 
-        copy(self::RESOURCES_DIR . 'empty.zip', self::TMP_TAO_EXPORT_TEST_ZIP);
+        copy(self::RESOURCES_DIR . self::EMPTY_ZIP, self::EXPORT_DIR . self::TEST_ZIP);
 
         $this->sut->createZipFile(self::FILENAME, $exportClasses, $exportFiles);
     }
 
     public function tearDown(): void
     {
-        if (is_file(self::TMP_TAO_EXPORT_TEST_ZIP)) {
-            unlink(self::TMP_TAO_EXPORT_TEST_ZIP);
+        if (is_dir(self::EXPORT_DIR)) {
+            rmdir(self::EXPORT_DIR);
         }
     }
 }

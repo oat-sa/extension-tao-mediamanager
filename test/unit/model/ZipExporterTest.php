@@ -13,7 +13,6 @@ use oat\taoMediaManager\model\ZipExporterFileErrorList;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
-use ZipArchive;
 
 class ZipExporterTest extends TestCase
 {
@@ -140,6 +139,14 @@ class ZipExporterTest extends TestCase
 
     public function tearDown(): void
     {
+        if (is_file(self::EXPORT_DIR . self::TEST_ZIP)) {
+            unlink(self::EXPORT_DIR . self::TEST_ZIP);
+        }
+
+        if (is_file(self::EXPORT_DIR . self::EMPTY_ZIP)) {
+            unlink(self::EXPORT_DIR . self::EMPTY_ZIP);
+        }
+
         if (is_dir(self::EXPORT_DIR)) {
             rmdir(self::EXPORT_DIR);
         }

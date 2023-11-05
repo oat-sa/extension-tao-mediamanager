@@ -13,6 +13,7 @@ use oat\taoMediaManager\model\ZipExporterFileErrorList;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
+use Psr\Log\LoggerInterface;
 
 class ZipExporterTest extends TestCase
 {
@@ -38,6 +39,8 @@ class ZipExporterTest extends TestCase
 
     private ServiceManager $serviceManagerMock;
 
+    private LoggerInterface $loggerMock;
+
     private ZipExporter $sut;
 
     /**
@@ -54,10 +57,11 @@ class ZipExporterTest extends TestCase
         $this->fileManagementMock = $this->createMock(FileManagement::class);
         $this->mediaResourcePreparerMock = $this->createMock(MediaResourcePreparerInterface::class);
         $this->serviceManagerMock = $this->createMock(ServiceManager::class);
+        $this->loggerMock = $this->createMock(LoggerInterface::class);
 
         $this->sut = $this
             ->getMockBuilder(ZipExporterTester::class)
-            ->onlyMethods(['getServiceManager'])
+            ->onlyMethods(['getServiceManager', 'getLogger'])
             ->getMock();
     }
 
@@ -109,6 +113,12 @@ class ZipExporterTest extends TestCase
             ->willReturn($this->serviceManagerMock);
 
         $this
+            ->sut
+            ->expects(self::once())
+            ->method('getLogger')
+            ->willReturn($this->loggerMock);
+
+        $this
             ->fileManagementMock
             ->expects(self::once())
             ->method('getFileStream')
@@ -125,6 +135,11 @@ class ZipExporterTest extends TestCase
             ->expects(self::exactly(2))
             ->method('get')
             ->willReturnOnConsecutiveCalls($this->fileManagementMock, $this->mediaResourcePreparerMock);
+
+        $this
+            ->loggerMock
+            ->expects(self::once())
+            ->method('error');
 
         $this->expectException(ZipExporterFileErrorList::class);
         $this->expectExceptionMessage(

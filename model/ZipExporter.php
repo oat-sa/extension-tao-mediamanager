@@ -32,6 +32,7 @@ use core_kernel_classes_Literal;
 use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
 use Exception;
+use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ServiceManager;
 use oat\taoMediaManager\model\export\service\MediaResourcePreparerInterface;
 use oat\taoMediaManager\model\export\service\SharedStimulusCSSExporter;
@@ -49,6 +50,8 @@ use ZipArchive;
  */
 class ZipExporter implements tao_models_classes_export_ExportHandler
 {
+    use LoggerAwareTrait;
+
     /**
      * @inheritDoc
      */
@@ -199,6 +202,8 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
 
             return $path;
         } catch (Exception $e) {
+            $this->getLogger()->error($e->getMessage() . $e->getTraceAsString());
+
             $zip->close();
 
             if (is_file($path)) {

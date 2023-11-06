@@ -148,22 +148,23 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
      */
     protected function createZipFile($filename, array $exportClasses = [], array $exportFiles = []): string
     {
-        $baseDir = tao_helpers_Export::getExportPath();
-        $path = $baseDir . '/' . $filename . '.zip';
-
-        $zip = new ZipArchive();
-        if ($zip->open($path, ZipArchive::CREATE) !== true) {
-            throw new common_Exception('Unable to create zipfile ' . $path);
-        }
-
-        if ($zip->numFiles !== 0) {
-            $zip->close();
-
-            return $path;
-        }
-
         try {
             $errors = [];
+
+            $baseDir = tao_helpers_Export::getExportPath();
+            $path = $baseDir . '/' . $filename . '.zip';
+
+            $zip = new ZipArchive();
+            if ($zip->open($path, ZipArchive::CREATE) !== true) {
+                throw new common_Exception('Unable to create zipfile ' . $path);
+            }
+
+            if ($zip->numFiles !== 0) {
+                $zip->close();
+
+                return $path;
+            }
+
             foreach ($exportFiles as $label => $files) {
                 $archivePath = '';
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\migrations;
 
 use Doctrine\DBAL\Schema\Schema;
+use Doctrine\Migrations\Exception\IrreversibleMigration;
 use oat\tao\scripts\tools\migrations\AbstractMigration;
 use oat\tao\scripts\update\OntologyUpdater;
 
@@ -27,6 +28,6 @@ final class Version202311171021031888_taoMediaManager extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-       // do nothing
+        throw new IrreversibleMigration('Reverting this migration does not make sense');
     }
 }

@@ -126,7 +126,7 @@ define([
             container.setRootElement(item);
 
             if (options.metadata) {
-                _.each(options.metadata, function (value, name) {
+                _.forEach(options.metadata, function (value, name) {
                     item.data(name, value);
                 });
             }

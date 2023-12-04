@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-06-07 09:24\n"
+"PO-Revision-Date: 2023-12-04 16:06\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ja\n"
@@ -256,7 +256,7 @@ msgid "Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
 msgstr ""
 
 msgid "Warning"
-msgstr ""
+msgstr "警告"
 
 msgid "which contains assets that are in use elsewhere."
 msgstr ""

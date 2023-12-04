@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-06-07 09:24\n"
+"PO-Revision-Date: 2023-12-04 16:06\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: nb_NO\n"
@@ -39,7 +39,7 @@ msgid "Are you sure you want to delete this"
 msgstr "Er du sikker på at du vil slette"
 
 msgid "Are you sure you want to delete this class and all of its content?"
-msgstr "Er du sikker på at du vil slette denne mappen og innholdet i den?"
+msgstr "Er du sikker på at du vil slette denne mappen og alt innholdet i den?"
 
 #, tao-public
 msgid "Assets"
@@ -103,7 +103,7 @@ msgid "File name"
 msgstr "Filnavn"
 
 msgid "Forbidden action"
-msgstr "Ugyldig handling"
+msgstr "Forbudt handling"
 
 #, tao-public
 msgid "Import"
@@ -202,7 +202,7 @@ msgid "Replace Asset"
 msgstr "Erstatt mediefil"
 
 msgid "Resource deleted"
-msgstr "Ressurs slettet"
+msgstr "Ressurs ble slettet"
 
 msgid "Right"
 msgstr "Høyre"
@@ -241,7 +241,7 @@ msgid "This"
 msgstr "Denne"
 
 msgid "Unable to delete the selected resource"
-msgstr "Kan ikke slette den valgte ressursen"
+msgstr "Kan ikke slette den valgte filen"
 
 msgid "Unable to extract the archive"
 msgstr "Kan ikke ta ut arkivet"
@@ -265,7 +265,7 @@ msgid "You are about to delete the class"
 msgstr "Du er i ferd med å slette mappen"
 
 msgid "you are trying to delete is too large and contains too many subclasses."
-msgstr "som du prøver å slette er for stor og inneholder for mange undermapper."
+msgstr "du prøver å slette er for stor og inneholder for mange undermapper."
 
 msgid "You can\\'t upload a zip file as a media"
 msgstr ""

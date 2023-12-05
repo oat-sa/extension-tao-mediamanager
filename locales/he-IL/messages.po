@@ -4,7 +4,7 @@ msgstr ""
 "PO-Revision-Date: 2023-12-04 16:06\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
-"Language: ja\n"
+"Language: he\n"
 "sourceLanguage: en-US\n"
 "targetLanguage: en-US\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -12,105 +12,105 @@ msgstr ""
 "X-Poedit-Basepath: ../../\n"
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3;\n"
 "X-Crowdin-Project: tao-open-source\n"
 "X-Crowdin-Project-ID: 590867\n"
-"X-Crowdin-Language: ja\n"
+"X-Crowdin-Language: he\n"
 "X-Crowdin-File: /[oat-sa.extension-tao-mediamanager] develop/locales/en-US/messages.po\n"
 "X-Crowdin-File-ID: 603\n"
-"Language-Team: Japanese\n"
+"Language-Team: Hebrew\n"
 
 msgid "%s media on this environment"
-msgstr "この環境の %s メディア"
+msgstr ""
 
 msgid "%s media successfully modified"
-msgstr "メディアが正常に修正されました：%s "
+msgstr ""
 
 msgid "%s media to modify"
-msgstr "メディアを変更します：%s "
+msgstr ""
 
 msgid "Add a media file"
-msgstr "メディアファイル追加"
+msgstr ""
 
 msgid "An error has occurred. Please contact your administrator."
-msgstr "エラーが発生しました。管理者にお問合せください。"
+msgstr ""
 
 msgid "Are you sure you want to delete this"
 msgstr ""
 
 msgid "Are you sure you want to delete this class and all of its content?"
-msgstr "このクラスとその内容をすべて削除してよいのですか？"
+msgstr ""
 
 #, tao-public
 msgid "Assets"
-msgstr "メディア"
+msgstr ""
 
 #, tao-public
 msgid "Authoring"
-msgstr "オーサリング"
+msgstr ""
 
 msgid "Back to Manage Assets"
 msgstr ""
 
 msgid "Block"
-msgstr "文字ブロック"
+msgstr ""
 
 msgid "Center"
-msgstr "センター"
+msgstr ""
 
 msgid "Define item language."
-msgstr "アイテム言語を定義します"
+msgstr ""
 
 #, tao-public
 msgid "Delete"
-msgstr "削除"
+msgstr ""
 
 msgid "Deleting this class will break the items and the tests that are currently using them."
 msgstr ""
 
 msgid "Edit Instance"
-msgstr "インスタンス編集"
+msgstr ""
 
 msgid "Edited %s"
-msgstr "％sを編集しました"
+msgstr ""
 
 msgid "Element Properties"
-msgstr "エレメントのプロパティ"
+msgstr ""
 
 #, tao-public
 msgid "Export"
-msgstr "エクスポート"
+msgstr ""
 
 msgid "Export Media as Zip file"
-msgstr "メディアをZIPファイルにエクスポート"
+msgstr ""
 
 msgid "Fail to edit shared stimulus"
-msgstr "シェアードスティミュラスの編集に失敗しました。"
+msgstr ""
 
 msgid "Fail to edit Shared Stimulus"
-msgstr "シェアードスティミュラスの編集に失敗しました。"
+msgstr ""
 
 msgid "Fail to import media"
-msgstr "メディアのインポートに失敗"
+msgstr ""
 
 msgid "Fail to import Shared Stimulus"
-msgstr "シェアードスティミュラスのインポートに失敗しました。"
+msgstr ""
 
 msgid "File"
-msgstr "ファイル"
+msgstr ""
 
 msgid "File name"
-msgstr "ファイル名"
+msgstr ""
 
 msgid "Forbidden action"
 msgstr ""
 
 #, tao-public
 msgid "Import"
-msgstr "インポート"
+msgstr ""
 
 msgid "Imported %s"
-msgstr "%s をインポート"
+msgstr ""
 
 msgid "Imported new file"
 msgstr ""
@@ -119,68 +119,68 @@ msgid "Initial import"
 msgstr ""
 
 msgid "Inline Interactions"
-msgstr "インライン"
+msgstr ""
 
 msgid "Instance saved"
-msgstr "インスタンスが保存されました"
+msgstr ""
 
 msgid "is currently used in"
 msgstr ""
 
 msgid "Issue while modifying %s"
-msgstr "%s の変更中に問題が発生しました"
+msgstr ""
 
 msgid "item(s)"
 msgstr ""
 
 msgid "Language"
-msgstr "言語"
+msgstr ""
 
 msgid "Left"
-msgstr "左"
+msgstr ""
 
 #, tao-public
 msgid "Manage Assets"
-msgstr "メディア管理"
+msgstr ""
 
 #, tao-public
 msgid "Manage Schema"
-msgstr "スキーム管理"
+msgstr ""
 
 msgid "Media imported"
-msgstr "メディアがインポートされました"
+msgstr ""
 
 msgid "Media imported successfully"
-msgstr "メディアのインポートが完了しました"
+msgstr ""
 
 #, tao-public
 msgid "Media Manager"
-msgstr "メディア管理"
+msgstr ""
 
 #, tao-public
 msgid "Media Manager extension"
-msgstr "メディア管理拡張機能"
+msgstr ""
 
 msgid "Media Options"
-msgstr "メディアオプション"
+msgstr ""
 
 msgid "Media successfully exported."
-msgstr "メディアのエクスポートが完了しました"
+msgstr ""
 
 #, tao-public
 msgid "Move"
-msgstr "移動"
+msgstr ""
 
 #, tao-public
 msgid "New class"
-msgstr "新規クラス"
+msgstr ""
 
 #, tao-public
 msgid "New passage"
 msgstr ""
 
 msgid "No file found for this media"
-msgstr "メディアファイルが見つかりません"
+msgstr ""
 
 msgid "Passage Properties"
 msgstr ""
@@ -189,53 +189,53 @@ msgid "Please delete the subclasses before."
 msgstr ""
 
 msgid "Preview"
-msgstr "プレビュー"
+msgstr ""
 
 msgid "Preview the item"
-msgstr "アイテムプレビュー"
+msgstr ""
 
 #, tao-public
 msgid "Properties"
-msgstr "プロパティ"
+msgstr ""
 
 msgid "Replace Asset"
-msgstr "アセット入替"
+msgstr ""
 
 msgid "Resource deleted"
 msgstr ""
 
 msgid "Right"
-msgstr "右"
+msgstr ""
 
 msgid "Save"
-msgstr "保存"
+msgstr ""
 
 msgid "Save the asset"
 msgstr ""
 
 msgid "Set a CSS class name in order to customize the display style."
-msgstr "画面表示をカスタマイズするためのCSSクラス名を設定します"
+msgstr ""
 
 msgid "Shared Stimulus"
-msgstr "シェアードスティミュラス"
+msgstr ""
 
 msgid "Shared Stimulus edited successfully"
-msgstr "シェアードスティミュラスの編集が完了しました"
+msgstr ""
 
 msgid "Shared Stimulus imported successfully"
-msgstr "シェアードスティミュラスのインポートが完了しました"
+msgstr ""
 
 msgid "some text ..."
-msgstr "テキストを入力 ..."
+msgstr ""
 
 msgid "Text Block"
-msgstr "文字ブロック"
+msgstr ""
 
 msgid "Text Block CSS Class"
-msgstr "文字ブロックCSSクラス"
+msgstr ""
 
 msgid "The class"
-msgstr "クラス"
+msgstr ""
 
 msgid "This"
 msgstr ""
@@ -244,19 +244,19 @@ msgid "Unable to delete the selected resource"
 msgstr ""
 
 msgid "Unable to extract the archive"
-msgstr "アーカイブから抽出できません"
+msgstr ""
 
 msgid "Unable to import"
-msgstr "インポートできません"
+msgstr ""
 
 msgid "Upload Media"
-msgstr "メディアのアップロード"
+msgstr ""
 
 msgid "Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
 msgstr ""
 
 msgid "Warning"
-msgstr "警告"
+msgstr ""
 
 msgid "which contains assets that are in use elsewhere."
 msgstr ""
@@ -268,11 +268,11 @@ msgid "you are trying to delete is too large and contains too many subclasses."
 msgstr ""
 
 msgid "You can\\'t upload a zip file as a media"
-msgstr "zipファイルはアップロードできません"
+msgstr ""
 
 msgid "Your passage is saved"
 msgstr ""
 
 msgid "Zip"
-msgstr "ZIP"
+msgstr ""
 

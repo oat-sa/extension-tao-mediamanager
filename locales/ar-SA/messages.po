@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-06-07 09:24\n"
+"PO-Revision-Date: 2023-12-04 16:06\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ar\n"
@@ -21,258 +21,258 @@ msgstr ""
 "Language-Team: Arabic\n"
 
 msgid "%s media on this environment"
-msgstr ""
+msgstr "%s وسائط في هذه البيئة"
 
 msgid "%s media successfully modified"
-msgstr ""
+msgstr "تم تعديل وسائط %s بنجاح"
 
 msgid "%s media to modify"
-msgstr ""
+msgstr "%s وسائط للتعديل"
 
 msgid "Add a media file"
-msgstr ""
+msgstr "أضف ملف وسائط"
 
 msgid "An error has occurred. Please contact your administrator."
-msgstr ""
+msgstr "حدث خطأ. يرجى الاتصال بالمسؤول الخاص بك."
 
 msgid "Are you sure you want to delete this"
-msgstr ""
+msgstr "هل أنت متأكد من أنك تريد حذف هذا"
 
 msgid "Are you sure you want to delete this class and all of its content?"
-msgstr ""
+msgstr "هل أنت متأكد من أنك تريد حذف هذا القسم وكل محتواه؟"
 
 #, tao-public
 msgid "Assets"
-msgstr ""
+msgstr "أصول"
 
 #, tao-public
 msgid "Authoring"
-msgstr ""
+msgstr "التحرير"
 
 msgid "Back to Manage Assets"
-msgstr ""
+msgstr "العودة إلى إدارة الأصول"
 
 msgid "Block"
-msgstr ""
+msgstr "منع"
 
 msgid "Center"
-msgstr ""
+msgstr "مركز"
 
 msgid "Define item language."
-msgstr ""
+msgstr "حدد لغة البند"
 
 #, tao-public
 msgid "Delete"
-msgstr ""
+msgstr "حذف"
 
 msgid "Deleting this class will break the items and the tests that are currently using them."
-msgstr ""
+msgstr "سيؤدي حذف هذا القسم إلى كسر البنود والروائز التي تستخدمها حاليا."
 
 msgid "Edit Instance"
-msgstr ""
+msgstr "تحرير المثيل"
 
 msgid "Edited %s"
-msgstr ""
+msgstr "تم تحرير %s"
 
 msgid "Element Properties"
-msgstr ""
+msgstr "خصائص العنصر"
 
 #, tao-public
 msgid "Export"
-msgstr ""
+msgstr "تصدير"
 
 msgid "Export Media as Zip file"
-msgstr ""
+msgstr "تصدير الوسائط كملف Zip"
 
 msgid "Fail to edit shared stimulus"
-msgstr ""
+msgstr "فشل في تحرير التحفيز المشترك"
 
 msgid "Fail to edit Shared Stimulus"
-msgstr ""
+msgstr "فشل في تحرير التحفيز المشترك"
 
 msgid "Fail to import media"
-msgstr ""
+msgstr "فشل في استيراد الوسائط"
 
 msgid "Fail to import Shared Stimulus"
-msgstr ""
+msgstr "فشل في استيراد التحفيز المشترك"
 
 msgid "File"
-msgstr ""
+msgstr "ملف"
 
 msgid "File name"
-msgstr ""
+msgstr "اسم الملف"
 
 msgid "Forbidden action"
-msgstr ""
+msgstr "إجراء محظور"
 
 #, tao-public
 msgid "Import"
-msgstr ""
+msgstr "استورد"
 
 msgid "Imported %s"
-msgstr ""
+msgstr "%s مستورد"
 
 msgid "Imported new file"
-msgstr ""
+msgstr "ملف جديد مستورد"
 
 msgid "Initial import"
-msgstr ""
+msgstr "استيراد أولي"
 
 msgid "Inline Interactions"
-msgstr ""
+msgstr "التفاعلات المضمنة"
 
 msgid "Instance saved"
-msgstr ""
+msgstr "تم حفظ المثال"
 
 msgid "is currently used in"
-msgstr ""
+msgstr "يستخدم حاليا في"
 
 msgid "Issue while modifying %s"
-msgstr ""
+msgstr "مشكلة أثناء تعديل %s"
 
 msgid "item(s)"
-msgstr ""
+msgstr "بند (بنود)"
 
 msgid "Language"
-msgstr ""
+msgstr "لغة"
 
 msgid "Left"
-msgstr ""
+msgstr "يسار"
 
 #, tao-public
 msgid "Manage Assets"
-msgstr ""
+msgstr "تدبير الأصول"
 
 #, tao-public
 msgid "Manage Schema"
-msgstr ""
+msgstr "إدارة الخطاطة"
 
 msgid "Media imported"
-msgstr ""
+msgstr "وسائط مستوردة"
 
 msgid "Media imported successfully"
-msgstr ""
+msgstr "تم استيراد الوسائط بنجاح"
 
 #, tao-public
 msgid "Media Manager"
-msgstr ""
+msgstr "تدبير الوسائط"
 
 #, tao-public
 msgid "Media Manager extension"
-msgstr ""
+msgstr "ملحق تدبير الوسائط"
 
 msgid "Media Options"
-msgstr ""
+msgstr "خيارات وسائط"
 
 msgid "Media successfully exported."
-msgstr ""
+msgstr "تم تصدير الوسائط بنجاح."
 
 #, tao-public
 msgid "Move"
-msgstr ""
+msgstr "حرك"
 
 #, tao-public
 msgid "New class"
-msgstr ""
+msgstr "صنف جديد"
 
 #, tao-public
 msgid "New passage"
-msgstr ""
+msgstr "نص جديد"
 
 msgid "No file found for this media"
-msgstr ""
+msgstr "لم يتم العثور على ملف لهذه الوسائط"
 
 msgid "Passage Properties"
-msgstr ""
+msgstr "خصائص النص"
 
 msgid "Please delete the subclasses before."
-msgstr ""
+msgstr "يرجى حذف الفئات الفرعية قبلًا."
 
 msgid "Preview"
-msgstr ""
+msgstr "معاينة"
 
 msgid "Preview the item"
-msgstr ""
+msgstr "معاينة البند"
 
 #, tao-public
 msgid "Properties"
-msgstr ""
+msgstr "خصائص"
 
 msgid "Replace Asset"
-msgstr ""
+msgstr "استبدال الأصل"
 
 msgid "Resource deleted"
-msgstr ""
+msgstr "تم حذف المورد"
 
 msgid "Right"
-msgstr ""
+msgstr "صحيح"
 
 msgid "Save"
-msgstr ""
+msgstr "حفظ"
 
 msgid "Save the asset"
-msgstr ""
+msgstr "احفظ الأصل"
 
 msgid "Set a CSS class name in order to customize the display style."
-msgstr ""
+msgstr "قم بتعيين اسم فئة CSS لتخصيص نمط العرض."
 
 msgid "Shared Stimulus"
-msgstr ""
+msgstr "التحفيز المشترك"
 
 msgid "Shared Stimulus edited successfully"
-msgstr ""
+msgstr "تم تحرير التحفيز المشترك بنجاح"
 
 msgid "Shared Stimulus imported successfully"
-msgstr ""
+msgstr "تم استيراد التحفيز المشترك بنجاح"
 
 msgid "some text ..."
-msgstr ""
+msgstr "بعض النصوص ..."
 
 msgid "Text Block"
-msgstr ""
+msgstr "كتلة النص"
 
 msgid "Text Block CSS Class"
-msgstr ""
+msgstr "فئة CSS نص كتلة  صفحات التنسيق النمطية"
 
 msgid "The class"
-msgstr ""
+msgstr "القسم"
 
 msgid "This"
-msgstr ""
+msgstr "هذا/هذه"
 
 msgid "Unable to delete the selected resource"
-msgstr ""
+msgstr "غير قادر على حذف المورد المختار"
 
 msgid "Unable to extract the archive"
-msgstr ""
+msgstr "غير قادر على استخراج الأرشيف"
 
 msgid "Unable to import"
-msgstr ""
+msgstr "غير قادر على الاستيراد"
 
 msgid "Upload Media"
-msgstr ""
+msgstr "تحميل الوسائط"
 
 msgid "Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
-msgstr ""
+msgstr "الاستعمال: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
 
 msgid "Warning"
-msgstr ""
+msgstr "تحذير"
 
 msgid "which contains assets that are in use elsewhere."
-msgstr ""
+msgstr "الذي يحتوي على أصول مستخدمة في مكان آخر."
 
 msgid "You are about to delete the class"
-msgstr ""
+msgstr "أنت على وشك حذف القسم"
 
 msgid "you are trying to delete is too large and contains too many subclasses."
-msgstr ""
+msgstr "أنت تحاول حذفه وهو كبير جدا ويحتوي على الكثير من الفئات الفرعية."
 
 msgid "You can\\'t upload a zip file as a media"
-msgstr ""
+msgstr "(لا) يمكنك تحميل ملف مضغوط كوسائط"
 
 msgid "Your passage is saved"
-msgstr ""
+msgstr "تم حفظ نصك"
 
 msgid "Zip"
-msgstr ""
+msgstr "Zip"
 

@@ -1,17 +1,24 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 2021.10\n"
-"PO-Revision-Date: 2021-10-22T10:39:17\n"
+"Project-Id-Version: tao-open-source\n"
+"PO-Revision-Date: 2023-12-04 16:06\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
-"Language: nb-NO\n"
+"Language: nb_NO\n"
 "sourceLanguage: en-US\n"
-"targetLanguage: nb-NO\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../../\n"
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: tao-open-source\n"
+"X-Crowdin-Project-ID: 590867\n"
+"X-Crowdin-Language: nb\n"
+"X-Crowdin-File: /[oat-sa.extension-tao-mediamanager] develop/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 603\n"
+"Language-Team: Norwegian Bokmal\n"
 
 msgid "%s media on this environment"
 msgstr "%s media i dette miljøet"
@@ -72,7 +79,7 @@ msgstr "Elementegenskaper"
 
 #, tao-public
 msgid "Export"
-msgstr "Eksporter"
+msgstr ""
 
 msgid "Export Media as Zip file"
 msgstr "Eksporter media som zip-fil"
@@ -114,9 +121,6 @@ msgstr "Første import"
 msgid "Inline Interactions"
 msgstr "Tekstboks med oppgavetyper"
 
-msgid "inline-interactions"
-msgstr ""
-
 msgid "Instance saved"
 msgstr "Forekomsten er lagret"
 
@@ -151,7 +155,7 @@ msgstr "Media importert"
 
 #, tao-public
 msgid "Media Manager"
-msgstr "Media Manager"
+msgstr ""
 
 #, tao-public
 msgid "Media Manager extension"
@@ -166,10 +170,6 @@ msgstr "Media eksportert."
 #, tao-public
 msgid "Move"
 msgstr "Flytt"
-
-#, tao-public
-msgid "Move To"
-msgstr "Flytt til"
 
 #, tao-public
 msgid "New class"
@@ -196,7 +196,7 @@ msgstr "Forhåndsvis oppgaven"
 
 #, tao-public
 msgid "Properties"
-msgstr "Egenskaper"
+msgstr ""
 
 msgid "Replace Asset"
 msgstr "Erstatt mediefil"
@@ -214,7 +214,7 @@ msgid "Save the asset"
 msgstr "Lagre mediafil"
 
 msgid "Set a CSS class name in order to customize the display style."
-msgstr "Angi et CSS-mappenavn for å tilpasse visningen."
+msgstr "Angi et CSS-mappenavn for å tilpasse visningsstilen."
 
 msgid "Shared Stimulus"
 msgstr "Delt Innhold"
@@ -226,13 +226,13 @@ msgid "Shared Stimulus imported successfully"
 msgstr "Delt innhold ble importert"
 
 msgid "some text ..."
-msgstr "noe tekst..."
+msgstr "litt tekst ..."
 
 msgid "Text Block"
 msgstr "Tekstboks"
 
 msgid "Text Block CSS Class"
-msgstr "Tekstboks CSS-mappe"
+msgstr "Tekstboks CSS mappe"
 
 msgid "The class"
 msgstr "Mappen"
@@ -267,12 +267,12 @@ msgstr "Du er i ferd med å slette mappen"
 msgid "you are trying to delete is too large and contains too many subclasses."
 msgstr "du prøver å slette er for stor og inneholder for mange undermapper."
 
-msgid "You can't upload a zip file as a media"
-msgstr "Du kan ikke laste opp en zip-fil som en mediefil"
+msgid "You can\\'t upload a zip file as a media"
+msgstr ""
 
 msgid "Your passage is saved"
 msgstr "Lagret"
 
 msgid "Zip"
-msgstr "Zip"
+msgstr ""
 

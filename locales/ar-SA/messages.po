@@ -1,0 +1,278 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: tao-open-source\n"
+"PO-Revision-Date: 2023-12-04 16:06\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: ar\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
+"X-Crowdin-Project: tao-open-source\n"
+"X-Crowdin-Project-ID: 590867\n"
+"X-Crowdin-Language: ar\n"
+"X-Crowdin-File: /[oat-sa.extension-tao-mediamanager] develop/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 603\n"
+"Language-Team: Arabic\n"
+
+msgid "%s media on this environment"
+msgstr "%s وسائط في هذه البيئة"
+
+msgid "%s media successfully modified"
+msgstr "تم تعديل وسائط %s بنجاح"
+
+msgid "%s media to modify"
+msgstr "%s وسائط للتعديل"
+
+msgid "Add a media file"
+msgstr "أضف ملف وسائط"
+
+msgid "An error has occurred. Please contact your administrator."
+msgstr "حدث خطأ. يرجى الاتصال بالمسؤول الخاص بك."
+
+msgid "Are you sure you want to delete this"
+msgstr "هل أنت متأكد من أنك تريد حذف هذا"
+
+msgid "Are you sure you want to delete this class and all of its content?"
+msgstr "هل أنت متأكد من أنك تريد حذف هذا القسم وكل محتواه؟"
+
+#, tao-public
+msgid "Assets"
+msgstr "أصول"
+
+#, tao-public
+msgid "Authoring"
+msgstr "التحرير"
+
+msgid "Back to Manage Assets"
+msgstr "العودة إلى إدارة الأصول"
+
+msgid "Block"
+msgstr "منع"
+
+msgid "Center"
+msgstr "مركز"
+
+msgid "Define item language."
+msgstr "حدد لغة البند"
+
+#, tao-public
+msgid "Delete"
+msgstr "حذف"
+
+msgid "Deleting this class will break the items and the tests that are currently using them."
+msgstr "سيؤدي حذف هذا القسم إلى كسر البنود والروائز التي تستخدمها حاليا."
+
+msgid "Edit Instance"
+msgstr "تحرير المثيل"
+
+msgid "Edited %s"
+msgstr "تم تحرير %s"
+
+msgid "Element Properties"
+msgstr "خصائص العنصر"
+
+#, tao-public
+msgid "Export"
+msgstr "تصدير"
+
+msgid "Export Media as Zip file"
+msgstr "تصدير الوسائط كملف Zip"
+
+msgid "Fail to edit shared stimulus"
+msgstr "فشل في تحرير التحفيز المشترك"
+
+msgid "Fail to edit Shared Stimulus"
+msgstr "فشل في تحرير التحفيز المشترك"
+
+msgid "Fail to import media"
+msgstr "فشل في استيراد الوسائط"
+
+msgid "Fail to import Shared Stimulus"
+msgstr "فشل في استيراد التحفيز المشترك"
+
+msgid "File"
+msgstr "ملف"
+
+msgid "File name"
+msgstr "اسم الملف"
+
+msgid "Forbidden action"
+msgstr "إجراء محظور"
+
+#, tao-public
+msgid "Import"
+msgstr "استورد"
+
+msgid "Imported %s"
+msgstr "%s مستورد"
+
+msgid "Imported new file"
+msgstr "ملف جديد مستورد"
+
+msgid "Initial import"
+msgstr "استيراد أولي"
+
+msgid "Inline Interactions"
+msgstr "التفاعلات المضمنة"
+
+msgid "Instance saved"
+msgstr "تم حفظ المثال"
+
+msgid "is currently used in"
+msgstr "يستخدم حاليا في"
+
+msgid "Issue while modifying %s"
+msgstr "مشكلة أثناء تعديل %s"
+
+msgid "item(s)"
+msgstr "بند (بنود)"
+
+msgid "Language"
+msgstr "لغة"
+
+msgid "Left"
+msgstr "يسار"
+
+#, tao-public
+msgid "Manage Assets"
+msgstr "تدبير الأصول"
+
+#, tao-public
+msgid "Manage Schema"
+msgstr "إدارة الخطاطة"
+
+msgid "Media imported"
+msgstr "وسائط مستوردة"
+
+msgid "Media imported successfully"
+msgstr "تم استيراد الوسائط بنجاح"
+
+#, tao-public
+msgid "Media Manager"
+msgstr "تدبير الوسائط"
+
+#, tao-public
+msgid "Media Manager extension"
+msgstr "ملحق تدبير الوسائط"
+
+msgid "Media Options"
+msgstr "خيارات وسائط"
+
+msgid "Media successfully exported."
+msgstr "تم تصدير الوسائط بنجاح."
+
+#, tao-public
+msgid "Move"
+msgstr "حرك"
+
+#, tao-public
+msgid "New class"
+msgstr "صنف جديد"
+
+#, tao-public
+msgid "New passage"
+msgstr "نص جديد"
+
+msgid "No file found for this media"
+msgstr "لم يتم العثور على ملف لهذه الوسائط"
+
+msgid "Passage Properties"
+msgstr "خصائص النص"
+
+msgid "Please delete the subclasses before."
+msgstr "يرجى حذف الفئات الفرعية قبلًا."
+
+msgid "Preview"
+msgstr "معاينة"
+
+msgid "Preview the item"
+msgstr "معاينة البند"
+
+#, tao-public
+msgid "Properties"
+msgstr "خصائص"
+
+msgid "Replace Asset"
+msgstr "استبدال الأصل"
+
+msgid "Resource deleted"
+msgstr "تم حذف المورد"
+
+msgid "Right"
+msgstr "صحيح"
+
+msgid "Save"
+msgstr "حفظ"
+
+msgid "Save the asset"
+msgstr "احفظ الأصل"
+
+msgid "Set a CSS class name in order to customize the display style."
+msgstr "قم بتعيين اسم فئة CSS لتخصيص نمط العرض."
+
+msgid "Shared Stimulus"
+msgstr "التحفيز المشترك"
+
+msgid "Shared Stimulus edited successfully"
+msgstr "تم تحرير التحفيز المشترك بنجاح"
+
+msgid "Shared Stimulus imported successfully"
+msgstr "تم استيراد التحفيز المشترك بنجاح"
+
+msgid "some text ..."
+msgstr "بعض النصوص ..."
+
+msgid "Text Block"
+msgstr "كتلة النص"
+
+msgid "Text Block CSS Class"
+msgstr "فئة CSS نص كتلة  صفحات التنسيق النمطية"
+
+msgid "The class"
+msgstr "القسم"
+
+msgid "This"
+msgstr "هذا/هذه"
+
+msgid "Unable to delete the selected resource"
+msgstr "غير قادر على حذف المورد المختار"
+
+msgid "Unable to extract the archive"
+msgstr "غير قادر على استخراج الأرشيف"
+
+msgid "Unable to import"
+msgstr "غير قادر على الاستيراد"
+
+msgid "Upload Media"
+msgstr "تحميل الوسائط"
+
+msgid "Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
+msgstr "الاستعمال: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
+
+msgid "Warning"
+msgstr "تحذير"
+
+msgid "which contains assets that are in use elsewhere."
+msgstr "الذي يحتوي على أصول مستخدمة في مكان آخر."
+
+msgid "You are about to delete the class"
+msgstr "أنت على وشك حذف القسم"
+
+msgid "you are trying to delete is too large and contains too many subclasses."
+msgstr "أنت تحاول حذفه وهو كبير جدا ويحتوي على الكثير من الفئات الفرعية."
+
+msgid "You can\\'t upload a zip file as a media"
+msgstr "(لا) يمكنك تحميل ملف مضغوط كوسائط"
+
+msgid "Your passage is saved"
+msgstr "تم حفظ نصك"
+
+msgid "Zip"
+msgstr "Zip"
+

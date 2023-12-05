@@ -1,17 +1,24 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint145\n"
-"PO-Revision-Date: 2021-02-26T09:54:19\n"
+"Project-Id-Version: tao-open-source\n"
+"PO-Revision-Date: 2023-12-05 09:23\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
-"Language: lt-LT\n"
+"Language: lt\n"
 "sourceLanguage: en-US\n"
-"targetLanguage: lt-LT\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../../\n"
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && (n%100>19 || n%100<11) ? 0 : (n%10>=2 && n%10<=9) && (n%100>19 || n%100<11) ? 1 : n%1!=0 ? 2: 3);\n"
+"X-Crowdin-Project: tao-open-source\n"
+"X-Crowdin-Project-ID: 590867\n"
+"X-Crowdin-Language: lt\n"
+"X-Crowdin-File: /[oat-sa.extension-tao-mediamanager] develop/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 603\n"
+"Language-Team: Lithuanian\n"
 
 msgid "%s media on this environment"
 msgstr ""
@@ -40,19 +47,19 @@ msgstr ""
 
 #, tao-public
 msgid "Authoring"
-msgstr ""
+msgstr "Redagavimas"
 
 msgid "Back to Manage Assets"
 msgstr ""
 
 msgid "Block"
-msgstr ""
+msgstr "Blokas"
 
 msgid "Center"
-msgstr ""
+msgstr "Centras"
 
 msgid "Define item language."
-msgstr ""
+msgstr "Nustatyti elemento kalbą."
 
 #, tao-public
 msgid "Delete"
@@ -68,11 +75,11 @@ msgid "Edited %s"
 msgstr "Redaguota %s"
 
 msgid "Element Properties"
-msgstr ""
+msgstr "Elemento Savybės"
 
 #, tao-public
 msgid "Export"
-msgstr "Eksportuoti"
+msgstr ""
 
 msgid "Export Media as Zip file"
 msgstr "Eksportuoti Mediją kaip ZIP failą"
@@ -127,10 +134,10 @@ msgid "item(s)"
 msgstr ""
 
 msgid "Language"
-msgstr ""
+msgstr "Kalba"
 
 msgid "Left"
-msgstr ""
+msgstr "Kairė"
 
 #, tao-public
 msgid "Manage Assets"
@@ -162,7 +169,7 @@ msgstr "Medija sėkmingai eksportuota."
 
 #, tao-public
 msgid "Move"
-msgstr "perkelti"
+msgstr "Perkelti"
 
 #, tao-public
 msgid "New class"
@@ -185,11 +192,11 @@ msgid "Preview"
 msgstr "Peržiūra"
 
 msgid "Preview the item"
-msgstr ""
+msgstr "Peržiūrėti elementą"
 
 #, tao-public
 msgid "Properties"
-msgstr "Savybės"
+msgstr ""
 
 msgid "Replace Asset"
 msgstr ""
@@ -198,16 +205,16 @@ msgid "Resource deleted"
 msgstr ""
 
 msgid "Right"
-msgstr ""
+msgstr "Dešinė"
 
 msgid "Save"
-msgstr ""
+msgstr "Išsaugoti"
 
 msgid "Save the asset"
 msgstr ""
 
 msgid "Set a CSS class name in order to customize the display style."
-msgstr ""
+msgstr "Nustatyti CSS klasės pavadinimą norint pakeisti atvaizduojamą stilių."
 
 msgid "Shared Stimulus"
 msgstr "Bendrinamas Stimulas"
@@ -219,13 +226,13 @@ msgid "Shared Stimulus imported successfully"
 msgstr "Bendrinamas Stimulas importuotas sėkmingai"
 
 msgid "some text ..."
-msgstr ""
+msgstr "kažkoks tekstas..."
 
 msgid "Text Block"
-msgstr ""
+msgstr "Teksto Blokas"
 
 msgid "Text Block CSS Class"
-msgstr ""
+msgstr "Teksto Bloko CSS Klasė"
 
 msgid "The class"
 msgstr ""
@@ -260,7 +267,7 @@ msgstr ""
 msgid "you are trying to delete is too large and contains too many subclasses."
 msgstr ""
 
-msgid "You can\'t upload a zip file as a media"
+msgid "You can\\'t upload a zip file as a media"
 msgstr ""
 
 msgid "Your passage is saved"

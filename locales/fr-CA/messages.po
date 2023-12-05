@@ -1,17 +1,24 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint145\n"
-"PO-Revision-Date: 2021-02-26T09:54:19\n"
+"Project-Id-Version: tao-open-source\n"
+"PO-Revision-Date: 2023-06-07 09:24\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
-"Language: fr-CA\n"
+"Language: fr_CA\n"
 "sourceLanguage: en-US\n"
-"targetLanguage: fr-CA\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../../\n"
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Crowdin-Project: tao-open-source\n"
+"X-Crowdin-Project-ID: 590867\n"
+"X-Crowdin-Language: fr-CA\n"
+"X-Crowdin-File: /[oat-sa.extension-tao-mediamanager] develop/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 603\n"
+"Language-Team: French, Canada\n"
 
 msgid "%s media on this environment"
 msgstr ""
@@ -40,7 +47,7 @@ msgstr ""
 
 #, tao-public
 msgid "Authoring"
-msgstr ""
+msgstr "Éditeur"
 
 msgid "Back to Manage Assets"
 msgstr ""
@@ -162,11 +169,11 @@ msgstr ""
 
 #, tao-public
 msgid "Move"
-msgstr ""
+msgstr "Déplacer"
 
 #, tao-public
 msgid "New class"
-msgstr ""
+msgstr "Nouvelle classe"
 
 #, tao-public
 msgid "New passage"
@@ -260,7 +267,7 @@ msgstr ""
 msgid "you are trying to delete is too large and contains too many subclasses."
 msgstr ""
 
-msgid "You can\'t upload a zip file as a media"
+msgid "You can\\'t upload a zip file as a media"
 msgstr ""
 
 msgid "Your passage is saved"

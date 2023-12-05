@@ -1,17 +1,24 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint145\n"
-"PO-Revision-Date: 2021-02-26T09:54:19\n"
+"Project-Id-Version: tao-open-source\n"
+"PO-Revision-Date: 2023-06-07 09:24\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
-"Language: fr-FR\n"
+"Language: fr\n"
 "sourceLanguage: en-US\n"
-"targetLanguage: fr-FR\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../../\n"
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Crowdin-Project: tao-open-source\n"
+"X-Crowdin-Project-ID: 590867\n"
+"X-Crowdin-Language: fr\n"
+"X-Crowdin-File: /[oat-sa.extension-tao-mediamanager] develop/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 603\n"
+"Language-Team: French\n"
 
 msgid "%s media on this environment"
 msgstr ""
@@ -40,19 +47,19 @@ msgstr "Actifs"
 
 #, tao-public
 msgid "Authoring"
-msgstr "Édition"
+msgstr "Éditeur"
 
 msgid "Back to Manage Assets"
 msgstr "Retour à Gérer les actifs"
 
 msgid "Block"
-msgstr ""
+msgstr "Bloc"
 
 msgid "Center"
-msgstr ""
+msgstr "Centrer"
 
 msgid "Define item language."
-msgstr ""
+msgstr "Définir la langue d'un item."
 
 #, tao-public
 msgid "Delete"
@@ -68,11 +75,11 @@ msgid "Edited %s"
 msgstr "%s édité"
 
 msgid "Element Properties"
-msgstr ""
+msgstr "Propriétés de l'élément"
 
 #, tao-public
 msgid "Export"
-msgstr "Exporter"
+msgstr ""
 
 msgid "Export Media as Zip file"
 msgstr "Exporter le média dans un fichier Zip"
@@ -100,7 +107,7 @@ msgstr ""
 
 #, tao-public
 msgid "Import"
-msgstr "Importer"
+msgstr ""
 
 msgid "Imported %s"
 msgstr "%s importé"
@@ -112,7 +119,7 @@ msgid "Initial import"
 msgstr "Import initial"
 
 msgid "Inline Interactions"
-msgstr ""
+msgstr "Interaction en ligne"
 
 msgid "Instance saved"
 msgstr "Instance enregistrée"
@@ -130,7 +137,7 @@ msgid "Language"
 msgstr "Langue"
 
 msgid "Left"
-msgstr ""
+msgstr "Gauche"
 
 #, tao-public
 msgid "Manage Assets"
@@ -185,11 +192,11 @@ msgid "Preview"
 msgstr "Aperçu"
 
 msgid "Preview the item"
-msgstr ""
+msgstr "Aperçu de l'item"
 
 #, tao-public
 msgid "Properties"
-msgstr "Propriétés"
+msgstr ""
 
 msgid "Replace Asset"
 msgstr "Remplacer l'actif"
@@ -198,16 +205,16 @@ msgid "Resource deleted"
 msgstr ""
 
 msgid "Right"
-msgstr ""
+msgstr "Droite"
 
 msgid "Save"
-msgstr "Sauvegarder"
+msgstr "Enregistrer"
 
 msgid "Save the asset"
 msgstr "Sauver l'actif"
 
 msgid "Set a CSS class name in order to customize the display style."
-msgstr ""
+msgstr "Définir un nom de classe CSS pour personnaliser le style d'affichage."
 
 msgid "Shared Stimulus"
 msgstr "Stimulus partagé"
@@ -219,13 +226,13 @@ msgid "Shared Stimulus imported successfully"
 msgstr "Stimulus partagé importé avec succès"
 
 msgid "some text ..."
-msgstr ""
+msgstr "Texte..."
 
 msgid "Text Block"
-msgstr ""
+msgstr "Bloc de texte"
 
 msgid "Text Block CSS Class"
-msgstr ""
+msgstr "Classe CSS du bloc de texte"
 
 msgid "The class"
 msgstr ""
@@ -260,12 +267,12 @@ msgstr ""
 msgid "you are trying to delete is too large and contains too many subclasses."
 msgstr ""
 
-msgid "You can\'t upload a zip file as a media"
+msgid "You can\\'t upload a zip file as a media"
 msgstr ""
 
 msgid "Your passage is saved"
 msgstr ""
 
 msgid "Zip"
-msgstr "Zip"
+msgstr ""
 

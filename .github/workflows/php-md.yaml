@@ -17,6 +17,11 @@ jobs:
           coverage: none
           tools: phpmd
 
+      - uses: Ana06/get-changed-files@v2.2.0
+        id: files
+        with:
+          format: 'csv'
+
       - name: Run PHP Mess Detector on modified files
         shell: bash
         run: |

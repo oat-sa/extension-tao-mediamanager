@@ -31,6 +31,7 @@ jobs:
                 echo "File added to the file list: " $FILE
             fi
           done
+          echo "FILELIST:" ${FILELIST}
           if [ -s "${FILELIST}" ]; then
             FILES=`cat ${FILELIST} | paste -sd "," -`
             echo "Running PHPMD on" $FILES

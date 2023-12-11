@@ -17,15 +17,17 @@ jobs:
           coverage: none
           tools: phpmd
 
-      - id: phpmd
+      - id: phpmd-step
         name: Run PHP Mess Detector on modified files
         uses: Ana06/get-changed-files@v2.2.0
         with:
           filter: '*.php'
+          format: 'csv'
         shell: bash
         run: |
           RETVAL=0
-          if [ -s "${{ steps.phpmd.outputs.all }}" ]; then
+          echo "outputs: " "${{ steps.phpmd-step.outputs.all }}"
+          if [ -s "${{ steps.phpmd-step.outputs.all }}" ]; then
             FILES=`echo ${{ steps.phpmd.outputs.all }} | paste -sd "," -`
             echo "Running PHPMD on" $FILES
             phpmd $FILES github .github/phpmd-ruleset.xml --exclude 'vendor/*'

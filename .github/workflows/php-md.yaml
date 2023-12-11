@@ -1,7 +1,6 @@
 name: PHP Mess Detector
 
 on: push
-
 jobs:
   phpmd:
     name: PHP Mess Detector
@@ -9,7 +8,15 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files
+        uses: tj-actions/changed-files@v40
+        id: changed-files
+        with:
+          since_last_remote_commit: false
 
       - name: Setup PHP environment
         uses: shivammathur/setup-php@v2
@@ -20,23 +27,9 @@ jobs:
       - name: Run PHP Mess Detector on modified files
         shell: bash
         run: |
-          RETVAL=0
-          FILELIST=$(mktemp /tmp/phpmd-check.XXXXXX)
-          mapfile -d ',' -t added_modified_files < <(printf '%s,' '${{ steps.files.outputs.added_modified }}')
-          for FILE in "${added_modified_files[@]}"; do
-            EXT="${FILE##*.}"
-            echo "Changed file: " $FILE ", extension: " $EXT
-            if [[ "$EXT" == "php" ]]; then
-                echo "src/${FILE}" >> "${FILELIST}"
-                echo "File added to the file list: " $FILE
-            fi
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            echo "$file was changed"
           done
-          if [ -s "${FILELIST}" ]; then
-            FILES=`cat ${FILELIST} | paste -sd "," -`
-            echo "Running PHPMD on" $FILES
-            phpmd $FILES github .github/phpmd-ruleset.xml --exclude 'vendor/*'
-            RETVAL=$?
-          else
-            echo "There are no changes in PHP files (no PHP-MD test performed)"
-          fi
-          exit $RETVAL
+          
+          
+          

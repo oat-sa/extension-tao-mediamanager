@@ -18,21 +18,17 @@ jobs:
           tools: phpmd
 
       - name: Run PHP Mess Detector on modified files
-        id: phpmd
+        id: runmd
         uses: Ana06/get-changed-files@v2.2.0
         with:
           filter: '*.php'
-          format: 'csv'
-        shell: bash
         run: |
-          RETVAL=0
-          echo "outputs: " "${{ steps.phpmd.outputs.all }}"
-          if [ -s "${{ steps.phpmd.outputs.all }}" ]; then
-            FILES=`echo ${{ steps.phpmd.outputs.all }} | paste -sd "," -`
+          echo "outputs: " "${{ steps.runmd.outputs.all }}"
+          if [ -s "${{ steps.runmd.outputs.all }}" ]; then
+            FILES=`echo ${{ steps.runmd.outputs.all }} | paste -sd "," -`
             echo "Running PHPMD on" $FILES
             phpmd $FILES github .github/phpmd-ruleset.xml --exclude 'vendor/*'
-            RETVAL=$?
+            exit $?
           else
             echo "There are no changes in PHP files (no PHP-MD test performed)"
           fi
-          exit $RETVAL

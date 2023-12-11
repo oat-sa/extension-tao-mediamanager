@@ -32,6 +32,8 @@ jobs:
             fi
           done
           echo "FILELIST:" ${FILELIST}
+          cat ${FILELIST}
+          cat ${FILELIST} | paste -sd "," -
           if [ -s "${FILELIST}" ]; then
             FILES=`cat ${FILELIST} | paste -sd "," -`
             echo "Running PHPMD on" $FILES

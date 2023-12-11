@@ -28,7 +28,7 @@ jobs:
         run: |
           FILELIST=$(mktemp /tmp/phpmd-check.XXXXXX)
           echo ${{ steps.files.outputs.all }}
-          mapfile -d ',' -t all_files < <(printf '%s,' '${{ steps.files.outputs.all }}')
+          mapfile -d ',' -t all_files < <(printf '%s,' '${{ steps.files.outputs.added_modified }}')
           for FILE in "${all_files[@]}"; do
               EXT="${FILE##*.}"
               echo "Changed file: " $FILE ", extension: " $EXT

@@ -1,0 +1,57 @@
+name: PHP Mess Detector
+
+on: push
+jobs:
+  phpmd:
+    name: PHP Mess Detector
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files
+        uses: tj-actions/changed-files@v40
+        id: changed-files
+        with:
+          since_last_remote_commit: false
+
+      - name: Setup PHP environment
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: none
+          tools: phpmd
+
+      - name: Run PHP Mess Detector on modified files
+        shell: bash
+        run: |
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            echo "$file was changed"
+          done
+
+                    FILELIST=$(mktemp /tmp/phpmd-check.XXXXXX)
+                    mapfile -d ',' -t all_files < <(printf '%s,' '${{ steps.changed-files.outputs.all_changed_files }}')
+                    for FILE in ${{ all_files[@] }}; do
+                        EXT="${FILE##*.}"
+                        echo "Changed file: " $FILE ", extension: " $EXT
+                        if [[ "$EXT" == "php" ]]; then
+                          echo "${FILE}" >> "${FILELIST}"
+                          echo "File added to the file list: " $FILE
+                        fi
+                    done
+                    if [ -s "${all_files[@]}" ]; then
+                        FILES=`echo ${{ steps.files.outputs.all }} | paste -sd "," -`
+                        echo "Running PHPMD on" $FILES
+                        phpmd $FILES github .github/phpmd-ruleset.xml --exclude 'vendor/*'
+                        RETVAL=$?
+                        echo "The following files were tested for PSR-12 errors:"; echo
+                        cat -n "$FILELIST"
+                    else
+                        echo "There are no changes in PHP files (no PHP-MD test performed)"
+                    fi
+                    rm "$FILELIST"
+                    exit $RETVAL
+          
+          

@@ -17,22 +17,23 @@ jobs:
           coverage: none
           tools: phpmd
 
-      - uses: Ana06/get-changed-files@v2.2.0
-        id: files
-        with:
-          format: 'csv'
+
+      - id: get-changed-files
+        name: Get changed files
+        uses: Ana06/get-changed-files@v2.2.0
 
       - name: Run PHP Mess Detector on modified files
         shell: bash
         run: |
           RETVAL=0
           FILELIST=$(mktemp /tmp/phpmd-check.XXXXXX)
-          mapfile -d ',' -t added_modified_files < <(printf '%s,' '${{ steps.files.outputs.added_modified }}')
-          for FILE in "${added_modified_files[@]}"; do
+          mapfile -d ',' -t added_modified_files < <(printf '%s,' '${{ steps.files.outputs.all }}')
+          for FILE in ${{ steps.get-changed-files.outputs.all }}; do
             EXT="${FILE##*.}"
             echo "Changed file: " $FILE ", extension: " $EXT
-            if [[ "$EXT" == "php" ]]; then
-                echo "src/${FILE}" >> "${FILELIST}"
+            #if [[ "$EXT" == "php" ]]; then
+            if [[ ${FILE} == "*.php" ]]; then
+                echo "${FILE}" >> "${FILELIST}"
                 echo "File added to the file list: " $FILE
             fi
           done

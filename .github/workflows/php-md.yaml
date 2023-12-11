@@ -27,6 +27,7 @@ jobs:
         shell: bash
         run: |
           FILELIST=$(mktemp /tmp/phpmd-check.XXXXXX)
+          echo ${{ steps.files.outputs.all }}
           mapfile -d ',' -t all_files < <(printf '%s,' '${{ steps.files.outputs.all }}')
           for FILE in "${all_files[@]}"; do
               EXT="${FILE##*.}"
@@ -36,7 +37,7 @@ jobs:
                 echo "File added to the file list: " $FILE
               fi
           done
-          if [ -s "${FILELIST}" ]; then
+          if [ -s "${all_files[@]}" ]; then
               FILES=`echo ${{ steps.files.outputs.all }} | paste -sd "," -`
               echo "Running PHPMD on" $FILES
               phpmd $FILES github .github/phpmd-ruleset.xml --exclude 'vendor/*'

@@ -17,31 +17,16 @@ jobs:
           coverage: none
           tools: phpmd
 
-
-      - id: get-changed-files
-        name: Get changed files
+      - id: phpmd
+        name: Run PHP Mess Detector on modified files
         uses: Ana06/get-changed-files@v2.2.0
-
-      - name: Run PHP Mess Detector on modified files
+        with:
+          filter: '*.php'
         shell: bash
         run: |
           RETVAL=0
-          FILELIST=$(mktemp /tmp/phpmd-check.XXXXXX)
-          mapfile -d ',' -t added_modified_files < <(printf '%s,' '${{ steps.files.outputs.all }}')
-          for FILE in ${{ steps.get-changed-files.outputs.all }}; do
-            EXT="${FILE##*.}"
-            echo "Changed file: " $FILE ", extension: " $EXT
-            #if [[ "$EXT" == "php" ]]; then
-            if [[ ${FILE} == "*.php" ]]; then
-                echo "${FILE}" >> "${FILELIST}"
-                echo "File added to the file list: " $FILE
-            fi
-          done
-          echo "FILELIST:" ${FILELIST}
-          cat ${FILELIST}
-          cat ${FILELIST} | paste -sd "," -
-          if [ -s "${FILELIST}" ]; then
-            FILES=`cat ${FILELIST} | paste -sd "," -`
+          if [ -s "${{ steps.phpmd.outputs.all }}" ]; then
+            FILES=`echo ${{ steps.phpmd.outputs.all }} | paste -sd "," -`
             echo "Running PHPMD on" $FILES
             phpmd $FILES github .github/phpmd-ruleset.xml --exclude 'vendor/*'
             RETVAL=$?

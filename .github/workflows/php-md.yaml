@@ -17,18 +17,34 @@ jobs:
           coverage: none
           tools: phpmd
 
-      - name: Run PHP Mess Detector on modified files
-        id: runmd
-        uses: Ana06/get-changed-files@v2.2.0
+      - uses: Ana06/get-changed-files@v2.2.0
+        id: files
         with:
+          format: 'csv'
           filter: '*.php'
+
+      - name: Run PHP Mess Detector on modified files
+        shell: bash
         run: |
-          echo "outputs: " "${{ steps.runmd.outputs.all }}"
-          if [ -s "${{ steps.runmd.outputs.all }}" ]; then
-            FILES=`echo ${{ steps.runmd.outputs.all }} | paste -sd "," -`
-            echo "Running PHPMD on" $FILES
-            phpmd $FILES github .github/phpmd-ruleset.xml --exclude 'vendor/*'
-            exit $?
+          FILELIST=$(mktemp /tmp/phpmd-check.XXXXXX)
+          mapfile -d ',' -t all_files < <(printf '%s,' '${{ steps.files.outputs.all }}')
+          for FILE in "${all_files[@]}"; do
+              EXT="${FILE##*.}"
+              echo "Changed file: " $FILE ", extension: " $EXT
+              if [[ "$EXT" == "php" ]]; then
+                echo "${FILE}" >> "${FILELIST}"
+                echo "File added to the file list: " $FILE
+              fi
+          done
+          if [ -s "${FILELIST}" ]; then
+              FILES=`echo ${{ steps.files.outputs.all }} | paste -sd "," -`
+              echo "Running PHPMD on" $FILES
+              phpmd $FILES github .github/phpmd-ruleset.xml --exclude 'vendor/*'
+              RETVAL=$?
+              echo "The following files were tested for PSR-12 errors:"; echo 
+              cat -n "$FILELIST"
           else
-            echo "There are no changes in PHP files (no PHP-MD test performed)"
+              echo "There are no changes in PHP files (no PHP-MD test performed)"
           fi
+          rm "$FILELIST"
+          exit $RETVAL

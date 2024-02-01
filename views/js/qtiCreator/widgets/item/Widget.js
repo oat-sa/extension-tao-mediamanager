@@ -223,7 +223,7 @@ define([
     const _detachElements = function(container, elements) {
 
         const containerElements = {};
-        _.each(elements, function(elementSerial){
+        _.forEach(elements, function(elementSerial){
             containerElements[elementSerial] = container.elements[elementSerial];
             delete container.elements[elementSerial];
         });
@@ -317,7 +317,7 @@ define([
 
                 } else {
 
-                    _.each(newElts, function(container){
+                    _.forEach(newElts, function(container){
 
                         const containerData = subContainers.shift();//get data in order
                         const containerElements = _detachElements(itemBody, containerData.elements);

@@ -47,7 +47,7 @@ define([
 
             creatorRenderer.get().load(function(){
 
-                _.each(newElts, function(serial) {
+                _.forEach(newElts, function(serial) {
                     let $placeholder,
                         $widget,
                         widget;

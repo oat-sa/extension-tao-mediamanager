@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<ruleset xmlns="http://pmd.sf.net/ruleset/1.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
+         xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
+
+        <!--
+             Reporting thresholds here have been tweaked for taoMediaManager,
+             setting them to values higher than those in tao-extension-ci-action.
+
+             Please consider lowering these values and fixing the reported issues
+             if possible.
+
+             You can run PHPMD checks locally with:
+                "find . -iname '*.php' -exec phpmd {} text ./phpmd-ruleset.xml \;"
+        -->
+
+        <rule ref="rulesets/codesize.xml/CyclomaticComplexity">
+            <properties>
+                <property name="reportLevel" value="18" />
+            </properties>-->
+        </rule>
+        <rule ref="rulesets/codesize.xml/NPathComplexity">
+            <properties>
+                <property name="minimum" value="650" />
+            </properties>
+        </rule>
+        <rule ref="rulesets/codesize.xml/ExcessiveMethodLength">
+            <properties>
+                <property name="minimum" value="200" />
+            </properties>
+        </rule>
+        <rule ref="rulesets/codesize.xml/TooManyPublicMethods">
+            <properties>
+                <property name="maxmethods" value="12" />
+            </properties>
+        </rule>
+        <rule ref="rulesets/codesize.xml/ExcessivePublicCount">
+            <properties>
+                <property name="maximum" value="11" />
+            </properties>
+        </rule>
+        <rule ref="rulesets/codesize.xml/ExcessiveClassComplexity">
+            <properties>
+                <property name="maximum" value="56" />
+            </properties>
+        </rule>
+        <rule ref="rulesets/codesize.xml/ExcessiveClassLength"/>
+        <rule ref="rulesets/codesize.xml/ExcessiveParameterList"/>
+        <rule ref="rulesets/codesize.xml/TooManyFields"/>
+        <rule ref="rulesets/codesize.xml/TooManyMethods"/>
+</ruleset>

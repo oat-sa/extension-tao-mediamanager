@@ -50,6 +50,9 @@ define([
         if (sharedStimulusData.body.attributes.class) {
             itemData.attributes.class = sharedStimulusData.body.attributes.class;
         }
+        if (sharedStimulusData.body.attributes.dir) {
+            itemData.attributes.dir = sharedStimulusData.body.attributes.dir;
+        }
 
         return itemData;
     };

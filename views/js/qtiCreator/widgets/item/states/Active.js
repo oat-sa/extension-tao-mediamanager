@@ -19,18 +19,21 @@
 
 define([
     'lodash',
+    'taoQtiItem/qtiCreator/helper/languages',
     'taoQtiItem/qtiCreator/widgets/states/factory',
     'taoMediaManager/qtiCreator/widgets/states/Active',
     'tpl!taoMediaManager/qtiCreator/tpl/forms/item',
-    'taoQtiItem/qtiCreator/widgets/helpers/formElement'
-], function(_, stateFactory, Active, formTpl, formElement){
+    'taoQtiItem/qtiCreator/widgets/helpers/formElement',
+    'taoQtiItem/qtiCreator/editor/gridEditor/content',
+    'select2'
+], function(_, languages, stateFactory, Active, formTpl, formElement, contentHelper){
     'use strict';
 
     const ItemStateActive = stateFactory.create(Active, function enterActiveState() {
         const _widget = this.widget;
         const item = _widget.element;
         const $form = _widget.$form;
-
+        const $itemBody = _widget.$container.find('.qti-itemBody');
         //build form:
         $form.html(formTpl({
             'xml:lang' : item.attr('xml:lang'),
@@ -42,9 +45,39 @@ define([
 
         //init data validation and binding
         formElement.setChangeCallbacks($form, item, {
-            'xml:lang' : formElement.getAttributeChangeCallback()
+            'xml:lang' : function langChange(i, lang){
+                item.attr('xml:lang', lang);
+                languages
+                    .isRTLbyLanguageCode(lang)
+                    .then((isRTL) => {
+                        if (isRTL) {
+                            item.bdy.attr('dir', 'rtl');
+                            $itemBody.attr('dir', 'rtl');
+                        } else {
+                            delete item.attributes.dir;
+                            item.bdy.removeAttr('dir');
+                            $itemBody.removeAttr('dir');
+                        }
+
+                        $itemBody.trigger('item-dir-changed');
+                    }
+                );
+            }
         });
 
+        const $selectBox = $form.find('select');
+
+        $selectBox.select2({
+            dropdownAutoWidth: true,
+            width: 'resolve',
+            minimumResultsForSearch: -1,
+            formatSelection: data => {
+                if (data.css) {
+                    return `<span class="${data.css}">${data.text}</span>`;
+                }
+                return data.text;
+            }
+        });
     }, _.noop);
 
     return ItemStateActive;

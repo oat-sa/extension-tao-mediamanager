@@ -1,0 +1,435 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO 2024.06\n"
+"PO-Revision-Date: 2024-06-04T11:52:24\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: en-US\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid "%d shared stimulus media not exists"
+msgstr ""
+
+msgid "%s errors while processing shared stimulus media"
+msgstr ""
+
+msgid "%s media on this environment"
+msgstr ""
+
+msgid "%s media successfully modified"
+msgstr ""
+
+msgid "%s media to modify"
+msgstr ""
+
+msgid "%s shared stimulus media to modify"
+msgstr ""
+
+msgid "A stylesheet named <b>%s</b> is already attached to the passage."
+msgstr ""
+
+msgid "Add a media file"
+msgstr ""
+
+msgid "Add Style Sheet"
+msgstr ""
+
+msgid "An error has occurred. Please contact your administrator."
+msgstr ""
+
+msgid "Are you sure you want to delete this"
+msgstr ""
+
+msgid "Are you sure you want to delete this \"%s\"?"
+msgstr ""
+
+msgid "Are you sure you want to delete this class and all of its content?"
+msgstr ""
+
+#, tao-public
+msgid "Assets"
+msgstr "Share Resources"
+
+#, tao-public
+msgid "Authoring"
+msgstr ""
+
+msgid "Back to Manage Assets"
+msgstr "Back to Manage Share Resources"
+
+msgid "Background color"
+msgstr ""
+
+msgid "Block"
+msgstr ""
+
+msgid "Border color"
+msgstr ""
+
+msgid "Center"
+msgstr ""
+
+#, tao-public
+msgid "Copy To"
+msgstr ""
+
+msgid "Current path: %s"
+msgstr ""
+
+msgid "Default"
+msgstr ""
+
+msgid "Define item language."
+msgstr "Define question language."
+
+#, tao-public
+msgid "Delete"
+msgstr ""
+
+msgid "Deleting this class will break the items and the tests that are currently using them."
+msgstr "Deleting this class will break the questions and the tests that are currently using them."
+
+msgid "Destination class uri \"%s\" not found!"
+msgstr ""
+
+msgid "Destination class: %s"
+msgstr ""
+
+msgid "Disable this stylesheet temporarily"
+msgstr ""
+
+msgid "Download this stylesheet"
+msgstr ""
+
+msgid "e.g. 13"
+msgstr ""
+
+msgid "Edit Instance"
+msgstr ""
+
+msgid "Edit stylesheet label"
+msgstr ""
+
+msgid "Edited %s"
+msgstr ""
+
+msgid "Element Properties"
+msgstr ""
+
+msgid "Enlarge font size"
+msgstr ""
+
+#, tao-public
+msgid "Export"
+msgstr ""
+
+msgid "Export Media as Zip file"
+msgstr ""
+
+msgid "Fail to edit Shared Stimulus"
+msgstr ""
+
+msgid "Fail to edit shared stimulus"
+msgstr ""
+
+msgid "Fail to import media"
+msgstr ""
+
+msgid "Fail to import Shared Stimulus"
+msgstr ""
+
+msgid "File"
+msgstr ""
+
+msgid "File name"
+msgstr ""
+
+msgid "Font family"
+msgstr ""
+
+msgid "Font size"
+msgstr ""
+
+msgid "Forbidden action"
+msgstr ""
+
+#, tao-public
+msgid "Import"
+msgstr ""
+
+msgid "Imported %s"
+msgstr ""
+
+msgid "Imported new file"
+msgstr ""
+
+msgid "Initial import"
+msgstr ""
+
+msgid "Inline Interactions"
+msgstr "Inline Question Types"
+
+msgid "inline-interactions"
+msgstr "inline-question-types"
+
+msgid "Instance saved"
+msgstr ""
+
+msgid "is currently used in"
+msgstr ""
+
+msgid "Issue while modifying %s"
+msgstr ""
+
+msgid "Issue while processing \"%s"
+msgstr ""
+
+msgid "item(s)"
+msgstr "question(s)"
+
+msgid "Language"
+msgstr ""
+
+msgid "Left"
+msgstr ""
+
+#, tao-public
+msgid "Manage Assets"
+msgstr "Manage Share Resources"
+
+#, tao-public
+msgid "Manage Schema"
+msgstr "Metadata Schema"
+
+msgid "Media imported"
+msgstr ""
+
+msgid "Media imported successfully"
+msgstr ""
+
+#, tao-public
+msgid "Media Manager"
+msgstr ""
+
+#, tao-public
+msgid "Media Manager extension"
+msgstr ""
+
+msgid "Media Options"
+msgstr ""
+
+msgid "Media successfully exported."
+msgstr ""
+
+#, tao-public
+msgid "Move"
+msgstr ""
+
+msgid "Move item resource to different class, can be filtered by name pattern."
+msgstr "Move question resource to different class, can be filtered by name pattern."
+
+msgid "Move resource script start."
+msgstr ""
+
+#, tao-public
+msgid "Move To"
+msgstr ""
+
+msgid "Moved %d resource/s."
+msgstr ""
+
+msgid "Moved resource, id %s"
+msgstr ""
+
+#, tao-public
+msgid "New class"
+msgstr "New Folder"
+
+#, tao-public
+msgid "New passage"
+msgstr ""
+
+msgid "New path %s"
+msgstr ""
+
+msgid "No file found for this media"
+msgstr ""
+
+msgid "No value set"
+msgstr ""
+
+msgid "Passage Properties"
+msgstr ""
+
+msgid "Passage Style"
+msgstr ""
+
+msgid "Please delete the subclasses before."
+msgstr ""
+
+msgid "Preparing CSS, please wait…"
+msgstr ""
+
+msgid "Preview"
+msgstr ""
+
+msgid "Preview the item"
+msgstr "Preview the question"
+
+#, tao-public
+msgid "Properties"
+msgstr ""
+
+msgid "Reduce font size"
+msgstr ""
+
+msgid "Remove custom background color"
+msgstr ""
+
+msgid "Remove custom border color"
+msgstr ""
+
+msgid "Remove custom font family"
+msgstr ""
+
+msgid "Remove custom font size"
+msgstr ""
+
+msgid "Remove custom text color"
+msgstr ""
+
+msgid "Remove this stylesheet"
+msgstr ""
+
+msgid "Replace Asset"
+msgstr "Replace Share Resource"
+
+msgid "Request should provide a media identifier as the id or instanceUri parameter"
+msgstr ""
+
+msgid "Resource deleted"
+msgstr ""
+
+msgid "Right"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Save the asset"
+msgstr ""
+
+msgid "Set a CSS class name in order to customize the display style."
+msgstr ""
+
+msgid "Set the identifier of class where assets will be moved."
+msgstr ""
+
+msgid "Set the name pattern whom script will use to select resource to move."
+msgstr ""
+
+msgid "Set the resource id to move."
+msgstr ""
+
+msgid "Shared Stimulus"
+msgstr ""
+
+msgid "Shared Stimulus edited successfully"
+msgstr ""
+
+msgid "Shared Stimulus imported successfully"
+msgstr ""
+
+msgid "some text ..."
+msgstr ""
+
+msgid "Specify if you need only preview the supposed result"
+msgstr ""
+
+msgid "Style Sheet <b>%s</b> removed<br> Click <i>Add Style Sheet</i> to re-apply."
+msgstr ""
+
+msgid "Style Sheet Manager"
+msgstr ""
+
+msgid "Table headings"
+msgstr ""
+
+msgid "Text Block"
+msgstr ""
+
+msgid "Text Block CSS Class"
+msgstr ""
+
+msgid "Text Block Properties"
+msgstr ""
+
+msgid "Text Block Style"
+msgstr ""
+
+msgid "Text color"
+msgstr ""
+
+msgid "The class"
+msgstr ""
+
+msgid "The file you tried to upload is not valid"
+msgstr ""
+
+msgid "There was a problem downloading your CSS, please try again."
+msgstr ""
+
+msgid "This"
+msgstr ""
+
+msgid "This \"%s\" is currently used in %d item(s)"
+msgstr "This \"%s\" is currently used in %d question(s)"
+
+msgid "Total shared stimulus media: %s"
+msgstr ""
+
+msgid "Unable to delete the selected resource"
+msgstr ""
+
+msgid "Unable to delete the selected resource because you do not have the required rights to delete part of its content."
+msgstr ""
+
+msgid "Unable to extract the archive"
+msgstr ""
+
+msgid "Unable to import"
+msgstr ""
+
+msgid "Upload Media"
+msgstr ""
+
+msgid "Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
+msgstr ""
+
+msgid "Warning"
+msgstr ""
+
+msgid "which contains assets that are in use elsewhere."
+msgstr ""
+
+msgid "You are about to delete the class"
+msgstr ""
+
+msgid "you are trying to delete is too large and contains too many subclasses."
+msgstr ""
+
+msgid "You can\'t upload a zip file as a media"
+msgstr ""
+
+msgid "Your passage is saved"
+msgstr ""
+
+msgid "Zip"
+msgstr ""
+

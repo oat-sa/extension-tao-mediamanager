@@ -307,6 +307,9 @@ msgstr ""
 msgid "Remove this stylesheet"
 msgstr ""
 
+msgid "Asset"
+msgstr "Share Resource"
+
 msgid "Replace Asset"
 msgstr "Replace Share Resource"
 

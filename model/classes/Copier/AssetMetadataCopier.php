@@ -28,11 +28,6 @@ use core_kernel_classes_Property;
 class AssetMetadataCopier implements InstanceMetadataCopierInterface
 {
     /**
-     * Base filename for the asset (i.e. 123456789abcdef123456.mp4)
-     */
-    private const PROPERTY_LINK = TaoMediaOntology::PROPERTY_LINK;
-
-    /**
      * MD5 hash of the file contents
      */
     private const PROPERTY_MD5 = TaoMediaOntology::PROPERTY_MD5;

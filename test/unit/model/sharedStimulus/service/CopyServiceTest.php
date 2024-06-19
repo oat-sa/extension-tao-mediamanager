@@ -175,6 +175,12 @@ class CopyServiceTest extends TestCase
             ->method('getUri')
             ->willReturn('http://example.com/resource2');
 
+        $propertyMock = $this->createMock(core_kernel_classes_Property::class);
+        $targetResource
+            ->expects($this->once())
+            ->method('getProperty')
+            ->willReturn($propertyMock);
+
         $this->ontology
             ->expects($this->at(0))
             ->method('getResource')

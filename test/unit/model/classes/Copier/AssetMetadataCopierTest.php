@@ -133,12 +133,11 @@ class AssetMetadataCopierTest extends TestCase
             );
 
         $this->target
-            ->expects($this->exactly(3))
+            ->expects($this->exactly(2))
             ->method('setPropertyValue')
             ->withConsecutive(
                 [$this->propertyMD5, 'c38cd6d9c873bf072d9753d730f87ce'],
                 [$this->propertyMime, 'video/mp4'],
-                [$this->propertyLink, '123456789abcdef123456.mp4']
             );
 
         $this->target

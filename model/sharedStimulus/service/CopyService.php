@@ -32,6 +32,7 @@ use oat\taoMediaManager\model\sharedStimulus\css\service\ListStylesheetsService;
 use oat\taoMediaManager\model\sharedStimulus\dto\SharedStimulusInstanceData;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 use InvalidArgumentException;
+use oat\taoMediaManager\model\TaoMediaOntology;
 
 class CopyService
 {
@@ -86,14 +87,19 @@ class CopyService
         );
 
         $srcXmlPath = $this->fileSourceUnserializer->unserialize($source->link);
-
-        $this->sharedStimulusStoreService->storeStream(
+        $stimulusFilename = basename($source->link);
+        $dirname = $this->sharedStimulusStoreService->storeStream(
             $this->fileManagement->getFileStream($srcXmlPath)->detach(),
-            basename($source->link),
+            $stimulusFilename,
             $this->copyCSSFilesFrom($source)
         );
 
         $target = $this->ontology->getResource($command->getDestinationUri());
+
+        $target->setPropertyValue(
+            $target->getProperty(TaoMediaOntology::PROPERTY_LINK),
+            $dirname . DIRECTORY_SEPARATOR . $stimulusFilename
+        );
 
         return new SharedStimulus(
             $source->resourceUri,

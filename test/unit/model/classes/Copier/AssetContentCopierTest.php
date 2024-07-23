@@ -26,6 +26,9 @@ use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
 use oat\tao\model\resources\Contract\ClassPropertyCopierInterface;
 use oat\taoMediaManager\model\classes\Copier\AssetContentCopier;
+use oat\taoMediaManager\model\fileManagement\FileManagement;
+use oat\taoMediaManager\model\MediaService;
+use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\sharedStimulus\CopyCommand;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
 use oat\taoMediaManager\model\sharedStimulus\service\CopyService;
@@ -34,12 +37,10 @@ use oat\taoMediaManager\model\TaoMediaOntology;
 use oat\tao\model\resources\Contract\ClassCopierInterface;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use Psr\Http\Message\StreamInterface;
 
 class AssetContentCopierTest extends TestCase
 {
-    /** @var ClassCopierInterface|MockObject */
-    private $taoClassCopier;
-
     /** @var CommandFactory */
     private $commandFactory;
 
@@ -55,6 +56,15 @@ class AssetContentCopierTest extends TestCase
     /** @var CopyService|MockObject */
     private $sharedStimulusCopyService;
 
+    /** @var MediaService|MockObject */
+    private $mediaService;
+
+    /** @var MediaSource|MockObject */
+    private $mediaSource;
+
+    /** @var FileManagement|MockObject */
+    private $fileManagement;
+
     /** @var CopyCommand|MockObject */
     private $commandMock;
 
@@ -69,7 +79,9 @@ class AssetContentCopierTest extends TestCase
         $this->commandMock = $this->createMock(CopyCommand::class);
         $this->commandFactory = $this->createMock(CommandFactory::class);
         $this->sharedStimulusCopyService = $this->createMock(CopyService::class);
-        $this->taoClassCopier = $this->createMock(ClassCopierInterface::class);
+        $this->mediaService = $this->createMock(MediaService::class);
+        $this->fileManagement = $this->createMock(FileManagement::class);
+        $this->mediaSource = $this->createMock(MediaSource::class);
 
         $this->sharedStimulusSpecification = $this->createMock(
             SharedStimulusResourceSpecification::class
@@ -92,7 +104,10 @@ class AssetContentCopierTest extends TestCase
             $this->sharedStimulusSpecification,
             $this->commandFactory,
             $this->sharedStimulusCopyService,
-            'fr-FR'
+            $this->mediaService,
+            $this->fileManagement,
+            'fr-FR',
+            $this->mediaSource
         );
     }
 
@@ -131,7 +146,39 @@ class AssetContentCopierTest extends TestCase
         $this->sut->copy($this->source, $this->target);
     }
 
-    public function testCopyNonSharedStimulus(): void
+    public function testCopyMediaFile(): void
+    {
+        $this->sharedStimulusSpecification
+            ->expects($this->once())
+            ->method('isSatisfiedBy')
+            ->with($this->source)
+            ->willReturn(false);
+
+        $this->mediaSource
+            ->method('getFileInfo')
+            ->willReturn(
+                [
+                    'name' => 'file_name',
+                    'link' => 'file_link'
+                ]
+            );
+
+        $stream = $this->createMock(StreamInterface::class);
+        $stream->method('getContents')
+            ->willReturn('file_contents');
+
+        $this->fileManagement
+            ->method('getFileStream')
+            ->willReturn($stream);
+
+        $this->mediaService
+            ->method('editMediaInstance')
+            ->willReturn(true);
+
+        $this->sut->copy($this->source, $this->target);
+    }
+
+    public function testCopyMediaFileWillFailCannotPersistIt(): void
     {
         $this->sharedStimulusSpecification
             ->expects($this->once())
@@ -150,6 +197,32 @@ class AssetContentCopierTest extends TestCase
         $this->source
             ->expects($this->never())
             ->method('getPropertyValues');
+
+        $this->mediaSource
+            ->method('getFileInfo')
+            ->willReturn(
+                [
+                    'name' => 'file_name',
+                    'link' => 'file_link'
+                ]
+            );
+
+        $stream = $this->createMock(StreamInterface::class);
+        $stream->method('getContents')
+            ->willReturn('file_contents');
+
+        $this->fileManagement
+            ->method('getFileStream')
+            ->willReturn($stream);
+
+        $this->mediaService
+            ->method('editMediaInstance')
+            ->willReturn(false);
+
+        $this->expectExceptionMessage(
+            '[link="file_link",fromLabel=,fromUri=http://test.resources/source,toLabel=,' .
+            'toUri=http://test.resources/target] Failed saving asset into filesystem while copying it'
+        );
 
         $this->sut->copy($this->source, $this->target);
     }

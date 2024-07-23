@@ -199,7 +199,11 @@ class MediaService extends ConfigurableService
         $instance = $this->getResource($id);
         $link = $this->getLink($instance);
         $fileManager = $this->getFileManager();
-        $fileManager->deleteFile($link);
+
+        if (!empty($link)) {
+            $fileManager->deleteFile($link);
+        }
+
         $link = $fileManager->storeFile($fileSource, $instance->getLabel());
 
         if ($link !== false) {

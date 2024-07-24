@@ -60,7 +60,7 @@ class AssetContentCopier implements InstanceContentCopierInterface
         MediaService $mediaService,
         FileManagement $fileManagement,
         string $defaultLanguage,
-        MediaSource $mediaSource = null,
+        MediaSource $mediaSource = null
     ) {
         $this->sharedStimulusSpecification = $sharedStimulusResourceSpecification;
         $this->commandFactory = $commandFactory;

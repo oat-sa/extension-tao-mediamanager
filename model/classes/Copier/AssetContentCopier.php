@@ -103,7 +103,7 @@ class AssetContentCopier implements InstanceContentCopierInterface
         $stream = $this->fileManagement->getFileStream($fileInfo['link']);
         $tmpMediaPath = tempnam(sys_get_temp_dir(), 'taoMediaManager_') . '_' . $fileInfo['name'];
         $logPrefix = sprintf(
-            '[link="%s",fromLabel=%s,fromUri=%s,toLabel=%s,toUri=%s]',
+            '[link=%s,fromLabel=%s,fromUri=%s,toLabel=%s,toUri=%s]',
             $fileInfo['link'],
             $fromAsset->getLabel(),
             $fromAsset->getUri(),
@@ -114,7 +114,7 @@ class AssetContentCopier implements InstanceContentCopierInterface
         if (!file_put_contents($tmpMediaPath, $stream->getContents())) {
             throw new common_Exception(
                 sprintf(
-                    '%s Failed saving asset to a temporary file "%s"',
+                    '%s Failed saving asset to a temporary file "%s" while copying it',
                     $logPrefix,
                     $tmpMediaPath,
                 )

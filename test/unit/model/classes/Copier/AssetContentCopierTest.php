@@ -220,7 +220,7 @@ class AssetContentCopierTest extends TestCase
             ->willReturn(false);
 
         $this->expectExceptionMessage(
-            '[link="file_link",fromLabel=,fromUri=http://test.resources/source,toLabel=,' .
+            '[link=file_link,fromLabel=,fromUri=http://test.resources/source,toLabel=,' .
             'toUri=http://test.resources/target] Failed saving asset into filesystem while copying it'
         );
 

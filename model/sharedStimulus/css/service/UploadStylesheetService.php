@@ -40,8 +40,21 @@ class UploadStylesheetService extends ConfigurableService
         $tmpResource = $uploadedStylesheetDTO->getFileResource();
         $size = filesize($uploadedStylesheetDTO->getTmpFileLink());
         $this->getStylesheetRepository()->putStream($link, $tmpResource);
-        fclose($tmpResource);
-        unlink($uploadedStylesheetDTO->getTmpFileLink());
+
+        if (is_resource($tmpResource)) {
+            fclose($tmpResource);
+        } else {
+            $this->logWarning(
+                sprintf(
+                    'Stream for asset stylesheet file "%s" is not valid. It may be already closed',
+                    $uploadedStylesheetDTO->getFileName()
+                )
+            );
+        }
+
+        if (is_writable($uploadedStylesheetDTO->getTmpFileLink())) {
+            unlink($uploadedStylesheetDTO->getTmpFileLink());
+        }
 
         return [
             'alt' => $uploadedStylesheetDTO->getFileName(),

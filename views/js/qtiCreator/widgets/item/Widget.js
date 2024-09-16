@@ -162,6 +162,10 @@ define([
             const element = widget.element;
             const container = Element.isA(element, '_container') ? element : element.getBody();
 
+            if (element.attr('dir') === 'rtl') {
+                $placeholder.attr('dir', 'rtl');
+            }
+
             if (!element || !$editable.length) {
                 throw new Error('cannot create new element');
             }

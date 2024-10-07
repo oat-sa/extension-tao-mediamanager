@@ -35,7 +35,7 @@ class ListStylesheetsService extends ConfigurableService
         $path = $stylesheetRepository->getPath($listStylesheetsDTO->getUri());
         $list = $stylesheetRepository->listContents(
             $path . DIRECTORY_SEPARATOR . StylesheetRepository::STYLESHEETS_DIRECTORY
-        );
+        )->toArray();
         /**
          * here sorting files by creation date so that in case of css .selector collisions
          * the rules will be applied from the last stylesheet added to the passage

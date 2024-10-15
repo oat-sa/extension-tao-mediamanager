@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\sharedStimulus\css\service;
 
 use Exception;
-use League\Flysystem\FileNotFoundException;
+use League\Flysystem\FilesystemException;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\sharedStimulus\css\dto\SaveStylesheetClasses;
 use oat\taoMediaManager\model\sharedStimulus\css\repository\StylesheetRepository;
@@ -52,7 +52,7 @@ class SaveStylesheetClassesService extends ConfigurableService
         }
 
         $content = $this->getCssContentFromArray($cssClassesArray);
-        $this->getStylesheetRepository()->put(
+        $this->getStylesheetRepository()->write(
             $path . DIRECTORY_SEPARATOR . $saveStylesheetClassesDTO->getStylesheetUri(),
             $content
         );
@@ -62,7 +62,7 @@ class SaveStylesheetClassesService extends ConfigurableService
     {
         try {
             $this->getStylesheetRepository()->delete($path);
-        } catch (FileNotFoundException $exception) {
+        } catch (FilesystemException $exception) {
             $this->logDebug(sprintf('Stylesheet %s to delete was not found when trying to clear styles', $path));
         }
     }

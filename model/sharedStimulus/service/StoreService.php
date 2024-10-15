@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus\service;
 
-use League\Flysystem\FilesystemInterface;
+use League\Flysystem\FilesystemOperator;
 use oat\oatbox\filesystem\File;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
@@ -69,15 +69,15 @@ class StoreService extends ConfigurableService
         $fs = $this->getFileSystem();
 
         $dirname = $this->getUniqueName($stimulusFilename);
-        $fs->createDir($dirname);
+        $fs->createDirectory($dirname);
 
-        $fs->putStream(
+        $fs->writeStream(
             $dirname . DIRECTORY_SEPARATOR . $stimulusFilename,
             $stimulusXmlStream
         );
 
         if (count($cssFiles)) {
-            $fs->createDir($dirname . DIRECTORY_SEPARATOR . self::CSS_DIR_NAME);
+            $fs->createDirectory($dirname . DIRECTORY_SEPARATOR . self::CSS_DIR_NAME);
             foreach ($cssFiles as $file) {
                 if (!file_exists($file)) {
                     $this->getLogger()->notice(sprintf("file %s does not exist", $file));
@@ -89,7 +89,7 @@ class StoreService extends ConfigurableService
                     continue;
                 }
 
-                $fs->putStream(
+                $fs->writeStream(
                     $dirname . DIRECTORY_SEPARATOR . self::CSS_DIR_NAME . DIRECTORY_SEPARATOR . basename($file),
                     fopen($file, 'r')
                 );
@@ -104,7 +104,7 @@ class StoreService extends ConfigurableService
         return uniqid(hash('crc32', $name));
     }
 
-    private function getFileSystem(): FilesystemInterface
+    private function getFileSystem(): FilesystemOperator
     {
         return $this->getFileSystemService()
             ->getFileSystem($this->getFlySystemManagement()->getOption(FlySystemManagement::OPTION_FS));

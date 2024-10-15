@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\test\unit\model\export;
 
 use core_kernel_classes_Resource;
+use League\Flysystem\DirectoryListing;
 use oat\generis\test\MockObject;
 use oat\generis\test\TestCase;
 use oat\oatbox\filesystem\FileSystem;
@@ -62,7 +63,7 @@ class SharedStimulusCSSExporterTest extends TestCase
         $fileSystemMock = $this->initFileSystemMock();
 
         $fileSystemMock->expects(self::once())
-            ->method('has')
+            ->method('directoryExists')
             ->with($expectedDir)
             ->willReturn(true);
 
@@ -72,7 +73,7 @@ class SharedStimulusCSSExporterTest extends TestCase
 
         $fileSystemMock->expects(self::once())
             ->method('listContents')
-            ->willReturn($fileNames);
+            ->willReturn(new DirectoryListing($fileNames));
 
 
         $sharedStimulusCSSExporterService = $this->getPreparedServiceInstance($fileSystemMock);
@@ -131,7 +132,7 @@ class SharedStimulusCSSExporterTest extends TestCase
     {
         return $this->getMockBuilder(FileSystem::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['has', 'listContents', 'read'])
+            ->onlyMethods(['directoryExists', 'listContents', 'read'])
             ->getMock();
     }
 

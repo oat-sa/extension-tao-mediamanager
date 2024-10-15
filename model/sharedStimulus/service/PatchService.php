@@ -26,7 +26,7 @@ use core_kernel_classes_Literal;
 use core_kernel_classes_Resource as Resource;
 use core_kernel_persistence_Exception;
 use InvalidArgumentException;
-use League\Flysystem\FilesystemInterface;
+use League\Flysystem\FilesystemOperator;
 use LogicException;
 use oat\generis\model\fileReference\FileReferenceSerializer;
 use oat\generis\model\OntologyAwareTrait;
@@ -82,7 +82,7 @@ class PatchService extends ConfigurableService
         );
         $sharedStimulusStoredSourceFile = $this->getFileSourceUnserializer()->unserialize((string)$link);
 
-        $this->getFileSystem()->putStream($sharedStimulusStoredSourceFile, $file->readStream());
+        $this->getFileSystem()->writeStream($sharedStimulusStoredSourceFile, $file->readStream());
 
         $content = $file->read();
         $resource->editPropertyValues(
@@ -161,7 +161,7 @@ class PatchService extends ConfigurableService
         return $this->getServiceLocator()->get(FileSourceUnserializer::class);
     }
 
-    private function getFileSystem(): FilesystemInterface
+    private function getFileSystem(): FilesystemOperator
     {
         return $this->getFileSystemService()
             ->getFileSystem($this->getFlySystemManagement()->getOption(FlySystemManagement::OPTION_FS));

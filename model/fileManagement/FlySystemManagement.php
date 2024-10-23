@@ -23,6 +23,7 @@
 namespace oat\taoMediaManager\model\fileManagement;
 
 use oat\oatbox\filesystem\File;
+use oat\oatbox\filesystem\FilesystemException;
 use oat\oatbox\service\ConfigurableService;
 use League\Flysystem\Filesystem;
 use Slim\Http\Stream;
@@ -37,7 +38,7 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
      * @param string|File $fileSource
      * @param string $label
      * @return string
-     * @throws \League\Flysystem\FileExistsException
+     * @throws FilesystemException
      */
     public function storeFile($fileSource, $label)
     {
@@ -59,7 +60,7 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
 
     public function getFileSize($link)
     {
-        return $this->getFilesystem()->getSize($link);
+        return $this->getFilesystem()->fileSize($link);
     }
 
     /**

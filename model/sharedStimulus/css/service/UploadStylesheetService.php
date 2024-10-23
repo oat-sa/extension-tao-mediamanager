@@ -39,7 +39,7 @@ class UploadStylesheetService extends ConfigurableService
 
         $tmpResource = $uploadedStylesheetDTO->getFileResource();
         $size = filesize($uploadedStylesheetDTO->getTmpFileLink());
-        $this->getStylesheetRepository()->putStream($link, $tmpResource);
+        $this->getStylesheetRepository()->writeStream($link, $tmpResource);
 
         if (is_resource($tmpResource)) {
             fclose($tmpResource);

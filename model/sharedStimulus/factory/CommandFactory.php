@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus\factory;
 
-use League\Flysystem\FilesystemInterface;
 use oat\generis\model\fileReference\FileReferenceSerializer;
 use oat\oatbox\filesystem\Directory;
 use oat\oatbox\filesystem\FileSystemService;
@@ -38,7 +37,7 @@ class CommandFactory extends ConfigurableService
 {
     public const DEFAULT_DIRECTORY = 'sharedStimulusUploads';
 
-    /** @var FilesystemInterface */
+    /** @var Directory */
     private $directory;
 
     public function makeCreateCommandByRequest(ServerRequestInterface $request): CreateCommand

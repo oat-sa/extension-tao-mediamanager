@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\export\service;
 
 use core_kernel_classes_Resource;
-use League\Flysystem\FilesystemInterface;
+use oat\oatbox\filesystem\FilesystemInterface;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
@@ -44,12 +44,12 @@ class SharedStimulusCSSExporter extends ConfigurableService
         $fs = $this->getFileSystem();
         $cssPath = dirname($link) . DIRECTORY_SEPARATOR . StoreService::CSS_DIR_NAME;
 
-        if (!$fs->has($cssPath)) {
+        if (!$fs->directoryExists($cssPath)) {
             return;
         }
 
         $files = $fs->listContents($cssPath);
-        if (!count($files)) {
+        if (!count($files->toArray())) {
             return;
         }
 

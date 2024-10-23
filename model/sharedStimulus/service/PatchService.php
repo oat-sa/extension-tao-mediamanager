@@ -26,11 +26,12 @@ use core_kernel_classes_Literal;
 use core_kernel_classes_Resource as Resource;
 use core_kernel_persistence_Exception;
 use InvalidArgumentException;
-use League\Flysystem\FilesystemOperator;
 use LogicException;
 use oat\generis\model\fileReference\FileReferenceSerializer;
 use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\filesystem\File;
+use oat\oatbox\filesystem\FileSystem;
+use oat\oatbox\filesystem\FilesystemInterface;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\media\TaoMediaException;
@@ -161,7 +162,7 @@ class PatchService extends ConfigurableService
         return $this->getServiceLocator()->get(FileSourceUnserializer::class);
     }
 
-    private function getFileSystem(): FilesystemOperator
+    private function getFileSystem(): FilesystemInterface
     {
         return $this->getFileSystemService()
             ->getFileSystem($this->getFlySystemManagement()->getOption(FlySystemManagement::OPTION_FS));

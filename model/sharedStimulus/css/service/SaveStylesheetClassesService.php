@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\sharedStimulus\css\service;
 
 use Exception;
-use League\Flysystem\FilesystemException;
+use oat\oatbox\filesystem\FilesystemException;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\sharedStimulus\css\dto\SaveStylesheetClasses;
 use oat\taoMediaManager\model\sharedStimulus\css\repository\StylesheetRepository;

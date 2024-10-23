@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\export\service;
 
 use core_kernel_classes_Resource;
-use League\Flysystem\FilesystemOperator;
+use oat\oatbox\filesystem\FilesystemInterface;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
@@ -61,7 +61,7 @@ class SharedStimulusCSSExporter extends ConfigurableService
         }
     }
 
-    private function getFileSystem(): FilesystemOperator
+    private function getFileSystem(): FilesystemInterface
     {
         return $this->getFileSystemService()
             ->getFileSystem($this->getFlySystemManagement()->getOption(FlySystemManagement::OPTION_FS));

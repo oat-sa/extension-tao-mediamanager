@@ -22,12 +22,10 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus\css\repository;
 
-use core_kernel_classes_Resource;
-use League\Flysystem\FilesystemException;
-use League\Flysystem\FilesystemOperator;
 use oat\generis\model\data\Ontology;
+use oat\oatbox\filesystem\FilesystemException;
+use oat\oatbox\filesystem\FilesystemInterface;
 use oat\oatbox\service\ConfigurableService;
-use oat\taoMediaManager\model\MediaService;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
@@ -85,7 +83,7 @@ class StylesheetRepository extends ConfigurableService
         $this->getFileSystem()->delete($path);
     }
 
-    private function getFileSystem(): FilesystemOperator
+    private function getFileSystem(): FilesystemInterface
     {
         $flySystemManagementFs = $this->getFlySystemManagement()->getOption(FlySystemManagement::OPTION_FS);
 

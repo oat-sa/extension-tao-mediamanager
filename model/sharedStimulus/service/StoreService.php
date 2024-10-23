@@ -22,8 +22,9 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus\service;
 
-use League\Flysystem\FilesystemOperator;
 use oat\oatbox\filesystem\File;
+use oat\oatbox\filesystem\FileSystem;
+use oat\oatbox\filesystem\FilesystemInterface;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
@@ -104,7 +105,7 @@ class StoreService extends ConfigurableService
         return uniqid(hash('crc32', $name));
     }
 
-    private function getFileSystem(): FilesystemOperator
+    private function getFileSystem(): FilesystemInterface
     {
         return $this->getFileSystemService()
             ->getFileSystem($this->getFlySystemManagement()->getOption(FlySystemManagement::OPTION_FS));

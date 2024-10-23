@@ -22,8 +22,8 @@
 
 namespace oat\taoMediaManager\model\fileManagement;
 
-use League\Flysystem\FilesystemException;
 use oat\oatbox\filesystem\File;
+use oat\oatbox\filesystem\FilesystemException;
 use oat\oatbox\service\ConfigurableService;
 use League\Flysystem\Filesystem;
 use Slim\Http\Stream;

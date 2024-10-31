@@ -24,8 +24,8 @@ namespace oat\taoMediaManager\model\fileManagement;
 
 use oat\oatbox\filesystem\File;
 use oat\oatbox\filesystem\FilesystemException;
+use oat\oatbox\filesystem\FilesystemInterface;
 use oat\oatbox\service\ConfigurableService;
-use League\Flysystem\Filesystem;
 use Slim\Http\Stream;
 use Psr\Http\Message\StreamInterface;
 use oat\oatbox\filesystem\FileSystemService;
@@ -55,12 +55,23 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
 
     public function deleteDirectory(string $directoryPath): bool
     {
-        return $this->getFilesystem()->deleteDir($directoryPath);
+        try {
+            $this->getFilesystem()->deleteDirectory($directoryPath);
+            return true;
+        } catch (FilesystemException $e) {
+            $this->logWarning($e->getMessage());
+            return false;
+        }
     }
 
     public function getFileSize($link)
     {
-        return $this->getFilesystem()->fileSize($link);
+        try {
+            return $this->getFilesystem()->fileSize($link);
+        } catch (FilesystemException $e) {
+            $this->logWarning($e->getMessage());
+            return null;
+        }
     }
 
     /**
@@ -90,13 +101,16 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
      */
     public function deleteFile($link)
     {
-        return $this->getFilesystem()->delete($link);
+        try {
+            $this->getFilesystem()->delete($link);
+            return true;
+        } catch (FilesystemException $e) {
+            $this->logWarning($e->getMessage());
+            return false;
+        }
     }
 
-    /**
-     * @return Filesystem
-     */
-    protected function getFilesystem()
+    protected function getFilesystem(): FilesystemInterface
     {
         $fs = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID);
         return $fs->getFileSystem($this->getOption(self::OPTION_FS));

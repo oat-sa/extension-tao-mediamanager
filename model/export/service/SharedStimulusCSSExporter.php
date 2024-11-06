@@ -56,8 +56,8 @@ class SharedStimulusCSSExporter extends ConfigurableService
         $zip->addEmptyDir(self::CSS_ZIP_DIR_NAME);
 
         foreach ($files as $file) {
-            $content = $fs->read($cssPath . DIRECTORY_SEPARATOR . $file['basename']);
-            $zip->addFromString(self::CSS_ZIP_DIR_NAME . DIRECTORY_SEPARATOR . $file['basename'], $content);
+            $content = $fs->read($cssPath . DIRECTORY_SEPARATOR . basename($file['path']));
+            $zip->addFromString(self::CSS_ZIP_DIR_NAME . DIRECTORY_SEPARATOR . basename($file['path']), $content);
         }
     }
 

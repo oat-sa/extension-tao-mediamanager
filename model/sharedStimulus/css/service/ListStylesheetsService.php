@@ -41,17 +41,17 @@ class ListStylesheetsService extends ConfigurableService
          * the rules will be applied from the last stylesheet added to the passage
          */
         usort($list, function ($a, $b) {
-            return ($a['timestamp'] < $b['timestamp']) ? -1 : 1;
+            return ($a['lastModified'] < $b['lastModified']) ? -1 : 1;
         });
 
         $data = [];
         foreach ($list as $file) {
             $data[] = [
-                'name' => $file['basename'],
-                'uri' => DIRECTORY_SEPARATOR . $file['basename'],
+                'name' => basename($file['path']),
+                'uri' => DIRECTORY_SEPARATOR . basename($file['path']),
                 'mime' => 'text/css',
-                'filePath' => DIRECTORY_SEPARATOR . $file['basename'],
-                'size' => $file['size']
+                'filePath' => DIRECTORY_SEPARATOR . basename($file['path']),
+                'size' => $file['fileSize']
             ];
         }
 

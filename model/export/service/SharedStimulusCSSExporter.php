@@ -48,8 +48,8 @@ class SharedStimulusCSSExporter extends ConfigurableService
             return;
         }
 
-        $files = $fs->listContents($cssPath);
-        if (!count($files->toArray())) {
+        $files = $fs->listContents($cssPath)->toArray();
+        if (!count($files)) {
             return;
         }
 

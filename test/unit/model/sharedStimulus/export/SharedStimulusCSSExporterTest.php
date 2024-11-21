@@ -58,7 +58,7 @@ class SharedStimulusCSSExporterTest extends TestCase
     /**
      * @dataProvider packTestDataProvider
      */
-    public function testPack(string $link, string $expectedDir, array $fileNames, array $expectedZippedFiles): void
+    public function testPack(string $link, string $expectedDir, iterable $fileNames, array $expectedZippedFiles): void
     {
         $fileSystemMock = $this->initFileSystemMock();
 
@@ -90,7 +90,7 @@ class SharedStimulusCSSExporterTest extends TestCase
             [
                 'test_path/stimulus.xml',
                 'test_path/' . StoreService::CSS_DIR_NAME,
-                [['basename' => 'file1.css'], ['basename' => 'file2.css']],
+                [['path' => 'file1.css'], ['path' => 'file2.css']],
                 [
                     $cssZipFolder,
                     $cssZipFolder . 'file1.css',
@@ -106,7 +106,16 @@ class SharedStimulusCSSExporterTest extends TestCase
             [
                 'test_path/stimulusFile',
                 'test_path/' . StoreService::CSS_DIR_NAME,
-                [['basename' => 'fileX']],
+                [['path' => 'fileX']],
+                [
+                    $cssZipFolder,
+                    $cssZipFolder . 'fileX'
+                ],
+            ],
+            [
+                'test_path/stimulusFile',
+                'test_path/' . StoreService::CSS_DIR_NAME,
+                $this->createGenerator([['path' => 'fileX']]),
                 [
                     $cssZipFolder,
                     $cssZipFolder . 'fileX'
@@ -159,5 +168,12 @@ class SharedStimulusCSSExporterTest extends TestCase
             )
         );
         return $service;
+    }
+
+    private function createGenerator(array $values): \Generator
+    {
+        foreach ($values as $value) {
+            yield $value;
+        }
     }
 }

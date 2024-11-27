@@ -153,6 +153,7 @@ define([
                     menuRight: $container.find('.menu-right'),
                     contentCreatorPanel: $container.find('#item-editor-panel'),
                     editorBar: $container.find('#item-editor-panel .item-editor-bar'),
+                    editorWrapper: $('#item-editor-wrapper', $container),
                     title: $container.find('#item-editor-panel .item-editor-bar h1'),
                     toolbar: $container.find('#item-editor-panel .item-editor-bar #toolbar-top'),
                     interactionPanel: $container.find('#item-editor-interaction-bar'),

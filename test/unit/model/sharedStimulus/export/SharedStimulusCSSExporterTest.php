@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\test\unit\model\export;
 
 use core_kernel_classes_Resource;
+use League\Flysystem\DirectoryListing;
 use oat\generis\test\MockObject;
 use oat\generis\test\TestCase;
 use oat\oatbox\filesystem\FileSystem;
@@ -57,12 +58,12 @@ class SharedStimulusCSSExporterTest extends TestCase
     /**
      * @dataProvider packTestDataProvider
      */
-    public function testPack(string $link, string $expectedDir, array $fileNames, array $expectedZippedFiles): void
+    public function testPack(string $link, string $expectedDir, iterable $fileNames, array $expectedZippedFiles): void
     {
         $fileSystemMock = $this->initFileSystemMock();
 
         $fileSystemMock->expects(self::once())
-            ->method('has')
+            ->method('directoryExists')
             ->with($expectedDir)
             ->willReturn(true);
 
@@ -72,7 +73,7 @@ class SharedStimulusCSSExporterTest extends TestCase
 
         $fileSystemMock->expects(self::once())
             ->method('listContents')
-            ->willReturn($fileNames);
+            ->willReturn(new DirectoryListing($fileNames));
 
 
         $sharedStimulusCSSExporterService = $this->getPreparedServiceInstance($fileSystemMock);
@@ -89,7 +90,7 @@ class SharedStimulusCSSExporterTest extends TestCase
             [
                 'test_path/stimulus.xml',
                 'test_path/' . StoreService::CSS_DIR_NAME,
-                [['basename' => 'file1.css'], ['basename' => 'file2.css']],
+                [['path' => 'file1.css'], ['path' => 'file2.css']],
                 [
                     $cssZipFolder,
                     $cssZipFolder . 'file1.css',
@@ -105,7 +106,16 @@ class SharedStimulusCSSExporterTest extends TestCase
             [
                 'test_path/stimulusFile',
                 'test_path/' . StoreService::CSS_DIR_NAME,
-                [['basename' => 'fileX']],
+                [['path' => 'fileX']],
+                [
+                    $cssZipFolder,
+                    $cssZipFolder . 'fileX'
+                ],
+            ],
+            [
+                'test_path/stimulusFile',
+                'test_path/' . StoreService::CSS_DIR_NAME,
+                $this->createGenerator([['path' => 'fileX']]),
                 [
                     $cssZipFolder,
                     $cssZipFolder . 'fileX'
@@ -131,7 +141,7 @@ class SharedStimulusCSSExporterTest extends TestCase
     {
         return $this->getMockBuilder(FileSystem::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['has', 'listContents', 'read'])
+            ->onlyMethods(['directoryExists', 'listContents', 'read'])
             ->getMock();
     }
 
@@ -158,5 +168,12 @@ class SharedStimulusCSSExporterTest extends TestCase
             )
         );
         return $service;
+    }
+
+    private function createGenerator(array $values): \Generator
+    {
+        foreach ($values as $value) {
+            yield $value;
+        }
     }
 }

@@ -22,12 +22,10 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus\css\repository;
 
-use core_kernel_classes_Resource;
 use oat\generis\model\data\Ontology;
-use League\Flysystem\FilesystemInterface;
+use oat\oatbox\filesystem\FilesystemException;
+use oat\oatbox\filesystem\FilesystemInterface;
 use oat\oatbox\service\ConfigurableService;
-use oat\taoMediaManager\model\MediaService;
-use League\Flysystem\FileNotFoundException;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
@@ -48,35 +46,41 @@ class StylesheetRepository extends ConfigurableService
         return dirname((string) $link);
     }
 
-    public function listContents(string $path): array
+    public function listContents(string $path): iterable
     {
         return $this->getFileSystem()->listContents($path);
     }
 
     /**
-     * @throws FileNotFoundException
+     * @throws FilesystemException
      */
     public function read(string $path): string
     {
         return $this->getFileSystem()->read($path);
     }
 
-    public function put(string $path, string $contents): bool
+    /**
+     * @throws FilesystemException
+     */
+    public function write(string $path, string $contents): void
     {
-        return $this->getFileSystem()->put($path, $contents);
-    }
-
-    public function putStream(string $path, $streamResource): bool
-    {
-        return $this->getFileSystem()->putStream($path, $streamResource);
+        $this->getFileSystem()->write($path, $contents);
     }
 
     /**
-     * @throws FileNotFoundException
+     * @throws FilesystemException
      */
-    public function delete(string $path): bool
+    public function writeStream(string $path, $streamResource): void
     {
-        return $this->getFileSystem()->delete($path);
+        $this->getFileSystem()->writeStream($path, $streamResource);
+    }
+
+    /**
+     * @throws FilesystemException
+     */
+    public function delete(string $path): void
+    {
+        $this->getFileSystem()->delete($path);
     }
 
     private function getFileSystem(): FilesystemInterface

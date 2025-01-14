@@ -97,6 +97,10 @@ class MediaResourcePreparer extends ConfigurableService implements MediaResource
 
         $contents = $stream->getContents();
 
+        if (!$contents) {
+            throw new tao_models_classes_FileNotFoundException($fileInfo['link']);
+        }
+
         $base64Content = $this->getEncodedSource($fileInfo['mime'], $contents);
 
         $this->setComponentSource($component, $base64Content);

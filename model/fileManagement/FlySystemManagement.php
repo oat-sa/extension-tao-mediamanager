@@ -47,7 +47,7 @@ class FlySystemManagement extends ConfigurableService implements FileManagement
         $baseName = $pathInfo['filename'];
         $extension = isset($pathInfo['extension']) ? '.' . $pathInfo['extension'] : '';
 
-        $filenameWithPath = $baseName . '/' . $baseName . $extension;   
+        $filenameWithPath = $baseName . '/' . $baseName . $extension;
         $stream = $fileSource instanceof File ? $fileSource->readStream() : fopen($fileSource, 'r');
         $this->getFileSystem()->writeStream($filenameWithPath, $stream);
 

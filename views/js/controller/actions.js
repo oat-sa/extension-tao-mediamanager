@@ -142,28 +142,31 @@ define([
                 if (actionContext.context[0] === 'instance') {
                     if (haveItemReferences.length === 0) {
                         message = `${__('Are you sure you want to delete this')} <b>${name}</b>?`;
+                        callConfirmModal(actionContext, message, self.url, data, resolve, reject);
                     } else {
                         message = relatedItemsPopupTpl({
                             name,
                             inUsageMessage:  __('This "%s" is currently used in %d item(s)', name, haveItemReferences.length),
-                            confirmationMessage: __('Are you sure you want to delete this "%s"?', name),
                             items: haveItemReferences
                         });
+                        callAlertModal(actionContext, message, self.url, data, resolve, reject);
                     }
                 } else if (actionContext.context[0] !== 'instance') {
                     if (haveItemReferences.length === 0) {
                         message = `${__('Are you sure you want to delete this class and all of its content?')}`;
+                        callConfirmModal(actionContext, message, self.url, data, resolve, reject);
                     } else if (haveItemReferences.length !== 0) {
                         message = relatedItemsClassPopupTpl({
                             name,
                             number: haveItemReferences.length,
                             items: haveItemReferences
                         });
+                        callAlertModal(actionContext, message, self.url, data, resolve, reject);
                     }
                 }
-                callConfirmModal(actionContext, message, self.url, data, resolve, reject)
             }).catch(errorObject => {
                 let message;
+                
                 if (actionContext.context[0] === 'class' && errorObject.response.code === 999) {
                     message = forbiddenClassActionTpl();
                 }

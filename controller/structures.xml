@@ -54,10 +54,10 @@
                         <icon id="icon-move-item"/>
                     </action>
                     <action id="class-copy-to" name="Copy To" url="/taoMediaManager/MediaManager/copyClass" context="class" group="tree" binding="copyClassTo">
-                        <icon id="icon-copy"/>
+                        <icon id="icon-copy" alt="icon-copy-to"/>
                     </action>
                     <action id="item-copy-to" name="Copy To" url="/taoMediaManager/MediaManager/copyInstance" context="instance" group="tree" binding="copyTo">
-                        <icon id="icon-copy"/>
+                        <icon id="icon-copy" alt="icon-copy-to"/>
                     </action>
                     <action id="media-export" name="Export" url="/taoMediaManager/MediaExport/index" group="tree"
                             context="resource">

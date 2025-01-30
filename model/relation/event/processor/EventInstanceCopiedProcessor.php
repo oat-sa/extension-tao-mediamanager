@@ -44,7 +44,7 @@ class EventInstanceCopiedProcessor implements EventProcessorInterface
      */
     public function process(Event $event): void
     {
-        if (!$event instanceof InstanceCopiedEvent) {
+        if (!$event instanceof InstanceCopiedEvent && $event->getOriginInstanceUri() === null) {
             throw new InvalidEventException($event);
         }
 

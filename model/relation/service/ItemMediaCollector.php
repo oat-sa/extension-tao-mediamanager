@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\relation\service;
 
 use common_Exception;
+use core_kernel_classes_Resource as Resource;
 use oat\generis\model\data\Ontology;
 use oat\taoQtiItem\model\qti\Element;
 use oat\taoQtiItem\model\qti\Service as ItemsService;
@@ -52,7 +53,7 @@ class ItemMediaCollector
      * @return Element[]
      * @throws common_Exception
      */
-    private function getImgElements(\core_kernel_classes_Resource $itemResource): array
+    private function getImgElements(Resource $itemResource): array
     {
         return $this->itemsService
             ->getDataItemByRdfItem($itemResource)

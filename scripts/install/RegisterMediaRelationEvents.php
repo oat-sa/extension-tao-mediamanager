@@ -52,6 +52,8 @@ class RegisterMediaRelationEvents extends InstallAction
         );
 
         $this->getServiceManager()->register(EventManager::SERVICE_ID, $eventManager);
-        return new Report(Report::TYPE_SUCCESS, 'Media Relation Events Listener has been extended');
+
+        $report = new Report(Report::TYPE_SUCCESS, 'Media Relation Events Listener has been extended');
+        return $report->add(Report::createInfo('Please consider running RemoveBrokenResourceRelationMap script'));
     }
 }

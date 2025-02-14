@@ -57,7 +57,7 @@ define([
     forbiddenClassActionTpl
 ) {
     'use strict';
-
+    const overloadLimit = 15;
     const logger = loggerFactory('taoMediaManager/manageMedia');
 
     binder.register('newSharedStimulus', function instanciate(actionContext) {
@@ -144,10 +144,15 @@ define([
                         message = `${__('Are you sure you want to delete this')} <b>${name}</b>?`;
                         callConfirmModal(actionContext, message, self.url, data, resolve, reject);
                     } else {
+                        let itemList = haveItemReferences;
+                        if (itemList.length > overloadLimit) {
+                            itemList = haveItemReferences.slice(0, overloadLimit);
+                        }
                         message = relatedItemsPopupTpl({
                             name,
                             inUsageMessage:  __('This "%s" is currently used in %d item(s)', name, haveItemReferences.length),
-                            items: haveItemReferences
+                            items: itemList,
+                            overload: haveItemReferences.length > overloadLimit
                         });
                         callAlertModal(actionContext, message, self.url, data, resolve, reject);
                     }
@@ -156,10 +161,16 @@ define([
                         message = `${__('Are you sure you want to delete this class and all of its content?')}`;
                         callConfirmModal(actionContext, message, self.url, data, resolve, reject);
                     } else if (haveItemReferences.length !== 0) {
+                        let itemList = haveItemReferences;
+                        if (itemList.length > overloadLimit) {
+                            itemList = haveItemReferences.slice(0, overloadLimit);
+                        }
+
                         message = relatedItemsClassPopupTpl({
                             name,
                             number: haveItemReferences.length,
-                            items: haveItemReferences
+                            items: itemList,
+                            overload: haveItemReferences.length > overloadLimit
                         });
                         callAlertModal(actionContext, message, self.url, data, resolve, reject);
                     }

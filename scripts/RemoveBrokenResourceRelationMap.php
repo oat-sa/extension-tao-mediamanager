@@ -26,7 +26,10 @@ use common_ext_action_InstallAction;
 use oat\generis\model\data\Ontology;
 use oat\tao\model\menu\Action;
 
-class RefreshAssetRelationMap extends common_ext_action_InstallAction
+/**
+ * Remove broken resource relation map
+ */
+class RemoveBrokenResourceRelationMap extends common_ext_action_InstallAction
 {
     public function __invoke($params)
     {

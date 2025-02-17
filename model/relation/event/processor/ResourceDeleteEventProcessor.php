@@ -42,8 +42,6 @@ class ResourceDeleteEventProcessor implements EventProcessorInterface
             throw new InvalidEventException($event);
         }
 
-        if ($event->getResourceType() === TaoOntology::CLASS_URI_ITEM) {
-            $this->itemRelationUpdateService->updateByTargetId($event->getId());
-        }
+        $this->itemRelationUpdateService->updateByTargetId($event->getId());
     }
 }

@@ -47,14 +47,18 @@ class ItemMediaCollector
 
         foreach ($this->getImgElements($itemBody) as $element) {
             $mediaUris[] = tao_helpers_Uri::decode(str_replace(
-                'taomedia://mediamanager/', '', $element->getAttributeValue('src'))
-            );
+                'taomedia://mediamanager/',
+                '',
+                $element->getAttributeValue('src')
+            ));
         }
 
         foreach ($this->getSharedStimulus($itemBody) as $element) {
             $mediaUris[] = tao_helpers_Uri::decode(str_replace(
-                'taomedia://mediamanager/', '', $element->getAttributeValue('href'))
-            );
+                'taomedia://mediamanager/',
+                '',
+                $element->getAttributeValue('href')
+            ));
         }
 
         return $mediaUris;

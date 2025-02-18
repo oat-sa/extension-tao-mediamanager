@@ -32,8 +32,10 @@ class ItemDuplicationEventProcessor implements EventProcessorInterface
     private MediaRelationRepositoryInterface $mediaRelationRepository;
     private ItemMediaCollector $itemMediaCollector;
 
-    public function __construct(MediaRelationRepositoryInterface $mediaRelationRepository, ItemMediaCollector $itemMediaCollector)
-    {
+    public function __construct(
+        MediaRelationRepositoryInterface $mediaRelationRepository,
+        ItemMediaCollector $itemMediaCollector
+    ) {
         $this->mediaRelationRepository = $mediaRelationRepository;
         $this->itemMediaCollector = $itemMediaCollector;
     }

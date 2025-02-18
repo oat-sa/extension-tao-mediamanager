@@ -46,11 +46,15 @@ class ItemMediaCollector
         $itemBody = $this->itemsService->getDataItemByRdfItem($itemResource)->getBody();
 
         foreach ($this->getImgElements($itemBody) as $element) {
-            $mediaUris[] = tao_helpers_Uri::decode(str_replace('taomedia://mediamanager/', '', $element->getAttributeValue('src')));
+            $mediaUris[] = tao_helpers_Uri::decode(str_replace(
+                'taomedia://mediamanager/', '', $element->getAttributeValue('src'))
+            );
         }
 
         foreach ($this->getSharedStimulus($itemBody) as $element) {
-            $mediaUris[] = tao_helpers_Uri::decode(str_replace('taomedia://mediamanager/', '', $element->getAttributeValue('href')));
+            $mediaUris[] = tao_helpers_Uri::decode(str_replace(
+                'taomedia://mediamanager/', '', $element->getAttributeValue('href'))
+            );
         }
 
         return $mediaUris;

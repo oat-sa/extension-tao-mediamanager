@@ -65,18 +65,16 @@ class ItemMediaCollectorTest extends TestCase
             ->method('getBody')
             ->willReturn($bodyMock);
 
-        $bodyMock->expects($this->once())
+        $bodyMock->expects($this->exactly(2))
             ->method('getComposingElements')
-            ->with('oat\taoQtiItem\model\qti\Img')
             ->willReturn([$elementMock]);
 
-        $elementMock->expects($this->once())
+        $elementMock->expects($this->exactly(2))
             ->method('getAttributeValue')
-            ->with('src')
             ->willReturn('taomedia://mediamanager/http_some_decoded_uri');
 
         $this->assertEquals(
-            ['http_some_decoded_uri'],
+            ['http_some_decoded_uri', 'http_some_decoded_uri'],
             $this->subject->getItemMediaResources('itemUri')
         );
     }

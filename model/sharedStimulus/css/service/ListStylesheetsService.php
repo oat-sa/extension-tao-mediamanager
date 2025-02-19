@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus\css\service;
 
+use League\Flysystem\FileAttributes;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\sharedStimulus\css\dto\ListStylesheets;
 use oat\taoMediaManager\model\sharedStimulus\css\repository\StylesheetRepository;
@@ -46,13 +47,15 @@ class ListStylesheetsService extends ConfigurableService
 
         $data = [];
         foreach ($list as $file) {
-            $data[] = [
-                'name' => basename($file['path']),
-                'uri' => DIRECTORY_SEPARATOR . basename($file['path']),
-                'mime' => 'text/css',
-                'filePath' => DIRECTORY_SEPARATOR . basename($file['path']),
-                'size' => $file['fileSize']
-            ];
+            if ($file['type'] == 'file'){
+                $data[] = [
+                    'name' => basename($file['path']),
+                    'uri' => DIRECTORY_SEPARATOR . basename($file['path']),
+                    'mime' => 'text/css',
+                    'filePath' => DIRECTORY_SEPARATOR . basename($file['path']),
+                    'size' => $file['fileSize']
+                ];
+            }
         }
 
         return [

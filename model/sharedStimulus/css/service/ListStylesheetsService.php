@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\model\sharedStimulus\css\service;
 
-use League\Flysystem\FileAttributes;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\sharedStimulus\css\dto\ListStylesheets;
 use oat\taoMediaManager\model\sharedStimulus\css\repository\StylesheetRepository;

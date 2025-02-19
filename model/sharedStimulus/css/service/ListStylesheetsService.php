@@ -46,13 +46,15 @@ class ListStylesheetsService extends ConfigurableService
 
         $data = [];
         foreach ($list as $file) {
-            $data[] = [
-                'name' => basename($file['path']),
-                'uri' => DIRECTORY_SEPARATOR . basename($file['path']),
-                'mime' => 'text/css',
-                'filePath' => DIRECTORY_SEPARATOR . basename($file['path']),
-                'size' => $file['fileSize']
-            ];
+            if ($file['type'] == 'file') {
+                $data[] = [
+                    'name' => basename($file['path']),
+                    'uri' => DIRECTORY_SEPARATOR . basename($file['path']),
+                    'mime' => 'text/css',
+                    'filePath' => DIRECTORY_SEPARATOR . basename($file['path']),
+                    'size' => $file['fileSize']
+                ];
+            }
         }
 
         return [

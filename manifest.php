@@ -23,6 +23,7 @@ use oat\taoMediaManager\controller\Middleware\MiddlewareConfig;
 use oat\taoMediaManager\model\export\service\MediaResourcePreparer;
 use oat\taoMediaManager\model\sharedStimulus\encoder\SharedStimulusMediaEncoder;
 use oat\taoMediaManager\scripts\install\AddAssetClassEditorRolePermission;
+use oat\taoMediaManager\scripts\install\ConfigFactoryExtension;
 use oat\taoMediaManager\scripts\install\RegisterMediaResourcePreparer;
 use oat\taoMediaManager\scripts\install\RegisterSharedStimulusMediaEncoder;
 use oat\taoMediaManager\scripts\install\SetMediaManager;
@@ -176,7 +177,8 @@ return [
             SetupMiddlewares::class,
             [RegisterMediaResourcePreparer::class, ['service' => MediaResourcePreparer::class]],
             [RegisterSharedStimulusMediaEncoder::class, ['service' => SharedStimulusMediaEncoder::class]],
-            AddAssetClassEditorRolePermission::class
+            AddAssetClassEditorRolePermission::class,
+            ConfigFactoryExtension::class
         ]
     ],
     'update' => 'oat\\taoMediaManager\\scripts\\update\\Updater',

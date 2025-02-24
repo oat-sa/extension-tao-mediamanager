@@ -28,7 +28,7 @@
     <rdfs:label xml:lang="en-US"><![CDATA[Transcription]]></rdfs:label>
     <rdfs:comment xml:lang="en-US"><![CDATA[Transcription]]></rdfs:comment>
     <rdfs:domain rdf:resource="http://www.tao.lu/Ontologies/TAOMedia.rdf#Media"/>
-    <widget:widget rdf:resource="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#TextBox"/>
+    <widget:widget rdf:resource="http://www.tao.lu/datatypes/WidgetDefinitions.rdf#TextArea"/>
     <generis:is_language_dependent rdf:resource="http://www.tao.lu/Ontologies/generis.rdf#True"/>
   </rdf:Description>
 

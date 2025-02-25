@@ -21,9 +21,12 @@
 use oat\taoItems\model\user\TaoItemsRoles;
 use oat\taoMediaManager\controller\Middleware\MiddlewareConfig;
 use oat\taoMediaManager\model\export\service\MediaResourcePreparer;
+use oat\taoMediaManager\model\relation\event\processor\EventProcessorContainerProvider;
+use oat\taoMediaManager\model\relation\service\MediaContainerProvider;
 use oat\taoMediaManager\model\sharedStimulus\encoder\SharedStimulusMediaEncoder;
 use oat\taoMediaManager\scripts\install\AddAssetClassEditorRolePermission;
 use oat\taoMediaManager\scripts\install\ConfigFactoryExtension;
+use oat\taoMediaManager\scripts\install\RegisterMediaRelationEvents;
 use oat\taoMediaManager\scripts\install\RegisterMediaResourcePreparer;
 use oat\taoMediaManager\scripts\install\RegisterSharedStimulusMediaEncoder;
 use oat\taoMediaManager\scripts\install\SetMediaManager;
@@ -178,6 +181,7 @@ return [
             [RegisterMediaResourcePreparer::class, ['service' => MediaResourcePreparer::class]],
             [RegisterSharedStimulusMediaEncoder::class, ['service' => SharedStimulusMediaEncoder::class]],
             AddAssetClassEditorRolePermission::class,
+            RegisterMediaRelationEvents::class,
             ConfigFactoryExtension::class
         ]
     ],
@@ -227,6 +231,8 @@ return [
     ],
     'containerServiceProviders' => [
         MediaServiceProvider::class,
+        EventProcessorContainerProvider::class,
+        MediaContainerProvider::class,
     ],
     'middlewares' => [
         MiddlewareConfig::class,

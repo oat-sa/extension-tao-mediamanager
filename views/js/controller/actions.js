@@ -57,7 +57,7 @@ define([
     forbiddenClassActionTpl
 ) {
     'use strict';
-
+    const overloadLimit = 15;
     const logger = loggerFactory('taoMediaManager/manageMedia');
 
     binder.register('newSharedStimulus', function instanciate(actionContext) {
@@ -142,28 +142,42 @@ define([
                 if (actionContext.context[0] === 'instance') {
                     if (haveItemReferences.length === 0) {
                         message = `${__('Are you sure you want to delete this')} <b>${name}</b>?`;
+                        callConfirmModal(actionContext, message, self.url, data, resolve, reject);
                     } else {
+                        let itemList = haveItemReferences;
+                        if (itemList.length > overloadLimit) {
+                            itemList = haveItemReferences.slice(0, overloadLimit);
+                        }
                         message = relatedItemsPopupTpl({
                             name,
                             inUsageMessage:  __('This "%s" is currently used in %d item(s)', name, haveItemReferences.length),
-                            confirmationMessage: __('Are you sure you want to delete this "%s"?', name),
-                            items: haveItemReferences
+                            items: itemList,
+                            overload: haveItemReferences.length > overloadLimit
                         });
+                        callAlertModal(actionContext, message, self.url, data, resolve, reject);
                     }
                 } else if (actionContext.context[0] !== 'instance') {
                     if (haveItemReferences.length === 0) {
                         message = `${__('Are you sure you want to delete this class and all of its content?')}`;
+                        callConfirmModal(actionContext, message, self.url, data, resolve, reject);
                     } else if (haveItemReferences.length !== 0) {
+                        let itemList = haveItemReferences;
+                        if (itemList.length > overloadLimit) {
+                            itemList = haveItemReferences.slice(0, overloadLimit);
+                        }
+
                         message = relatedItemsClassPopupTpl({
                             name,
                             number: haveItemReferences.length,
-                            items: haveItemReferences
+                            items: itemList,
+                            overload: haveItemReferences.length > overloadLimit
                         });
+                        callAlertModal(actionContext, message, self.url, data, resolve, reject);
                     }
                 }
-                callConfirmModal(actionContext, message, self.url, data, resolve, reject)
             }).catch(errorObject => {
                 let message;
+                
                 if (actionContext.context[0] === 'class' && errorObject.response.code === 999) {
                     message = forbiddenClassActionTpl();
                 }

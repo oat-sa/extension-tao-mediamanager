@@ -70,7 +70,12 @@ class ImportMedia implements Action
                 $fullPath = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $file;
                 // Only process files (ignoring subdirectories)
                 if (is_file($fullPath)) {
-                    $uri = $service->createMediaInstance($fullPath, $destinationClassUri, DEFAULT_LANG, basename($fullPath));
+                    $uri = $service->createMediaInstance(
+                        $fullPath,
+                        $destinationClassUri,
+                        DEFAULT_LANG,
+                        basename($fullPath)
+                    );
                     if ($uri !== false) {
                         $uris[] = $uri;
                     }

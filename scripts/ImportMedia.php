@@ -238,10 +238,8 @@ class importMedia implements Action, ServiceLocatorAwareInterface
     protected function importPath($path, $parentClass)
     {
         if (is_dir($path)) {
-            $currentClass = $this->directoryToClass ? $this->getMediaClass(
-                basename($path),
-                $parentClass->getUri()
-                ) : $parentClass;
+            $mediaPath = $this->getMediaClass(basename($path), $parentClass->getUri());
+            $currentClass = $this->directoryToClass ? $mediaPath : $parentClass;
             $packages = $this->listPackages($path);
             $finalReport = new Report(Report::TYPE_SUCCESS);
 
@@ -301,7 +299,7 @@ class importMedia implements Action, ServiceLocatorAwareInterface
             }
         } catch (Exception $e) {
             $report = new Report(
-                Report::TYPE_ERROR, 
+                Report::TYPE_ERROR,
                 "An unexpected error occurred while importing $fileName: " . $e->getMessage()
             );
         }

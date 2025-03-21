@@ -238,8 +238,11 @@ class importMedia implements Action, ServiceLocatorAwareInterface
     protected function importPath($path, $parentClass)
     {
         if (is_dir($path)) {
-            $mediaPath = $this->getMediaClass(basename($path), $parentClass->getUri());
-            $currentClass = $this->directoryToClass ? $mediaPath : $parentClass;
+            if ($this->directoryToClass) {
+                $currentClass = $this->getMediaClass(basename($path), $parentClass->getUri());
+            } else {
+                $currentClass = $parentClass;
+            }
             $packages = $this->listPackages($path);
             $finalReport = new Report(Report::TYPE_SUCCESS);
 

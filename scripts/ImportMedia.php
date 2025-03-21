@@ -112,11 +112,10 @@ class importMedia implements Action, ServiceLocatorAwareInterface
                 . "\t -c <class>\t The name of the parent class for importing media\n"
                 . "\t -p <package>\t The path of a media package (file or folder)\n"
                 . "\t -r\t\t Recurse in subdirectories (for folders)\n"
-                . "\t -n\t\t Create a new class for each folder (otherwise, files in subfolders go to the parent class)\n"
+                . "\t -n\t\t Create a new class for each folder \n"
                 . "\t -e\t\t Rollback on error\n"
                 . "\t -w\t\t Rollback on warning\n"
                 . "\t -h\t\t Show this help\n"
-                . "\nNote: With -n, each folder becomes its own class. Without it, all files (even in subfolders) are imported into the specified parent class."
             );
         }
 
@@ -239,9 +238,10 @@ class importMedia implements Action, ServiceLocatorAwareInterface
     protected function importPath($path, $parentClass)
     {
         if (is_dir($path)) {
-            // Determine which class to use for this folder:
-            // Create a new class if directoryToClass is true; otherwise, use the provided parent.
-            $currentClass = $this->directoryToClass ? $this->getMediaClass(basename($path), $parentClass->getUri()) : $parentClass;
+            $currentClass = $this->directoryToClass ? $this->getMediaClass(
+                basename($path),
+                $parentClass->getUri()
+                ) : $parentClass;
             $packages = $this->listPackages($path);
             $finalReport = new Report(Report::TYPE_SUCCESS);
 
@@ -249,9 +249,16 @@ class importMedia implements Action, ServiceLocatorAwareInterface
                 if (is_dir($package['path'])) {
                     if ($this->recurse) {
                         // If -n is enabled, pass the current folder's class; otherwise, keep using the parent class.
-                        $report = $this->importPath($package['path'], $this->directoryToClass ? $currentClass : $parentClass);
+                        $report = $this->importPath(
+                            $package['path'],
+                            $this->directoryToClass ? $currentClass : $parentClass
+                        );
                     } else {
-                        $this->showMessage("Skipping subfolder " . $package['path'] . " (recursion not enabled)", [], Report::TYPE_INFO);
+                        $this->showMessage(
+                            "Skipping subfolder " . $package['path'] . " (recursion not enabled)",
+                            [],
+                            Report::TYPE_INFO
+                        );
                         continue;
                     }
                 } else {
@@ -293,7 +300,10 @@ class importMedia implements Action, ServiceLocatorAwareInterface
                 $report = new Report(Report::TYPE_ERROR, "Failed to import media from $fileName");
             }
         } catch (Exception $e) {
-            $report = new Report(Report::TYPE_ERROR, "An unexpected error occurred while importing $fileName: " . $e->getMessage());
+            $report = new Report(
+                Report::TYPE_ERROR, 
+                "An unexpected error occurred while importing $fileName: " . $e->getMessage()
+            );
         }
 
         helpers_TimeOutHelper::reset();

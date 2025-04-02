@@ -54,6 +54,7 @@ use oat\taoMediaManager\model\sharedStimulus\service\TempFileWriter;
 use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourceSpecification;
 use oat\taoMediaManager\model\TaoMediaOntology;
 use oat\taoMediaManager\model\Specification\MediaClassSpecification;
+use oat\taoMediaManager\model\transcription\TranscriptionMimeTypesProvider;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
@@ -214,5 +215,9 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                     service(RdfMediaRelationRepository::class),
                 ]
             );
+
+
+        $services->set(TranscriptionMimeTypesProvider::class)
+            ->public();
     }
 }

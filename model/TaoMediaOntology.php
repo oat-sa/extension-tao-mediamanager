@@ -35,4 +35,5 @@ interface TaoMediaOntology
     public const PROPERTY_MD5 = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#md5';
 
     public const PROPERTY_MIME_TYPE = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#mimeType';
+    public const PROPERTY_TRANSCRIPTION = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#Transcription';
 }

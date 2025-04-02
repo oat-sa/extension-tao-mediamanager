@@ -32,6 +32,9 @@ use oat\taoMediaManager\model\accessControl\MediaPermissionService;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\tao\model\Lists\Business\Validation\DependsOnPropertyValidator;
 use core_kernel_classes_Resource;
+use oat\taoMediaManager\model\TaoMediaOntology;
+use oat\taoMediaManager\model\transcription\TranscriptionMimeTypesProvider;
+use tao_actions_form_Instance;
 use tao_actions_SaSModule;
 use tao_helpers_form_FormContainer as FormContainer;
 use tao_helpers_Uri;
@@ -198,6 +201,12 @@ class MediaManager extends tao_actions_SaSModule
                         $this->getDependsOnPropertyValidator(),
                     ],
                 ],
+                tao_actions_form_Instance::RESTRICTED_PROPERTIES => [
+                    TaoMediaOntology::PROPERTY_TRANSCRIPTION => [
+                        TaoMediaOntology::PROPERTY_MIME_TYPE =>
+                            $this->getPsrContainer()->get(TranscriptionMimeTypesProvider::class)->getAll(),
+                    ]
+                ]
             ]
         );
     }

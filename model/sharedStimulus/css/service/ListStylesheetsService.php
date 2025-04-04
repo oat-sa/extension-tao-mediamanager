@@ -47,6 +47,7 @@ class ListStylesheetsService extends ConfigurableService
         $data = [];
         foreach ($list as $file) {
             if ($file['type'] == 'file') {
+                echo $file['path'];
                 $data[] = [
                     'name' => basename($file['path']),
                     'uri' => DIRECTORY_SEPARATOR . basename($file['path']),

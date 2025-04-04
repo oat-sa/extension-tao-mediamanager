@@ -25,6 +25,7 @@ use oat\taoMediaManager\model\relation\event\processor\EventProcessorContainerPr
 use oat\taoMediaManager\model\relation\service\MediaContainerProvider;
 use oat\taoMediaManager\model\sharedStimulus\encoder\SharedStimulusMediaEncoder;
 use oat\taoMediaManager\scripts\install\AddAssetClassEditorRolePermission;
+use oat\taoMediaManager\scripts\install\ConfigFactoryExtension;
 use oat\taoMediaManager\scripts\install\RegisterMediaRelationEvents;
 use oat\taoMediaManager\scripts\install\RegisterMediaResourcePreparer;
 use oat\taoMediaManager\scripts\install\RegisterSharedStimulusMediaEncoder;
@@ -181,6 +182,7 @@ return [
             [RegisterSharedStimulusMediaEncoder::class, ['service' => SharedStimulusMediaEncoder::class]],
             AddAssetClassEditorRolePermission::class,
             RegisterMediaRelationEvents::class,
+            ConfigFactoryExtension::class
         ]
     ],
     'update' => 'oat\\taoMediaManager\\scripts\\update\\Updater',

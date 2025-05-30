@@ -216,6 +216,7 @@ define([
             qtiObject = _widget.element,
             baseUrl = _widget.options.baseUrl;
         const $container = _widget.$original;
+        const compactAppearance = !!qtiObject.hasClass('compact-appearance');
 
         $form.html(
             formTpl({
@@ -223,9 +224,15 @@ define([
                 src: qtiObject.attr('data'),
                 alt: qtiObject.attr('alt'),
                 height: qtiObject.attr('height'),
-                width: qtiObject.attr('width')
+                width: qtiObject.attr('width'),
+                isAudio: /audio/.test(qtiObject.attr('type')),
+                compactAppearance: !!qtiObject.hasClass('compact-appearance')
             })
         );
+
+        if (/audio/.test(qtiObject.attr('type')) && compactAppearance){
+            $container.parent().addClass('compact-appearance');
+        }
 
         //init resource manager
         _initUpload(_widget);
@@ -279,6 +286,20 @@ define([
             },
             align: function (qtiObjectAlign, value) {
                 inlineHelper.positionFloat(_widget, value);
+            },
+            compactAppearance: function (object, value) {
+                if(value) {
+                    if(!$container.hasClass('compact-appearance')) {
+                        qtiObject.addClass('compact-appearance');
+                        $container.parent().addClass('compact-appearance');
+                        clearMediaSize();
+                    }
+                    $panelObjectSize.hide();
+                } else {
+                    qtiObject.removeClass('compact-appearance');
+                    $container.parent().removeClass('compact-appearance');
+                    $panelObjectSize.show();
+                }
             }
         });
     };

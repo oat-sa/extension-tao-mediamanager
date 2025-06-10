@@ -217,6 +217,7 @@ define([
             baseUrl = _widget.options.baseUrl;
         const $container = _widget.$original;
         const compactAppearance = !!qtiObject.hasClass('compact-appearance');
+        const isAudio = /audio/.test(qtiObject.attr('type'))
 
         $form.html(
             formTpl({
@@ -225,12 +226,12 @@ define([
                 alt: qtiObject.attr('alt'),
                 height: qtiObject.attr('height'),
                 width: qtiObject.attr('width'),
-                isAudio: /audio/.test(qtiObject.attr('type')),
-                compactAppearance: !!qtiObject.hasClass('compact-appearance')
+                isAudio,
+                compactAppearance
             })
         );
 
-        if (/audio/.test(qtiObject.attr('type')) && compactAppearance){
+        if (isAudio && compactAppearance){
             $container.parent().addClass('compact-appearance');
         }
 

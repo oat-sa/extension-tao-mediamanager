@@ -293,7 +293,6 @@ define([
                     if(!$container.hasClass('compact-appearance')) {
                         qtiObject.addClass('compact-appearance');
                         $container.parent().addClass('compact-appearance');
-                        clearMediaSize();
                     }
                     $panelObjectSize.hide();
                 } else {

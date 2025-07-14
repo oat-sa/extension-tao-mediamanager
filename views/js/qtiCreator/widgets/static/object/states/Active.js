@@ -20,6 +20,7 @@ define([
     'lodash',
     'jquery',
     'i18n',
+    'services/features',
     'taoQtiItem/qtiCreator/widgets/states/factory',
     'taoQtiItem/qtiCreator/widgets/static/states/Active',
     'tpl!taoQtiItem/qtiCreator/tpl/forms/static/object',
@@ -29,7 +30,7 @@ define([
     'ui/previewer',
     'ui/resourcemgr',
     'ui/tooltip'
-], function (_, $, __, stateFactory, Active, formTpl, formElement, inlineHelper, mediaEditorComponent) {
+], function (_, $, __, features, stateFactory, Active, formTpl, formElement, inlineHelper, mediaEditorComponent) {
     'use strict';
     /**
      * media Editor instance if has been initialized
@@ -217,7 +218,8 @@ define([
             baseUrl = _widget.options.baseUrl;
         const $container = _widget.$original;
         const compactAppearance = !!qtiObject.hasClass('compact-appearance');
-        const isAudio = /audio/.test(qtiObject.attr('type'))
+        const isAudio = /audio/.test(qtiObject.attr('type'));
+        const isCompactAppearanceAvailable = features.isVisible('taoQtiItem/creator/interaction/media/property/compactAppearance');
 
         $form.html(
             formTpl({
@@ -227,6 +229,7 @@ define([
                 height: qtiObject.attr('height'),
                 width: qtiObject.attr('width'),
                 isAudio,
+                isCompactAppearanceAvailable,
                 compactAppearance
             })
         );

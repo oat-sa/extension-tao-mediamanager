@@ -234,7 +234,7 @@ define([
             })
         );
 
-        if (isAudio && compactAppearance){
+        if (isAudio && compactAppearance && isCompactAppearanceAvailable){
             $container.parent().addClass('compact-appearance');
         }
 

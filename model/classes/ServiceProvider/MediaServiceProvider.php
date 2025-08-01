@@ -55,6 +55,8 @@ use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourc
 use oat\taoMediaManager\model\TaoMediaOntology;
 use oat\taoMediaManager\model\Specification\MediaClassSpecification;
 use oat\taoMediaManager\model\transcription\TranscriptionMimeTypesProvider;
+use oat\taoMediaManager\model\FeatureFlag\CompactAppearanceFeatureFlagHandler;
+use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
@@ -219,5 +221,11 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
 
         $services->set(TranscriptionMimeTypesProvider::class)
             ->public();
+
+        $services->set(CompactAppearanceFeatureFlagHandler::class, CompactAppearanceFeatureFlagHandler::class)
+            ->args([
+                service(FeatureFlagCheckerInterface::class),
+            ])
+            ->tag('oat.tao.FeatureFlagConfigHandler');
     }
 }

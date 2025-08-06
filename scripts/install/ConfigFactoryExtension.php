@@ -31,22 +31,29 @@ class ConfigFactoryExtension extends InstallAction
 {
     public function __invoke($params)
     {
-        $creatorConfigFactory = $this->getServiceManager()->get(CreatorConfigFactory::SERVICE_ID);
+        $serviceManager = $this->getServiceManager();
+
+        if ($serviceManager->has(CreatorConfigFactory::SERVICE_ID)) {
+            $creatorConfigFactory = $serviceManager->get(CreatorConfigFactory::SERVICE_ID);
+        } else {
+            $creatorConfigFactory = new CreatorConfigFactory();
+        }
 
         $extendedProperties = $creatorConfigFactory->getOption(CreatorConfigFactory::OPTION_EXTENDED_PROPERTIES, []);
-        $extendedProperties['transcriptionMetadata'] = TaoMediaOntology::PROPERTY_TRANSCRIPTION;
-        $extendedProperties['mediaManagerUriPrefix'] = MediaSource::SCHEME_NAME;
+        $extendedControlEndpoints = $creatorConfigFactory->getOption(CreatorConfigFactory::OPTION_EXTENDED_CONTROL_ENDPOINTS, []);
 
-        $extendedControlEndpoints = $creatorConfigFactory
-            ->getOption(CreatorConfigFactory::OPTION_EXTENDED_CONTROL_ENDPOINTS, []);
-        $extendedControlEndpoints['resourceMetadataUrl'] = ['tao', 'ResourceMetadata', 'get'];
+        $extendedProperties = array_merge($extendedProperties, [
+            'transcriptionMetadata' => TaoMediaOntology::PROPERTY_TRANSCRIPTION,
+            'mediaManagerUriPrefix' => MediaSource::SCHEME_NAME,
+        ]);
 
-        $creatorConfigFactory
-            ->setOption(CreatorConfigFactory::OPTION_EXTENDED_PROPERTIES, $extendedProperties);
+        $extendedControlEndpoints = array_merge($extendedControlEndpoints, [
+            'resourceMetadataUrl' => ['tao', 'ResourceMetadata', 'get'],
+        ]);
 
-        $creatorConfigFactory
-            ->setOption(CreatorConfigFactory::OPTION_EXTENDED_CONTROL_ENDPOINTS, $extendedControlEndpoints);
+        $creatorConfigFactory->setOption(CreatorConfigFactory::OPTION_EXTENDED_PROPERTIES, $extendedProperties);
+        $creatorConfigFactory->setOption(CreatorConfigFactory::OPTION_EXTENDED_CONTROL_ENDPOINTS, $extendedControlEndpoints);
 
-        $this->getServiceManager()->register(CreatorConfigFactory::SERVICE_ID, $creatorConfigFactory);
+        $serviceManager->register(CreatorConfigFactory::SERVICE_ID, $creatorConfigFactory);
     }
 }

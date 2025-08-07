@@ -40,7 +40,10 @@ class ConfigFactoryExtension extends InstallAction
         }
 
         $extendedProperties = $creatorConfigFactory->getOption(CreatorConfigFactory::OPTION_EXTENDED_PROPERTIES, []);
-        $extendedControlEndpoints = $creatorConfigFactory->getOption(CreatorConfigFactory::OPTION_EXTENDED_CONTROL_ENDPOINTS, []);
+        $extendedControlEndpoints = $creatorConfigFactory->getOption(
+            CreatorConfigFactory::OPTION_EXTENDED_CONTROL_ENDPOINTS,
+            []
+        );
 
         $extendedProperties = array_merge($extendedProperties, [
             'transcriptionMetadata' => TaoMediaOntology::PROPERTY_TRANSCRIPTION,
@@ -52,7 +55,10 @@ class ConfigFactoryExtension extends InstallAction
         ]);
 
         $creatorConfigFactory->setOption(CreatorConfigFactory::OPTION_EXTENDED_PROPERTIES, $extendedProperties);
-        $creatorConfigFactory->setOption(CreatorConfigFactory::OPTION_EXTENDED_CONTROL_ENDPOINTS, $extendedControlEndpoints);
+        $creatorConfigFactory->setOption(
+            CreatorConfigFactory::OPTION_EXTENDED_CONTROL_ENDPOINTS,
+            $extendedControlEndpoints
+        );
 
         $serviceManager->register(CreatorConfigFactory::SERVICE_ID, $creatorConfigFactory);
     }

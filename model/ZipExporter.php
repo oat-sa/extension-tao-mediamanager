@@ -186,7 +186,7 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
                             ->getFileStream($link);
 
                         $preparedFileContent = $this->getMediaResourcePreparer()->prepare($fileResource, $fileContent);
-                        $zip->addFromString($archivePath . $fileResource->getLabel(), $preparedFileContent);
+                        $zip->addFromString($archivePath . basename($link), $preparedFileContent);
 
                         $this->getSharedStimulusCSSExporter()->pack($fileResource, $link, $zip);
                     } catch (common_exception_UserReadableException $exception) {

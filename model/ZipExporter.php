@@ -32,6 +32,7 @@ use core_kernel_classes_Literal;
 use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
 use Exception;
+use InvalidArgumentException;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ServiceManager;
 use oat\taoMediaManager\model\export\service\MediaResourcePreparerInterface;
@@ -259,7 +260,13 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
     private function getFilename(core_kernel_classes_Resource $file, string $link): string
     {
         $label = $file->getLabel();
-        $extension = '.' . pathinfo($link, PATHINFO_EXTENSION) ?: pathinfo($label, PATHINFO_EXTENSION);
+        $extension = pathinfo($link, PATHINFO_EXTENSION) ?: pathinfo($label, PATHINFO_EXTENSION);
+
+        if (empty($extension)) {
+            throw new InvalidArgumentException(__('Cannot export file "%s": no extension found', $label));
+        }
+
+        $extension = '.' . $extension;
 
         return str_ends_with($label, $extension) ? $label : $label . $extension;
     }

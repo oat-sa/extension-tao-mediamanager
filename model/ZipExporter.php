@@ -181,12 +181,13 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
                 foreach ($files as $fileResource) {
                     try {
                         $link = $this->getResourceLink($fileResource);
-
-                        $fileContent = $this->getFileManagement()
-                            ->getFileStream($link);
+                        $fileContent = $this->getFileManagement()->getFileStream($link);
 
                         $preparedFileContent = $this->getMediaResourcePreparer()->prepare($fileResource, $fileContent);
-                        $zip->addFromString($archivePath . basename($link), $preparedFileContent);
+                        $zip->addFromString(
+                            $archivePath . $this->getFilename($fileResource, $link),
+                            $preparedFileContent
+                        );
 
                         $this->getSharedStimulusCSSExporter()->pack($fileResource, $link, $zip);
                     } catch (common_exception_UserReadableException $exception) {
@@ -253,5 +254,13 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
         );
 
         return $link instanceof core_kernel_classes_Literal ? $link->literal : $link;
+    }
+
+    private function getFilename(core_kernel_classes_Resource $file, string $link): string
+    {
+        $label = $file->getLabel();
+        $extension = '.' . pathinfo($link, PATHINFO_EXTENSION) ?: pathinfo($label, PATHINFO_EXTENSION);
+
+        return str_ends_with($label, $extension) ? $label : $label . $extension;
     }
 }

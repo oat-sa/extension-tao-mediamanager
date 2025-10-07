@@ -182,18 +182,18 @@ class SharedStimulusPackageImporter extends ZipImporter
 
     private function isFileExtension(SplFileInfo $file, string $extension): bool
     {
-        if ($file->isFile()) {
-            $fileExtension = $file->getExtension();
-            $filename = $file->getFilename();
-
-            if (empty($fileExtension)) {
-                throw new InvalidArgumentException(__('The file "%s" is missing an extension.', $filename));
-            }
-
-            return preg_match('/^[\w]/', $filename) === 1 && $fileExtension === $extension;
+        if (!$file->isFile()) {
+            return false;
         }
 
-        return false;
+        $fileExtension = $file->getExtension();
+        $filename = $file->getFilename();
+
+        if (empty($fileExtension)) {
+            throw new InvalidArgumentException(__('The file "%s" is missing an extension.', $filename));
+        }
+
+        return preg_match('/^[\w]/', $filename) === 1 && $fileExtension === $extension;
     }
 
     /**

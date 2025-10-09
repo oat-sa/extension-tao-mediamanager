@@ -32,6 +32,7 @@ use core_kernel_classes_Literal;
 use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
 use Exception;
+use InvalidArgumentException;
 use oat\oatbox\log\LoggerAwareTrait;
 use oat\oatbox\service\ServiceManager;
 use oat\taoMediaManager\model\export\service\MediaResourcePreparerInterface;
@@ -181,12 +182,13 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
                 foreach ($files as $fileResource) {
                     try {
                         $link = $this->getResourceLink($fileResource);
-
-                        $fileContent = $this->getFileManagement()
-                            ->getFileStream($link);
+                        $fileContent = $this->getFileManagement()->getFileStream($link);
 
                         $preparedFileContent = $this->getMediaResourcePreparer()->prepare($fileResource, $fileContent);
-                        $zip->addFromString($archivePath . $fileResource->getLabel(), $preparedFileContent);
+                        $zip->addFromString(
+                            $archivePath . $this->getFilename($fileResource, $link),
+                            $preparedFileContent
+                        );
 
                         $this->getSharedStimulusCSSExporter()->pack($fileResource, $link, $zip);
                     } catch (common_exception_UserReadableException $exception) {
@@ -253,5 +255,19 @@ class ZipExporter implements tao_models_classes_export_ExportHandler
         );
 
         return $link instanceof core_kernel_classes_Literal ? $link->literal : $link;
+    }
+
+    private function getFilename(core_kernel_classes_Resource $file, string $link): string
+    {
+        $label = $file->getLabel();
+        $extension = pathinfo($link, PATHINFO_EXTENSION);
+
+        if (empty($extension)) {
+            throw new InvalidArgumentException(__('Cannot export file "%s": no extension found', $label));
+        }
+
+        $extension = '.' . $extension;
+
+        return str_ends_with($label, $extension) ? $label : $label . $extension;
     }
 }

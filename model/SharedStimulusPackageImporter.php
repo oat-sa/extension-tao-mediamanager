@@ -25,6 +25,7 @@ namespace oat\taoMediaManager\model;
 use common_Exception;
 use common_exception_Error;
 use common_exception_UserReadableException;
+use InvalidArgumentException;
 use oat\oatbox\reporting\Report as Report;
 use core_kernel_classes_Class;
 use core_kernel_classes_Resource as Resource;
@@ -179,13 +180,20 @@ class SharedStimulusPackageImporter extends ZipImporter
         return $cssFileInfoArray;
     }
 
-    public function isFileExtension(SplFileInfo $file, string $extension): bool
+    private function isFileExtension(SplFileInfo $file, string $extension): bool
     {
-        if ($file->isFile()) {
-            return preg_match('/^[\w]/', $file->getFilename()) === 1 && $file->getExtension() === $extension;
+        if (!$file->isFile()) {
+            return false;
         }
 
-        return false;
+        $fileExtension = $file->getExtension();
+        $filename = $file->getFilename();
+
+        if (empty($fileExtension)) {
+            throw new InvalidArgumentException(__('The file "%s" is missing an extension.', $filename));
+        }
+
+        return preg_match('/^[\w]/', $filename) === 1 && $fileExtension === $extension;
     }
 
     /**

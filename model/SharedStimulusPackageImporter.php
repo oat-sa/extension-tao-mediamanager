@@ -193,8 +193,6 @@ class SharedStimulusPackageImporter extends ZipImporter
     /**
      * Convert file linked inside and store it into media manager
      *
-     * @param string $originalStimulusFilename Keeps the original filename for labeling the media resource.
-     *
      * @throws common_exception_Error
      */
     private function storeSharedStimulus(

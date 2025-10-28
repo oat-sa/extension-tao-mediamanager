@@ -200,11 +200,9 @@ class SharedStimulusPackageImporter extends ZipImporter
         string $lang,
         string $xmlFile,
         array $cssFiles,
-        string $originalStimulusFilename,
+        string $stimulusFilename,
         string $userId = null
     ): Report {
-        $stimulusFilename = $originalStimulusFilename;
-
         $directory = $this->getSharedStimulusStoreService()->store(
             $xmlFile,
             $stimulusFilename,

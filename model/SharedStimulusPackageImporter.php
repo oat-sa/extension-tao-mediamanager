@@ -64,6 +64,7 @@ class SharedStimulusPackageImporter extends ZipImporter
             $extractPath = $this->extractArchive($uploadedFile);
 
             $xmlFile = $this->getSharedStimulusFile($extractPath);
+            $originalStimulusFilename = basename($xmlFile);
             $cssFiles = $this->getSharedStimulusStylesheets($extractPath);
 
             $this->getUploadService()->remove($uploadedFile);
@@ -80,6 +81,7 @@ class SharedStimulusPackageImporter extends ZipImporter
                 $this->getDecodedUri($form),
                 $embeddedFile,
                 $cssFiles,
+                $originalStimulusFilename,
                 $userId
             );
 
@@ -206,10 +208,9 @@ class SharedStimulusPackageImporter extends ZipImporter
         string $lang,
         string $xmlFile,
         array $cssFiles,
+        string $stimulusFilename,
         string $userId = null
     ): Report {
-        $stimulusFilename = basename($xmlFile);
-
         $directory = $this->getSharedStimulusStoreService()->store(
             $xmlFile,
             $stimulusFilename,
@@ -224,7 +225,7 @@ class SharedStimulusPackageImporter extends ZipImporter
         );
 
         if ($mediaResourceUri !== false) {
-            $report = Report::createSuccess(__('Imported %s', basename($xmlFile)));
+            $report = Report::createSuccess(__('Imported %s', $stimulusFilename));
             $report->setData(['uriResource' => $mediaResourceUri]);
         } else {
             $report = Report::createFailure(__('Fail to import Shared Stimulus'));

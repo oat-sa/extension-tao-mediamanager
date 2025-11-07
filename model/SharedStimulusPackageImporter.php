@@ -25,6 +25,7 @@ namespace oat\taoMediaManager\model;
 use common_Exception;
 use common_exception_Error;
 use common_exception_UserReadableException;
+use InvalidArgumentException;
 use oat\oatbox\reporting\Report as Report;
 use core_kernel_classes_Class;
 use core_kernel_classes_Resource as Resource;
@@ -63,6 +64,7 @@ class SharedStimulusPackageImporter extends ZipImporter
             $extractPath = $this->extractArchive($uploadedFile);
 
             $xmlFile = $this->getSharedStimulusFile($extractPath);
+            $originalStimulusFilename = basename($xmlFile);
             $cssFiles = $this->getSharedStimulusStylesheets($extractPath);
 
             $this->getUploadService()->remove($uploadedFile);
@@ -79,6 +81,7 @@ class SharedStimulusPackageImporter extends ZipImporter
                 $this->getDecodedUri($form),
                 $embeddedFile,
                 $cssFiles,
+                $originalStimulusFilename,
                 $userId
             );
 
@@ -179,13 +182,20 @@ class SharedStimulusPackageImporter extends ZipImporter
         return $cssFileInfoArray;
     }
 
-    public function isFileExtension(SplFileInfo $file, string $extension): bool
+    private function isFileExtension(SplFileInfo $file, string $extension): bool
     {
-        if ($file->isFile()) {
-            return preg_match('/^[\w]/', $file->getFilename()) === 1 && $file->getExtension() === $extension;
+        if (!$file->isFile()) {
+            return false;
         }
 
-        return false;
+        $fileExtension = $file->getExtension();
+        $filename = $file->getFilename();
+
+        if (empty($fileExtension)) {
+            throw new InvalidArgumentException(__('The file "%s" is missing an extension.', $filename));
+        }
+
+        return preg_match('/^[\w]/', $filename) === 1 && $fileExtension === $extension;
     }
 
     /**
@@ -198,10 +208,9 @@ class SharedStimulusPackageImporter extends ZipImporter
         string $lang,
         string $xmlFile,
         array $cssFiles,
+        string $stimulusFilename,
         string $userId = null
     ): Report {
-        $stimulusFilename = basename($xmlFile);
-
         $directory = $this->getSharedStimulusStoreService()->store(
             $xmlFile,
             $stimulusFilename,
@@ -216,7 +225,7 @@ class SharedStimulusPackageImporter extends ZipImporter
         );
 
         if ($mediaResourceUri !== false) {
-            $report = Report::createSuccess(__('Imported %s', basename($xmlFile)));
+            $report = Report::createSuccess(__('Imported %s', $stimulusFilename));
             $report->setData(['uriResource' => $mediaResourceUri]);
         } else {
             $report = Report::createFailure(__('Fail to import Shared Stimulus'));

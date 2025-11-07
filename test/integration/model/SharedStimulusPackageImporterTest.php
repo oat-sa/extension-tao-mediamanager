@@ -188,28 +188,6 @@ class SharedStimulusPackageImporterTest extends TestCase
     }
 
     /**
-     * @dataProvider fileExtensionDataProvider
-     */
-    public function testFileExtension(string $fileName, string $extension, bool $expectedResult): void
-    {
-        $o = new \SplFileObject($fileName, 'r');
-
-        $result = $this->getPackageImporter()->isFileExtension($o, $extension);
-        $this->assertEquals($expectedResult, $result);
-    }
-
-    public function fileExtensionDataProvider(): array
-    {
-        $sampleDir = dirname(__DIR__) . '/sample/sharedStimulus/';
-        return [
-            [$sampleDir . 'encodedImage.zip', 'zip', true],
-            [$sampleDir . 'stimulusPackage.zip', 'xml', false],
-            [$sampleDir . 'interactions.xml', '', false],
-            ['php://stdout', 'extension', false]
-        ];
-    }
-
-    /**
      * Providerr that returns packages that are missing files
      * @return string[][]
      */

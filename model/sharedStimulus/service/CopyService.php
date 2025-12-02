@@ -124,35 +124,25 @@ class CopyService
 
         $destCssDir = $destinationDir . '/' . StoreService::CSS_DIR_NAME;
 
-        try {
-            $fs->createDirectory($destCssDir);
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        $fs->createDirectory($destCssDir);
 
         foreach ($cssFiles['children'] as $child) {
             $sourcePath = $cssPath . '/' . StoreService::CSS_DIR_NAME . '/' . $child['name'];
             $destPath = $destCssDir . '/' . $child['name'];
 
-            try {
-                if (!$fs->fileExists($sourcePath)) {
-                    continue;
-                }
-
-                $sourceStream = $fs->readStream($sourcePath);
-
-                if (!is_resource($sourceStream)) {
-                    continue;
-                }
-
-                $fs->writeStream($destPath, $sourceStream);
-
-                if (is_resource($sourceStream)) {
-                    fclose($sourceStream);
-                }
-            } catch (\Exception $e) {
-                throw $e;
+            if (!$fs->fileExists($sourcePath)) {
+                continue;
             }
+
+            $sourceStream = $fs->readStream($sourcePath);
+
+            if (!is_resource($sourceStream)) {
+                continue;
+            }
+
+            $fs->writeStream($destPath, $sourceStream);
+
+            fclose($sourceStream);
         }
     }
 

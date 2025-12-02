@@ -53,6 +53,11 @@ class ListStylesheetsService extends ConfigurableService
             try {
                 $list = $stylesheetRepository->listContents($cssPath)->toArray();
             } catch (\Exception $e) {
+                $this->logError(sprintf(
+                    '[ListStylesheetsService] Failed to list contents of %s: %s',
+                    $cssPath,
+                    $e->getMessage()
+                ));
                 $list = [];
             }
         }
@@ -64,7 +69,7 @@ class ListStylesheetsService extends ConfigurableService
         usort($list, function ($a, $b) {
             $a_last_modified = $a['last_modified'] ?? $a['lastModified'] ?? $a['timestamp'] ?? 0;
             $b_last_modified = $b['last_modified'] ?? $b['lastModified'] ?? $b['timestamp'] ?? 0;
-            return ($a_last_modified < $b_last_modified) ? -1 : 1;
+            return $a_last_modified <=> $b_last_modified;
         });
 
         $data = [];

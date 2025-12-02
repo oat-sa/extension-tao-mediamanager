@@ -30,6 +30,7 @@ use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\taoMediaManager\model\export\service\SharedStimulusCSSExporter;
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
+use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
 use oat\taoMediaManager\model\sharedStimulus\service\StoreService;
 use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourceSpecification;
 use Prophecy\Argument;
@@ -90,7 +91,7 @@ class SharedStimulusCSSExporterTest extends TestCase
             [
                 'test_path/stimulus.xml',
                 'test_path/' . StoreService::CSS_DIR_NAME,
-                [['path' => 'file1.css'], ['path' => 'file2.css']],
+                [['path' => 'file1.css', 'type' => 'file'], ['path' => 'file2.css', 'type' => 'file']],
                 [
                     $cssZipFolder,
                     $cssZipFolder . 'file1.css',
@@ -106,7 +107,7 @@ class SharedStimulusCSSExporterTest extends TestCase
             [
                 'test_path/stimulusFile',
                 'test_path/' . StoreService::CSS_DIR_NAME,
-                [['path' => 'fileX']],
+                [['path' => 'fileX', 'type' => 'file']],
                 [
                     $cssZipFolder,
                     $cssZipFolder . 'fileX'
@@ -115,7 +116,7 @@ class SharedStimulusCSSExporterTest extends TestCase
             [
                 'test_path/stimulusFile',
                 'test_path/' . StoreService::CSS_DIR_NAME,
-                $this->createGenerator([['path' => 'fileX']]),
+                $this->createGenerator([['path' => 'fileX', 'type' => 'file']]),
                 [
                     $cssZipFolder,
                     $cssZipFolder . 'fileX'
@@ -156,14 +157,19 @@ class SharedStimulusCSSExporterTest extends TestCase
         $sharedStimulusResourceSpecificationProphecy = $this->prophesize(SharedStimulusResourceSpecification::class);
         $sharedStimulusResourceSpecificationProphecy->isSatisfiedBy(Argument::any())->willReturn(true);
 
+        $fileSourceUnserializerMock = $this->createMock(FileSourceUnserializer::class);
+        $fileSourceUnserializerMock->method('unserialize')->willReturnCallback(function ($link) {
+            return $link;
+        });
+
         $service = new SharedStimulusCSSExporter();
         $service->setServiceLocator(
             $this->getServiceLocatorMock(
                 [
                     FlySystemManagement::SERVICE_ID => $this->getMockBuilder(FlySystemManagement::class)->getMock(),
                     FileSystemService::SERVICE_ID => $fileSystemServiceProphecy->reveal(),
-                    SharedStimulusResourceSpecification::class => $sharedStimulusResourceSpecificationProphecy->reveal(
-                    ),
+                    SharedStimulusResourceSpecification::class => $sharedStimulusResourceSpecificationProphecy->reveal(),
+                    FileSourceUnserializer::class => $fileSourceUnserializerMock,
                 ]
             )
         );

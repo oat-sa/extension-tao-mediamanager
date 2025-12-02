@@ -13,9 +13,9 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Foundation, Inc., 31 Milk St # 960789 Boston, MA 02196 USA.
  *
- * Copyright (c) 2022 (original work) Open Assessment Technologies SA.
+ * Copyright (c) 2022-2025 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
@@ -23,8 +23,11 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\sharedStimulus\service;
 
 use oat\generis\model\data\Ontology;
+use oat\oatbox\filesystem\FileSystemService;
+use oat\oatbox\filesystem\FilesystemInterface;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
+use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\taoMediaManager\model\sharedStimulus\CopyCommand;
 use oat\taoMediaManager\model\sharedStimulus\css\dto\ListStylesheets as ListStylesheetsDTO;
 use oat\taoMediaManager\model\sharedStimulus\css\repository\StylesheetRepository;
@@ -36,8 +39,6 @@ use oat\taoMediaManager\model\TaoMediaOntology;
 
 class CopyService
 {
-    private const NAMESPACE_TEMP_FILES = 'MediaManagerCopyService';
-
     /** @var Ontology */
     private $ontology;
 
@@ -56,17 +57,13 @@ class CopyService
     /** @var FileManagement */
     private $fileManagement;
 
-    /** @var TempFileWriter */
-    private $tempFileWriter;
-
     public function __construct(
         Ontology $ontology,
         StoreService $sharedStimulusStoreService,
         ListStylesheetsService $listStylesheetsService,
         StylesheetRepository $stylesheetRepository,
         FileSourceUnserializer $fileSourceUnserializer,
-        FileManagement $fileManagement,
-        TempFileWriter $tempFileWriter
+        FileManagement $fileManagement
     ) {
         $this->ontology = $ontology;
         $this->sharedStimulusStoreService = $sharedStimulusStoreService;
@@ -74,7 +71,6 @@ class CopyService
         $this->stylesheetRepository = $stylesheetRepository;
         $this->fileSourceUnserializer = $fileSourceUnserializer;
         $this->fileManagement = $fileManagement;
-        $this->tempFileWriter = $tempFileWriter;
     }
 
     public function copy(CopyCommand $command): SharedStimulus
@@ -88,17 +84,22 @@ class CopyService
 
         $srcXmlPath = $this->fileSourceUnserializer->unserialize($source->link);
         $stimulusFilename = basename($source->link);
-        $dirname = $this->sharedStimulusStoreService->storeStream(
+
+        $dirname = $this->sharedStimulusStoreService->getUniqueDirName($stimulusFilename);
+
+        $this->sharedStimulusStoreService->storeXmlStream(
             $this->fileManagement->getFileStream($srcXmlPath)->detach(),
             $stimulusFilename,
-            $this->copyCSSFilesFrom($source)
+            $dirname
         );
+
+        $this->copyCSSFilesDirectly($source, $dirname);
 
         $target = $this->ontology->getResource($command->getDestinationUri());
 
         $target->setPropertyValue(
             $target->getProperty(TaoMediaOntology::PROPERTY_LINK),
-            $dirname . DIRECTORY_SEPARATOR . $stimulusFilename
+            $dirname . '/' . $stimulusFilename
         );
 
         return new SharedStimulus(
@@ -108,29 +109,69 @@ class CopyService
         );
     }
 
-    private function copyCSSFilesFrom(SharedStimulusInstanceData $source): array
+    private function copyCSSFilesDirectly(SharedStimulusInstanceData $source, string $destinationDir): void
     {
         $cssPath = $this->stylesheetRepository->getPath($source->resourceUri);
         $cssFiles = $this->listStylesheetsService->getList(
             new ListStylesheetsDTO($source->resourceUri)
         );
 
-        $newCssFiles = [];
-
-        foreach ($cssFiles['children'] as $child) {
-            $newCssFiles[] = $this->tempFileWriter->writeFile(
-                self::NAMESPACE_TEMP_FILES,
-                $child['name'],
-                $this->stylesheetRepository->read(
-                    implode(
-                        DIRECTORY_SEPARATOR,
-                        [$cssPath , StoreService::CSS_DIR_NAME, $child['name']]
-                    )
-                )
-            );
+        if (empty($cssFiles['children'])) {
+            return;
         }
 
-        return $newCssFiles;
+        $fs = $this->getFileSystem();
+
+        $destCssDir = $destinationDir . '/' . StoreService::CSS_DIR_NAME;
+
+        try {
+            $fs->createDirectory($destCssDir);
+        } catch (\Exception $e) {
+            throw $e;
+        }
+
+        foreach ($cssFiles['children'] as $child) {
+            $sourcePath = $cssPath . '/' . StoreService::CSS_DIR_NAME . '/' . $child['name'];
+            $destPath = $destCssDir . '/' . $child['name'];
+
+            try {
+                if (!$fs->fileExists($sourcePath)) {
+                    continue;
+                }
+
+                $sourceStream = $fs->readStream($sourcePath);
+
+                if (!is_resource($sourceStream)) {
+                    continue;
+                }
+
+                $fs->writeStream($destPath, $sourceStream);
+
+                if (is_resource($sourceStream)) {
+                    fclose($sourceStream);
+                }
+
+            } catch (\Exception $e) {
+                throw $e;
+            }
+        }
+    }
+
+    /**
+     * Get the filesystem for direct file operations
+     *
+     * @return FilesystemInterface
+     */
+    private function getFileSystem(): FilesystemInterface
+    {
+        $flySystemManagement = $this->sharedStimulusStoreService
+            ->getServiceLocator()
+            ->get(FlySystemManagement::SERVICE_ID);
+
+        return $this->sharedStimulusStoreService
+            ->getServiceLocator()
+            ->get(FileSystemService::SERVICE_ID)
+            ->getFileSystem($flySystemManagement->getOption(FlySystemManagement::OPTION_FS));
     }
 
     private function assertHasRequiredParameters(CopyCommand $command): void

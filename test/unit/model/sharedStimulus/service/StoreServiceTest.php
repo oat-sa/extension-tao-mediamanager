@@ -59,7 +59,6 @@ class StoreServiceTest extends TestCase
 
         $fileSystemMock->expects(self::once())
             ->method('writeStream');
-        
         $fileSystemMock->expects(self::once())
             ->method('directoryExists')
             ->willReturn(false);

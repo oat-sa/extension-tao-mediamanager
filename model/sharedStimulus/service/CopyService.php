@@ -140,9 +140,13 @@ class CopyService
                 continue;
             }
 
-            $fs->writeStream($destPath, $sourceStream);
-
-            fclose($sourceStream);
+            try {
+                $fs->writeStream($destPath, $sourceStream);
+            } finally {
+                if (is_resource($sourceStream)) {
+                    fclose($sourceStream);
+                }
+            }
         }
     }
 

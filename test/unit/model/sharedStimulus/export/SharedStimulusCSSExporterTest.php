@@ -161,18 +161,14 @@ class SharedStimulusCSSExporterTest extends TestCase
         $fileSourceUnserializerMock->method('unserialize')->willReturnCallback(function ($link) {
             return $link;
         });
-
+        $params = [
+            FlySystemManagement::SERVICE_ID => $this->getMockBuilder(FlySystemManagement::class)->getMock(),
+            FileSystemService::SERVICE_ID => $fileSystemServiceProphecy->reveal(),
+            SharedStimulusResourceSpecification::class => $sharedStimulusResourceSpecificationProphecy->reveal(),
+            FileSourceUnserializer::class => $fileSourceUnserializerMock,
+        ];
         $service = new SharedStimulusCSSExporter();
-        $service->setServiceLocator(
-            $this->getServiceLocatorMock(
-                [
-                    FlySystemManagement::SERVICE_ID => $this->getMockBuilder(FlySystemManagement::class)->getMock(),
-                    FileSystemService::SERVICE_ID => $fileSystemServiceProphecy->reveal(),
-                    SharedStimulusResourceSpecification::class => $sharedStimulusResourceSpecificationProphecy->reveal(),
-                    FileSourceUnserializer::class => $fileSourceUnserializerMock,
-                ]
-            )
-        );
+        $service->setServiceLocator($this->getServiceLocatorMock($params));
         return $service;
     }
 

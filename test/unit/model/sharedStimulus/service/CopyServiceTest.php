@@ -273,7 +273,10 @@ class CopyServiceTest extends TestCase
         $this->storeService->method('getLogger')->willReturn($this->createMock(\Psr\Log\LoggerInterface::class));
 
 
-        $this->storeService->expects($this->once())->method('storeXmlStream')->with('theStreamResource', 'theLink', 'theDirName');
+        $this->storeService
+            ->expects($this->once())
+            ->method('storeXmlStream')
+            ->with('theStreamResource', 'theLink', 'theDirName');
 
         $stimulus = $this->sut->copy($this->copyCommand);
         $data = $stimulus->jsonSerialize();
@@ -282,7 +285,7 @@ class CopyServiceTest extends TestCase
         $this->assertEquals('http://example.com/resource2', $data['name']);
         $this->assertEquals('http://example.com/languageId', $data['languageId']);
     }
-    
+
     private function getSrcResourceMock(int $times): MockObject
     {
         $resource = $this->createMock(core_kernel_classes_Resource::class);
@@ -328,4 +331,3 @@ class CopyServiceTest extends TestCase
         return $resource;
     }
 }
-

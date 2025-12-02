@@ -150,7 +150,6 @@ class CopyService
                 if (is_resource($sourceStream)) {
                     fclose($sourceStream);
                 }
-
             } catch (\Exception $e) {
                 throw $e;
             }

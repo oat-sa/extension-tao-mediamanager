@@ -73,7 +73,7 @@ class StoreService extends ConfigurableService
         }
 
         $fs->writeStream(
-            $dirname . '/' . $stimulusFilename,
+            $dirname . DIRECTORY_SEPARATOR . $stimulusFilename,
             $stimulusXmlStream
         );
     }

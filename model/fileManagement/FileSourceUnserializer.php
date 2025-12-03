@@ -36,7 +36,7 @@ class FileSourceUnserializer extends ConfigurableService
             $unserializedFile = $this->getFileRefSerializer()->unserializeFile($link);
             $link = (string)$unserializedFile->getPrefix();
         } else {
-            $prefix = self::MEDIA_MANAGER_FOLDER . '/';
+            $prefix = self::MEDIA_MANAGER_FOLDER . DIRECTORY_SEPARATOR;
             if (str_starts_with($link, $prefix)) {
                 $link = substr($link, strlen($prefix));
             }

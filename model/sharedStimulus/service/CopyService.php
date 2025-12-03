@@ -99,7 +99,7 @@ class CopyService
 
         $target->setPropertyValue(
             $target->getProperty(TaoMediaOntology::PROPERTY_LINK),
-            $dirname . '/' . $stimulusFilename
+            $dirname . DIRECTORY_SEPARATOR . $stimulusFilename
         );
 
         return new SharedStimulus(
@@ -122,13 +122,13 @@ class CopyService
 
         $fs = $this->getFileSystem();
 
-        $destCssDir = $destinationDir . '/' . StoreService::CSS_DIR_NAME;
+        $destCssDir = $destinationDir . DIRECTORY_SEPARATOR . StoreService::CSS_DIR_NAME;
 
         $fs->createDirectory($destCssDir);
 
         foreach ($cssFiles['children'] as $child) {
-            $sourcePath = $cssPath . '/' . StoreService::CSS_DIR_NAME . '/' . $child['name'];
-            $destPath = $destCssDir . '/' . $child['name'];
+            $sourcePath = $cssPath . DIRECTORY_SEPARATOR . StoreService::CSS_DIR_NAME . DIRECTORY_SEPARATOR . $child['name'];
+            $destPath = $destCssDir . DIRECTORY_SEPARATOR . $child['name'];
 
             if (!$fs->fileExists($sourcePath)) {
                 continue;

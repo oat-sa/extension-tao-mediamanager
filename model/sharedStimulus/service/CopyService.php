@@ -127,7 +127,11 @@ class CopyService
         $fs->createDirectory($destCssDir);
 
         foreach ($cssFiles['children'] as $child) {
-            $sourcePath = $cssPath . DIRECTORY_SEPARATOR . StoreService::CSS_DIR_NAME . DIRECTORY_SEPARATOR . $child['name'];
+            $sourcePath = $cssPath
+                . DIRECTORY_SEPARATOR
+                . StoreService::CSS_DIR_NAME
+                . DIRECTORY_SEPARATOR
+                . $child['name'];
             $destPath = $destCssDir . DIRECTORY_SEPARATOR . $child['name'];
 
             if (!$fs->fileExists($sourcePath)) {

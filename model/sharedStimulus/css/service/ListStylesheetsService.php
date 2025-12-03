@@ -36,7 +36,7 @@ class ListStylesheetsService extends ConfigurableService
 
         $path = $stylesheetRepository->getPath($listStylesheetsDTO->getUri());
 
-        $cssPath = $path . '/' . StylesheetRepository::STYLESHEETS_DIRECTORY;
+        $cssPath = $path . DIRECTORY_SEPARATOR . StylesheetRepository::STYLESHEETS_DIRECTORY;
 
         $fs = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID)
             ->getFileSystem($this->getServiceLocator()->get(FlySystemManagement::SERVICE_ID)
@@ -74,16 +74,16 @@ class ListStylesheetsService extends ConfigurableService
             if ($file['type'] == 'file') {
                 $data[] = [
                     'name' => basename($file['path']),
-                    'uri' => '/' . basename($file['path']),
+                    'uri' => DIRECTORY_SEPARATOR . basename($file['path']),
                     'mime' => 'text/css',
-                    'filePath' => '/' . basename($file['path']),
+                    'filePath' => DIRECTORY_SEPARATOR . basename($file['path']),
                     'size' => $file['file_size'] ?? $file['fileSize'] ?? 0
                 ];
             }
         }
 
         return [
-            'path' => '/',
+            'path' => DIRECTORY_SEPARATOR,
             'label' => 'Passage stylesheets',
             'childrenLimit' => 100,
             'total' => count($data),

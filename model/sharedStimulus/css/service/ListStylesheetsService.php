@@ -38,9 +38,6 @@ class ListStylesheetsService extends ConfigurableService
 
         $cssPath = $path . '/' . StylesheetRepository::STYLESHEETS_DIRECTORY;
 
-        $this->logInfo(sprintf('[ListStylesheetsService] Base path: %s', $path));
-        $this->logInfo(sprintf('[ListStylesheetsService] Listing CSS files from path: %s', $cssPath));
-
         $fs = $this->getServiceLocator()->get(FileSystemService::SERVICE_ID)
             ->getFileSystem($this->getServiceLocator()->get(FlySystemManagement::SERVICE_ID)
             ->getOption(FlySystemManagement::OPTION_FS));

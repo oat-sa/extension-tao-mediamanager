@@ -26,15 +26,18 @@ use core_kernel_classes_Resource;
 use oat\generis\model\data\Ontology;
 use oat\generis\model\OntologyRdfs;
 use oat\generis\test\TestCase;
+use oat\oatbox\filesystem\FileSystemService;
+use oat\oatbox\filesystem\FilesystemInterface;
+use Laminas\ServiceManager\ServiceLocatorInterface;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
+use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\taoMediaManager\model\sharedStimulus\CopyCommand;
 use oat\taoMediaManager\model\sharedStimulus\css\dto\ListStylesheets;
 use oat\taoMediaManager\model\sharedStimulus\css\repository\StylesheetRepository;
 use oat\taoMediaManager\model\sharedStimulus\css\service\ListStylesheetsService;
 use oat\taoMediaManager\model\sharedStimulus\service\CopyService;
 use oat\taoMediaManager\model\sharedStimulus\service\StoreService;
-use oat\taoMediaManager\model\sharedStimulus\service\TempFileWriter;
 use oat\taoMediaManager\model\TaoMediaOntology;
 use PHPUnit\Framework\MockObject\MockObject;
 use InvalidArgumentException;
@@ -60,9 +63,6 @@ class CopyServiceTest extends TestCase
     /** @var FileManagement|MockObject */
     private $fileManagement;
 
-    /** @var TempFileWriter|MockObject */
-    private $tempFileWriter;
-
     /** @var CopyCommand|MockObject */
     private $copyCommand;
 
@@ -83,7 +83,6 @@ class CopyServiceTest extends TestCase
             FileSourceUnserializer::class
         );
         $this->fileManagement = $this->createMock(FileManagement::class);
-        $this->tempFileWriter = $this->createMock(TempFileWriter::class);
         $this->copyCommand = $this->createMock(CopyCommand::class);
 
         $this->sut = new CopyService(
@@ -92,8 +91,7 @@ class CopyServiceTest extends TestCase
             $this->listStylesheetsService,
             $this->stylesheetRepository,
             $this->fileSourceUnserializer,
-            $this->fileManagement,
-            $this->tempFileWriter
+            $this->fileManagement
         );
     }
 
@@ -217,21 +215,6 @@ class CopyServiceTest extends TestCase
             ->with('http://example.com/resource1')
             ->willReturn('css://path');
 
-        $path = function ($baseName): string {
-            return implode(
-                DIRECTORY_SEPARATOR,
-                ['css://path' , StoreService::CSS_DIR_NAME, $baseName]
-            );
-        };
-
-        $this->stylesheetRepository
-            ->expects($this->exactly(2))
-            ->method('read')
-            ->willReturnMap([
-                [$path('cssBasename1'), 'cssData1'],
-                [$path('cssBasename2'), 'cssData2'],
-            ]);
-
         $this->listStylesheetsService
             ->expects($this->once())
             ->method('getList')
@@ -265,49 +248,35 @@ class CopyServiceTest extends TestCase
                 ],
             ]);
 
-        $this->tempFileWriter
-            ->expects($this->exactly(2))
-            ->method('writeFile')
-            ->willReturnCallback(function (string $namespace, string $basename, string $data) {
-                if ($namespace !== 'MediaManagerCopyService') {
-                    $this->fail('Expecting namespace to be MediaManagerCopyService');
-                }
+        $this->storeService->method('getUniqueDirName')->willReturn('theDirName');
+        $this->storeService->method('storeXmlStream');
 
-                switch ($basename) {
-                    case 'cssBasename1':
-                        $this->assertEquals(
-                            'cssData1',
-                            $data,
-                            'Unexpected CSS data provided for writeFile call (#1)'
-                        );
-                        break;
+        $flySystemManagementMock = $this->createMock(FlySystemManagement::class);
+        $flySystemManagementMock->method('getOption')->with(FlySystemManagement::OPTION_FS)->willReturn('default');
 
-                    case 'cssBasename2':
-                        $this->assertEquals(
-                            'cssData2',
-                            $data,
-                            'Unexpected CSS data provided for writeFile call (#2)'
-                        );
-                        break;
+        $fileSystemMock = $this->createMock(FilesystemInterface::class);
+        $fileSystemMock->method('createDirectory');
+        $fileSystemMock->method('fileExists')->willReturn(true);
+        $fileSystemMock->method('readStream')->willReturn(fopen('php://memory', 'r'));
+        $fileSystemMock->method('writeStream');
 
-                    default:
-                        $this->fail(
-                            "Requested a file write for an unexpected basename {$basename}"
-                        );
-                }
+        $fileSystemServiceMock = $this->createMock(FileSystemService::class);
+        $fileSystemServiceMock->method('getFileSystem')->with('default')->willReturn($fileSystemMock);
 
-                return "css://writtenFile/{$basename}";
-            });
+        $serviceLocatorMock = $this->createMock(ServiceLocatorInterface::class);
+        $serviceLocatorMock->method('get')->willReturnMap([
+            [FlySystemManagement::SERVICE_ID, $flySystemManagementMock],
+            [FileSystemService::SERVICE_ID, $fileSystemServiceMock],
+        ]);
 
-        $newCssFiles = [
-            'css://writtenFile/cssBasename1',
-            'css://writtenFile/cssBasename2',
-        ];
+        $this->storeService->method('getServiceLocator')->willReturn($serviceLocatorMock);
+        $this->storeService->method('getLogger')->willReturn($this->createMock(\Psr\Log\LoggerInterface::class));
+
 
         $this->storeService
             ->expects($this->once())
-            ->method('storeStream')
-            ->with('theStreamResource', 'theLink', $newCssFiles);
+            ->method('storeXmlStream')
+            ->with('theStreamResource', 'theLink', 'theDirName');
 
         $stimulus = $this->sut->copy($this->copyCommand);
         $data = $stimulus->jsonSerialize();

@@ -13,9 +13,9 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Foundation, Inc., 31 Milk St # 960789 Boston, MA 02196 USA.
  *
- * Copyright (c) 2021 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2021-2025 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
@@ -27,6 +27,7 @@ use oat\oatbox\filesystem\FilesystemInterface;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
+use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
 use oat\taoMediaManager\model\sharedStimulus\service\StoreService;
 use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourceSpecification;
 use ZipArchive;
@@ -42,6 +43,7 @@ class SharedStimulusCSSExporter extends ConfigurableService
         }
 
         $fs = $this->getFileSystem();
+        $link = $this->getFileSourceUnserializer()->unserialize($link);
         $cssPath = dirname($link) . DIRECTORY_SEPARATOR . StoreService::CSS_DIR_NAME;
 
         if (!$fs->directoryExists($cssPath)) {
@@ -56,6 +58,9 @@ class SharedStimulusCSSExporter extends ConfigurableService
         $zip->addEmptyDir(self::CSS_ZIP_DIR_NAME);
 
         foreach ($files as $file) {
+            if ($file['type'] !== 'file') {
+                continue;
+            }
             $content = $fs->read($cssPath . DIRECTORY_SEPARATOR . basename($file['path']));
             $zip->addFromString(self::CSS_ZIP_DIR_NAME . DIRECTORY_SEPARATOR . basename($file['path']), $content);
         }
@@ -80,5 +85,10 @@ class SharedStimulusCSSExporter extends ConfigurableService
     private function getSharedStimulusResourceSpecification(): SharedStimulusResourceSpecification
     {
         return $this->getServiceLocator()->get(SharedStimulusResourceSpecification::class);
+    }
+
+    private function getFileSourceUnserializer(): FileSourceUnserializer
+    {
+        return $this->getServiceLocator()->get(FileSourceUnserializer::class);
     }
 }

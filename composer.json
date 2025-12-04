@@ -28,7 +28,7 @@
         "oat-sa/lib-generis-search": "^2.1.2",
         "oat-sa/tao-core": ">=54.32.0",
         "oat-sa/extension-tao-item": ">=12.4.0",
-        "oat-sa/extension-tao-itemqti": ">=30.22.0",
+        "oat-sa/extension-tao-itemqti": ">=30.54.3",
         "oat-sa/extension-tao-test": ">=16.3.0",
         "oat-sa/extension-tao-testqti-previewer": ">=3.11.0"
     },

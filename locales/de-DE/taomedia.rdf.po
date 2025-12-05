@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-12-04 16:06\n"
+"PO-Revision-Date: 2025-12-05 08:59\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: de\n"
@@ -50,12 +50,12 @@ msgstr ""
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
 msgid "Media Manager"
-msgstr ""
+msgstr "Media Manager"
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#MediaManagerRole
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "The Media Manager Role"
-msgstr ""
+msgstr " Die Rolle Media Manager Rolle"
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#RelatedMedia
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"

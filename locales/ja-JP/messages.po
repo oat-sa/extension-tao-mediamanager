@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-12-04 16:06\n"
+"PO-Revision-Date: 2025-12-05 08:58\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ja\n"
@@ -36,7 +36,7 @@ msgid "An error has occurred. Please contact your administrator."
 msgstr "エラーが発生しました。管理者にお問合せください。"
 
 msgid "Are you sure you want to delete this"
-msgstr ""
+msgstr "削除してもよろしいですか？"
 
 msgid "Are you sure you want to delete this class and all of its content?"
 msgstr "このクラスとその内容をすべて削除してよいのですか？"
@@ -50,7 +50,7 @@ msgid "Authoring"
 msgstr "オーサリング"
 
 msgid "Back to Manage Assets"
-msgstr ""
+msgstr "資産の管理に戻る"
 
 msgid "Block"
 msgstr "文字ブロック"
@@ -66,7 +66,7 @@ msgid "Delete"
 msgstr "削除"
 
 msgid "Deleting this class will break the items and the tests that are currently using them."
-msgstr ""
+msgstr "このクラスを削除すると、現在使用している項目とテストが壊れます。"
 
 msgid "Edit Instance"
 msgstr "インスタンス編集"
@@ -103,7 +103,7 @@ msgid "File name"
 msgstr "ファイル名"
 
 msgid "Forbidden action"
-msgstr ""
+msgstr "禁止アクション"
 
 #, tao-public
 msgid "Import"
@@ -113,10 +113,10 @@ msgid "Imported %s"
 msgstr "%s をインポート"
 
 msgid "Imported new file"
-msgstr ""
+msgstr "新しいファイルをインポートしました"
 
 msgid "Initial import"
-msgstr ""
+msgstr "初期インポート"
 
 msgid "Inline Interactions"
 msgstr "インライン"
@@ -125,13 +125,13 @@ msgid "Instance saved"
 msgstr "インスタンスが保存されました"
 
 msgid "is currently used in"
-msgstr ""
+msgstr "は現在使用されています"
 
 msgid "Issue while modifying %s"
 msgstr "%s の変更中に問題が発生しました"
 
 msgid "item(s)"
-msgstr ""
+msgstr "商品"
 
 msgid "Language"
 msgstr "言語"
@@ -177,16 +177,16 @@ msgstr "新規クラス"
 
 #, tao-public
 msgid "New passage"
-msgstr ""
+msgstr "新しいパス"
 
 msgid "No file found for this media"
 msgstr "メディアファイルが見つかりません"
 
 msgid "Passage Properties"
-msgstr ""
+msgstr "パスのプロパティ"
 
 msgid "Please delete the subclasses before."
-msgstr ""
+msgstr "前にサブクラスを削除してください。"
 
 msgid "Preview"
 msgstr "プレビュー"
@@ -202,7 +202,7 @@ msgid "Replace Asset"
 msgstr "アセット入替"
 
 msgid "Resource deleted"
-msgstr ""
+msgstr "リソースが削除されました"
 
 msgid "Right"
 msgstr "右"
@@ -211,7 +211,7 @@ msgid "Save"
 msgstr "保存"
 
 msgid "Save the asset"
-msgstr ""
+msgstr "アセットを保存"
 
 msgid "Set a CSS class name in order to customize the display style."
 msgstr "画面表示をカスタマイズするためのCSSクラス名を設定します"
@@ -238,10 +238,10 @@ msgid "The class"
 msgstr "クラス"
 
 msgid "This"
-msgstr ""
+msgstr "この"
 
 msgid "Unable to delete the selected resource"
-msgstr ""
+msgstr "選択したリソースを削除できません"
 
 msgid "Unable to extract the archive"
 msgstr "アーカイブから抽出できません"
@@ -253,25 +253,25 @@ msgid "Upload Media"
 msgstr "メディアのアップロード"
 
 msgid "Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
-msgstr ""
+msgstr "Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
 
 msgid "Warning"
 msgstr "警告"
 
 msgid "which contains assets that are in use elsewhere."
-msgstr ""
+msgstr "他の場所で使用されている資産が含まれています"
 
 msgid "You are about to delete the class"
-msgstr ""
+msgstr "このクラスを削除しようとしています"
 
 msgid "you are trying to delete is too large and contains too many subclasses."
-msgstr ""
+msgstr "削除しようとしているのは大きすぎてサブクラスが多すぎます"
 
 msgid "You can\\'t upload a zip file as a media"
 msgstr "zipファイルはアップロードできません"
 
 msgid "Your passage is saved"
-msgstr ""
+msgstr "あなたの通路は保存されました"
 
 msgid "Zip"
 msgstr "ZIP"

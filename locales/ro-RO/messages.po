@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2025-12-05 08:59\n"
+"PO-Revision-Date: 2025-12-05 08:58\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
-"Language: hu\n"
+"Language: ro\n"
 "sourceLanguage: en-US\n"
 "targetLanguage: en-US\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -12,267 +12,267 @@ msgstr ""
 "X-Poedit-Basepath: ../../\n"
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100>0 && n%100<20)) ? 1 : 2);\n"
 "X-Crowdin-Project: tao-open-source\n"
 "X-Crowdin-Project-ID: 590867\n"
-"X-Crowdin-Language: hu\n"
+"X-Crowdin-Language: ro\n"
 "X-Crowdin-File: /[oat-sa.extension-tao-mediamanager] develop/locales/en-US/messages.po\n"
 "X-Crowdin-File-ID: 603\n"
-"Language-Team: Hungarian\n"
+"Language-Team: Romanian\n"
 
 msgid "%s media on this environment"
-msgstr "%s média ezen a környezetben"
+msgstr ""
 
 msgid "%s media successfully modified"
-msgstr "%s média sikeresen módosítva"
+msgstr ""
 
 msgid "%s media to modify"
-msgstr "%s módosítandó média"
+msgstr ""
 
 msgid "Add a media file"
-msgstr "Médiafájl hozzáadása"
+msgstr ""
 
 msgid "An error has occurred. Please contact your administrator."
-msgstr "Hiba történt. Kérjük, vegye fel a kapcsolatot a rendszergazdával."
+msgstr ""
 
 msgid "Are you sure you want to delete this"
-msgstr "Biztosan törölni szeretné ezt?"
+msgstr ""
 
 msgid "Are you sure you want to delete this class and all of its content?"
-msgstr "Biztosan törölni szeretné ezt a kurzust és az összes tartalmát?"
+msgstr ""
 
 #, tao-public
 msgid "Assets"
-msgstr "Eszközök"
+msgstr ""
 
 #, tao-public
 msgid "Authoring"
-msgstr "Szerzői munka"
+msgstr ""
 
 msgid "Back to Manage Assets"
-msgstr "Vissza az Eszközök kezeléséhez"
+msgstr ""
 
 msgid "Block"
-msgstr "Tömb"
+msgstr ""
 
 msgid "Center"
-msgstr "Központ"
+msgstr ""
 
 msgid "Define item language."
-msgstr "Határozza meg az elem nyelvét."
+msgstr ""
 
 #, tao-public
 msgid "Delete"
-msgstr "Töröl"
+msgstr ""
 
 msgid "Deleting this class will break the items and the tests that are currently using them."
-msgstr "A kurzus törlése tönkreteszi az elemeket és az azokat jelenleg használó teszteket."
+msgstr ""
 
 msgid "Edit Instance"
-msgstr "Példány szerkesztése"
+msgstr ""
 
 msgid "Edited %s"
-msgstr "Szerkesztve %s"
+msgstr ""
 
 msgid "Element Properties"
-msgstr "Elem tulajdonságai"
+msgstr ""
 
 #, tao-public
 msgid "Export"
-msgstr "Export"
+msgstr ""
 
 msgid "Export Media as Zip file"
-msgstr "Média exportálása ZIP fájlként"
+msgstr ""
 
 msgid "Fail to edit shared stimulus"
-msgstr "Nem sikerült szerkeszteni a megosztott ingert"
+msgstr ""
 
 msgid "Fail to edit Shared Stimulus"
-msgstr "Nem sikerült szerkeszteni a megosztott ingert"
+msgstr ""
 
 msgid "Fail to import media"
-msgstr "Nem sikerült importálni a médiafájlt"
+msgstr ""
 
 msgid "Fail to import Shared Stimulus"
-msgstr "Nem sikerült importálni a megosztott ingert"
+msgstr ""
 
 msgid "File"
-msgstr "Fájl"
+msgstr ""
 
 msgid "File name"
-msgstr "Fájlnév"
+msgstr ""
 
 msgid "Forbidden action"
-msgstr "Tiltott cselekvés"
+msgstr ""
 
 #, tao-public
 msgid "Import"
-msgstr "Importálás"
+msgstr ""
 
 msgid "Imported %s"
-msgstr "Importált %s"
+msgstr ""
 
 msgid "Imported new file"
-msgstr "Új fájl importálva"
+msgstr ""
 
 msgid "Initial import"
-msgstr "Kezdeti importálás"
+msgstr ""
 
 msgid "Inline Interactions"
-msgstr "Beágyazott interakciók"
+msgstr ""
 
 msgid "Instance saved"
-msgstr "Példány mentve"
+msgstr ""
 
 msgid "is currently used in"
-msgstr "jelenleg használatos"
+msgstr ""
 
 msgid "Issue while modifying %s"
-msgstr "Probléma a %smódosítása közben"
+msgstr ""
 
 msgid "item(s)"
-msgstr "tétel(ek)"
+msgstr ""
 
 msgid "Language"
-msgstr "Nyelv"
+msgstr ""
 
 msgid "Left"
-msgstr "Balra"
+msgstr ""
 
 #, tao-public
 msgid "Manage Assets"
-msgstr "Eszközök kezelése"
+msgstr ""
 
 #, tao-public
 msgid "Manage Schema"
-msgstr "Séma kezelése"
+msgstr ""
 
 msgid "Media imported"
-msgstr "Importált média"
+msgstr ""
 
 msgid "Media imported successfully"
-msgstr "Média importálása sikeresen megtörtént"
+msgstr ""
 
 #, tao-public
 msgid "Media Manager"
-msgstr "Médiakezelő"
+msgstr ""
 
 #, tao-public
 msgid "Media Manager extension"
-msgstr "Médiakezelő bővítmény"
+msgstr ""
 
 msgid "Media Options"
-msgstr "Médiabeállítások"
+msgstr ""
 
 msgid "Media successfully exported."
-msgstr "A média exportálása sikeresen megtörtént."
+msgstr ""
 
 #, tao-public
 msgid "Move"
-msgstr "Mozog"
+msgstr ""
 
 #, tao-public
 msgid "New class"
-msgstr "Új osztály"
+msgstr ""
 
 #, tao-public
 msgid "New passage"
-msgstr "Új szövegrész"
+msgstr ""
 
 msgid "No file found for this media"
-msgstr "Nem található fájl ehhez a médiához"
+msgstr ""
 
 msgid "Passage Properties"
-msgstr "Átjáró tulajdonságai"
+msgstr ""
 
 msgid "Please delete the subclasses before."
-msgstr "Kérlek, előtte töröld az alosztályokat."
+msgstr ""
 
 msgid "Preview"
-msgstr "Előnézet"
+msgstr ""
 
 msgid "Preview the item"
-msgstr "Az elem előnézete"
+msgstr ""
 
 #, tao-public
 msgid "Properties"
-msgstr "Tulajdonságok"
+msgstr ""
 
 msgid "Replace Asset"
-msgstr "Eszköz cseréje"
+msgstr ""
 
 msgid "Resource deleted"
-msgstr "Erőforrás törölve"
+msgstr ""
 
 msgid "Right"
-msgstr "Jobbra"
+msgstr ""
 
 msgid "Save"
-msgstr "Megtakarítás"
+msgstr ""
 
 msgid "Save the asset"
-msgstr "Mentse el az eszközt"
+msgstr ""
 
 msgid "Set a CSS class name in order to customize the display style."
-msgstr "Állítson be egy CSS osztálynevet a megjelenítési stílus testreszabásához."
+msgstr ""
 
 msgid "Shared Stimulus"
-msgstr "Megosztott inger"
+msgstr ""
 
 msgid "Shared Stimulus edited successfully"
-msgstr "A megosztott inger sikeresen szerkesztve"
+msgstr ""
 
 msgid "Shared Stimulus imported successfully"
-msgstr "A megosztott inger importálása sikeresen megtörtént."
+msgstr ""
 
 msgid "some text ..."
-msgstr "némi szöveg..."
+msgstr ""
 
 msgid "Text Block"
-msgstr "Szövegblokk"
+msgstr ""
 
 msgid "Text Block CSS Class"
-msgstr "Szövegblokk CSS osztály"
+msgstr ""
 
 msgid "The class"
-msgstr "Az osztály"
+msgstr ""
 
 msgid "This"
-msgstr "Ez"
+msgstr ""
 
 msgid "Unable to delete the selected resource"
-msgstr "A kiválasztott erőforrás törlése sikertelen"
+msgstr ""
 
 msgid "Unable to extract the archive"
-msgstr "Nem sikerült kibontani az archívumot"
+msgstr ""
 
 msgid "Unable to import"
-msgstr "Nem sikerült importálni"
+msgstr ""
 
 msgid "Upload Media"
-msgstr "Média feltöltése"
+msgstr ""
 
 msgid "Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
-msgstr "Használat: ImportMedia MEDIA_FILE [CÉLOSZTÁLY]"
+msgstr ""
 
 msgid "Warning"
-msgstr "Figyelmeztetés"
+msgstr ""
 
 msgid "which contains assets that are in use elsewhere."
-msgstr "amely máshol használatban lévő eszközöket tartalmaz."
+msgstr ""
 
 msgid "You are about to delete the class"
-msgstr "Arra készülsz, hogy töröld a kurzust"
+msgstr ""
 
 msgid "you are trying to delete is too large and contains too many subclasses."
-msgstr "A törölni próbált fájl túl nagy és túl sok alosztályt tartalmaz."
+msgstr ""
 
 msgid "You can\\'t upload a zip file as a media"
-msgstr "Nem tölthetsz fel zip fájlt médiaként."
+msgstr ""
 
 msgid "Your passage is saved"
-msgstr "A szövegrészed mentésre került"
+msgstr ""
 
 msgid "Zip"
-msgstr "Irányítószám"
+msgstr ""
 

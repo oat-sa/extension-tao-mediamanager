@@ -29,10 +29,15 @@ use oat\taoQtiItem\model\qti\container\ContainerItemBody;
 use oat\taoQtiItem\model\qti\Element;
 use oat\taoQtiItem\model\qti\Item;
 use oat\taoQtiItem\model\qti\Service as ItemsService;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ItemMediaCollectorTest extends TestCase
 {
+    private Ontology|MockObject $ontologyMock;
+    private ItemsService|MockObject $itemsServiceMock;
+    private ItemMediaCollector $subject;
+
     public function setUp(): void
     {
         $this->ontologyMock = $this->createMock(Ontology::class);

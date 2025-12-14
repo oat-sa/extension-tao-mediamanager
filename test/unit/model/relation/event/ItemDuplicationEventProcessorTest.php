@@ -27,10 +27,15 @@ use oat\taoMediaManager\model\relation\event\processor\ItemDuplicationEventProce
 use oat\taoMediaManager\model\relation\MediaRelation;
 use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
 use oat\taoMediaManager\model\relation\service\ItemMediaCollector;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ItemDuplicationEventProcessorTest extends TestCase
 {
+    private ItemMediaCollector|MockObject $itemMediaCollector;
+    private MediaRelationRepositoryInterface|MockObject $mediaRelationRepository;
+    private ItemDuplicationEventProcessor $subject;
+
     public function setUp(): void
     {
         $this->itemMediaCollector = $this->createMock(ItemMediaCollector::class);

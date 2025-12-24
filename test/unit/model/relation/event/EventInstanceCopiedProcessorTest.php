@@ -26,17 +26,21 @@ use oat\tao\model\resources\Event\InstanceCopiedEvent;
 use oat\taoMediaManager\model\relation\event\processor\EventInstanceCopiedProcessor;
 use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
 use oat\taoMediaManager\model\relation\service\ItemMediaCollector;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class EventInstanceCopiedProcessorTest extends TestCase
 {
+    private ItemMediaCollector|MockObject $itemMediaCollector;
+    private EventInstanceCopiedProcessor $eventInstanceCopiedProcessor;
+
     public function setUp(): void
     {
         $this->itemMediaCollector = $this->createMock(ItemMediaCollector::class);
-        $this->mediaRelationRepository = $this->createMock(MediaRelationRepositoryInterface::class);
+        $mediaRelationRepository = $this->createMock(MediaRelationRepositoryInterface::class);
 
         $this->eventInstanceCopiedProcessor = new EventInstanceCopiedProcessor(
-            $this->mediaRelationRepository,
+            $mediaRelationRepository,
             $this->itemMediaCollector
         );
     }

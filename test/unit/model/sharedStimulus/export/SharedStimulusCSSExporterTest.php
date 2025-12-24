@@ -23,9 +23,11 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\test\unit\model\export;
 
 use core_kernel_classes_Resource;
+use Generator;
 use League\Flysystem\DirectoryListing;
-use oat\generis\test\MockObject;
-use oat\generis\test\TestCase;
+use PHPUnit\Framework\MockObject\MockObject;
+use oat\generis\test\ServiceManagerMockTrait;
+use PHPUnit\Framework\TestCase;
 use oat\oatbox\filesystem\FileSystem;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\taoMediaManager\model\export\service\SharedStimulusCSSExporter;
@@ -33,20 +35,19 @@ use oat\taoMediaManager\model\fileManagement\FlySystemManagement;
 use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
 use oat\taoMediaManager\model\sharedStimulus\service\StoreService;
 use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourceSpecification;
-use Prophecy\Argument;
+use ZipArchive;
 
 class SharedStimulusCSSExporterTest extends TestCase
 {
-    /**
-     * @var \ZipArchive
-     */
-    private $zipArchive;
+    use ServiceManagerMockTrait;
+
+    private ZipArchive $zipArchive;
 
     public function setUp(): void
     {
-        $this->zipArchive = new \ZipArchive();
+        $this->zipArchive = new ZipArchive();
         $zipFile = '/tmp/' . uniqid();
-        $this->zipArchive->open($zipFile, \ZipArchive::CREATE);
+        $this->zipArchive->open($zipFile, ZipArchive::CREATE);
     }
 
     public function tearDown(): void
@@ -125,7 +126,7 @@ class SharedStimulusCSSExporterTest extends TestCase
         ];
     }
 
-    private function getZippedFilesList(\ZipArchive $archive): array
+    private function getZippedFilesList(ZipArchive $archive): array
     {
         $output = [];
         for ($i = 0; $i < $archive->numFiles; $i++) {
@@ -135,10 +136,7 @@ class SharedStimulusCSSExporterTest extends TestCase
         return $output;
     }
 
-    /**
-     * @return FileSystem|MockObject
-     */
-    private function initFileSystemMock(): FileSystem
+    private function initFileSystemMock(): FileSystem|MockObject
     {
         return $this->getMockBuilder(FileSystem::class)
             ->disableOriginalConstructor()
@@ -146,33 +144,31 @@ class SharedStimulusCSSExporterTest extends TestCase
             ->getMock();
     }
 
-    /**
-     * @return SharedStimulusCSSExporter|MockObject
-     */
-    private function getPreparedServiceInstance(FileSystem $fileSystemMock): SharedStimulusCSSExporter
+    private function getPreparedServiceInstance(FileSystem $fileSystemMock): SharedStimulusCSSExporter|MockObject
     {
-        $fileSystemServiceProphecy = $this->prophesize(FileSystemService::class);
-        $fileSystemServiceProphecy->getFileSystem(Argument::any())->willReturn($fileSystemMock);
+        $fileSystemService = $this->createMock(FileSystemService::class);
+        $fileSystemService->method('getFileSystem')->with($this->anything())->willReturn($fileSystemMock);
 
-        $sharedStimulusResourceSpecificationProphecy = $this->prophesize(SharedStimulusResourceSpecification::class);
-        $sharedStimulusResourceSpecificationProphecy->isSatisfiedBy(Argument::any())->willReturn(true);
+        $sharedStimulusResourceSpecification = $this->createMock(SharedStimulusResourceSpecification::class);
+        $sharedStimulusResourceSpecification->method('isSatisfiedBy')->with($this->anything())->willReturn(true);
 
         $fileSourceUnserializerMock = $this->createMock(FileSourceUnserializer::class);
         $fileSourceUnserializerMock->method('unserialize')->willReturnCallback(function ($link) {
             return $link;
         });
-        $params = [
-            FlySystemManagement::SERVICE_ID => $this->getMockBuilder(FlySystemManagement::class)->getMock(),
-            FileSystemService::SERVICE_ID => $fileSystemServiceProphecy->reveal(),
-            SharedStimulusResourceSpecification::class => $sharedStimulusResourceSpecificationProphecy->reveal(),
-            FileSourceUnserializer::class => $fileSourceUnserializerMock,
-        ];
+
         $service = new SharedStimulusCSSExporter();
-        $service->setServiceLocator($this->getServiceLocatorMock($params));
+        $service->setServiceLocator($this->getServiceManagerMock([
+            FlySystemManagement::SERVICE_ID => $this->getMockBuilder(FlySystemManagement::class)->getMock(),
+            FileSystemService::SERVICE_ID => $fileSystemService,
+            SharedStimulusResourceSpecification::class => $sharedStimulusResourceSpecification,
+            FileSourceUnserializer::class => $fileSourceUnserializerMock,
+        ]));
+
         return $service;
     }
 
-    private function createGenerator(array $values): \Generator
+    private function createGenerator(array $values): Generator
     {
         foreach ($values as $value) {
             yield $value;

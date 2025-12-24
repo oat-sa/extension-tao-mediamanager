@@ -180,16 +180,12 @@ class CopyServiceTest extends TestCase
             ->willReturn($propertyMock);
 
         $this->ontology
-            ->expects($this->at(0))
+            ->expects($this->exactly(2))
             ->method('getResource')
-            ->with('http://example.com/resource1')
-            ->willReturn($sourceResource);
-
-        $this->ontology
-            ->expects($this->at(1))
-            ->method('getResource')
-            ->with('http://example.com/resource2')
-            ->willReturn($targetResource);
+            ->willReturnMap([
+                ['http://example.com/resource1', $sourceResource],
+                ['http://example.com/resource2', $targetResource],
+            ]);
 
         $this->fileSourceUnserializer
             ->expects($this->once())

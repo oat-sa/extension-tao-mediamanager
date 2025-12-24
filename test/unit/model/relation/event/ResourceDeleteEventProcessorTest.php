@@ -26,10 +26,14 @@ use oat\generis\model\data\event\ResourceDeleted;
 use oat\tao\model\TaoOntology;
 use oat\taoMediaManager\model\relation\event\processor\ResourceDeleteEventProcessor;
 use oat\taoMediaManager\model\relation\service\update\ItemRelationUpdateService;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ResourceDeleteEventProcessorTest extends TestCase
 {
+    private ItemRelationUpdateService|MockObject $itemRelationUpdateServiceMock;
+    private ResourceDeleteEventProcessor $subject;
+
     public function setUp(): void
     {
         $this->itemRelationUpdateServiceMock = $this->createMock(ItemRelationUpdateService::class);

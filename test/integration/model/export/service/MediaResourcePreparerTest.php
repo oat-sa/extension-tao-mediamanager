@@ -33,8 +33,7 @@ use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourceSpecification;
 use Psr\Http\Message\StreamInterface;
-
-use function GuzzleHttp\Psr7\stream_for;
+use GuzzleHttp\Psr7\Utils;
 
 class MediaResourcePreparerTest extends TestCase
 {
@@ -137,7 +136,7 @@ class MediaResourcePreparerTest extends TestCase
 
         $this->assertXmlStringEqualsXmlString(
             $expectedFileContent,
-            $this->subject->prepare($resource, stream_for($fileContent))
+            $this->subject->prepare($resource, Utils::streamFor($fileContent))
         );
     }
 
@@ -162,7 +161,7 @@ class MediaResourcePreparerTest extends TestCase
 
         $this->assertXmlStringEqualsXmlString(
             $fileContent,
-            $this->subject->prepare($resource, stream_for($fileContent))
+            $this->subject->prepare($resource, Utils::streamFor($fileContent))
         );
     }
 

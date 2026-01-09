@@ -35,8 +35,7 @@ use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
 use Psr\Http\Message\StreamInterface;
 use tao_helpers_Uri;
 use tao_models_classes_FileNotFoundException;
-
-use function GuzzleHttp\Psr7\stream_for;
+use GuzzleHttp\Psr7\Utils;
 
 class MediaSource extends Configurable implements
     MediaManagement,
@@ -356,7 +355,7 @@ class MediaSource extends Configurable implements
 
     public function getProcessedFileStream(string $link): StreamInterface
     {
-        return stream_for(
+        return Utils::streamFor(
             $this->getPreparer()->prepare(
                 $this->getResource(tao_helpers_Uri::decode($link)),
                 $this->getFileStream($link)

@@ -34,6 +34,7 @@ define([
     'ui/dialog/confirm',
     'ui/dialog/alert',
     'util/url',
+    'taoMediaManager/controller/contextType',
     'tpl!taoMediaManager/qtiCreator/tpl/relatedItemsPopup',
     'tpl!taoMediaManager/qtiCreator/tpl/relatedItemsClassPopup',
     'tpl!taoMediaManager/qtiCreator/tpl/forbiddenClassAction',
@@ -52,6 +53,7 @@ define([
     confirmDialog,
     alertDialog,
     urlUtil,
+    getContextType,
     relatedItemsPopupTpl,
     relatedItemsClassPopupTpl,
     forbiddenClassActionTpl
@@ -117,10 +119,11 @@ define([
     });
     binder.register('deleteSharedStimulus', function remove(actionContext) {
         const self = this;
+        const contextType = getContextType(actionContext);
         let data = {};
         let mediaRelationsData = {type: 'media'};
 
-        if (actionContext.context[0] === 'instance') {
+        if (contextType === 'instance') {
             mediaRelationsData.sourceId = actionContext.id
         } else {
             mediaRelationsData.classId = actionContext.id
@@ -139,7 +142,7 @@ define([
                 let message;
                 const haveItemReferences = responseRelated.data.relations;
                 const name = $('a.clicked', actionContext.tree).text().trim();
-                if (actionContext.context[0] === 'instance') {
+                if (contextType === 'instance') {
                     if (haveItemReferences.length === 0) {
                         message = `${__('Are you sure you want to delete this')} <b>${name}</b>?`;
                         callConfirmModal(actionContext, message, self.url, data, resolve, reject);
@@ -156,7 +159,7 @@ define([
                         });
                         callAlertModal(actionContext, message, self.url, data, resolve, reject);
                     }
-                } else if (actionContext.context[0] !== 'instance') {
+                } else {
                     if (haveItemReferences.length === 0) {
                         message = `${__('Are you sure you want to delete this class and all of its content?')}`;
                         callConfirmModal(actionContext, message, self.url, data, resolve, reject);
@@ -177,8 +180,7 @@ define([
                 }
             }).catch(errorObject => {
                 let message;
-                
-                if (actionContext.context[0] === 'class' && errorObject.response.code === 999) {
+                if (contextType === 'class' && _.get(errorObject, 'response.code') === 999) {
                     message = forbiddenClassActionTpl();
                 }
                 callAlertModal(actionContext, message, reject)

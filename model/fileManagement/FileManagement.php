@@ -39,12 +39,12 @@ interface FileManagement
     public function storeFile($filePath, $label);
 
     /**
-     * Returns the Size of the file
+     * Returns the size of the file.
      *
      * @param string $link
-     * @return string size of file in bytes
+     * @return int|null
      */
-    public function getFileSize($link);
+    public function getFileSize(string $link): ?int;
 
     /**
      * Returns a stream of the file content

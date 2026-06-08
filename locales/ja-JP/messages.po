@@ -1,5 +1,5 @@
 msgid ""
-msgstr ""
+msgstr " {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 "Project-Id-Version: tao-open-source\n"
 "PO-Revision-Date: 2025-12-05 08:58\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
@@ -21,258 +21,258 @@ msgstr ""
 "Language-Team: Japanese\n"
 
 msgid "%s media on this environment"
-msgstr "この環境の %s メディア"
+msgstr "この環境の %s メディア {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "%s media successfully modified"
-msgstr "メディアが正常に修正されました：%s "
+msgstr "メディアが正常に修正されました：%s  {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "%s media to modify"
-msgstr "メディアを変更します：%s "
+msgstr "メディアを変更します：%s  {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Add a media file"
-msgstr "メディアファイル追加"
+msgstr "メディアファイル追加 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "An error has occurred. Please contact your administrator."
-msgstr "エラーが発生しました。管理者にお問合せください。"
+msgstr "エラーが発生しました。管理者にお問合せください。 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Are you sure you want to delete this"
-msgstr "削除してもよろしいですか？"
+msgstr "削除してもよろしいですか？ {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Are you sure you want to delete this class and all of its content?"
-msgstr "このクラスとその内容をすべて削除してよいのですか？"
+msgstr "このクラスとその内容をすべて削除してよいのですか？ {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 #, tao-public
 msgid "Assets"
-msgstr "メディア"
+msgstr "メディア {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 #, tao-public
 msgid "Authoring"
-msgstr "オーサリング"
+msgstr "オーサリング {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Back to Manage Assets"
-msgstr "資産の管理に戻る"
+msgstr "資産の管理に戻る {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Block"
-msgstr "文字ブロック"
+msgstr "文字ブロック {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Center"
-msgstr "センター"
+msgstr "センター {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Define item language."
-msgstr "アイテム言語を定義します"
+msgstr "アイテム言語を定義します {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 #, tao-public
 msgid "Delete"
-msgstr "削除"
+msgstr "削除 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Deleting this class will break the items and the tests that are currently using them."
-msgstr "このクラスを削除すると、現在使用している項目とテストが壊れます。"
+msgstr "このクラスを削除すると、現在使用している項目とテストが壊れます。 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Edit Instance"
-msgstr "インスタンス編集"
+msgstr "インスタンス編集 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Edited %s"
-msgstr "％sを編集しました"
+msgstr "％sを編集しました {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Element Properties"
-msgstr "エレメントのプロパティ"
+msgstr "エレメントのプロパティ {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 #, tao-public
 msgid "Export"
-msgstr "エクスポート"
+msgstr "エクスポート {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Export Media as Zip file"
-msgstr "メディアをZIPファイルにエクスポート"
+msgstr "メディアをZIPファイルにエクスポート {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Fail to edit shared stimulus"
-msgstr "シェアードスティミュラスの編集に失敗しました。"
+msgstr "シェアードスティミュラスの編集に失敗しました。 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Fail to edit Shared Stimulus"
-msgstr "シェアードスティミュラスの編集に失敗しました。"
+msgstr "シェアードスティミュラスの編集に失敗しました。 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Fail to import media"
-msgstr "メディアのインポートに失敗"
+msgstr "メディアのインポートに失敗 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Fail to import Shared Stimulus"
-msgstr "シェアードスティミュラスのインポートに失敗しました。"
+msgstr "シェアードスティミュラスのインポートに失敗しました。 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "File"
-msgstr "ファイル"
+msgstr "ファイル {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "File name"
-msgstr "ファイル名"
+msgstr "ファイル名 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Forbidden action"
-msgstr "禁止アクション"
+msgstr "禁止アクション {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 #, tao-public
 msgid "Import"
-msgstr "インポート"
+msgstr "インポート {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Imported %s"
-msgstr "%s をインポート"
+msgstr "%s をインポート {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Imported new file"
-msgstr "新しいファイルをインポートしました"
+msgstr "新しいファイルをインポートしました {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Initial import"
-msgstr "初期インポート"
+msgstr "初期インポート {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Inline Interactions"
-msgstr "インライン"
+msgstr "インライン {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Instance saved"
-msgstr "インスタンスが保存されました"
+msgstr "インスタンスが保存されました {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "is currently used in"
-msgstr "は現在使用されています"
+msgstr "は現在使用されています {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Issue while modifying %s"
-msgstr "%s の変更中に問題が発生しました"
+msgstr "%s の変更中に問題が発生しました {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "item(s)"
-msgstr "商品"
+msgstr "商品 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Language"
-msgstr "言語"
+msgstr "言語 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Left"
-msgstr "左"
+msgstr "左 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 #, tao-public
 msgid "Manage Assets"
-msgstr "メディア管理"
+msgstr "メディア管理 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 #, tao-public
 msgid "Manage Schema"
-msgstr "スキーム管理"
+msgstr "スキーム管理 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Media imported"
-msgstr "メディアがインポートされました"
+msgstr "メディアがインポートされました {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Media imported successfully"
-msgstr "メディアのインポートが完了しました"
+msgstr "メディアのインポートが完了しました {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 #, tao-public
 msgid "Media Manager"
-msgstr "メディア管理"
+msgstr "メディア管理 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 #, tao-public
 msgid "Media Manager extension"
-msgstr "メディア管理拡張機能"
+msgstr "メディア管理拡張機能 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Media Options"
-msgstr "メディアオプション"
+msgstr "メディアオプション {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Media successfully exported."
-msgstr "メディアのエクスポートが完了しました"
+msgstr "メディアのエクスポートが完了しました {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 #, tao-public
 msgid "Move"
-msgstr "移動"
+msgstr "移動 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 #, tao-public
 msgid "New class"
-msgstr "新規クラス"
+msgstr "新規クラス {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 #, tao-public
 msgid "New passage"
-msgstr "新しいパス"
+msgstr "新しいパス {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "No file found for this media"
-msgstr "メディアファイルが見つかりません"
+msgstr "メディアファイルが見つかりません {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Passage Properties"
-msgstr "パスのプロパティ"
+msgstr "パスのプロパティ {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Please delete the subclasses before."
-msgstr "前にサブクラスを削除してください。"
+msgstr "前にサブクラスを削除してください。 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Preview"
-msgstr "プレビュー"
+msgstr "プレビュー {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Preview the item"
-msgstr "アイテムプレビュー"
+msgstr "アイテムプレビュー {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 #, tao-public
 msgid "Properties"
-msgstr "プロパティ"
+msgstr "プロパティ {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Replace Asset"
-msgstr "アセット入替"
+msgstr "アセット入替 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Resource deleted"
-msgstr "リソースが削除されました"
+msgstr "リソースが削除されました {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Right"
-msgstr "右"
+msgstr "右 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Save"
-msgstr "保存"
+msgstr "保存 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Save the asset"
-msgstr "アセットを保存"
+msgstr "アセットを保存 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Set a CSS class name in order to customize the display style."
-msgstr "画面表示をカスタマイズするためのCSSクラス名を設定します"
+msgstr "画面表示をカスタマイズするためのCSSクラス名を設定します {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Shared Stimulus"
-msgstr "シェアードスティミュラス"
+msgstr "シェアードスティミュラス {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Shared Stimulus edited successfully"
-msgstr "シェアードスティミュラスの編集が完了しました"
+msgstr "シェアードスティミュラスの編集が完了しました {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Shared Stimulus imported successfully"
-msgstr "シェアードスティミュラスのインポートが完了しました"
+msgstr "シェアードスティミュラスのインポートが完了しました {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "some text ..."
-msgstr "テキストを入力 ..."
+msgstr "テキストを入力 ... {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Text Block"
-msgstr "文字ブロック"
+msgstr "文字ブロック {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Text Block CSS Class"
-msgstr "文字ブロックCSSクラス"
+msgstr "文字ブロックCSSクラス {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "The class"
-msgstr "クラス"
+msgstr "クラス {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "This"
-msgstr "この"
+msgstr "この {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Unable to delete the selected resource"
-msgstr "選択したリソースを削除できません"
+msgstr "選択したリソースを削除できません {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Unable to extract the archive"
-msgstr "アーカイブから抽出できません"
+msgstr "アーカイブから抽出できません {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Unable to import"
-msgstr "インポートできません"
+msgstr "インポートできません {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Upload Media"
-msgstr "メディアのアップロード"
+msgstr "メディアのアップロード {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
-msgstr "Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
+msgstr "Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS] {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Warning"
-msgstr "警告"
+msgstr "警告 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "which contains assets that are in use elsewhere."
-msgstr "他の場所で使用されている資産が含まれています"
+msgstr "他の場所で使用されている資産が含まれています {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "You are about to delete the class"
-msgstr "このクラスを削除しようとしています"
+msgstr "このクラスを削除しようとしています {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "you are trying to delete is too large and contains too many subclasses."
-msgstr "削除しようとしているのは大きすぎてサブクラスが多すぎます"
+msgstr "削除しようとしているのは大きすぎてサブクラスが多すぎます {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "You can\\'t upload a zip file as a media"
-msgstr "zipファイルはアップロードできません"
+msgstr "zipファイルはアップロードできません {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Your passage is saved"
-msgstr "あなたの通路は保存されました"
+msgstr "あなたの通路は保存されました {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Zip"
-msgstr "ZIP"
+msgstr "ZIP {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 

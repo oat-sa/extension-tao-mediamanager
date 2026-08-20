@@ -96,6 +96,8 @@ class MediaManager extends tao_actions_SaSModule
 
         $this->setData('xml', isset($mimeType) ? $this->getClassService()->isXmlAllowedMimeType($mimeType) : null);
         $this->setData('mimeType', $mimeType ?? null);
+        $this->setData('assetUri', $uri);
+        $this->setData('loadAssetCommentsPanel', true);
         $this->setView('form.tpl');
     }
 

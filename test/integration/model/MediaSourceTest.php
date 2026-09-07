@@ -100,10 +100,12 @@ class MediaSourceTest extends TestCase
         );
         $resourceProphecy->getLabel()->willReturn($label);
         $resourceProphecy->getUri()->willReturn('uri');
+        $resourceProphecy->getOnePropertyValue(Argument::any())->willReturn(null);
 
         $linkPropertyProphecy = $this->prophesize(core_kernel_classes_Property::class);
         $mimePropertyProphecy = $this->prophesize(core_kernel_classes_Property::class);
         $altTextPropertyProphecy = $this->prophesize(core_kernel_classes_Property::class);
+        $updatedAtPropertyProphecy = $this->prophesize(core_kernel_classes_Property::class);
 
         $modelMock = $this->prophesize(core_kernel_persistence_smoothsql_SmoothModel::class);
         $modelMock->getClass('class-uri-fixture')->willReturn($classMock->reveal());
@@ -111,6 +113,8 @@ class MediaSourceTest extends TestCase
         $modelMock->getProperty(TaoMediaOntology::PROPERTY_LINK)->willReturn($linkPropertyProphecy->reveal());
         $modelMock->getProperty(TaoMediaOntology::PROPERTY_MIME_TYPE)->willReturn($mimePropertyProphecy->reveal());
         $modelMock->getProperty(TaoMediaOntology::PROPERTY_ALT_TEXT)->willReturn($altTextPropertyProphecy->reveal());
+        $modelMock->getProperty(\oat\tao\model\TaoOntology::PROPERTY_UPDATED_AT)
+            ->willReturn($updatedAtPropertyProphecy->reveal());
 
         $mediaSource->setModel($modelMock->reveal());
 
@@ -125,6 +129,7 @@ class MediaSourceTest extends TestCase
         $this->assertEquals($mime, $success['mime']);
         $this->assertEquals($size, $success['size']);
         $this->assertEquals($link, $success['link']);
+        $this->assertArrayHasKey('updatedAt', $success);
 
         $resourceUri = tao_helpers_Uri::decode(str_replace(MediaSource::SCHEME_NAME, '', $success['uri']));
         $this->assertEquals($createdResourceUri, $resourceUri);
@@ -169,11 +174,12 @@ class MediaSourceTest extends TestCase
                 TaoMediaOntology::PROPERTY_ALT_TEXT => [$size],
             ]
         );
-
+        $resourceProphecy->getOnePropertyValue(Argument::any())->willReturn(null);
 
         $linkPropertyProphecy = $this->prophesize(core_kernel_classes_Property::class);
         $mimePropertyProphecy = $this->prophesize(core_kernel_classes_Property::class);
         $altTextPropertyProphecy = $this->prophesize(core_kernel_classes_Property::class);
+        $updatedAtPropertyProphecy = $this->prophesize(core_kernel_classes_Property::class);
 
         $modelMock = $this->prophesize(core_kernel_persistence_smoothsql_SmoothModel::class);
         $modelMock->getClass('class-uri-fixture')->willReturn($classMock->reveal());
@@ -181,6 +187,8 @@ class MediaSourceTest extends TestCase
         $modelMock->getProperty(TaoMediaOntology::PROPERTY_LINK)->willReturn($linkPropertyProphecy->reveal());
         $modelMock->getProperty(TaoMediaOntology::PROPERTY_MIME_TYPE)->willReturn($mimePropertyProphecy->reveal());
         $modelMock->getProperty(TaoMediaOntology::PROPERTY_ALT_TEXT)->willReturn($altTextPropertyProphecy->reveal());
+        $modelMock->getProperty(\oat\tao\model\TaoOntology::PROPERTY_UPDATED_AT)
+            ->willReturn($updatedAtPropertyProphecy->reveal());
 
         $mediaSource->setModel($modelMock->reveal());
 
@@ -191,6 +199,128 @@ class MediaSourceTest extends TestCase
         $this->assertEquals($mime, $success['mime']);
         $this->assertEquals($size, $success['size']);
         $this->assertEquals($link, $success['link']);
+        $this->assertArrayHasKey('updatedAt', $success);
+        $this->assertNull($success['updatedAt']);
+    }
+
+    public function testGetFileInfoFormatsUpdatedAtIsoUtc(): void
+    {
+        $parent = 'class-uri-fixture';
+        $label = 'label-fixture';
+        $mime = 'mime-fixture';
+        $size = '123456';
+        $link = 'link-fixture';
+        $resourceId = 'https://test-tao-deploy.docker.localhost/ontologies/tao.rdf#i5';
+        $searchId = $resourceId;
+        $updatedAtTs = 1722470400; // 2024-08-01T00:00:00Z
+
+        $mediaSource = new MediaSource([
+            'rootClass' => $parent,
+            'lang' => 'lang-fixture',
+        ]);
+
+        $fileManagementProphecy = $this->prophesize(FileManagement::class);
+        $fileManagementProphecy->getFileSize($link)->willReturn($size);
+
+        $ref = new ReflectionProperty(MediaSource::class, 'fileManagementService');
+        $ref->setAccessible(true);
+        $ref->setValue($mediaSource, $fileManagementProphecy->reveal());
+
+        $literal = new \core_kernel_classes_Literal((string)$updatedAtTs);
+
+        $resourceProphecy = $this->prophesize(core_kernel_classes_Resource::class);
+        $resourceProphecy->exists()->willReturn(true);
+        $resourceProphecy->getLabel()->willReturn($label);
+        $resourceProphecy->getUri()->willReturn('uri');
+        $resourceProphecy->getPropertiesValues(Argument::any())->willReturn(
+            [
+                TaoMediaOntology::PROPERTY_LINK => [$link],
+                TaoMediaOntology::PROPERTY_MIME_TYPE => [$mime],
+                TaoMediaOntology::PROPERTY_ALT_TEXT => [$size],
+            ]
+        );
+        $resourceProphecy->getOnePropertyValue(Argument::any())->willReturn($literal);
+
+        $modelMock = $this->prophesize(core_kernel_persistence_smoothsql_SmoothModel::class);
+        $modelMock->getResource($resourceId)->willReturn($resourceProphecy->reveal());
+        $modelMock->getProperty(TaoMediaOntology::PROPERTY_LINK)
+            ->willReturn($this->prophesize(core_kernel_classes_Property::class)->reveal());
+        $modelMock->getProperty(TaoMediaOntology::PROPERTY_MIME_TYPE)
+            ->willReturn($this->prophesize(core_kernel_classes_Property::class)->reveal());
+        $modelMock->getProperty(TaoMediaOntology::PROPERTY_ALT_TEXT)
+            ->willReturn($this->prophesize(core_kernel_classes_Property::class)->reveal());
+        $modelMock->getProperty(\oat\tao\model\TaoOntology::PROPERTY_UPDATED_AT)
+            ->willReturn($this->prophesize(core_kernel_classes_Property::class)->reveal());
+
+        $mediaSource->setModel($modelMock->reveal());
+
+        $success = $mediaSource->getFileInfo($searchId);
+
+        $this->assertSame('2024-08-01T00:00:00Z', $success['updatedAt']);
+    }
+
+    /**
+     * @dataProvider updatedAtEdgeCasesProvider
+     * @param int|string $rawValue
+     */
+    public function testGetFileInfoUpdatedAtEdgeCases($rawValue, ?string $expected): void
+    {
+        $parent = 'class-uri-fixture';
+        $label = 'label-fixture';
+        $mime = 'mime-fixture';
+        $size = '123456';
+        $link = 'link-fixture';
+        $resourceId = 'https://test-tao-deploy.docker.localhost/ontologies/tao.rdf#i5';
+
+        $mediaSource = new MediaSource([
+            'rootClass' => $parent,
+            'lang' => 'lang-fixture',
+        ]);
+
+        $fileManagementProphecy = $this->prophesize(FileManagement::class);
+        $fileManagementProphecy->getFileSize($link)->willReturn($size);
+
+        $ref = new ReflectionProperty(MediaSource::class, 'fileManagementService');
+        $ref->setAccessible(true);
+        $ref->setValue($mediaSource, $fileManagementProphecy->reveal());
+
+        $resourceProphecy = $this->prophesize(core_kernel_classes_Resource::class);
+        $resourceProphecy->exists()->willReturn(true);
+        $resourceProphecy->getLabel()->willReturn($label);
+        $resourceProphecy->getUri()->willReturn('uri');
+        $resourceProphecy->getPropertiesValues(Argument::any())->willReturn(
+            [
+                TaoMediaOntology::PROPERTY_LINK => [$link],
+                TaoMediaOntology::PROPERTY_MIME_TYPE => [$mime],
+                TaoMediaOntology::PROPERTY_ALT_TEXT => [$size],
+            ]
+        );
+        $resourceProphecy->getOnePropertyValue(Argument::any())->willReturn($rawValue);
+
+        $modelMock = $this->prophesize(core_kernel_persistence_smoothsql_SmoothModel::class);
+        $modelMock->getResource($resourceId)->willReturn($resourceProphecy->reveal());
+        $modelMock->getProperty(TaoMediaOntology::PROPERTY_LINK)
+            ->willReturn($this->prophesize(core_kernel_classes_Property::class)->reveal());
+        $modelMock->getProperty(TaoMediaOntology::PROPERTY_MIME_TYPE)
+            ->willReturn($this->prophesize(core_kernel_classes_Property::class)->reveal());
+        $modelMock->getProperty(TaoMediaOntology::PROPERTY_ALT_TEXT)
+            ->willReturn($this->prophesize(core_kernel_classes_Property::class)->reveal());
+        $modelMock->getProperty(\oat\tao\model\TaoOntology::PROPERTY_UPDATED_AT)
+            ->willReturn($this->prophesize(core_kernel_classes_Property::class)->reveal());
+
+        $mediaSource->setModel($modelMock->reveal());
+
+        $success = $mediaSource->getFileInfo($resourceId);
+        $this->assertSame($expected, $success['updatedAt']);
+    }
+
+    public function updatedAtEdgeCasesProvider(): array
+    {
+        return [
+            'zero timestamp' => [0, null],
+            'negative timestamp' => [-1, null],
+            'empty string' => ['', null],
+        ];
     }
 
     public function mediaIdsProvider(): array

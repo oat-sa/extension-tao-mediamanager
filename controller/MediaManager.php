@@ -24,6 +24,7 @@ namespace oat\taoMediaManager\controller;
 
 use oat\tao\model\http\ContentDetector;
 use oat\tao\model\featureFlag\FeatureFlagChecker;
+use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
 use oat\oatbox\user\User;
 use oat\oatbox\validator\ValidatorInterface;
 use oat\taoMediaManager\model\editInstanceForm;
@@ -44,8 +45,6 @@ use tao_models_classes_dataBinding_GenerisFormDataBinder;
 
 class MediaManager extends tao_actions_SaSModule
 {
-    private const FEATURE_FLAG_ITEM_COMMENTS_ENABLED = 'FEATURE_FLAG_ITEM_COMMENTS_ENABLED';
-
     /**
      * Show the form to edit an instance, show also a preview of the media
      *
@@ -104,7 +103,7 @@ class MediaManager extends tao_actions_SaSModule
             'loadAssetCommentsPanel',
             $this->getPsrContainer()
                 ->get(FeatureFlagChecker::class)
-                ->isEnabled(self::FEATURE_FLAG_ITEM_COMMENTS_ENABLED)
+                ->isEnabled(FeatureFlagCheckerInterface::FEATURE_FLAG_RESOURCE_COMMENTS_ENABLED)
         );
         $this->setView('form.tpl');
     }

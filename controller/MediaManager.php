@@ -25,6 +25,7 @@ namespace oat\taoMediaManager\controller;
 use oat\tao\model\http\ContentDetector;
 use oat\tao\model\featureFlag\FeatureFlagChecker;
 use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
+use oat\tao\model\TaskOrchestrator\TaskOrchestratorEmailService;
 use oat\oatbox\user\User;
 use oat\oatbox\validator\ValidatorInterface;
 use oat\taoMediaManager\model\editInstanceForm;
@@ -104,6 +105,10 @@ class MediaManager extends tao_actions_SaSModule
             $this->getPsrContainer()
                 ->get(FeatureFlagChecker::class)
                 ->isEnabled(FeatureFlagCheckerInterface::FEATURE_FLAG_RESOURCE_COMMENTS_ENABLED)
+        );
+        $this->setData(
+            'itemCommentsMentionsEnabled',
+            $this->getPsrContainer()->get(TaskOrchestratorEmailService::class)->isConfigured()
         );
         $this->setView('form.tpl');
     }

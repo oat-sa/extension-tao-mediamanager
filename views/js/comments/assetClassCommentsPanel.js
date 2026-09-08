@@ -43,8 +43,26 @@ define([
     }
 
     return {
-        init: function init() {
-            const $mainContainer = $('.main-container.flex-container-main-form');
+        /**
+         * @param {object} [options]
+         * @param {jQuery|HTMLElement} [options.$container]
+         * @param {Function} [options.storeFactory]
+         * @param {Function} [options.panelFactory]
+         * @param {boolean} [options.reset]
+         * @returns {{panel: object, store: object}|null}
+         */
+        init: function init(options) {
+            options = options || {};
+
+            if (options.reset) {
+                commentsPanel = null;
+                commentsStore = null;
+            }
+
+            const storeFactory = options.storeFactory || itemCommentsStoreFactory;
+            const panelFactory = options.panelFactory || commentsPanelFactory;
+            const $root = options.$container ? $(options.$container) : $(document);
+            const $mainContainer = $root.find('.main-container.flex-container-main-form');
             const assetUri = ($mainContainer.data('asset-uri') || '').toString();
 
             if (!$mainContainer.length || !assetUri) {
@@ -66,12 +84,12 @@ define([
 
             const $contentHost = $panel.find('.asset-comments-content-panel');
             if (!commentsPanel) {
-                commentsStore = itemCommentsStoreFactory({
+                commentsStore = storeFactory({
                     resourceUri: assetUri,
                     resourceType: itemCommentsApi.RESOURCE_TYPE.ASSET
                 });
 
-                commentsPanel = commentsPanelFactory({
+                commentsPanel = panelFactory({
                     renderTo: $contentHost,
                     store: commentsStore
                 });

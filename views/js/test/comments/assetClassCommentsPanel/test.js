@@ -184,4 +184,48 @@ define(['jquery', 'taoMediaManager/comments/assetClassCommentsPanel'], function 
         assert.strictEqual(setResourceUriValue, 'urn:asset:second', 'updates store resource URI');
         assert.strictEqual(refreshCalls, 1, 'refreshes existing panel');
     });
+
+    QUnit.test('init recreates panel when the form host is replaced', function (assert) {
+        assert.expect(5);
+        const $first = createContainer('urn:asset:first');
+        const firstStore = createStoreStub();
+        const firstPanel = createPanelStub({
+            destroy: function () {
+                this.destroyed = true;
+            }
+        });
+        const secondStore = createStoreStub();
+        const secondPanel = createPanelStub();
+        let storeFactoryCalls = 0;
+
+        assetCommentsPanel.init({
+            reset: true,
+            $container: $first,
+            storeFactory: function () {
+                storeFactoryCalls += 1;
+                return firstStore;
+            },
+            panelFactory: function () {
+                return firstPanel;
+            }
+        });
+
+        const $second = createContainer('urn:asset:replaced');
+        const component = assetCommentsPanel.init({
+            $container: $second,
+            storeFactory: function (config) {
+                storeFactoryCalls += 1;
+                assert.strictEqual(config.resourceUri, 'urn:asset:replaced', 'creates store for the new asset');
+                return secondStore;
+            },
+            panelFactory: function () {
+                return secondPanel;
+            }
+        });
+
+        assert.strictEqual(storeFactoryCalls, 2, 'creates a new store for the replaced host');
+        assert.strictEqual(component.store, secondStore, 'returns the new store');
+        assert.strictEqual(component.panel, secondPanel, 'returns the new panel');
+        assert.strictEqual(firstPanel.destroyed, true, 'destroys the detached panel');
+    });
 });

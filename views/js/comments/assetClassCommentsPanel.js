@@ -11,6 +11,7 @@ define([
     const PANEL_ID = 'asset-comments-side-panel';
     let commentsPanel = null;
     let commentsStore = null;
+    let commentsHostEl = null;
 
     function moveEntryFormToDedicatedSlot($panel) {
         const $entrySlot = $panel.find('.asset-comments-entry-slot');
@@ -57,6 +58,7 @@ define([
             if (options.reset) {
                 commentsPanel = null;
                 commentsStore = null;
+                commentsHostEl = null;
             }
 
             const storeFactory = options.storeFactory || itemCommentsStoreFactory;
@@ -83,7 +85,14 @@ define([
             $contentContainer.addClass('asset-comments-layout');
 
             const $contentHost = $panel.find('.asset-comments-content-panel');
-            if (!commentsPanel) {
+            const hostEl = $contentHost.get(0);
+            const shouldCreate = !commentsPanel || commentsHostEl !== hostEl;
+
+            if (shouldCreate) {
+                if (commentsPanel && typeof commentsPanel.destroy === 'function') {
+                    commentsPanel.destroy();
+                }
+
                 commentsStore = storeFactory({
                     resourceUri: assetUri,
                     resourceType: itemCommentsApi.RESOURCE_TYPE.ASSET
@@ -93,6 +102,7 @@ define([
                     renderTo: $contentHost,
                     store: commentsStore
                 });
+                commentsHostEl = hostEl;
 
                 moveEntryFormToDedicatedSlot($panel);
                 commentsStore.load().catch(_.noop);

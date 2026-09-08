@@ -153,14 +153,14 @@ div.item-editor-item {
 
 section.content-container.asset-comments-layout {
     position: relative;
-    padding-right: var(--authoring-right-panel-width);
+    padding-right: var(--authoring-right-panel-width, 210px);
 
     > #asset-comments-side-panel.asset-comments-side-panel {
         position: absolute;
         right: 0;
         top: 0;
         bottom: 0;
-        width: var(--authoring-right-panel-width);
+        width: var(--authoring-right-panel-width, 210px);
         border-left: 1px solid #ddd;
         padding: 0;
         background: #fff;

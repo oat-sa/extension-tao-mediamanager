@@ -150,3 +150,94 @@
 div.item-editor-item {
     border-color: transparent;
 }
+
+section.content-container.asset-comments-layout {
+    position: relative;
+    padding-right: var(--authoring-right-panel-width, 210px);
+
+    > #asset-comments-side-panel.asset-comments-side-panel {
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: var(--authoring-right-panel-width, 210px);
+        border-left: 1px solid #ddd;
+        padding: 0;
+        background: #fff;
+        display: flex;
+        flex-direction: column;
+
+        .asset-comments-header {
+            margin: 0;
+            height: 35px;
+            padding: 5px 16px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            flex: 0 0 35px;
+            background: #266d9c;
+            color: #e7eff4;
+
+            h2 {
+                margin: 0;
+                font-size: 1.4rem;
+                font-weight: 400;
+                line-height: 1;
+            }
+
+            .icon-speech-bubble {
+                margin-right: 8px;
+            }
+        }
+
+        .asset-comments-side-panel-body {
+            flex: 1 1 auto;
+            min-height: 0;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .asset-comments-guidance {
+            color: #666;
+            margin: 0 0 12px;
+        }
+
+        .asset-comments-content-panel {
+            flex: 1 1 auto;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+
+            .item-comments-panel {
+                flex: 1 1 auto;
+                min-height: 0;
+                max-height: none;
+            }
+
+        }
+
+        .asset-comments-content-shell {
+            flex: 1 1 auto;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .asset-comments-entry-slot {
+            margin: 0 -16px -16px;
+            background: #efefef;
+            border-top: 1px solid #d8d8d8;
+
+            .item-comments-entry {
+                width: 100%;
+                box-sizing: border-box;
+                background: transparent;
+                border-top: 0;
+                margin: 0;
+                padding: 8px 16px 10px;
+            }
+        }
+    }
+}

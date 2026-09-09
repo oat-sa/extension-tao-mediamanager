@@ -66,6 +66,9 @@ define([
             const $root = options.$container ? $(options.$container) : $(document);
             const $mainContainer = $root.find('.main-container.flex-container-main-form');
             const assetUri = ($mainContainer.data('asset-uri') || '').toString();
+            const hostMentions = $mainContainer.data('mentions-enabled');
+            const mentionsEnabled =
+                hostMentions === 1 || hostMentions === true || hostMentions === '1';
 
             if (!$mainContainer.length || !assetUri) {
                 return null;
@@ -100,7 +103,8 @@ define([
 
                 commentsPanel = panelFactory({
                     renderTo: $contentHost,
-                    store: commentsStore
+                    store: commentsStore,
+                    mentionsEnabled: mentionsEnabled
                 });
                 commentsHostEl = hostEl;
 

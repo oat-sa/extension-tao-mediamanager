@@ -3,7 +3,11 @@ use oat\tao\helpers\Template;
 Template::inc('form_context.tpl', 'tao');
 ?>
 <link rel="stylesheet" href="<?= Template::css('media.css') ?>"/>
-    <div class="main-container flex-container-main-form">
+    <div
+        class="main-container flex-container-main-form"
+        data-asset-uri="<?= htmlspecialchars((string) (get_data('assetUri') ?? ''), ENT_QUOTES, 'UTF-8') ?>"
+        data-mentions-enabled="<?= get_data('itemCommentsMentionsEnabled') ? '1' : '0' ?>"
+    >
         <header class="section-header flex-container-full">
             <h2><?=get_data('formTitle')?></h2>
         </header>
@@ -27,3 +31,11 @@ Template::inc('form_context.tpl', 'tao');
     </div>
 
 <?php Template::inc('footer.tpl', 'tao'); ?>
+
+<script>
+    <?php if (get_data('loadAssetCommentsPanel')): ?>
+    require(['taoMediaManager/comments/assetClassCommentsPanel'], function (assetCommentsPanel) {
+        assetCommentsPanel.init();
+    });
+    <?php endif; ?>
+</script>

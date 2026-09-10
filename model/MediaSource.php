@@ -28,11 +28,14 @@ use oat\tao\model\accessControl\AccessControlEnablerInterface;
 use oat\tao\model\media\MediaManagement;
 use oat\tao\model\media\mediaSource\DirectorySearchQuery;
 use oat\tao\model\media\ProcessedFileStreamAware;
+use oat\tao\model\TaoOntology;
 use oat\taoMediaManager\model\export\service\MediaResourcePreparerInterface;
 use oat\taoMediaManager\model\mapper\MediaSourcePermissionsMapper;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
 use Psr\Http\Message\StreamInterface;
+use core_kernel_classes_Literal;
+use core_kernel_classes_Resource;
 use tao_helpers_Uri;
 use tao_models_classes_FileNotFoundException;
 use GuzzleHttp\Psr7\Utils;
@@ -170,10 +173,32 @@ class MediaSource extends Configurable implements
                 'mime' => (string)$mime,
                 'size' => $this->getFileManagement()->getFileSize($fileLink),
                 'alt' => $alt,
-                'link' => $fileLink
+                'link' => $fileLink,
+                'updatedAt' => $this->formatResourceUpdatedAt($resource),
             ],
             $resource->getUri()
         );
+    }
+
+    /**
+     * ISO-8601 UTC timestamp for Resource Manager "Last modified" column.
+     */
+    private function formatResourceUpdatedAt(core_kernel_classes_Resource $resource): ?string
+    {
+        $raw = $resource->getOnePropertyValue($this->getProperty(TaoOntology::PROPERTY_UPDATED_AT));
+        $updatedAt = null;
+        if ($raw instanceof core_kernel_classes_Literal) {
+            $updatedAt = $raw->literal;
+        } elseif ($raw !== null && $raw !== '') {
+            $updatedAt = $raw;
+        }
+
+        $timestamp = (int)$updatedAt;
+        if ($timestamp <= 0) {
+            return null;
+        }
+
+        return gmdate('Y-m-d\TH:i:s\Z', $timestamp);
     }
 
     /**

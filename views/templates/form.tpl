@@ -33,9 +33,7 @@ Template::inc('form_context.tpl', 'tao');
 <?php Template::inc('footer.tpl', 'tao'); ?>
 
 <script>
-    <?php if (get_data('loadAssetCommentsPanel')): ?>
     require(['taoMediaManager/comments/assetClassCommentsPanel'], function (assetCommentsPanel) {
         assetCommentsPanel.init();
     });
-    <?php endif; ?>
 </script>

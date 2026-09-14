@@ -193,7 +193,14 @@ class MediaSource extends Configurable implements
             $updatedAt = $raw;
         }
 
-        $timestamp = (int)$updatedAt;
+        if (
+            !is_int($updatedAt)
+            && !(is_string($updatedAt) && ctype_digit($updatedAt))
+        ) {
+            return null;
+        }
+
+        $timestamp = (int) $updatedAt;
         if ($timestamp <= 0) {
             return null;
         }

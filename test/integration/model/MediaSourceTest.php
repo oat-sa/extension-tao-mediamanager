@@ -320,6 +320,7 @@ class MediaSourceTest extends TestCase
             'zero timestamp' => [0, null],
             'negative timestamp' => [-1, null],
             'empty string' => ['', null],
+            'numeric prefix string' => ['1722470400invalid', null],
         ];
     }
 

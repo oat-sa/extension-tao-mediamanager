@@ -110,6 +110,11 @@ class MediaManagerBrowserTest extends TestCase
             new core_kernel_classes_Property(TaoMediaOntology::PROPERTY_MIME_TYPE),
             'image/png'
         );
+        $updatedAtTs = 1722470400; // 2024-08-01T00:00:00Z
+        $instance->setPropertyValue(
+            new core_kernel_classes_Property(\oat\tao\model\TaoOntology::PROPERTY_UPDATED_AT),
+            $updatedAtTs
+        );
 
         $uri = $instance->getUri();
 
@@ -120,6 +125,7 @@ class MediaManagerBrowserTest extends TestCase
         $this->assertArrayHasKey('mime', $fileInfo, 'The result should contain "mime"');
         $this->assertArrayHasKey('size', $fileInfo, 'The result should contain "size"');
         $this->assertArrayHasKey('uri', $fileInfo, 'The result should contain "size"');
+        $this->assertArrayHasKey('updatedAt', $fileInfo, 'The result should contain "updatedAt"');
 
         $this->assertEquals($instance->getLabel(), $fileInfo['name'], 'The file name is not correct');
         $this->assertEquals('image/png', $fileInfo['mime'], 'The mime type is not correct');
@@ -127,6 +133,11 @@ class MediaManagerBrowserTest extends TestCase
             'taomedia://mediamanager/' . \tao_helpers_Uri::encode($uri),
             $fileInfo['uri'],
             'The uri is not correct'
+        );
+        $this->assertEquals(
+            '2024-08-01T00:00:00Z',
+            $fileInfo['updatedAt'],
+            'updatedAt must be ISO-8601 UTC from ontology UpdatedAt'
         );
     }
 

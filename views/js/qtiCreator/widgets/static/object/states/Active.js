@@ -40,10 +40,13 @@ define([
     let $panelObjectSize = null;
     let $panelMediaSize = null;
 
+    const mediaMimeFilters =
+        'video/mp4,video/avi,video/ogv,video/mpeg,video/ogg,video/quicktime,video/webm,video/x-ms-wmv,video/x-flv,audio/mp3,audio/vnd.wav,audio/ogg,audio/vorbis,audio/webm,audio/mpeg,application/ogg,audio/aac,audio/wav,audio/flac';
+
     const _config = {
         renderingThrottle: 1000,
-        fileFilters:
-            'image/jpeg,image/png,image/gif,image/svg+xml,video/mp4,video/avi,video/ogv,video/mpeg,video/ogg,video/quicktime,video/webm,video/x-ms-wmv,video/x-flv,audio/mp3,audio/vnd.wav,audio/ogg,audio/vorbis,audio/webm,audio/mpeg,application/ogg,audio/aac,application/pdf'
+        mediaPlayerMimeType: mediaMimeFilters,
+        fileFilters: mediaMimeFilters
     };
 
     const ObjectStateActive = stateFactory.extend(
@@ -169,6 +172,7 @@ define([
                 appendContainer: options.mediaManager.appendContainer,
                 mediaSourcesUrl: options.mediaManager.mediaSourcesUrl,
                 browseUrl: options.mediaManager.browseUrl,
+                searchUrl: options.mediaManager.searchUrl,
                 uploadUrl: options.mediaManager.uploadUrl,
                 deleteUrl: options.mediaManager.deleteUrl,
                 downloadUrl: options.mediaManager.downloadUrl,
@@ -181,6 +185,7 @@ define([
                 pathParam: 'path',
                 path: options.mediaManager.path,
                 root: options.mediaManager.root,
+                currentAsset: $src.val() || undefined,
                 select: function (e, files) {
                     let file, type;
                     if (files && files.length) {

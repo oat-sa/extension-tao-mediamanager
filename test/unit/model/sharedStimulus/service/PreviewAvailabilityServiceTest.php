@@ -20,30 +20,27 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\test\unit\controller;
+namespace oat\taoMediaManager\test\unit\model\sharedStimulus\service;
 
 use oat\generis\test\TestCase;
-use oat\taoMediaManager\controller\MediaManager;
 use oat\taoMediaManager\model\sharedStimulus\parser\JsonQtiAttributeParser;
 use oat\taoMediaManager\model\sharedStimulus\repository\SharedStimulusRepository;
+use oat\taoMediaManager\model\sharedStimulus\service\PreviewAvailabilityService;
 use oat\taoMediaManager\model\sharedStimulus\SharedStimulus;
 use Psr\Log\LoggerInterface;
-use ReflectionMethod;
 use RuntimeException;
 
-class MediaManagerTest extends TestCase
+class PreviewAvailabilityServiceTest extends TestCase
 {
     private const URI = 'https://example.com/tao.rdf#shared-stimulus';
 
-    private MediaManager $subject;
+    private PreviewAvailabilityService $subject;
 
     private SharedStimulusRepository $repository;
 
     private JsonQtiAttributeParser $parser;
 
     private LoggerInterface $logger;
-
-    private ReflectionMethod $method;
 
     protected function setUp(): void
     {
@@ -53,7 +50,7 @@ class MediaManagerTest extends TestCase
         $this->parser = $this->createMock(JsonQtiAttributeParser::class);
         $this->logger = $this->createMock(LoggerInterface::class);
 
-        $this->subject = new MediaManager();
+        $this->subject = new PreviewAvailabilityService();
         $this->subject->setLogger($this->logger);
         $this->subject->setServiceLocator(
             $this->getServiceLocatorMock([
@@ -61,12 +58,9 @@ class MediaManagerTest extends TestCase
                 JsonQtiAttributeParser::class => $this->parser,
             ])
         );
-
-        $this->method = new ReflectionMethod($this->subject, 'hasSharedStimulusPreviewContent');
-        $this->method->setAccessible(true);
     }
 
-    public function testHasSharedStimulusPreviewContentReturnsTrueWhenBodyContainsContent(): void
+    public function testHasPreviewContentReturnsTrueWhenBodyContainsContent(): void
     {
         $sharedStimulus = new SharedStimulus(self::URI, 'label', 'language');
 
@@ -89,10 +83,10 @@ class MediaManagerTest extends TestCase
             ->expects($this->never())
             ->method('warning');
 
-        $this->assertTrue($this->invokeHasSharedStimulusPreviewContent());
+        $this->assertTrue($this->subject->hasPreviewContent(self::URI));
     }
 
-    public function testHasSharedStimulusPreviewContentReturnsFalseWhenBodyIsWhitespace(): void
+    public function testHasPreviewContentReturnsFalseWhenBodyIsWhitespace(): void
     {
         $sharedStimulus = new SharedStimulus(self::URI, 'label', 'language');
 
@@ -115,10 +109,10 @@ class MediaManagerTest extends TestCase
             ->expects($this->never())
             ->method('warning');
 
-        $this->assertFalse($this->invokeHasSharedStimulusPreviewContent());
+        $this->assertFalse($this->subject->hasPreviewContent(self::URI));
     }
 
-    public function testHasSharedStimulusPreviewContentReturnsFalseWhenBodyNodeIsMissing(): void
+    public function testHasPreviewContentReturnsFalseWhenBodyNodeIsMissing(): void
     {
         $sharedStimulus = new SharedStimulus(self::URI, 'label', 'language');
 
@@ -139,10 +133,10 @@ class MediaManagerTest extends TestCase
             ->expects($this->never())
             ->method('warning');
 
-        $this->assertFalse($this->invokeHasSharedStimulusPreviewContent());
+        $this->assertFalse($this->subject->hasPreviewContent(self::URI));
     }
 
-    public function testHasSharedStimulusPreviewContentReturnsFalseAndLogsWarningWhenParsingFails(): void
+    public function testHasPreviewContentReturnsFalseAndLogsWarningWhenParsingFails(): void
     {
         $sharedStimulus = new SharedStimulus(self::URI, 'label', 'language');
 
@@ -162,11 +156,6 @@ class MediaManagerTest extends TestCase
             ->method('warning')
             ->with($this->stringContains('Unable to determine shared stimulus preview content'));
 
-        $this->assertFalse($this->invokeHasSharedStimulusPreviewContent());
-    }
-
-    private function invokeHasSharedStimulusPreviewContent(): bool
-    {
-        return $this->method->invoke($this->subject, self::URI);
+        $this->assertFalse($this->subject->hasPreviewContent(self::URI));
     }
 }

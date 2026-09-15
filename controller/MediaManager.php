@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\controller;
 
-use oat\oatbox\log\LoggerAwareTrait;
 use oat\tao\model\http\ContentDetector;
 use oat\tao\model\featureFlag\FeatureFlagChecker;
 use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
@@ -35,9 +34,7 @@ use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\accessControl\MediaPermissionService;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\tao\model\Lists\Business\Validation\DependsOnPropertyValidator;
-use oat\taoMediaManager\model\sharedStimulus\FindQuery;
-use oat\taoMediaManager\model\sharedStimulus\parser\JsonQtiAttributeParser;
-use oat\taoMediaManager\model\sharedStimulus\repository\SharedStimulusRepository;
+use oat\taoMediaManager\model\sharedStimulus\service\PreviewAvailabilityService;
 use core_kernel_classes_Resource;
 use oat\taoMediaManager\model\TaoMediaOntology;
 use oat\taoMediaManager\model\transcription\TranscriptionMimeTypesProvider;
@@ -50,8 +47,6 @@ use tao_models_classes_dataBinding_GenerisFormDataBinder;
 
 class MediaManager extends tao_actions_SaSModule
 {
-    use LoggerAwareTrait;
-
     /**
      * Show the form to edit an instance, show also a preview of the media
      *
@@ -103,9 +98,11 @@ class MediaManager extends tao_actions_SaSModule
             $this->setData('error', __('No file found for this media'));
         }
 
-        $hasPreviewContent = !isset($mimeType)
-            || $mimeType !== MediaService::SHARED_STIMULUS_MIME_TYPE
-            || $this->hasSharedStimulusPreviewContent($uri);
+        $hasPreviewContent = isset($mimeType)
+            && (
+                $mimeType !== MediaService::SHARED_STIMULUS_MIME_TYPE
+                || $this->getPreviewAvailabilityService()->hasPreviewContent($uri)
+            );
 
         $this->setData('isPreviewEnabled', $isPreviewEnabled);
         $this->setData('displayPreview', $isPreviewEnabled && $hasPreviewContent);
@@ -253,36 +250,8 @@ class MediaManager extends tao_actions_SaSModule
         return $this->getPsrContainer()->get(DependsOnPropertyValidator::class);
     }
 
-    private function hasSharedStimulusPreviewContent(string $uri): bool
+    private function getPreviewAvailabilityService(): PreviewAvailabilityService
     {
-        try {
-            $sharedStimulus = $this->getSharedStimulusRepository()->find(new FindQuery($uri));
-            $parsedBody = $this->getSharedStimulusAttributesParser()->parse($sharedStimulus);
-        } catch (\Throwable $exception) {
-            $this->logWarning(sprintf(
-                'Unable to determine shared stimulus preview content for "%s": %s',
-                $uri,
-                $exception->getMessage()
-            ));
-            return false;
-        }
-
-        $body = $parsedBody['body'] ?? null;
-
-        if (!is_array($body)) {
-            return false;
-        }
-
-        return trim((string) ($body['body'] ?? '')) !== '';
-    }
-
-    private function getSharedStimulusRepository(): SharedStimulusRepository
-    {
-        return $this->getPsrContainer()->get(SharedStimulusRepository::class);
-    }
-
-    private function getSharedStimulusAttributesParser(): JsonQtiAttributeParser
-    {
-        return $this->getPsrContainer()->get(JsonQtiAttributeParser::class);
+        return $this->getPsrContainer()->get(PreviewAvailabilityService::class);
     }
 }

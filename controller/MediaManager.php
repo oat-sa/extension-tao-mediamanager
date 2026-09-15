@@ -23,8 +23,6 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\controller;
 
 use oat\tao\model\http\ContentDetector;
-use oat\tao\model\featureFlag\FeatureFlagChecker;
-use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
 use oat\tao\model\TaskOrchestrator\TaskOrchestratorEmailService;
 use oat\oatbox\user\User;
 use oat\oatbox\validator\ValidatorInterface;
@@ -100,12 +98,6 @@ class MediaManager extends tao_actions_SaSModule
         $this->setData('xml', isset($mimeType) ? $this->getClassService()->isXmlAllowedMimeType($mimeType) : null);
         $this->setData('mimeType', $mimeType ?? null);
         $this->setData('assetUri', $uri);
-        $this->setData(
-            'loadAssetCommentsPanel',
-            $this->getPsrContainer()
-                ->get(FeatureFlagChecker::class)
-                ->isEnabled(FeatureFlagCheckerInterface::FEATURE_FLAG_RESOURCE_COMMENTS_ENABLED)
-        );
         $this->setData(
             'itemCommentsMentionsEnabled',
             $this->getPsrContainer()->get(TaskOrchestratorEmailService::class)->isConfigured()

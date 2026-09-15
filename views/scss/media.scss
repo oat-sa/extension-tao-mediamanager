@@ -1,6 +1,7 @@
 @import 'inc/bootstrap';
 
 .previewer {
+    margin: 0;
     position: relative;
     iframe {
         min-height: 400px;

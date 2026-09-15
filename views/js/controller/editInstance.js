@@ -13,26 +13,21 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2020 (original work) Open Assessment Technologies SA ;
+ * Copyright (c) 2020-2026 (original work) Open Assessment Technologies SA ;
  */
 
 /**
+ * Side-effect import: registers $.fn.previewer
  * @author Juan Luis Gutierrez Dos Santos <juanluis.gutierrezdossantos@taotesting.com>
  */
 define([
     'jquery',
-    'lodash',
     'layout/actions/binder',
-    'ui/previewer',
     'util/url',
-    'taoMediaManager/previewer/component/qtiSharedStimulusItem',
-    'core/logger',
-    'ui/feedback',
-    'layout/loading-bar'
-], function($, _, binder, previewer, urlUtil, qtiItemPreviewerFactory, loggerFactory, feedback, loadingBar) {
+    'taoItems/preview/inlinePropertiesPreview',
+    'ui/previewer'
+], function($, binder, urlUtil, inlinePropertiesPreview) {
     'use strict';
-
-    const logger = loggerFactory('taoMediaManager/editInstance');
 
     const manageMediaController =  {
 
@@ -40,30 +35,27 @@ define([
          * Controller entry point
          */
         start() {
-
             const $previewer = $('.previewer');
-            let file = {};
-            file.url = $previewer.data('url');
-            file.mime = $previewer.data('type');
-
+            const mimeType = $('.main-container').data('mimeType');
+            const isPassage = mimeType === 'application/qti+xml';
             const isPreviewEnabled = $previewer.data('enabled');
-            const isPassage = file.mime === 'application/qti+xml';
 
             if (isPreviewEnabled) {
-                if (!isPassage) {
+                if (isPassage) {
+                    $previewer.attr('id', 'item-properties-preview');
+                    $previewer.closest('.data-container-wrapper').attr('id', 'item-properties-preview-column');
+
+                    inlinePropertiesPreview.init({
+                        isPreviewEnabled,
+                        itemUri: $('#edit-media').data('uri')
+                    });
+                } else {
+                    const file = {};
+                    file.url = $previewer.data('url');
+                    file.mime = $previewer.data('type');
                     // to hide the loading icon, inherited from the .previewer
                     file.containerClass = 'no-background';
                     $previewer.previewer(file);
-                } else {
-                    loadingBar.start();
-                    qtiItemPreviewerFactory($previewer, {itemUri:  $('#edit-media').data('uri')})
-                        .on('error', function (err) {
-                            if (!_.isUndefined(err.message)) {
-                                feedback().error(err.message);
-                            }
-                            logger.error(err);
-                        })
-                        .on('preview-loaded', loadingBar.stop);
                 }
             }
 

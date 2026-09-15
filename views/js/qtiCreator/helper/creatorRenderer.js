@@ -57,7 +57,7 @@ define([
                     mediaManager: {
                         appendContainer: '#mediaManager',
                         browseUrl: config.properties.getFilesUrl,
-                        searchUrl: config.properties.getFilesUrl,
+                        searchUrl: config.properties.searchUrl,
                         uploadUrl: config.properties.fileUploadUrl,
                         deleteUrl: config.properties.fileDeleteUrl,
                         downloadUrl: config.properties.fileDownloadUrl,

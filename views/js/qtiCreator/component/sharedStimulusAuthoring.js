@@ -23,7 +23,7 @@ define([
     'ui/component',
     'core/pluginLoader',
     'taoMediaManager/qtiCreator/sharedStimulusCreator',
-    'taoQtiItem/qtiCreator/editor/areaBroker',
+    'ui/areaBroker',
     'tpl!taoMediaManager/qtiCreator/component/tpl/sharedStimulusAuthoring',
     'context',
     'css!taoQtiItemCss/qti-runner.css',
@@ -34,11 +34,31 @@ define([
     componentFactory,
     pluginLoaderFactory,
     sharedStimulusCreatorFactory,
-    areaBrokerFactory,
+    areaBroker,
     componentTpl,
     context
 ) {
     'use strict';
+
+    const sharedStimulusRequiredAreas = [
+        'menu',
+        'menuLeft',
+        'menuRight',
+        'editorBar',
+        'editorWrapper',
+        'title',
+        'toolbar',
+        'interactionPanel',
+        'itemPanel',
+        'contentCreatorPanel',
+        'propertyPanel',
+        'itemPropertyPanel',
+        'elementPropertyPanel',
+        'itemStylePanel',
+        'modalContainer'
+    ];
+
+    const areaBrokerFactory = _.partial(areaBroker, sharedStimulusRequiredAreas);
 
     const defaultPlugins = [
         {

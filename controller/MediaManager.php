@@ -23,9 +23,9 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\controller;
 
 use oat\tao\model\http\ContentDetector;
-use oat\tao\model\TaskOrchestrator\TaskOrchestratorEmailService;
 use oat\oatbox\user\User;
 use oat\oatbox\validator\ValidatorInterface;
+use oat\taoDeliverConnect\model\TaskOrchestrator\TaskOrchestratorEmailService;
 use oat\taoMediaManager\model\editInstanceForm;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;

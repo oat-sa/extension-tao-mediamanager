@@ -25,7 +25,6 @@ namespace oat\taoMediaManager\controller;
 use oat\tao\model\http\ContentDetector;
 use oat\oatbox\user\User;
 use oat\oatbox\validator\ValidatorInterface;
-use oat\taoDeliverConnect\model\TaskOrchestrator\TaskOrchestratorEmailService;
 use oat\taoMediaManager\model\editInstanceForm;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
@@ -98,10 +97,6 @@ class MediaManager extends tao_actions_SaSModule
         $this->setData('xml', isset($mimeType) ? $this->getClassService()->isXmlAllowedMimeType($mimeType) : null);
         $this->setData('mimeType', $mimeType ?? null);
         $this->setData('assetUri', $uri);
-        $this->setData(
-            'itemCommentsMentionsEnabled',
-            $this->getPsrContainer()->get(TaskOrchestratorEmailService::class)->isConfigured()
-        );
         $this->setView('form.tpl');
     }
 

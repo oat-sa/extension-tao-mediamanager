@@ -1,21 +1,10 @@
 <?php
 
 /**
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; under version 2
- * of the License (non-upgradable).
+ * SPDX-FileCopyrightText: 2021-2026 Open Assessment Technologies S.A.
+ * Copyright (C) 2026 (original work) Open Assessment Technologies S.A.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- *
- * Copyright (c) 2021-2023 (original work) Open Assessment Technologies SA;
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-TAO-Commercial-License
  */
 
 declare(strict_types=1);
@@ -51,8 +40,12 @@ use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterfa
 use oat\taoMediaManager\model\relation\repository\rdf\RdfMediaRelationRepository;
 use oat\taoMediaManager\model\sharedStimulus\css\repository\StylesheetRepository;
 use oat\taoMediaManager\model\sharedStimulus\css\service\ListStylesheetsService;
+use oat\taoMediaManager\model\sharedStimulus\css\service\LoadStylesheetService;
 use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
+use oat\taoMediaManager\model\sharedStimulus\parser\JsonQtiAttributeParser;
+use oat\taoMediaManager\model\sharedStimulus\repository\SharedStimulusRepository;
 use oat\taoMediaManager\model\sharedStimulus\service\CopyService;
+use oat\taoMediaManager\model\sharedStimulus\service\PreviewerSharedStimulusHandler;
 use oat\taoMediaManager\model\sharedStimulus\service\StoreService;
 use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourceSpecification;
 use oat\taoMediaManager\model\TaoMediaOntology;
@@ -89,6 +82,19 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                     service(FileManagement::SERVICE_ID),
                 ]
             );
+
+        $services
+            ->set(PreviewerSharedStimulusHandler::class, PreviewerSharedStimulusHandler::class)
+            ->args(
+                [
+                    service(SharedStimulusRepository::class),
+                    service(JsonQtiAttributeParser::class),
+                    service(SharedStimulusResourceSpecification::class),
+                    service(ListStylesheetsService::class),
+                    service(LoadStylesheetService::class),
+                ]
+            )
+            ->tag('tao.qti_test_previewer.shared_stimulus_handler');
 
         $services
             ->set(MediaPermissionService::class, MediaPermissionService::class)

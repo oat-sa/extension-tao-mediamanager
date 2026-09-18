@@ -22,12 +22,64 @@
  */
 define([
     'jquery',
+    'context',
     'layout/actions/binder',
     'util/url',
     'taoItems/preview/inlinePropertiesPreview',
+    'taoMediaManager/previewer/component/qtiSharedStimulusItem',
+    'core/logger',
+    'ui/feedback',
+    'layout/loading-bar',
     'ui/previewer'
-], function($, binder, urlUtil, inlinePropertiesPreview) {
+], function($, context, binder, urlUtil, inlinePropertiesPreview, qtiItemPreviewerFactory, loggerFactory, feedback, loadingBar) {
     'use strict';
+
+    const logger = loggerFactory('taoMediaManager/editInstance');
+
+    const isExternalPreviewerAvailable = () => !!(
+        context &&
+        context.previewerExternalFeUrl &&
+        context.featureFlags &&
+        context.featureFlags.FEATURE_FLAG_TAO_ADVANCE_EXTERNAL_ITEM_PREVIEWER &&
+        !context.featureFlags.FEATURE_FLAG_TAO_CG_ONLY
+    );
+
+    const initPreview = isPassage => {
+        const $previewer = $('.previewer');
+        const isPreviewEnabled = $previewer.data('enabled');
+        if (!isPreviewEnabled) return;
+
+        if (!isPassage) {
+            const file = {};
+            file.url = $previewer.data('url');
+            file.mime = $previewer.data('type');
+            // to hide the loading icon, inherited from the .previewer
+            file.containerClass = 'no-background';
+            $previewer.previewer(file);
+            return;
+        }
+
+        if (isExternalPreviewerAvailable()) {
+            $previewer.attr('id', 'item-properties-preview');
+            $previewer.closest('.data-container-wrapper').attr('id', 'item-properties-preview-column');
+
+            inlinePropertiesPreview.init({
+                isPreviewEnabled,
+                itemUri: $('#edit-media').data('uri')
+            });
+            return;
+        }
+
+        loadingBar.start();
+        qtiItemPreviewerFactory($previewer, {itemUri: $('#edit-media').data('uri')})
+            .on('error', function (err) {
+                if (typeof err.message !== 'undefined') {
+                    feedback().error(err.message);
+                }
+                logger.error(err);
+            })
+            .on('preview-loaded', loadingBar.stop);
+    };
 
     const manageMediaController =  {
 
@@ -35,29 +87,9 @@ define([
          * Controller entry point
          */
         start() {
-            const $previewer = $('.previewer');
             const mimeType = $('.main-container').data('mimeType');
             const isPassage = mimeType === 'application/qti+xml';
-            const isPreviewEnabled = $previewer.data('enabled');
-
-            if (isPreviewEnabled) {
-                if (isPassage) {
-                    $previewer.attr('id', 'item-properties-preview');
-                    $previewer.closest('.data-container-wrapper').attr('id', 'item-properties-preview-column');
-
-                    inlinePropertiesPreview.init({
-                        isPreviewEnabled,
-                        itemUri: $('#edit-media').data('uri')
-                    });
-                } else {
-                    const file = {};
-                    file.url = $previewer.data('url');
-                    file.mime = $previewer.data('type');
-                    // to hide the loading icon, inherited from the .previewer
-                    file.containerClass = 'no-background';
-                    $previewer.previewer(file);
-                }
-            }
+            initPreview(isPassage);
 
             if (isPassage) {
                 $('#media-authoring').show();

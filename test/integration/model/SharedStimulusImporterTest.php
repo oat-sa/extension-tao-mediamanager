@@ -1,21 +1,10 @@
 <?php
 
 /**
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; under version 2
- * of the License (non-upgradable).
+ * SPDX-FileCopyrightText: 2015-2026 Open Assessment Technologies S.A.
+ * Copyright (C) 2026 (original work) Open Assessment Technologies S.A.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- *
- * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-TAO-Commercial-License
  */
 
 declare(strict_types=1);
@@ -25,6 +14,7 @@ namespace oat\taoMediaManager\test\integration\model;
 use oat\generis\test\TestCase;
 use oat\oatbox\filesystem\FileSystemService;
 use oat\oatbox\log\LoggerService;
+use oat\oatbox\reporting\Report;
 use oat\tao\model\upload\UploadService;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\sharedStimulus\service\StoreService;
@@ -33,10 +23,6 @@ use Psr\Log\NullLogger;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
 use oat\generis\test\MockObject;
-
-// phpcs:disable PSR1.Files.SideEffects
-include __DIR__ . '/../../../includes/raw_start.php';
-// phpcs:enable PSR1.Files.SideEffects
 
 class SharedStimulusImporterTest extends TestCase
 {
@@ -190,7 +176,7 @@ class SharedStimulusImporterTest extends TestCase
         $form = $sharedImporter->getForm();
         $form->setValues(['source' => $file, 'lang' => 'EN_en']);
 
-        $returnReport = \common_report_Report::createSuccess('Success');
+        $returnReport = Report::createSuccess('Success');
         $packageImporter->expects($this->once())
             ->method('import')
             ->with($myClass, $form)

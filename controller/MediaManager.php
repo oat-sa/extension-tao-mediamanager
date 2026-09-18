@@ -1,21 +1,10 @@
 <?php
 
 /**
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; under version 2
- * of the License (non-upgradable).
+ * SPDX-FileCopyrightText: 2014-2026 Open Assessment Technologies S.A.
+ * Copyright (C) 2026 (original work) Open Assessment Technologies S.A.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- *
- * Copyright (c) 2014-2021 (original work) Open Assessment Technologies SA;
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-TAO-Commercial-License
  */
 
 declare(strict_types=1);
@@ -32,6 +21,7 @@ use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\accessControl\MediaPermissionService;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\tao\model\Lists\Business\Validation\DependsOnPropertyValidator;
+use oat\taoMediaManager\model\sharedStimulus\service\PreviewAvailabilityService;
 use core_kernel_classes_Resource;
 use oat\taoMediaManager\model\TaoMediaOntology;
 use oat\taoMediaManager\model\transcription\TranscriptionMimeTypesProvider;
@@ -59,6 +49,7 @@ class MediaManager extends tao_actions_SaSModule
         $resource = $this->getCurrentInstance();
         $editFormContainer = $this->getFormInstance($resource, $user);
         $editForm = $editFormContainer->getForm();
+        $isPreviewEnabled = $permissionService->isAllowedToPreview();
 
         if (
             $permissionService->isAllowedToEditResource($resource, $user)
@@ -72,7 +63,6 @@ class MediaManager extends tao_actions_SaSModule
             $this->setData('reload', true);
         }
 
-        $this->setData('isPreviewEnabled', $permissionService->isAllowedToPreview());
         $this->setData('formTitle', __('Edit Instance'));
         $this->setData('myForm', $editForm->render());
 
@@ -95,6 +85,14 @@ class MediaManager extends tao_actions_SaSModule
             $this->setData('error', __('No file found for this media'));
         }
 
+        $hasPreviewContent = isset($mimeType)
+            && (
+                $mimeType !== MediaService::SHARED_STIMULUS_MIME_TYPE
+                || $this->getPreviewAvailabilityService()->hasPreviewContent($uri)
+            );
+
+        $this->setData('isPreviewEnabled', $isPreviewEnabled);
+        $this->setData('displayPreview', $isPreviewEnabled && $hasPreviewContent);
         $this->setData('xml', isset($mimeType) ? $this->getClassService()->isXmlAllowedMimeType($mimeType) : null);
         $this->setData('mimeType', $mimeType ?? null);
         $this->setData('assetUri', $uri);
@@ -230,5 +228,10 @@ class MediaManager extends tao_actions_SaSModule
     private function getDependsOnPropertyValidator(): ValidatorInterface
     {
         return $this->getPsrContainer()->get(DependsOnPropertyValidator::class);
+    }
+
+    private function getPreviewAvailabilityService(): PreviewAvailabilityService
+    {
+        return $this->getPsrContainer()->get(PreviewAvailabilityService::class);
     }
 }

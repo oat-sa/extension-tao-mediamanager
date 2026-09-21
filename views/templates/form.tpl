@@ -6,7 +6,6 @@ Template::inc('form_context.tpl', 'tao');
     <div
         class="main-container flex-container-main-form"
         data-asset-uri="<?= htmlspecialchars((string) (get_data('assetUri') ?? ''), ENT_QUOTES, 'UTF-8') ?>"
-        data-mentions-enabled="<?= has_data('itemCommentsMentionsEnabled') ? (get_data('itemCommentsMentionsEnabled') ? '1' : '0') : '1' ?>"
     >
         <header class="section-header flex-container-full">
             <h2><?=get_data('formTitle')?></h2>

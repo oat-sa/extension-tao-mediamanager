@@ -30,7 +30,7 @@
     "oat-sa/extension-tao-item": ">=12.4.0",
     "oat-sa/extension-tao-itemqti": ">=30.54.3",
     "oat-sa/extension-tao-test": ">=16.3.0",
-    "oat-sa/extension-tao-testqti-previewer": ">=3.11.0"
+    "oat-sa/extension-tao-testqti-previewer": "dev-feat/PCR-280/external-previewer-for-stimuli as 3.20.0"
   },
   "autoload": {
     "psr-4": {

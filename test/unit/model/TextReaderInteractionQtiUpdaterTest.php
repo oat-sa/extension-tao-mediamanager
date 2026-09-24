@@ -71,6 +71,8 @@ class TextReaderInteractionQtiUpdaterTest extends TestCase
 
     protected function setUp(): void
     {
+        $this->cleanupTemporaryImageArtifacts();
+
         if (!defined('PRODUCT_NAME')) {
             define('PRODUCT_NAME', 'TAO');
         }
@@ -115,6 +117,8 @@ class TextReaderInteractionQtiUpdaterTest extends TestCase
                 unlink($temporaryImagePath);
             }
         }
+
+        $this->cleanupTemporaryImageArtifacts();
 
         $this->services = [];
         $this->temporaryImagePaths = [];
@@ -362,6 +366,30 @@ class TextReaderInteractionQtiUpdaterTest extends TestCase
         $this->temporaryImagePaths[] = $path;
 
         return $path;
+    }
+
+    private function cleanupTemporaryImageArtifacts(): void
+    {
+        foreach (glob(sys_get_temp_dir() . '/text-reader-image*') ?: [] as $path) {
+            if (is_file($path)) {
+                @unlink($path);
+            } elseif (is_dir($path)) {
+                $this->removeDirectory($path);
+            }
+        }
+    }
+
+    private function removeDirectory(string $path): void
+    {
+        foreach (glob($path . '/*') ?: [] as $entry) {
+            if (is_dir($entry)) {
+                $this->removeDirectory($entry);
+            } elseif (is_file($entry)) {
+                @unlink($entry);
+            }
+        }
+
+        @rmdir($path);
     }
 
     private function createResolver(string $imagePath): ItemMediaResolver

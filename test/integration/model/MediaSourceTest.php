@@ -295,18 +295,21 @@ class MediaSourceTest extends TestCase
                 TaoMediaOntology::PROPERTY_ALT_TEXT => [$size],
             ]
         );
-        $resourceProphecy->getOnePropertyValue(Argument::any())->willReturn($rawValue);
+        $linkProperty = $this->prophesize(core_kernel_classes_Property::class)->reveal();
+        $updatedAtProperty = $this->prophesize(core_kernel_classes_Property::class)->reveal();
+
+        $resourceProphecy->getOnePropertyValue($linkProperty)->willReturn($link);
+        $resourceProphecy->getOnePropertyValue($updatedAtProperty)->willReturn($rawValue);
 
         $modelMock = $this->prophesize(core_kernel_persistence_smoothsql_SmoothModel::class);
         $modelMock->getResource($resourceId)->willReturn($resourceProphecy->reveal());
-        $modelMock->getProperty(TaoMediaOntology::PROPERTY_LINK)
-            ->willReturn($this->prophesize(core_kernel_classes_Property::class)->reveal());
+        $modelMock->getProperty(TaoMediaOntology::PROPERTY_LINK)->willReturn($linkProperty);
         $modelMock->getProperty(TaoMediaOntology::PROPERTY_MIME_TYPE)
             ->willReturn($this->prophesize(core_kernel_classes_Property::class)->reveal());
         $modelMock->getProperty(TaoMediaOntology::PROPERTY_ALT_TEXT)
             ->willReturn($this->prophesize(core_kernel_classes_Property::class)->reveal());
         $modelMock->getProperty(\oat\tao\model\TaoOntology::PROPERTY_UPDATED_AT)
-            ->willReturn($this->prophesize(core_kernel_classes_Property::class)->reveal());
+            ->willReturn($updatedAtProperty);
 
         $mediaSource->setModel($modelMock->reveal());
 

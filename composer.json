@@ -23,11 +23,18 @@
     "tao-extension-name": "taoMediaManager"
   },
   "minimum-stability": "dev",
+  "prefer-stable": false,
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/oat-sa/extension-tao-item.git"
+    }
+  ],
   "require": {
     "oat-sa/oatbox-extension-installer": "~1.1||dev-master",
     "oat-sa/lib-generis-search": "^2.1.2",
     "oat-sa/tao-core": ">=56.0.0",
-    "oat-sa/extension-tao-item": ">=12.4.0",
+    "oat-sa/extension-tao-item": "dev-feat/AUT-4666-asset-search-api as 13.99.99",
     "oat-sa/extension-tao-itemqti": ">=30.54.3",
     "oat-sa/extension-tao-test": ">=16.3.0",
     "oat-sa/extension-tao-testqti-previewer": ">=3.11.0"

@@ -45,6 +45,7 @@ use oat\taoMediaManager\model\sharedStimulus\factory\CommandFactory;
 use oat\taoMediaManager\model\sharedStimulus\parser\JsonQtiAttributeParser;
 use oat\taoMediaManager\model\sharedStimulus\repository\SharedStimulusRepository;
 use oat\taoMediaManager\model\sharedStimulus\service\CopyService;
+use oat\taoMediaManager\model\sharedStimulus\service\PreviewAvailabilityService;
 use oat\taoMediaManager\model\sharedStimulus\service\PreviewerSharedStimulusHandler;
 use oat\taoMediaManager\model\sharedStimulus\service\StoreService;
 use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourceSpecification;
@@ -95,6 +96,10 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                 ]
             )
             ->tag('tao.qti_test_previewer.shared_stimulus_handler');
+
+        $services
+            ->set(PreviewAvailabilityService::class, PreviewAvailabilityService::class)
+            ->public();
 
         $services
             ->set(MediaPermissionService::class, MediaPermissionService::class)

@@ -64,6 +64,8 @@ define([
                             fileDownloadUrl: urlUtil.route('download', 'ItemContent', 'taoItems'),
                             fileExistsUrl: urlUtil.route('fileExists', 'ItemContent', 'taoItems'),
                             getFilesUrl: urlUtil.route('files', 'ItemContent', 'taoItems'),
+                            // Search reuses ItemContent/files with query and/or metadata filters.
+                            searchUrl: urlUtil.route('files', 'ItemContent', 'taoItems'),
                             baseUrl: urlUtil.route('getFile', 'MediaManager', 'taoMediaManager', { uri: '' }),
                             path: 'taomedia://mediamanager/',
                             root: 'mediamanager',

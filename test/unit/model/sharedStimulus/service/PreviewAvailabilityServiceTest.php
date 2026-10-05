@@ -50,14 +50,11 @@ class PreviewAvailabilityServiceTest extends TestCase
         $this->parser = $this->createMock(JsonQtiAttributeParser::class);
         $this->logger = $this->createMock(LoggerInterface::class);
 
-        $this->subject = new PreviewAvailabilityService();
-        $this->subject->setLogger($this->logger);
-        $this->subject->setServiceLocator(
-            $this->getServiceLocatorMock([
-                SharedStimulusRepository::class => $this->repository,
-                JsonQtiAttributeParser::class => $this->parser,
-            ])
+        $this->subject = new PreviewAvailabilityService(
+            $this->repository,
+            $this->parser
         );
+        $this->subject->setLogger($this->logger);
     }
 
     public function testHasPreviewContentReturnsTrueWhenBodyContainsContent(): void

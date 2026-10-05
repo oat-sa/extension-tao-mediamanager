@@ -12,14 +12,19 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\model\sharedStimulus\service;
 
 use oat\oatbox\log\LoggerAwareTrait;
-use oat\oatbox\service\ConfigurableService;
 use oat\taoMediaManager\model\sharedStimulus\FindQuery;
 use oat\taoMediaManager\model\sharedStimulus\parser\JsonQtiAttributeParser;
 use oat\taoMediaManager\model\sharedStimulus\repository\SharedStimulusRepository;
 
-class PreviewAvailabilityService extends ConfigurableService
+class PreviewAvailabilityService
 {
     use LoggerAwareTrait;
+
+    public function __construct(
+        private SharedStimulusRepository $sharedStimulusRepository,
+        private JsonQtiAttributeParser $sharedStimulusAttributesParser
+    ) {
+    }
 
     public function hasPreviewContent(string $uri): bool
     {
@@ -47,11 +52,11 @@ class PreviewAvailabilityService extends ConfigurableService
 
     private function getSharedStimulusRepository(): SharedStimulusRepository
     {
-        return $this->getServiceLocator()->get(SharedStimulusRepository::class);
+        return $this->sharedStimulusRepository;
     }
 
     private function getSharedStimulusAttributesParser(): JsonQtiAttributeParser
     {
-        return $this->getServiceLocator()->get(JsonQtiAttributeParser::class);
+        return $this->sharedStimulusAttributesParser;
     }
 }

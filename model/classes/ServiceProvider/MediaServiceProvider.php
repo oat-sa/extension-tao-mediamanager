@@ -99,7 +99,19 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
 
         $services
             ->set(PreviewAvailabilityService::class, PreviewAvailabilityService::class)
-            ->public();
+            ->public()
+            ->args(
+                [
+                    service(SharedStimulusRepository::class),
+                    service(JsonQtiAttributeParser::class),
+                ]
+            )
+            ->call(
+                'setLogger',
+                [
+                    service(LoggerService::SERVICE_ID),
+                ]
+            );
 
         $services
             ->set(MediaPermissionService::class, MediaPermissionService::class)

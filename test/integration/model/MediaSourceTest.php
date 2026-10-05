@@ -1,22 +1,10 @@
 <?php
 
 /**
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; under version 2
- * of the License (non-upgradable).
+ * SPDX-FileCopyrightText: 2017-2026 Open Assessment Technologies S.A.
+ * Copyright (C) 2026 (original work) Open Assessment Technologies S.A.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- *
- * Copyright (c) 2014-2019 (original work) Open Assessment Technologies SA;
- *
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-TAO-Commercial-License
  */
 
 namespace oat\taoMediaManager\test\integration\model;
@@ -24,21 +12,19 @@ namespace oat\taoMediaManager\test\integration\model;
 use core_kernel_classes_Property;
 use core_kernel_classes_Resource;
 use core_kernel_persistence_smoothsql_SmoothModel;
-use oat\generis\test\TestCase;
 use oat\taoMediaManager\model\MediaService;
 use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
+use oat\taoMediaManager\model\mapper\MediaSourcePermissionsMapper;
 use oat\taoMediaManager\model\TaoMediaOntology;
+use PHPUnit\Framework\TestCase;
 use tao_helpers_Uri;
 use tao_models_classes_FileNotFoundException;
 use GuzzleHttp\Psr7\Stream;
 use Prophecy\Argument;
+use Prophecy\Prophet;
 use Psr\Http\Message\StreamInterface;
 use ReflectionProperty;
-
-// phpcs:disable PSR1.Files.SideEffects
-include __DIR__ . '/../../../includes/raw_start.php';
-// phpcs:enable PSR1.Files.SideEffects
 
 /**
  * Class MediaSourceTest
@@ -47,6 +33,18 @@ include __DIR__ . '/../../../includes/raw_start.php';
  */
 class MediaSourceTest extends TestCase
 {
+    private Prophet $prophet;
+
+    protected function setUp(): void
+    {
+        $this->prophet = new Prophet();
+    }
+
+    protected function tearDown(): void
+    {
+        $this->prophet->checkPredictions();
+    }
+
     public function testAdd()
     {
         $parent = 'class-uri-fixture';
@@ -63,8 +61,9 @@ class MediaSourceTest extends TestCase
             'rootClass' => $parent,
             'lang' => 'lang-fixture',
         ]);
+        $this->injectPermissionsMapper($mediaSource);
 
-        $mediaServiceProphecy = $this->prophesize(MediaService::class);
+        $mediaServiceProphecy = $this->prophet->prophesize(MediaService::class);
         $mediaServiceProphecy->createMediaInstance(
             $filePath,
             'uri-fixture',
@@ -77,17 +76,17 @@ class MediaSourceTest extends TestCase
         $ref->setAccessible(true);
         $ref->setValue($mediaSource, $mediaServiceProphecy->reveal());
 
-        $fileManagementProphecy = $this->prophesize(FileManagement::class);
+        $fileManagementProphecy = $this->prophet->prophesize(FileManagement::class);
         $fileManagementProphecy->getFileSize($link)->willReturn($size);
 
         $ref = new ReflectionProperty(MediaSource::class, 'fileManagementService');
         $ref->setAccessible(true);
         $ref->setValue($mediaSource, $fileManagementProphecy->reveal());
 
-        $classMock = $this->prophesize(\core_kernel_classes_Class::class);
+        $classMock = $this->prophet->prophesize(\core_kernel_classes_Class::class);
         $classMock->getUri()->willReturn('uri-fixture');
 
-        $resourceProphecy = $this->prophesize(core_kernel_classes_Resource::class);
+        $resourceProphecy = $this->prophet->prophesize(core_kernel_classes_Resource::class);
         $resourceProphecy->exists()->willReturn(true);
         $resourceProphecy->getUniquePropertyValue(Argument::any())->willReturn($link, $mime);
         $resourceProphecy->getPropertyValues(Argument::any())->willReturn([]);
@@ -101,11 +100,11 @@ class MediaSourceTest extends TestCase
         $resourceProphecy->getLabel()->willReturn($label);
         $resourceProphecy->getUri()->willReturn('uri');
 
-        $linkPropertyProphecy = $this->prophesize(core_kernel_classes_Property::class);
-        $mimePropertyProphecy = $this->prophesize(core_kernel_classes_Property::class);
-        $altTextPropertyProphecy = $this->prophesize(core_kernel_classes_Property::class);
+        $linkPropertyProphecy = $this->prophet->prophesize(core_kernel_classes_Property::class);
+        $mimePropertyProphecy = $this->prophet->prophesize(core_kernel_classes_Property::class);
+        $altTextPropertyProphecy = $this->prophet->prophesize(core_kernel_classes_Property::class);
 
-        $modelMock = $this->prophesize(core_kernel_persistence_smoothsql_SmoothModel::class);
+        $modelMock = $this->prophet->prophesize(core_kernel_persistence_smoothsql_SmoothModel::class);
         $modelMock->getClass('class-uri-fixture')->willReturn($classMock->reveal());
         $modelMock->getResource($createdResourceUri)->willReturn($resourceProphecy->reveal());
         $modelMock->getProperty(TaoMediaOntology::PROPERTY_LINK)->willReturn($linkPropertyProphecy->reveal());
@@ -145,18 +144,19 @@ class MediaSourceTest extends TestCase
             'rootClass' => $parent,
             'lang' => 'lang-fixture',
         ]);
+        $this->injectPermissionsMapper($mediaSource);
 
-        $fileManagementProphecy = $this->prophesize(FileManagement::class);
+        $fileManagementProphecy = $this->prophet->prophesize(FileManagement::class);
         $fileManagementProphecy->getFileSize($link)->willReturn($size);
 
         $ref = new ReflectionProperty(MediaSource::class, 'fileManagementService');
         $ref->setAccessible(true);
         $ref->setValue($mediaSource, $fileManagementProphecy->reveal());
 
-        $classMock = $this->prophesize(\core_kernel_classes_Class::class);
+        $classMock = $this->prophet->prophesize(\core_kernel_classes_Class::class);
         $classMock->getUri()->willReturn('uri-fixture');
 
-        $resourceProphecy = $this->prophesize(core_kernel_classes_Resource::class);
+        $resourceProphecy = $this->prophet->prophesize(core_kernel_classes_Resource::class);
         $resourceProphecy->exists()->willReturn(true);
         $resourceProphecy->getLabel()->willReturn($label);
         $resourceProphecy->getUri()->willReturn('uri');
@@ -171,11 +171,11 @@ class MediaSourceTest extends TestCase
         );
 
 
-        $linkPropertyProphecy = $this->prophesize(core_kernel_classes_Property::class);
-        $mimePropertyProphecy = $this->prophesize(core_kernel_classes_Property::class);
-        $altTextPropertyProphecy = $this->prophesize(core_kernel_classes_Property::class);
+        $linkPropertyProphecy = $this->prophet->prophesize(core_kernel_classes_Property::class);
+        $mimePropertyProphecy = $this->prophet->prophesize(core_kernel_classes_Property::class);
+        $altTextPropertyProphecy = $this->prophet->prophesize(core_kernel_classes_Property::class);
 
-        $modelMock = $this->prophesize(core_kernel_persistence_smoothsql_SmoothModel::class);
+        $modelMock = $this->prophet->prophesize(core_kernel_persistence_smoothsql_SmoothModel::class);
         $modelMock->getClass('class-uri-fixture')->willReturn($classMock->reveal());
         $modelMock->getResource($resourceId)->willReturn($resourceProphecy->reveal());
         $modelMock->getProperty(TaoMediaOntology::PROPERTY_LINK)->willReturn($linkPropertyProphecy->reveal());
@@ -226,7 +226,7 @@ class MediaSourceTest extends TestCase
         $uri = 'test';
         $mediaSource = new MediaSource();
 
-        $mediaServiceProphecy = $this->prophesize(MediaService::class);
+        $mediaServiceProphecy = $this->prophet->prophesize(MediaService::class);
         $mediaServiceProphecy->deleteResource(Argument::that(function ($resource) {
             return $resource instanceof core_kernel_classes_Resource;
         }))->willReturn(true);
@@ -235,9 +235,9 @@ class MediaSourceTest extends TestCase
         $ref->setAccessible(true);
         $ref->setValue($mediaSource, $mediaServiceProphecy->reveal());
 
-        $resourceProphecy = $this->prophesize(core_kernel_classes_Resource::class);
+        $resourceProphecy = $this->prophet->prophesize(core_kernel_classes_Resource::class);
 
-        $modelMock = $this->prophesize(core_kernel_persistence_smoothsql_SmoothModel::class);
+        $modelMock = $this->prophet->prophesize(core_kernel_persistence_smoothsql_SmoothModel::class);
         $modelMock->getResource($uri)->willReturn($resourceProphecy->reveal());
 
         $mediaSource->setModel($modelMock->reveal());
@@ -249,14 +249,69 @@ class MediaSourceTest extends TestCase
     public function testGetDirectory()
     {
         $filePath = dirname(__DIR__) . '/sample/Italy.png';
-        $mediaSource = new MediaSource();
+        $mediaSource = new MediaSource([
+            'rootClass' => MediaService::ROOT_CLASS_URI,
+        ]);
+        $this->injectPermissionsMapper($mediaSource);
+        $createdResourceUri = 'uri-created-fixture';
 
-        $fileManagementProphecy = $this->prophesize(FileManagement::class);
+        $fileManagementProphecy = $this->prophet->prophesize(FileManagement::class);
         $fileManagementProphecy->getFileSize(Argument::any())->willReturn(100);
 
         $ref = new ReflectionProperty(MediaSource::class, 'fileManagementService');
         $ref->setAccessible(true);
         $ref->setValue($mediaSource, $fileManagementProphecy->reveal());
+
+        $mediaServiceProphecy = $this->prophet->prophesize(MediaService::class);
+        $mediaServiceProphecy->createMediaInstance(
+            $filePath,
+            'test',
+            '',
+            'Italy1.png',
+            'test/mime'
+        )->willReturn($createdResourceUri);
+
+        $ref = new ReflectionProperty(MediaSource::class, 'mediaService');
+        $ref->setAccessible(true);
+        $ref->setValue($mediaSource, $mediaServiceProphecy->reveal());
+
+        $directoryClassProphecy = $this->prophet->prophesize(\core_kernel_classes_Class::class);
+        $directoryClassProphecy->getUri()->willReturn('test');
+        $directoryClassProphecy->getLabel()->willReturn('test');
+        $directoryClassProphecy->isSubClassOf(Argument::type(\core_kernel_classes_Class::class))->willReturn(true);
+        $directoryClassProphecy->exists()->willReturn(true);
+        $directoryClassProphecy->getSubClasses()->willReturn([]);
+        $directoryClassProphecy->searchInstances([], [])->willReturn([]);
+        $directoryClassProphecy->countInstances([])->willReturn(0);
+
+        $rootClassProphecy = $this->prophet->prophesize(\core_kernel_classes_Class::class);
+        $rootClassProphecy->getUri()->willReturn(MediaService::ROOT_CLASS_URI);
+
+        $resourceProphecy = $this->prophet->prophesize(core_kernel_classes_Resource::class);
+        $resourceProphecy->exists()->willReturn(true);
+        $resourceProphecy->getPropertiesValues(Argument::any())->willReturn(
+            [
+                TaoMediaOntology::PROPERTY_LINK => ['link-fixture'],
+                TaoMediaOntology::PROPERTY_MIME_TYPE => ['test/mime'],
+                TaoMediaOntology::PROPERTY_ALT_TEXT => ['Italy1.png'],
+            ]
+        );
+        $resourceProphecy->getLabel()->willReturn('Italy1.png');
+        $resourceProphecy->getUri()->willReturn($createdResourceUri);
+
+        $linkPropertyProphecy = $this->prophet->prophesize(core_kernel_classes_Property::class);
+        $mimePropertyProphecy = $this->prophet->prophesize(core_kernel_classes_Property::class);
+        $altTextPropertyProphecy = $this->prophet->prophesize(core_kernel_classes_Property::class);
+
+        $modelMock = $this->prophet->prophesize(core_kernel_persistence_smoothsql_SmoothModel::class);
+        $modelMock->getClass(MediaService::ROOT_CLASS_URI)->willReturn($rootClassProphecy->reveal());
+        $modelMock->getClass('test')->willReturn($directoryClassProphecy->reveal());
+        $modelMock->getResource($createdResourceUri)->willReturn($resourceProphecy->reveal());
+        $modelMock->getProperty(TaoMediaOntology::PROPERTY_LINK)->willReturn($linkPropertyProphecy->reveal());
+        $modelMock->getProperty(TaoMediaOntology::PROPERTY_MIME_TYPE)->willReturn($mimePropertyProphecy->reveal());
+        $modelMock->getProperty(TaoMediaOntology::PROPERTY_ALT_TEXT)->willReturn($altTextPropertyProphecy->reveal());
+
+        $mediaSource->setModel($modelMock->reveal());
 
         $success = $mediaSource->add($filePath, 'Italy1.png', 'test', 'test/mime');
         $directory = $mediaSource->getDirectory('test');
@@ -269,15 +324,62 @@ class MediaSourceTest extends TestCase
     {
         $filePath = dirname(__DIR__) . '/sample/Italy.png';
         $resource = fopen($filePath, 'r');
-        $mediaSource = new MediaSource();
+        $mediaSource = new MediaSource([
+            'rootClass' => MediaService::ROOT_CLASS_URI,
+        ]);
+        $this->injectPermissionsMapper($mediaSource);
+        $createdResourceUri = 'uri-created-fixture';
+        $fileLink = 'link-fixture';
 
-        $fileManagementProphecy = $this->prophesize(FileManagement::class);
+        $fileManagementProphecy = $this->prophet->prophesize(FileManagement::class);
         $fileManagementProphecy->getFileSize(Argument::any())->willReturn(filesize($filePath));
-        $fileManagementProphecy->getFileStream(Argument::any())->willReturn(new Stream($resource));
+        $fileManagementProphecy->getFileStream($fileLink)->willReturn(new Stream($resource));
 
         $ref = new ReflectionProperty(MediaSource::class, 'fileManagementService');
         $ref->setAccessible(true);
         $ref->setValue($mediaSource, $fileManagementProphecy->reveal());
+
+        $mediaServiceProphecy = $this->prophet->prophesize(MediaService::class);
+        $mediaServiceProphecy->createMediaInstance(
+            $filePath,
+            MediaService::ROOT_CLASS_URI,
+            '',
+            'Italy1.png',
+            null
+        )->willReturn($createdResourceUri);
+
+        $ref = new ReflectionProperty(MediaSource::class, 'mediaService');
+        $ref->setAccessible(true);
+        $ref->setValue($mediaSource, $mediaServiceProphecy->reveal());
+
+        $rootClassProphecy = $this->prophet->prophesize(\core_kernel_classes_Class::class);
+        $rootClassProphecy->getUri()->willReturn(MediaService::ROOT_CLASS_URI);
+
+        $resourceProphecy = $this->prophet->prophesize(core_kernel_classes_Resource::class);
+        $resourceProphecy->exists()->willReturn(true);
+        $resourceProphecy->getPropertiesValues(Argument::any())->willReturn(
+            [
+                TaoMediaOntology::PROPERTY_LINK => [$fileLink],
+                TaoMediaOntology::PROPERTY_MIME_TYPE => ['image/png'],
+                TaoMediaOntology::PROPERTY_ALT_TEXT => ['Italy1.png'],
+            ]
+        );
+        $resourceProphecy->getOnePropertyValue(Argument::any())->willReturn($fileLink);
+        $resourceProphecy->getLabel()->willReturn('Italy1.png');
+        $resourceProphecy->getUri()->willReturn($createdResourceUri);
+
+        $linkPropertyProphecy = $this->prophet->prophesize(core_kernel_classes_Property::class);
+        $mimePropertyProphecy = $this->prophet->prophesize(core_kernel_classes_Property::class);
+        $altTextPropertyProphecy = $this->prophet->prophesize(core_kernel_classes_Property::class);
+
+        $modelMock = $this->prophet->prophesize(core_kernel_persistence_smoothsql_SmoothModel::class);
+        $modelMock->getClass(MediaService::ROOT_CLASS_URI)->willReturn($rootClassProphecy->reveal());
+        $modelMock->getResource($createdResourceUri)->willReturn($resourceProphecy->reveal());
+        $modelMock->getProperty(TaoMediaOntology::PROPERTY_LINK)->willReturn($linkPropertyProphecy->reveal());
+        $modelMock->getProperty(TaoMediaOntology::PROPERTY_MIME_TYPE)->willReturn($mimePropertyProphecy->reveal());
+        $modelMock->getProperty(TaoMediaOntology::PROPERTY_ALT_TEXT)->willReturn($altTextPropertyProphecy->reveal());
+
+        $mediaSource->setModel($modelMock->reveal());
 
         $info = $mediaSource->add($filePath, 'Italy1.png', '');
 
@@ -288,5 +390,18 @@ class MediaSourceTest extends TestCase
         $this->assertEquals($info['size'], $stream->getSize());
 
         fclose($resource);
+    }
+
+    private function injectPermissionsMapper(MediaSource $mediaSource): void
+    {
+        $permissionsMapperProphecy = $this->prophet->prophesize(MediaSourcePermissionsMapper::class);
+        $permissionsMapperProphecy->map(Argument::type('array'), Argument::type('string'))
+            ->will(function (array $args): array {
+                return $args[0];
+            });
+
+        $ref = new ReflectionProperty(MediaSource::class, 'permissionsMapper');
+        $ref->setAccessible(true);
+        $ref->setValue($mediaSource, $permissionsMapperProphecy->reveal());
     }
 }

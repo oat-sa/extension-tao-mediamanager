@@ -267,7 +267,7 @@ class MediaManagerAssetTreeBuilderTest extends TestCase
             }
         ));
 
-        $this->assertSame(1, $result['total']);
+        $this->assertSame(2, $result['total']);
         $this->assertCount(2, $files);
         $this->assertSame(
             ['existing.png', 'fresh-upload.png'],

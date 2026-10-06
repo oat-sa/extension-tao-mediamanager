@@ -214,10 +214,12 @@ class MediaManagerAssetTreeBuilder extends AssetTreeBuilder
             $files[] = $this->normalizeFile($item, $scopeLabel);
         }
 
+        $pageOffset = $effectivePageSize > 0 ? ($page - 1) * $effectivePageSize : 0;
         $files = $this->mergeDirectOntologyUploadsIntoIndexedBrowse(
             $search,
             $mediaSource,
-            $offset,
+            $page,
+            $pageOffset,
             $effectivePageSize,
             $scopeLabel,
             $files,
@@ -225,7 +227,7 @@ class MediaManagerAssetTreeBuilder extends AssetTreeBuilder
             $sortDir
         );
         $total = (int)($searchResult['total'] ?? count($files));
-        $pageOffset = $effectivePageSize > 0 ? ($page - 1) * $effectivePageSize : 0;
+        $total = max($total, $pageOffset + count($files));
         $data['total'] = $total;
         $data['truncated'] = !empty($searchResult['totalIsApproximate'])
             || $total > $pageOffset + count($files);
@@ -244,14 +246,16 @@ class MediaManagerAssetTreeBuilder extends AssetTreeBuilder
     private function mergeDirectOntologyUploadsIntoIndexedBrowse(
         DirectorySearchQuery $search,
         MediaSource $mediaSource,
-        int $offset,
+        int $page,
+        int $pageOffset,
         int $pageSize,
         string $scopeLabel,
         array $indexedFiles,
         ?string $sortBy,
         ?string $sortDir
     ): array {
-        if ($pageSize <= 0) {
+        if ($pageSize <= 0 || $page > 1) {
+            // ponytail: uploads not yet in ES are merged on page 1 only to avoid repeats on later pages.
             return $indexedFiles;
         }
 
@@ -270,7 +274,7 @@ class MediaManagerAssetTreeBuilder extends AssetTreeBuilder
             $search->getItemLang(),
             $search->getFilter(),
             self::BROWSE_LAZY_FOLDER_DEPTH,
-            $offset,
+            $pageOffset,
             $pageSize
         ))
             ->setSortBy($sortBy)

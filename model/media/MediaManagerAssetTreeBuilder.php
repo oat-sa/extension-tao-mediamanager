@@ -209,8 +209,10 @@ class MediaManagerAssetTreeBuilder extends AssetTreeBuilder
         }
 
         $total = (int)($searchResult['total'] ?? count($files));
+        $pageOffset = $effectivePageSize > 0 ? ($page - 1) * $effectivePageSize : 0;
         $data['total'] = $total;
-        $data['truncated'] = !empty($searchResult['totalIsApproximate']) || $total > count($files);
+        $data['truncated'] = !empty($searchResult['totalIsApproximate'])
+            || $total > $pageOffset + count($files);
         $data['childrenLimit'] = $effectivePageSize;
         $data['children'] = array_merge($directories, $files);
 

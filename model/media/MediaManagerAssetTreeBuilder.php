@@ -1,0 +1,251 @@
+<?php
+
+/**
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; under version 2
+ * of the License (non-upgradable).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 31 Milk St # 960789 Boston, MA 02196 USA.
+ *
+ * Copyright (c) 2026 (original work) Open Assessment Technologies SA;
+ */
+
+declare(strict_types=1);
+
+namespace oat\taoMediaManager\model\media;
+
+use oat\oatbox\service\ServiceManager;
+use oat\tao\model\accessControl\AccessControlEnablerInterface;
+use oat\tao\model\media\mediaSource\DirectorySearchQuery;
+use oat\taoItems\model\media\AssetIndexedSearchGatewayInterface;
+use oat\taoItems\model\media\AssetSearchQuery;
+use oat\taoItems\model\media\AssetTreeBuilder;
+use oat\taoItems\model\media\LocalItemSource;
+use oat\taoItems\model\media\NoOpAssetIndexedSearchGateway;
+use oat\taoMediaManager\model\MediaSource;
+
+/**
+ * Resource Manager browse for {@see MediaSource}: indexed file rows + lazy folder levels.
+ */
+class MediaManagerAssetTreeBuilder extends AssetTreeBuilder
+{
+    /** One level per browse request; deeper tree levels load on folder click. */
+    private const BROWSE_LAZY_FOLDER_DEPTH = 1;
+
+    /** @var AssetIndexedSearchGatewayInterface|false|null */
+    private $indexedSearchGateway;
+
+    public function build(DirectorySearchQuery $search): array
+    {
+        $indexedBrowse = $this->tryBuildViaIndexedSearch($search);
+        if ($indexedBrowse !== null) {
+            return $indexedBrowse;
+        }
+
+        $mediaSource = $search->getAsset()->getMediaSource();
+        if ($this->usesLazyFolderBrowse($mediaSource)) {
+            $pageSize = $this->getPaginationLimit();
+            $offset = max(0, min($search->getChildrenOffset(), self::MAX_CHILDREN_OFFSET));
+
+            return $this->buildLazyFolderBrowse($search, $pageSize, $offset);
+        }
+
+        return parent::build($search);
+    }
+
+    private function usesLazyFolderBrowse(object $mediaSource): bool
+    {
+        if ($mediaSource instanceof LocalItemSource) {
+            return false;
+        }
+
+        return $mediaSource instanceof MediaSource;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function buildLazyFolderBrowse(DirectorySearchQuery $search, int $pageSize, int $offset): array
+    {
+        $mediaSource = $search->getAsset()->getMediaSource();
+        $fetchQuery = (new AssetSearchQuery(
+            $search->getAsset(),
+            $search->getItemUri(),
+            $search->getItemLang(),
+            $search->getFilter(),
+            self::BROWSE_LAZY_FOLDER_DEPTH,
+            $offset,
+            $pageSize
+        ))
+            ->setSortBy($this->resolveSortBy($search))
+            ->setSortDir($this->resolveSortDir($search));
+
+        $data = $mediaSource->getDirectories($fetchQuery);
+        $sourceReportedTotal = array_key_exists('total', $data) ? (int)$data['total'] : null;
+        $scopeLabel = (string)($data['locationPath'] ?? $data['label'] ?? $data['path'] ?? '');
+
+        $directories = [];
+        $files = [];
+        foreach ($data['children'] ?? [] as $child) {
+            if (!is_array($child)) {
+                continue;
+            }
+            if ($this->isFileChild($child)) {
+                $files[] = $this->normalizeFile($child, $scopeLabel);
+                continue;
+            }
+            if ($this->isDirectoryChild($child)) {
+                $directories[] = $this->toDirectoryStub($child, $search);
+            }
+        }
+
+        $files = $this->sortFiles($files, $this->resolveSortBy($search), $this->resolveSortDir($search));
+        $fileCount = count($files);
+        $total = $sourceReportedTotal !== null ? $sourceReportedTotal : $fileCount;
+
+        $data['total'] = $total;
+        $data['truncated'] = $total > $offset + $fileCount;
+        $data['childrenLimit'] = $pageSize;
+        $data['children'] = array_merge($directories, $files);
+
+        return $data;
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    private function tryBuildViaIndexedSearch(DirectorySearchQuery $search): ?array
+    {
+        $mediaSource = $search->getAsset()->getMediaSource();
+        if ($mediaSource instanceof LocalItemSource || !$mediaSource instanceof MediaSource) {
+            return null;
+        }
+
+        $gateway = $this->getIndexedSearchGateway();
+        if ($gateway === null) {
+            return null;
+        }
+
+        try {
+            if (!$gateway->isAvailable()) {
+                return null;
+            }
+        } catch (\Throwable $exception) {
+            return null;
+        }
+
+        $pageSize = $this->getPaginationLimit();
+        $offset = max(0, min($search->getChildrenOffset(), self::MAX_CHILDREN_OFFSET));
+
+        $indexQuery = (new AssetSearchQuery(
+            $search->getAsset(),
+            $search->getItemUri(),
+            $search->getItemLang(),
+            $search->getFilter(),
+            1,
+            0,
+            0
+        ))
+            ->setSortBy($this->resolveSortBy($search))
+            ->setSortDir($this->resolveSortDir($search))
+            ->setPageSize($pageSize);
+
+        $effectivePageSize = $indexQuery->getPageSize();
+        $page = $effectivePageSize > 0
+            ? (int) floor($offset / $effectivePageSize) + 1
+            : AssetSearchQuery::DEFAULT_PAGE;
+        $indexQuery->setPage($page);
+
+        try {
+            $searchResult = $gateway->search($indexQuery);
+        } catch (\Throwable $exception) {
+            return null;
+        }
+
+        if ($mediaSource instanceof AccessControlEnablerInterface) {
+            $mediaSource->enableAccessControl();
+        }
+
+        $directoryQuery = (new AssetSearchQuery(
+            $search->getAsset(),
+            $search->getItemUri(),
+            $search->getItemLang(),
+            $search->getFilter(),
+            self::BROWSE_LAZY_FOLDER_DEPTH,
+            0,
+            MediaSource::CHILDREN_LIMIT_DIRECTORIES_ONLY
+        ))
+            ->setSortBy($this->resolveSortBy($search))
+            ->setSortDir($this->resolveSortDir($search));
+
+        try {
+            $data = $mediaSource->getDirectories($directoryQuery);
+        } catch (\Throwable $exception) {
+            return null;
+        }
+        $scopeLabel = (string)($data['locationPath'] ?? $data['label'] ?? $data['path'] ?? '');
+        $directories = [];
+        foreach ($data['children'] ?? [] as $child) {
+            if (!is_array($child) || !$this->isDirectoryChild($child)) {
+                continue;
+            }
+            $directories[] = $this->toDirectoryStub($child, $search);
+        }
+
+        $files = [];
+        foreach ($searchResult['items'] ?? [] as $item) {
+            if (!is_array($item)) {
+                continue;
+            }
+            $files[] = $this->normalizeFile($item, $scopeLabel);
+        }
+
+        $total = (int)($searchResult['total'] ?? count($files));
+        $data['total'] = $total;
+        $data['truncated'] = !empty($searchResult['totalIsApproximate']) || $total > count($files);
+        $data['childrenLimit'] = $effectivePageSize;
+        $data['children'] = array_merge($directories, $files);
+
+        return $data;
+    }
+
+    private function getIndexedSearchGateway(): ?AssetIndexedSearchGatewayInterface
+    {
+        if ($this->indexedSearchGateway instanceof AssetIndexedSearchGatewayInterface) {
+            return $this->indexedSearchGateway;
+        }
+
+        if ($this->indexedSearchGateway === false) {
+            return null;
+        }
+
+        $container = ServiceManager::getServiceManager()->getContainer();
+        if (!$container->has(AssetIndexedSearchGatewayInterface::class)) {
+            $this->indexedSearchGateway = false;
+
+            return null;
+        }
+
+        $gateway = $container->get(AssetIndexedSearchGatewayInterface::class);
+        if (
+            !$gateway instanceof AssetIndexedSearchGatewayInterface
+            || $gateway instanceof NoOpAssetIndexedSearchGateway
+        ) {
+            $this->indexedSearchGateway = false;
+
+            return null;
+        }
+
+        $this->indexedSearchGateway = $gateway;
+
+        return $gateway;
+    }
+}

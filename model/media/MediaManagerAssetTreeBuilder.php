@@ -200,6 +200,9 @@ class MediaManagerAssetTreeBuilder extends AssetTreeBuilder
             $directories[] = $this->toDirectoryStub($child, $search);
         }
 
+        $sortBy = $this->resolveSortBy($search);
+        $sortDir = $this->resolveSortDir($search);
+
         $files = [];
         foreach ($searchResult['items'] ?? [] as $item) {
             if (!is_array($item)) {
@@ -208,7 +211,25 @@ class MediaManagerAssetTreeBuilder extends AssetTreeBuilder
             $files[] = $this->normalizeFile($item, $scopeLabel);
         }
 
-        $total = (int)($searchResult['total'] ?? count($files));
+        [$files, $ontologyFileTotal, $ontologyPageLoaded] = $this->reconcileIndexedBrowseFilesWithOntology(
+            $search,
+            $mediaSource,
+            $offset,
+            $effectivePageSize,
+            $scopeLabel,
+            $files,
+            $sortBy,
+            $sortDir
+        );
+
+        if ($ontologyPageLoaded) {
+            $total = $ontologyFileTotal;
+        } else {
+            $total = (int)($searchResult['total'] ?? count($files));
+            if ($ontologyFileTotal > $total) {
+                $total = $ontologyFileTotal;
+            }
+        }
         $pageOffset = $effectivePageSize > 0 ? ($page - 1) * $effectivePageSize : 0;
         $data['total'] = $total;
         $data['truncated'] = !empty($searchResult['totalIsApproximate'])
@@ -217,6 +238,69 @@ class MediaManagerAssetTreeBuilder extends AssetTreeBuilder
         $data['children'] = array_merge($directories, $files);
 
         return $data;
+    }
+
+    /**
+     * Ontology is authoritative for folder membership; ES rows can lag after upload or delete.
+     *
+     * @return array{0: list<array<string, mixed>>, 1: int, 2: bool}
+     */
+    private function reconcileIndexedBrowseFilesWithOntology(
+        DirectorySearchQuery $search,
+        MediaSource $mediaSource,
+        int $offset,
+        int $pageSize,
+        string $scopeLabel,
+        array $indexedFiles,
+        ?string $sortBy,
+        ?string $sortDir
+    ): array {
+        if ($pageSize <= 0) {
+            return [$indexedFiles, 0, false];
+        }
+
+        $fetchQuery = (new AssetSearchQuery(
+            $search->getAsset(),
+            $search->getItemUri(),
+            $search->getItemLang(),
+            $search->getFilter(),
+            self::BROWSE_LAZY_FOLDER_DEPTH,
+            $offset,
+            $pageSize
+        ))
+            ->setSortBy($sortBy)
+            ->setSortDir($sortDir);
+
+        try {
+            $ontologyData = $mediaSource->getDirectories($fetchQuery);
+        } catch (\Throwable $exception) {
+            return [$indexedFiles, 0, false];
+        }
+
+        $indexedByUri = [];
+        foreach ($indexedFiles as $file) {
+            $uri = (string)($file['uri'] ?? '');
+            if ($uri !== '') {
+                $indexedByUri[$uri] = $file;
+            }
+        }
+
+        $files = [];
+        foreach ($ontologyData['children'] ?? [] as $child) {
+            if (!is_array($child) || !$this->isFileChild($child)) {
+                continue;
+            }
+            $uri = (string)($child['uri'] ?? '');
+            if ($uri === '') {
+                continue;
+            }
+            $files[] = $indexedByUri[$uri] ?? $this->normalizeFile($child, $scopeLabel);
+        }
+
+        $files = $this->sortFiles($files, $sortBy, $sortDir);
+        $ontologyTotal = array_key_exists('total', $ontologyData) ? (int)$ontologyData['total'] : count($files);
+
+        return [$files, $ontologyTotal, true];
     }
 
     private function getIndexedSearchGateway(): ?AssetIndexedSearchGatewayInterface

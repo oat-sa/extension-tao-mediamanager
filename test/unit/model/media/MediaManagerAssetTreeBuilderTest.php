@@ -111,6 +111,52 @@ class MediaManagerAssetTreeBuilderTest extends TestCase
         $this->assertCount(2, $result['children']);
     }
 
+    public function testMediaRootWithoutIndexedSearchListsOnlyDirectFiles(): void
+    {
+        $this->disableIndexedBrowse($this->subject);
+
+        $mediaSource = $this->createMediaSourceMock();
+        $mediaSource->method('getDirectories')->willReturn([
+            'path' => 'taomedia://mediamanager/',
+            'label' => 'Media',
+            'total' => 2,
+            'children' => [
+                [
+                    'path' => '/images',
+                    'label' => 'images',
+                    'children' => [
+                        [
+                            'uri' => 'taomedia://mediamanager/nested.png',
+                            'name' => 'nested.png',
+                            'mime' => 'image/png',
+                        ],
+                    ],
+                ],
+                [
+                    'uri' => 'taomedia://mediamanager/root.png',
+                    'name' => 'root.png',
+                    'mime' => 'image/png',
+                ],
+            ],
+        ]);
+
+        $mediaAsset = $this->createMock(MediaAsset::class);
+        $mediaAsset->method('getMediaSource')->willReturn($mediaSource);
+        $mediaAsset->method('getMediaIdentifier')->willReturn(MediaSource::SCHEME_NAME);
+
+        $result = $this->subject->build(new AssetSearchQuery($mediaAsset, 'item-uri', 'en-US'));
+
+        $files = array_values(array_filter(
+            $result['children'],
+            static function (array $child): bool {
+                return isset($child['uri']);
+            }
+        ));
+
+        $this->assertCount(1, $files);
+        $this->assertSame('root.png', $files[0]['name']);
+    }
+
     public function testBuildLazyFolderBrowseForMediaSourceDoesNotFlattenNestedFiles(): void
     {
         $this->disableIndexedBrowse($this->subject);
@@ -210,6 +256,7 @@ class MediaManagerAssetTreeBuilderTest extends TestCase
 
         $mediaAsset = $this->createMock(MediaAsset::class);
         $mediaAsset->method('getMediaSource')->willReturn($mediaSource);
+        $mediaAsset->method('getMediaIdentifier')->willReturn(MediaSource::SCHEME_NAME);
 
         $result = $this->subject->build(new AssetSearchQuery($mediaAsset, 'item-uri', 'en-US'));
 
@@ -220,7 +267,7 @@ class MediaManagerAssetTreeBuilderTest extends TestCase
             }
         ));
 
-        $this->assertSame(2, $result['total']);
+        $this->assertSame(1, $result['total']);
         $this->assertCount(2, $files);
         $this->assertSame(
             ['existing.png', 'fresh-upload.png'],
@@ -230,24 +277,20 @@ class MediaManagerAssetTreeBuilderTest extends TestCase
         );
     }
 
-    public function testIndexedBrowseDropsElasticsearchRowsRemovedFromOntology(): void
+    public function testIndexedRootBrowseKeepsNestedElasticsearchFiles(): void
     {
         $gateway = $this->createMock(AssetIndexedSearchGatewayInterface::class);
         $gateway->method('isAvailable')->willReturn(true);
         $gateway->method('search')->willReturn([
             'items' => [
                 [
-                    'uri' => 'taomedia://mediamanager/deleted.png',
-                    'name' => 'deleted.png',
+                    'uri' => 'taomedia://mediamanager/nested.png',
+                    'name' => 'nested.png',
                     'mime' => 'image/png',
-                ],
-                [
-                    'uri' => 'taomedia://mediamanager/kept.png',
-                    'name' => 'kept.png',
-                    'mime' => 'image/png',
+                    'location' => 'Media / images',
                 ],
             ],
-            'total' => 2,
+            'total' => 50,
             'page' => 1,
             'pageSize' => 15,
         ]);
@@ -260,7 +303,9 @@ class MediaManagerAssetTreeBuilderTest extends TestCase
                     return [
                         'path' => 'taomedia://mediamanager/',
                         'label' => 'Media',
-                        'children' => [],
+                        'children' => [
+                            ['path' => '/images', 'label' => 'images'],
+                        ],
                     ];
                 }
 
@@ -270,8 +315,8 @@ class MediaManagerAssetTreeBuilderTest extends TestCase
                     'total' => 1,
                     'children' => [
                         [
-                            'uri' => 'taomedia://mediamanager/kept.png',
-                            'name' => 'kept.png',
+                            'uri' => 'taomedia://mediamanager/root-only.png',
+                            'name' => 'root-only.png',
                             'mime' => 'image/png',
                         ],
                     ],
@@ -281,6 +326,7 @@ class MediaManagerAssetTreeBuilderTest extends TestCase
 
         $mediaAsset = $this->createMock(MediaAsset::class);
         $mediaAsset->method('getMediaSource')->willReturn($mediaSource);
+        $mediaAsset->method('getMediaIdentifier')->willReturn(MediaSource::SCHEME_NAME);
 
         $result = $this->subject->build(new AssetSearchQuery($mediaAsset, 'item-uri', 'en-US'));
 
@@ -291,8 +337,77 @@ class MediaManagerAssetTreeBuilderTest extends TestCase
             }
         ));
 
-        $this->assertSame(1, $result['total']);
+        $this->assertSame(50, $result['total']);
+        $this->assertCount(2, $files);
+        $this->assertSame(
+            ['nested.png', 'root-only.png'],
+            array_map(static function (array $file): string {
+                return (string)$file['name'];
+            }, $files)
+        );
+    }
+
+    public function testIndexedSubfolderBrowseSecondPageKeepsElasticsearchRows(): void
+    {
+        $gateway = $this->createMock(AssetIndexedSearchGatewayInterface::class);
+        $gateway->method('isAvailable')->willReturn(true);
+        $gateway->method('search')->willReturn([
+            'items' => [
+                [
+                    'uri' => 'taomedia://mediamanager/nested-page-two.png',
+                    'name' => 'nested-page-two.png',
+                    'mime' => 'image/png',
+                ],
+            ],
+            'total' => 200,
+            'page' => 2,
+            'pageSize' => 15,
+            'totalIsApproximate' => true,
+        ]);
+        $this->setIndexedSearchGateway($this->subject, $gateway);
+
+        $folderClassUri = 'http://www.tao.lu/Ontologies/TAOMedia.rdf#AssetsFolder';
+        $folderPath = MediaSource::SCHEME_NAME . \tao_helpers_Uri::encode($folderClassUri);
+
+        $mediaSource = $this->createMediaSourceMock();
+        $mediaSource->method('getDirectories')->willReturnCallback(
+            static function (DirectorySearchQuery $query) use ($folderPath): array {
+                if ($query->getChildrenLimit() === MediaSource::CHILDREN_LIMIT_DIRECTORIES_ONLY) {
+                    return [
+                        'path' => $folderPath,
+                        'label' => 'Assets',
+                        'children' => [
+                            ['path' => '/batch-001', 'label' => 'batch-001'],
+                        ],
+                    ];
+                }
+
+                return [
+                    'path' => $folderPath,
+                    'label' => 'Assets',
+                    'total' => 3,
+                    'children' => [],
+                ];
+            }
+        );
+
+        $mediaAsset = $this->createMock(MediaAsset::class);
+        $mediaAsset->method('getMediaSource')->willReturn($mediaSource);
+        $mediaAsset->method('getMediaIdentifier')->willReturn($folderPath);
+
+        $result = $this->subject->build(
+            new AssetSearchQuery($mediaAsset, 'item-uri', 'en-US', [], 1, 15)
+        );
+
+        $files = array_values(array_filter(
+            $result['children'],
+            static function (array $child): bool {
+                return isset($child['uri']);
+            }
+        ));
+
+        $this->assertSame(200, $result['total']);
         $this->assertCount(1, $files);
-        $this->assertSame('kept.png', $files[0]['name']);
+        $this->assertSame('nested-page-two.png', $files[0]['name']);
     }
 }

@@ -50,6 +50,12 @@ class MediaSource extends Configurable implements
 
     public const SCHEME_NAME = 'taomedia://mediamanager/';
 
+    /**
+     * When passed as {@see getDirectories()} childrenLimit, subclasses are returned but
+     * media instances are not loaded (folder stubs only).
+     */
+    public const CHILDREN_LIMIT_DIRECTORIES_ONLY = -1;
+
     /** @var MediaService */
     protected $mediaService;
 
@@ -499,26 +505,30 @@ class MediaSource extends Configurable implements
                 $filter = array_merge($filter, [TaoMediaOntology::PROPERTY_MIME_TYPE => $acceptableMime]);
             }
 
-            $options = array_filter([
-                'limit' => $childrenLimit,
-                'offset' => $childrenOffset,
-            ]);
+            if ($childrenLimit !== self::CHILDREN_LIMIT_DIRECTORIES_ONLY) {
+                $options = array_filter([
+                    'limit' => $childrenLimit,
+                    'offset' => $childrenOffset,
+                ]);
 
-            foreach ($class->searchInstances($filter, $options) as $instance) {
-                try {
-                    $children[] = $this->getFileInfo($instance->getUri());
-                } catch (tao_models_classes_FileNotFoundException $e) {
-                    $this->logEmergency(
-                        sprintf(
-                            'Encountered issues "%s" while fetching details for %s',
-                            $e->getMessage(),
-                            $instance->getUri()
-                        )
-                    );
+                foreach ($class->searchInstances($filter, $options) as $instance) {
+                    try {
+                        $children[] = $this->getFileInfo($instance->getUri());
+                    } catch (tao_models_classes_FileNotFoundException $e) {
+                        $this->logEmergency(
+                            sprintf(
+                                'Encountered issues "%s" while fetching details for %s',
+                                $e->getMessage(),
+                                $instance->getUri()
+                            )
+                        );
+                    }
                 }
             }
             $data['children'] = $children;
-            $data['total'] = $class->countInstances($filter);
+            $data['total'] = $childrenLimit === self::CHILDREN_LIMIT_DIRECTORIES_ONLY
+                ? 0
+                : $class->countInstances($filter);
         } else {
             if ($parentLink !== '') {
                 $data['path'] = self::SCHEME_NAME . tao_helpers_Uri::encode($parentLink);

@@ -52,9 +52,9 @@ class PreviewAvailabilityServiceTest extends TestCase
 
         $this->subject = new PreviewAvailabilityService(
             $this->repository,
-            $this->parser
+            $this->parser,
+            $this->logger
         );
-        $this->subject->setLogger($this->logger);
     }
 
     public function testHasPreviewContentReturnsTrueWhenBodyContainsContent(): void

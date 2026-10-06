@@ -104,11 +104,6 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
                 [
                     service(SharedStimulusRepository::class),
                     service(JsonQtiAttributeParser::class),
-                ]
-            )
-            ->call(
-                'setLogger',
-                [
                     service(LoggerService::SERVICE_ID),
                 ]
             );

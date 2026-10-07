@@ -198,8 +198,51 @@ class MediaManagerAssetTreeBuilder extends AssetTreeBuilder implements AssetBrow
         $pageSize = max(1, $search->getPageSize() ?: $this->getPaginationLimit());
         $page = max(1, $search->getPage());
         $offset = ($page - 1) * $pageSize;
+        $sortBy = $this->resolveSortBy($search);
 
-        // Load direct files for the folder, sort globally, then paginate in PHP (ES handles order when indexed).
+        if ($this->ontologyListRequiresFullFolderScan($sortBy)) {
+            return $this->buildAssetListViaOntologyFullScan($search, $page, $pageSize, $offset);
+        }
+
+        $folderBrowse = $this->buildLazyFolderBrowse($search, $pageSize, $offset);
+
+        $items = [];
+        foreach ($folderBrowse['children'] ?? [] as $child) {
+            if (is_array($child) && isset($child['uri'])) {
+                $items[] = $child;
+            }
+        }
+
+        $truncated = !empty($folderBrowse['truncated']);
+        $total = $truncated
+            ? (int)($folderBrowse['total'] ?? count($items))
+            : count($items);
+
+        return [
+            'items' => array_values($items),
+            'total' => $total,
+            'page' => $page,
+            'pageSize' => $pageSize,
+            'totalIsApproximate' => false,
+            'truncated' => $truncated,
+        ];
+    }
+
+    private function ontologyListRequiresFullFolderScan(string $sortBy): bool
+    {
+        return in_array($sortBy, [AssetSearchQuery::SORT_LOCATION, AssetSearchQuery::SORT_UPDATED_AT], true);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function buildAssetListViaOntologyFullScan(
+        DirectorySearchQuery $search,
+        int $page,
+        int $pageSize,
+        int $offset
+    ): array {
+        // ponytail: location/updatedAt are not ontology search order keys; scan folder then sort in PHP.
         $folderBrowse = $this->buildLazyFolderBrowse($search, 0, 0);
 
         $files = [];
@@ -210,7 +253,7 @@ class MediaManagerAssetTreeBuilder extends AssetTreeBuilder implements AssetBrow
         }
 
         $files = $this->sortFiles($files, $this->resolveSortBy($search), $this->resolveSortDir($search));
-        $total = (int)($folderBrowse['total'] ?? count($files));
+        $total = count($files);
         $items = array_slice($files, $offset, $pageSize);
 
         return [

@@ -342,21 +342,22 @@ class MediaManagerAssetTreeBuilderTest extends TestCase
         $this->disableIndexedBrowse($this->subject);
 
         $mediaSource = $this->createMediaSourceMock();
-        $mediaSource->method('getDirectories')->willReturn([
+        $captured = null;
+        $mediaSource->expects($this->once())
+            ->method('getDirectories')
+            ->with($this->callback(function (DirectorySearchQuery $query) use (&$captured): bool {
+                $captured = $query;
+
+                return true;
+            }))
+            ->willReturn([
             'path' => 'taomedia://mediamanager/',
             'label' => 'Media',
-            'total' => 2,
+            'total' => 1,
             'children' => [
                 [
                     'path' => '/images',
                     'label' => 'images',
-                    'children' => [
-                        [
-                            'uri' => 'taomedia://mediamanager/nested.png',
-                            'name' => 'nested.png',
-                            'mime' => 'image/png',
-                        ],
-                    ],
                 ],
                 [
                     'uri' => 'taomedia://mediamanager/root.png',
@@ -376,7 +377,10 @@ class MediaManagerAssetTreeBuilderTest extends TestCase
                 ->setPageSize(15)
         );
 
-        $this->assertSame(2, $result['total']);
+        $this->assertInstanceOf(AssetSearchQuery::class, $captured);
+        $this->assertSame(0, $captured->getChildrenOffset());
+        $this->assertSame(15, $captured->getChildrenLimit());
+        $this->assertSame(1, $result['total']);
         $this->assertCount(1, $result['items']);
         $this->assertSame('root.png', $result['items'][0]['name']);
         $this->assertFalse($result['totalIsApproximate']);

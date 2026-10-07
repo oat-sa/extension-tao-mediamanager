@@ -39,6 +39,7 @@ use core_kernel_classes_Resource;
 use tao_helpers_Uri;
 use tao_models_classes_FileNotFoundException;
 use GuzzleHttp\Psr7\Utils;
+use oat\generis\model\OntologyRdfs;
 
 class MediaSource extends Configurable implements
     MediaManagement,
@@ -127,7 +128,8 @@ class MediaSource extends Configurable implements
             $params->getFilter(),
             $params->getDepth(),
             $params->getChildrenLimit(),
-            $params->getChildrenOffset()
+            $params->getChildrenOffset(),
+            $params
         );
     }
 
@@ -461,7 +463,8 @@ class MediaSource extends Configurable implements
         array $acceptableMime = [],
         int $depth = 1,
         int $childrenLimit = 0,
-        int $childrenOffset = 0
+        int $childrenOffset = 0,
+        ?DirectorySearchQuery $browseQuery = null
     ): array {
 
         $class = $this->getClass($parentLink == '' ? $this->getRootClassUri() : tao_helpers_Uri::decode($parentLink));
@@ -514,7 +517,8 @@ class MediaSource extends Configurable implements
                     $acceptableMime,
                     $depth - 1,
                     $childrenLimit,
-                    $childrenOffset
+                    $childrenOffset,
+                    null
                 );
             }
 
@@ -525,10 +529,7 @@ class MediaSource extends Configurable implements
             }
 
             if ($childrenLimit !== self::CHILDREN_LIMIT_DIRECTORIES_ONLY) {
-                $options = array_filter([
-                    'limit' => $childrenLimit,
-                    'offset' => $childrenOffset,
-                ]);
+                $options = $this->buildInstanceSearchOptions($childrenLimit, $childrenOffset, $browseQuery);
 
                 foreach ($class->searchInstances($filter, $options) as $instance) {
                     try {
@@ -556,6 +557,36 @@ class MediaSource extends Configurable implements
         }
 
         return $data;
+    }
+
+    /**
+     * @return array<string, int|string>
+     */
+    private function buildInstanceSearchOptions(
+        int $childrenLimit,
+        int $childrenOffset,
+        ?DirectorySearchQuery $browseQuery
+    ): array {
+        $options = [];
+        if ($childrenLimit > 0) {
+            $options['limit'] = $childrenLimit;
+        }
+        if ($childrenOffset > 0) {
+            $options['offset'] = $childrenOffset;
+        }
+
+        if ($browseQuery !== null && method_exists($browseQuery, 'getSortBy')) {
+            $sortBy = (string)$browseQuery->getSortBy();
+            if ($sortBy === DirectorySearchQuery::SORT_LABEL || $sortBy === 'label') {
+                $options['order'] = OntologyRdfs::RDFS_LABEL;
+                $sortDir = method_exists($browseQuery, 'getSortDir')
+                    ? strtolower((string)$browseQuery->getSortDir())
+                    : 'asc';
+                $options['orderdir'] = $sortDir === 'desc' ? 'DESC' : 'ASC';
+            }
+        }
+
+        return $options;
     }
 
     private function getPermissionsMapper(): MediaSourcePermissionsMapper

@@ -386,6 +386,50 @@ class MediaManagerAssetTreeBuilderTest extends TestCase
         $this->assertFalse($result['totalIsApproximate']);
     }
 
+    public function testBuildAssetListOntologyLastPageKeepsSourceTotal(): void
+    {
+        $this->disableIndexedBrowse($this->subject);
+
+        $mediaSource = $this->createMediaSourceMock();
+        $mediaSource->method('getDirectories')->willReturnCallback(
+            static function (DirectorySearchQuery $query): array {
+                $offset = $query->getChildrenOffset();
+                $limit = $query->getChildrenLimit();
+                $all = [];
+                for ($i = 1; $i <= 12; $i++) {
+                    $all[] = [
+                        'uri' => 'taomedia://mediamanager/file-' . $i . '.png',
+                        'name' => sprintf('file-%02d.png', $i),
+                        'mime' => 'image/png',
+                    ];
+                }
+                $slice = array_slice($all, $offset, $limit > 0 ? $limit : null);
+
+                return [
+                    'path' => 'taomedia://mediamanager/folder',
+                    'label' => 'Folder',
+                    'total' => 12,
+                    'children' => $slice,
+                ];
+            }
+        );
+
+        $mediaAsset = $this->createMock(MediaAsset::class);
+        $mediaAsset->method('getMediaSource')->willReturn($mediaSource);
+        $mediaAsset->method('getMediaIdentifier')->willReturn(MediaSource::SCHEME_NAME);
+
+        $pageTwo = $this->subject->buildAssetList(
+            (new AssetSearchQuery($mediaAsset, 'item-uri', 'en-US'))
+                ->setPage(2)
+                ->setPageSize(11)
+        );
+
+        $this->assertSame(12, $pageTwo['total']);
+        $this->assertCount(1, $pageTwo['items']);
+        $this->assertSame('file-12.png', $pageTwo['items'][0]['name']);
+        $this->assertFalse($pageTwo['truncated']);
+    }
+
     public function testBuildTreeReturnsDirectoryStubsWithoutFileRows(): void
     {
         $this->disableIndexedBrowse($this->subject);

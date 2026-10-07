@@ -214,8 +214,9 @@ class MediaManagerAssetTreeBuilder extends AssetTreeBuilder implements AssetBrow
         }
 
         $truncated = !empty($folderBrowse['truncated']);
-        $total = $truncated
-            ? (int)($folderBrowse['total'] ?? count($items))
+        // Use source folder total on every page (last page is not truncated but total ≠ page size).
+        $total = array_key_exists('total', $folderBrowse)
+            ? (int)$folderBrowse['total']
             : count($items);
 
         return [

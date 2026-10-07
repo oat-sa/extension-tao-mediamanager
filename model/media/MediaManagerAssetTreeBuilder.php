@@ -81,7 +81,7 @@ class MediaManagerAssetTreeBuilder extends AssetTreeBuilder implements AssetBrow
     {
         $mediaSource = $search->getAsset()->getMediaSource();
         if (!$mediaSource instanceof MediaSource) {
-            return $this->buildAssetListViaSearchBuilderFallback($search);
+            return parent::buildAssetList($search);
         }
 
         if ($this->canUseIndexedBrowse()) {
@@ -199,37 +199,27 @@ class MediaManagerAssetTreeBuilder extends AssetTreeBuilder implements AssetBrow
         $page = max(1, $search->getPage());
         $offset = ($page - 1) * $pageSize;
 
-        $folderBrowse = $this->buildLazyFolderBrowse($search, $pageSize, $offset);
-        $scopeLabel = (string)($folderBrowse['locationPath'] ?? $folderBrowse['label'] ?? $folderBrowse['path'] ?? '');
+        // Load direct files for the folder, sort globally, then paginate in PHP (ES handles order when indexed).
+        $folderBrowse = $this->buildLazyFolderBrowse($search, 0, 0);
 
-        $items = [];
+        $files = [];
         foreach ($folderBrowse['children'] ?? [] as $child) {
             if (is_array($child) && isset($child['uri'])) {
-                $items[] = $child;
+                $files[] = $child;
             }
         }
 
+        $files = $this->sortFiles($files, $this->resolveSortBy($search), $this->resolveSortDir($search));
+        $total = (int)($folderBrowse['total'] ?? count($files));
+        $items = array_slice($files, $offset, $pageSize);
+
         return [
             'items' => array_values($items),
-            'total' => (int)($folderBrowse['total'] ?? count($items)),
+            'total' => $total,
             'page' => $page,
             'pageSize' => $pageSize,
             'totalIsApproximate' => false,
-            'truncated' => !empty($folderBrowse['truncated']),
-        ];
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function buildAssetListViaSearchBuilderFallback(DirectorySearchQuery $search): array
-    {
-        return [
-            'items' => [],
-            'total' => 0,
-            'page' => max(1, $search->getPage()),
-            'pageSize' => max(1, $search->getPageSize() ?: $this->getPaginationLimit()),
-            'totalIsApproximate' => false,
+            'truncated' => $total > $offset + count($items),
         ];
     }
 
@@ -295,10 +285,10 @@ class MediaManagerAssetTreeBuilder extends AssetTreeBuilder implements AssetBrow
 
         $pageSize = (int)($list['pageSize'] ?? $this->getPaginationLimit());
         $page = (int)($list['page'] ?? 1);
-        $pageOffset = ($page - 1) * $pageSize;
+        $listTotal = (int)($list['total'] ?? 0);
 
-        $tree['total'] = (int)($list['total'] ?? 0);
-        $tree['truncated'] = !empty($list['totalIsApproximate']);
+        $tree['total'] = $listTotal;
+        $tree['truncated'] = !empty($list['totalIsApproximate']) || $listTotal > $page * $pageSize;
         $tree['childrenLimit'] = $pageSize;
         $tree['children'] = array_merge($tree['children'] ?? [], $list['items'] ?? []);
 

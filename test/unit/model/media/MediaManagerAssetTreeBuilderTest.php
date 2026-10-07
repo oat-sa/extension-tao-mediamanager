@@ -337,6 +337,132 @@ class MediaManagerAssetTreeBuilderTest extends TestCase
         $this->assertSame('nested.png', $files[0]['name']);
     }
 
+    public function testBuildAssetListWithoutIndexedSearchListsOnlyDirectFilesAtRoot(): void
+    {
+        $this->disableIndexedBrowse($this->subject);
+
+        $mediaSource = $this->createMediaSourceMock();
+        $mediaSource->method('getDirectories')->willReturn([
+            'path' => 'taomedia://mediamanager/',
+            'label' => 'Media',
+            'total' => 2,
+            'children' => [
+                [
+                    'path' => '/images',
+                    'label' => 'images',
+                    'children' => [
+                        [
+                            'uri' => 'taomedia://mediamanager/nested.png',
+                            'name' => 'nested.png',
+                            'mime' => 'image/png',
+                        ],
+                    ],
+                ],
+                [
+                    'uri' => 'taomedia://mediamanager/root.png',
+                    'name' => 'root.png',
+                    'mime' => 'image/png',
+                ],
+            ],
+        ]);
+
+        $mediaAsset = $this->createMock(MediaAsset::class);
+        $mediaAsset->method('getMediaSource')->willReturn($mediaSource);
+        $mediaAsset->method('getMediaIdentifier')->willReturn(MediaSource::SCHEME_NAME);
+
+        $result = $this->subject->buildAssetList(
+            (new AssetSearchQuery($mediaAsset, 'item-uri', 'en-US'))
+                ->setPage(1)
+                ->setPageSize(15)
+        );
+
+        $this->assertSame(2, $result['total']);
+        $this->assertCount(1, $result['items']);
+        $this->assertSame('root.png', $result['items'][0]['name']);
+        $this->assertFalse($result['totalIsApproximate']);
+    }
+
+    public function testBuildTreeReturnsDirectoryStubsWithoutFileRows(): void
+    {
+        $this->disableIndexedBrowse($this->subject);
+
+        $mediaSource = $this->createMediaSourceMock();
+        $captured = null;
+        $mediaSource->expects($this->once())
+            ->method('getDirectories')
+            ->with($this->callback(function (DirectorySearchQuery $query) use (&$captured): bool {
+                $captured = $query;
+
+                return true;
+            }))
+            ->willReturn([
+                'path' => 'taomedia://mediamanager/',
+                'label' => 'Media',
+                'children' => [
+                    ['path' => '/images', 'label' => 'images'],
+                    [
+                        'uri' => 'taomedia://mediamanager/root.png',
+                        'name' => 'root.png',
+                        'mime' => 'image/png',
+                    ],
+                ],
+            ]);
+
+        $mediaAsset = $this->createMock(MediaAsset::class);
+        $mediaAsset->method('getMediaSource')->willReturn($mediaSource);
+
+        $result = $this->subject->buildTree(new AssetSearchQuery($mediaAsset, 'item-uri', 'en-US'));
+
+        $this->assertInstanceOf(AssetSearchQuery::class, $captured);
+        $this->assertSame(1, $captured->getDepth());
+        $this->assertSame(MediaSource::CHILDREN_LIMIT_DIRECTORIES_ONLY, $captured->getChildrenLimit());
+        $this->assertCount(1, $result['children']);
+        $this->assertSame('images', $result['children'][0]['label']);
+        $this->assertArrayNotHasKey('total', $result);
+    }
+
+    public function testBuildAssetListForwardsPageToIndexedGateway(): void
+    {
+        $gateway = $this->createMock(AssetIndexedSearchGatewayInterface::class);
+        $gateway->method('isAvailable')->willReturn(true);
+        $capturedIndexQuery = null;
+        $gateway->method('search')->willReturnCallback(
+            static function (AssetSearchQuery $query) use (&$capturedIndexQuery): array {
+                $capturedIndexQuery = $query;
+
+                return [
+                    'items' => [
+                        [
+                            'uri' => 'taomedia://mediamanager/page-two.png',
+                            'name' => 'page-two.png',
+                            'mime' => 'image/png',
+                        ],
+                    ],
+                    'total' => 200,
+                    'page' => 2,
+                    'pageSize' => 15,
+                ];
+            }
+        );
+        $this->setIndexedSearchGateway($this->subject, $gateway);
+
+        $mediaSource = $this->createMediaSourceMock();
+        $mediaAsset = $this->createMock(MediaAsset::class);
+        $mediaAsset->method('getMediaSource')->willReturn($mediaSource);
+        $mediaAsset->method('getMediaIdentifier')->willReturn(MediaSource::SCHEME_NAME);
+
+        $result = $this->subject->buildAssetList(
+            (new AssetSearchQuery($mediaAsset, 'item-uri', 'en-US'))
+                ->setPage(2)
+                ->setPageSize(15)
+        );
+
+        $this->assertInstanceOf(AssetSearchQuery::class, $capturedIndexQuery);
+        $this->assertSame(2, $capturedIndexQuery->getPage());
+        $this->assertSame(15, $capturedIndexQuery->getPageSize());
+        $this->assertSame('page-two.png', $result['items'][0]['name']);
+    }
+
     public function testIndexedSubfolderBrowseSecondPageKeepsElasticsearchRows(): void
     {
         $gateway = $this->createMock(AssetIndexedSearchGatewayInterface::class);

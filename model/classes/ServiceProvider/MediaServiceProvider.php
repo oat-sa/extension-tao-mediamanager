@@ -57,7 +57,9 @@ use oat\taoMediaManager\model\sharedStimulus\service\StoreService;
 use oat\taoMediaManager\model\sharedStimulus\specification\SharedStimulusResourceSpecification;
 use oat\taoMediaManager\model\TaoMediaOntology;
 use oat\taoMediaManager\model\Specification\MediaClassSpecification;
+use oat\taoMediaManager\model\media\MediaManagerAssetTreeBuilder;
 use oat\taoMediaManager\model\transcription\TranscriptionMimeTypesProvider;
+use oat\taoItems\model\media\AssetTreeBuilder;
 use oat\taoQtiItem\model\qti\event\UpdatedItemEventDispatcher;
 use oat\taoQtiItem\model\qti\parser\TextReaderReferencesExtractor as QtiTextReaderReferencesExtractor;
 use oat\taoQtiItem\model\qti\parser\ElementReferencesExtractor;
@@ -264,5 +266,14 @@ class MediaServiceProvider implements ContainerServiceProviderInterface
 
         $services->set(TranscriptionMimeTypesProvider::class)
             ->public();
+
+        $services
+            ->set(AssetTreeBuilder::SERVICE_ID, MediaManagerAssetTreeBuilder::class)
+            ->public()
+            ->args([
+                [
+                    AssetTreeBuilder::OPTION_PAGINATION_LIMIT => 15,
+                ],
+            ]);
     }
 }

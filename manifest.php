@@ -29,6 +29,7 @@ use oat\taoMediaManager\scripts\install\ConfigFactoryExtension;
 use oat\taoMediaManager\scripts\install\RegisterMediaRelationEvents;
 use oat\taoMediaManager\scripts\install\RegisterMediaResourcePreparer;
 use oat\taoMediaManager\scripts\install\RegisterSharedStimulusMediaEncoder;
+use oat\taoMediaManager\scripts\install\RegisterMediaManagerAssetTreeBuilder;
 use oat\taoMediaManager\scripts\install\SetMediaManager;
 use oat\taoMediaManager\scripts\install\RegisterXinludeHandler;
 use oat\taoMediaManager\scripts\install\RegisterItemDataHandler;
@@ -174,6 +175,7 @@ return [
         ],
         'php' => [
             SetMediaManager::class,
+            RegisterMediaManagerAssetTreeBuilder::class,
             RegisterXinludeHandler::class,
             RegisterItemDataHandler::class,
             SetRolesPermissions::class,

@@ -205,7 +205,7 @@ class MediaManagerAssetTreeBuilderTest extends TestCase
         $this->assertSame('root.png', $files[0]['name']);
     }
 
-    public function testIndexedBrowseMergesOntologyFilesMissingFromElasticsearch(): void
+    public function testIndexedBrowseUsesElasticsearchListWithoutOntologyMerge(): void
     {
         $gateway = $this->createMock(AssetIndexedSearchGatewayInterface::class);
         $gateway->method('isAvailable')->willReturn(true);
@@ -267,17 +267,12 @@ class MediaManagerAssetTreeBuilderTest extends TestCase
             }
         ));
 
-        $this->assertSame(2, $result['total']);
-        $this->assertCount(2, $files);
-        $this->assertSame(
-            ['existing.png', 'fresh-upload.png'],
-            array_map(static function (array $file): string {
-                return (string)$file['name'];
-            }, $files)
-        );
+        $this->assertSame(1, $result['total']);
+        $this->assertCount(1, $files);
+        $this->assertSame('existing.png', $files[0]['name']);
     }
 
-    public function testIndexedRootBrowseKeepsNestedElasticsearchFiles(): void
+    public function testIndexedRootBrowseUsesElasticsearchPageOnly(): void
     {
         $gateway = $this->createMock(AssetIndexedSearchGatewayInterface::class);
         $gateway->method('isAvailable')->willReturn(true);
@@ -338,13 +333,8 @@ class MediaManagerAssetTreeBuilderTest extends TestCase
         ));
 
         $this->assertSame(50, $result['total']);
-        $this->assertCount(2, $files);
-        $this->assertSame(
-            ['nested.png', 'root-only.png'],
-            array_map(static function (array $file): string {
-                return (string)$file['name'];
-            }, $files)
-        );
+        $this->assertCount(1, $files);
+        $this->assertSame('nested.png', $files[0]['name']);
     }
 
     public function testIndexedSubfolderBrowseSecondPageKeepsElasticsearchRows(): void

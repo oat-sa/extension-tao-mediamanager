@@ -488,6 +488,25 @@ class MediaSource extends Configurable implements
         }
 
         if ($depth > 0) {
+            if ($childrenLimit === self::CHILDREN_LIMIT_DIRECTORIES_ONLY && $depth === 1) {
+                $children = [];
+                foreach ($class->getSubClasses() as $subclass) {
+                    $children[] = $this->getPermissionsMapper()->map(
+                        [
+                            'path' => self::SCHEME_NAME . tao_helpers_Uri::encode($subclass->getUri()),
+                            'label' => $subclass->getLabel(),
+                            'locationPath' => $this->buildLocationPathForClass($subclass),
+                            'parent' => $class->getUri(),
+                        ],
+                        $subclass->getUri()
+                    );
+                }
+                $data['children'] = $children;
+                $data['total'] = 0;
+
+                return $data;
+            }
+
             $children = [];
             foreach ($class->getSubClasses() as $subclass) {
                 $children[] = $this->searchDirectories(

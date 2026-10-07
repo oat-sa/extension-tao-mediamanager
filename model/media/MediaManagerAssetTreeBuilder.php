@@ -25,6 +25,7 @@ namespace oat\taoMediaManager\model\media;
 use oat\oatbox\service\ServiceManager;
 use oat\tao\model\accessControl\AccessControlEnablerInterface;
 use oat\tao\model\media\mediaSource\DirectorySearchQuery;
+use oat\taoItems\model\media\AssetBrowseListBuilderInterface;
 use oat\taoItems\model\media\AssetIndexedSearchGatewayInterface;
 use oat\taoItems\model\media\AssetSearchQuery;
 use oat\taoItems\model\media\AssetTreeBuilder;
@@ -35,11 +36,10 @@ use oat\taoMediaManager\model\MediaSource;
 /**
  * Resource Manager browse for {@see MediaSource}.
  *
- * With Elasticsearch: file rows come from the index (full subtree under the open folder).
- * Without Elasticsearch: depth-1 lazy browse only — at media root that means direct files
- * and subfolder stubs, not nested files from lower levels.
+ * Legacy {@see build()} returns combined tree + list. Prefer {@see buildTree()} and
+ * {@see buildAssetList()} via {@code part=tree|list} on {@code ItemContent::files}.
  */
-class MediaManagerAssetTreeBuilder extends AssetTreeBuilder
+class MediaManagerAssetTreeBuilder extends AssetTreeBuilder implements AssetBrowseListBuilderInterface
 {
     /** One level per browse request; deeper tree levels load on folder click. */
     private const BROWSE_LAZY_FOLDER_DEPTH = 1;
@@ -67,6 +67,33 @@ class MediaManagerAssetTreeBuilder extends AssetTreeBuilder
         return parent::build($search);
     }
 
+    public function buildTree(DirectorySearchQuery $search): array
+    {
+        $mediaSource = $search->getAsset()->getMediaSource();
+        if (!$mediaSource instanceof MediaSource) {
+            return parent::buildTree($search);
+        }
+
+        return $this->buildFolderStubsOnly($search);
+    }
+
+    public function buildAssetList(DirectorySearchQuery $search): array
+    {
+        $mediaSource = $search->getAsset()->getMediaSource();
+        if (!$mediaSource instanceof MediaSource) {
+            return $this->buildAssetListViaSearchBuilderFallback($search);
+        }
+
+        if ($this->canUseIndexedBrowse()) {
+            $indexed = $this->tryBuildAssetListViaIndex($search);
+            if ($indexed !== null) {
+                return $indexed;
+            }
+        }
+
+        return $this->buildAssetListViaOntology($search);
+    }
+
     private function canUseIndexedBrowse(): bool
     {
         $gateway = $this->getIndexedSearchGateway();
@@ -79,6 +106,131 @@ class MediaManagerAssetTreeBuilder extends AssetTreeBuilder
         } catch (\Throwable $exception) {
             return false;
         }
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function buildFolderStubsOnly(DirectorySearchQuery $search): array
+    {
+        $mediaSource = $search->getAsset()->getMediaSource();
+        if ($mediaSource instanceof AccessControlEnablerInterface) {
+            $mediaSource->enableAccessControl();
+        }
+
+        $fetchQuery = (new AssetSearchQuery(
+            $search->getAsset(),
+            $search->getItemUri(),
+            $search->getItemLang(),
+            $search->getFilter(),
+            self::BROWSE_LAZY_FOLDER_DEPTH,
+            0,
+            MediaSource::CHILDREN_LIMIT_DIRECTORIES_ONLY
+        ))
+            ->setSortBy($this->resolveSortBy($search))
+            ->setSortDir($this->resolveSortDir($search));
+
+        $data = $mediaSource->getDirectories($fetchQuery);
+
+        return $this->stripFileChildrenFromBrowseNode($data, $search);
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    private function tryBuildAssetListViaIndex(DirectorySearchQuery $search): ?array
+    {
+        $mediaSource = $search->getAsset()->getMediaSource();
+        if ($mediaSource instanceof LocalItemSource || !$mediaSource instanceof MediaSource) {
+            return null;
+        }
+
+        $gateway = $this->getIndexedSearchGateway();
+        if ($gateway === null) {
+            return null;
+        }
+
+        $pageSize = max(1, $search->getPageSize());
+        $page = max(1, $search->getPage());
+
+        $indexQuery = (new AssetSearchQuery(
+            $search->getAsset(),
+            $search->getItemUri(),
+            $search->getItemLang(),
+            $search->getFilter(),
+            1,
+            0,
+            0
+        ))
+            ->setSortBy($this->resolveSortBy($search))
+            ->setSortDir($this->resolveSortDir($search))
+            ->setPage($page)
+            ->setPageSize($pageSize);
+
+        try {
+            $searchResult = $gateway->search($indexQuery);
+        } catch (\Throwable $exception) {
+            return null;
+        }
+
+        $items = [];
+        foreach ($searchResult['items'] ?? [] as $item) {
+            if (!is_array($item)) {
+                continue;
+            }
+            $items[] = $this->normalizeFile($item, '');
+        }
+
+        return [
+            'items' => array_values($items),
+            'total' => (int)($searchResult['total'] ?? 0),
+            'page' => (int)($searchResult['page'] ?? $page),
+            'pageSize' => (int)($searchResult['pageSize'] ?? $pageSize),
+            'totalIsApproximate' => !empty($searchResult['totalIsApproximate']),
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function buildAssetListViaOntology(DirectorySearchQuery $search): array
+    {
+        $pageSize = max(1, $search->getPageSize() ?: $this->getPaginationLimit());
+        $page = max(1, $search->getPage());
+        $offset = ($page - 1) * $pageSize;
+
+        $folderBrowse = $this->buildLazyFolderBrowse($search, $pageSize, $offset);
+        $scopeLabel = (string)($folderBrowse['locationPath'] ?? $folderBrowse['label'] ?? $folderBrowse['path'] ?? '');
+
+        $items = [];
+        foreach ($folderBrowse['children'] ?? [] as $child) {
+            if (is_array($child) && isset($child['uri'])) {
+                $items[] = $child;
+            }
+        }
+
+        return [
+            'items' => array_values($items),
+            'total' => (int)($folderBrowse['total'] ?? count($items)),
+            'page' => $page,
+            'pageSize' => $pageSize,
+            'totalIsApproximate' => false,
+            'truncated' => !empty($folderBrowse['truncated']),
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function buildAssetListViaSearchBuilderFallback(DirectorySearchQuery $search): array
+    {
+        return [
+            'items' => [],
+            'total' => 0,
+            'page' => max(1, $search->getPage()),
+            'pageSize' => max(1, $search->getPageSize() ?: $this->getPaginationLimit()),
+            'totalIsApproximate' => false,
+        ];
     }
 
     /**
@@ -135,194 +287,22 @@ class MediaManagerAssetTreeBuilder extends AssetTreeBuilder
      */
     private function tryBuildViaIndexedSearch(DirectorySearchQuery $search): ?array
     {
-        $mediaSource = $search->getAsset()->getMediaSource();
-        if ($mediaSource instanceof LocalItemSource || !$mediaSource instanceof MediaSource) {
+        $tree = $this->buildTree($search);
+        $list = $this->tryBuildAssetListViaIndex($search);
+        if ($list === null) {
             return null;
         }
 
-        $gateway = $this->getIndexedSearchGateway();
-        if ($gateway === null) {
-            return null;
-        }
+        $pageSize = (int)($list['pageSize'] ?? $this->getPaginationLimit());
+        $page = (int)($list['page'] ?? 1);
+        $pageOffset = ($page - 1) * $pageSize;
 
-        $pageSize = $this->getPaginationLimit();
-        $offset = max(0, min($search->getChildrenOffset(), self::MAX_CHILDREN_OFFSET));
+        $tree['total'] = (int)($list['total'] ?? 0);
+        $tree['truncated'] = !empty($list['totalIsApproximate']);
+        $tree['childrenLimit'] = $pageSize;
+        $tree['children'] = array_merge($tree['children'] ?? [], $list['items'] ?? []);
 
-        $indexQuery = (new AssetSearchQuery(
-            $search->getAsset(),
-            $search->getItemUri(),
-            $search->getItemLang(),
-            $search->getFilter(),
-            1,
-            0,
-            0
-        ))
-            ->setSortBy($this->resolveSortBy($search))
-            ->setSortDir($this->resolveSortDir($search))
-            ->setPageSize($pageSize);
-
-        $effectivePageSize = $indexQuery->getPageSize();
-        $page = $effectivePageSize > 0
-            ? (int) floor($offset / $effectivePageSize) + 1
-            : AssetSearchQuery::DEFAULT_PAGE;
-        $indexQuery->setPage($page);
-
-        try {
-            $searchResult = $gateway->search($indexQuery);
-        } catch (\Throwable $exception) {
-            return null;
-        }
-
-        if ($mediaSource instanceof AccessControlEnablerInterface) {
-            $mediaSource->enableAccessControl();
-        }
-
-        $directoryQuery = (new AssetSearchQuery(
-            $search->getAsset(),
-            $search->getItemUri(),
-            $search->getItemLang(),
-            $search->getFilter(),
-            self::BROWSE_LAZY_FOLDER_DEPTH,
-            0,
-            MediaSource::CHILDREN_LIMIT_DIRECTORIES_ONLY
-        ))
-            ->setSortBy($this->resolveSortBy($search))
-            ->setSortDir($this->resolveSortDir($search));
-
-        try {
-            $data = $mediaSource->getDirectories($directoryQuery);
-        } catch (\Throwable $exception) {
-            return null;
-        }
-        $scopeLabel = (string)($data['locationPath'] ?? $data['label'] ?? $data['path'] ?? '');
-        $directories = [];
-        foreach ($data['children'] ?? [] as $child) {
-            if (!is_array($child) || !$this->isDirectoryChild($child)) {
-                continue;
-            }
-            $directories[] = $this->toDirectoryStub($child, $search);
-        }
-
-        $sortBy = $this->resolveSortBy($search);
-        $sortDir = $this->resolveSortDir($search);
-
-        $files = [];
-        foreach ($searchResult['items'] ?? [] as $item) {
-            if (!is_array($item)) {
-                continue;
-            }
-            $files[] = $this->normalizeFile($item, $scopeLabel);
-        }
-
-        $pageOffset = $effectivePageSize > 0 ? ($page - 1) * $effectivePageSize : 0;
-        $files = $this->mergeDirectOntologyUploadsIntoIndexedBrowse(
-            $search,
-            $mediaSource,
-            $page,
-            $pageOffset,
-            $effectivePageSize,
-            $scopeLabel,
-            $files,
-            $sortBy,
-            $sortDir
-        );
-        $total = (int)($searchResult['total'] ?? count($files));
-        $total = max($total, $pageOffset + count($files));
-        $data['total'] = $total;
-        $data['truncated'] = !empty($searchResult['totalIsApproximate'])
-            || $total > $pageOffset + count($files);
-        $data['childrenLimit'] = $effectivePageSize;
-        $data['children'] = array_merge($directories, $files);
-
-        return $data;
-    }
-
-    /**
-     * Indexed browse paginates via Elasticsearch (subtree scope); merge direct folder uploads only.
-     *
-     * @param list<array<string, mixed>> $indexedFiles
-     * @return list<array<string, mixed>>
-     */
-    private function mergeDirectOntologyUploadsIntoIndexedBrowse(
-        DirectorySearchQuery $search,
-        MediaSource $mediaSource,
-        int $page,
-        int $pageOffset,
-        int $pageSize,
-        string $scopeLabel,
-        array $indexedFiles,
-        ?string $sortBy,
-        ?string $sortDir
-    ): array {
-        if ($pageSize <= 0 || $page > 1) {
-            // ponytail: uploads not yet in ES are merged on page 1 only to avoid repeats on later pages.
-            return $indexedFiles;
-        }
-
-        $esPageFiles = $indexedFiles;
-        $esPageUris = [];
-        foreach ($esPageFiles as $file) {
-            $uri = (string)($file['uri'] ?? '');
-            if ($uri !== '') {
-                $esPageUris[$uri] = true;
-            }
-        }
-
-        $fetchQuery = (new AssetSearchQuery(
-            $search->getAsset(),
-            $search->getItemUri(),
-            $search->getItemLang(),
-            $search->getFilter(),
-            self::BROWSE_LAZY_FOLDER_DEPTH,
-            $pageOffset,
-            $pageSize
-        ))
-            ->setSortBy($sortBy)
-            ->setSortDir($sortDir);
-
-        try {
-            $ontologyData = $mediaSource->getDirectories($fetchQuery);
-        } catch (\Throwable $exception) {
-            return $indexedFiles;
-        }
-
-        foreach ($ontologyData['children'] ?? [] as $child) {
-            if (!is_array($child) || !$this->isFileChild($child)) {
-                continue;
-            }
-            $uri = (string)($child['uri'] ?? '');
-            if ($uri === '' || isset($esPageUris[$uri])) {
-                continue;
-            }
-            $indexedFiles[] = $this->normalizeFile($child, $scopeLabel);
-            $esPageUris[$uri] = true;
-        }
-
-        $indexedFiles = $this->sortFiles($indexedFiles, $sortBy, $sortDir);
-        if (count($indexedFiles) <= $pageSize) {
-            return $indexedFiles;
-        }
-
-        $pageByUri = [];
-        foreach ($esPageFiles as $file) {
-            $uri = (string)($file['uri'] ?? '');
-            if ($uri === '') {
-                continue;
-            }
-            $pageByUri[$uri] = $file;
-        }
-        foreach ($indexedFiles as $file) {
-            if (count($pageByUri) >= $pageSize) {
-                break;
-            }
-            $uri = (string)($file['uri'] ?? '');
-            if ($uri === '' || isset($pageByUri[$uri])) {
-                continue;
-            }
-            $pageByUri[$uri] = $file;
-        }
-
-        return array_values($pageByUri);
+        return $tree;
     }
 
     private function getIndexedSearchGateway(): ?AssetIndexedSearchGatewayInterface

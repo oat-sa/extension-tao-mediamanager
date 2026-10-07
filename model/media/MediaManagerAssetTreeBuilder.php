@@ -273,6 +273,10 @@ class MediaManagerAssetTreeBuilder extends AssetTreeBuilder implements AssetBrow
     private function buildLazyFolderBrowse(DirectorySearchQuery $search, int $pageSize, int $offset): array
     {
         $mediaSource = $search->getAsset()->getMediaSource();
+        if ($mediaSource instanceof AccessControlEnablerInterface) {
+            $mediaSource->enableAccessControl();
+        }
+
         $fetchQuery = (new AssetSearchQuery(
             $search->getAsset(),
             $search->getItemUri(),

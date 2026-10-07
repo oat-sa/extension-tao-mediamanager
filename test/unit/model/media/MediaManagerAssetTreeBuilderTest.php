@@ -73,6 +73,7 @@ class MediaManagerAssetTreeBuilderTest extends TestCase
         $mediaSource = $this->createMediaSourceMock();
 
         $captured = null;
+        $mediaSource->expects($this->once())->method('enableAccessControl')->willReturnSelf();
         $mediaSource->expects($this->once())
             ->method('getDirectories')
             ->with($this->callback(function (DirectorySearchQuery $query) use (&$captured): bool {

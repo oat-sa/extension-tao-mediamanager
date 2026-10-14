@@ -27,6 +27,7 @@ use oat\tao\model\accessControl\AccessControlEnablerInterface;
 use oat\tao\model\media\mediaSource\DirectorySearchQuery;
 use oat\taoItems\model\media\AssetBrowseListBuilderInterface;
 use oat\taoItems\model\media\AssetIndexedSearchGatewayInterface;
+use oat\taoItems\model\media\AssetSearchBuilder;
 use oat\taoItems\model\media\AssetSearchQuery;
 use oat\taoItems\model\media\AssetTreeBuilder;
 use oat\taoItems\model\media\LocalItemSource;
@@ -58,6 +59,11 @@ class MediaManagerAssetTreeBuilder extends AssetTreeBuilder implements AssetBrow
 
         $mediaSource = $search->getAsset()->getMediaSource();
         if ($mediaSource instanceof MediaSource) {
+            $generisBrowse = $this->tryBuildViaGenerisSearch($search);
+            if ($generisBrowse !== null) {
+                return $generisBrowse;
+            }
+
             $pageSize = $this->getPaginationLimit();
             $offset = max(0, min($search->getChildrenOffset(), self::MAX_CHILDREN_OFFSET));
 
@@ -65,6 +71,31 @@ class MediaManagerAssetTreeBuilder extends AssetTreeBuilder implements AssetBrow
         }
 
         return parent::build($search);
+    }
+
+    /**
+     * Legacy combined browse: folder tree + flat list (same flat list as indexed / Generis search).
+     *
+     * @return array<string, mixed>|null
+     */
+    private function tryBuildViaGenerisSearch(DirectorySearchQuery $search): ?array
+    {
+        $list = $this->tryBuildAssetListViaGenerisSearch($search);
+        if ($list === null) {
+            return null;
+        }
+
+        $tree = $this->buildTree($search);
+        $pageSize = (int)($list['pageSize'] ?? $this->getPaginationLimit());
+        $page = (int)($list['page'] ?? 1);
+        $listTotal = (int)($list['total'] ?? 0);
+
+        $tree['total'] = $listTotal;
+        $tree['truncated'] = !empty($list['truncated']) || $listTotal > $page * $pageSize;
+        $tree['childrenLimit'] = $pageSize;
+        $tree['children'] = array_merge($tree['children'] ?? [], $list['items'] ?? []);
+
+        return $tree;
     }
 
     public function buildTree(DirectorySearchQuery $search): array
@@ -91,7 +122,99 @@ class MediaManagerAssetTreeBuilder extends AssetTreeBuilder implements AssetBrow
             }
         }
 
+        $generisList = $this->tryBuildAssetListViaGenerisSearch($search);
+        if ($generisList !== null) {
+            return $generisList;
+        }
+
         return $this->buildAssetListViaOntology($search);
+    }
+
+    /**
+     * Without Elasticsearch: recursive scoped listing (same as indexed browse, Generis/SQL).
+     *
+     * @return array<string, mixed>|null
+     */
+    private function tryBuildAssetListViaGenerisSearch(DirectorySearchQuery $search): ?array
+    {
+        $builder = $this->getAssetSearchBuilder();
+        if ($builder === null) {
+            return null;
+        }
+
+        $mediaSource = $search->getAsset()->getMediaSource();
+        if (!$mediaSource instanceof MediaSource) {
+            return null;
+        }
+
+        if ($mediaSource instanceof AccessControlEnablerInterface) {
+            $mediaSource->enableAccessControl();
+        }
+
+        $assetSearchQuery = $search instanceof AssetSearchQuery
+            ? $search
+            : new AssetSearchQuery(
+                $search->getAsset(),
+                $search->getItemUri(),
+                $search->getItemLang(),
+                $search->getFilter(),
+                1,
+                0,
+                0
+            );
+
+        $pageSize = max(1, $assetSearchQuery->getPageSize() ?: $this->getPaginationLimit());
+        $page = max(1, $assetSearchQuery->getPage());
+
+        $assetSearchQuery
+            ->setQuery('')
+            ->setPage($page)
+            ->setPageSize($pageSize)
+            ->setSortBy($this->resolveSortBy($search))
+            ->setSortDir($this->resolveSortDir($search));
+
+        try {
+            $searchResult = $builder->search($assetSearchQuery);
+        } catch (\Throwable $exception) {
+            return null;
+        }
+
+        $scopeLabel = '';
+        $items = [];
+        foreach ($searchResult['items'] ?? [] as $item) {
+            if (!is_array($item)) {
+                continue;
+            }
+            if ($scopeLabel === '' && isset($item['location'])) {
+                $scopeLabel = (string)$item['location'];
+            }
+            $items[] = $this->normalizeFile($item, (string)($item['location'] ?? $scopeLabel));
+        }
+
+        return [
+            'items' => array_values($items),
+            'total' => (int)($searchResult['total'] ?? 0),
+            'page' => (int)($searchResult['page'] ?? $page),
+            'pageSize' => (int)($searchResult['pageSize'] ?? $pageSize),
+            'totalIsApproximate' => false,
+            'truncated' => !empty($searchResult['truncated']),
+        ];
+    }
+
+    protected function getAssetSearchBuilder(): ?AssetSearchBuilder
+    {
+        try {
+            $container = ServiceManager::getServiceManager()->getContainer();
+            if (!$container->has(AssetSearchBuilder::class)) {
+                return null;
+            }
+
+            $builder = $container->get(AssetSearchBuilder::class);
+
+            return $builder instanceof AssetSearchBuilder ? $builder : null;
+        } catch (\Throwable $exception) {
+            return null;
+        }
     }
 
     private function canUseIndexedBrowse(): bool

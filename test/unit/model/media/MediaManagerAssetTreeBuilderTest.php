@@ -26,6 +26,7 @@ use oat\generis\test\TestCase;
 use oat\tao\model\media\MediaAsset;
 use oat\tao\model\media\mediaSource\DirectorySearchQuery;
 use oat\taoItems\model\media\AssetIndexedSearchGatewayInterface;
+use oat\taoItems\model\media\AssetSearchBuilder;
 use oat\taoItems\model\media\AssetSearchQuery;
 use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\media\MediaManagerAssetTreeBuilder;
@@ -574,5 +575,132 @@ class MediaManagerAssetTreeBuilderTest extends TestCase
         $this->assertSame(200, $result['total']);
         $this->assertCount(1, $files);
         $this->assertSame('nested-page-two.png', $files[0]['name']);
+    }
+
+    public function testBuildAssetListUsesSearchBuilderWhenIndexedBrowseDisabled(): void
+    {
+        $subject = new MediaManagerAssetTreeBuilderWithSearchBuilder();
+        $this->disableIndexedBrowse($subject);
+
+        $searchBuilder = $this->createMock(AssetSearchBuilder::class);
+        $searchBuilder->expects($this->once())
+            ->method('search')
+            ->with($this->callback(static function (AssetSearchQuery $query): bool {
+                return $query->getQuery() === ''
+                    && $query->getPage() === 2
+                    && $query->getPageSize() === 11;
+            }))
+            ->willReturn([
+                'items' => [
+                    [
+                        'name' => 'nested.png',
+                        'uri' => 'taomedia://mediamanager/nested.png',
+                        'mime' => 'image/png',
+                        'location' => 'Assets/batch-001',
+                    ],
+                ],
+                'total' => 99,
+                'page' => 2,
+                'pageSize' => 11,
+                'truncated' => false,
+            ]);
+        $subject->setAssetSearchBuilderForTest($searchBuilder);
+
+        $mediaSource = $this->createMediaSourceMock();
+        $mediaAsset = $this->createMock(MediaAsset::class);
+        $mediaAsset->method('getMediaSource')->willReturn($mediaSource);
+        $mediaAsset->method('getMediaIdentifier')->willReturn(MediaSource::SCHEME_NAME);
+
+        $result = $subject->buildAssetList(
+            (new AssetSearchQuery($mediaAsset, 'item-uri', 'en-US'))
+                ->setPage(2)
+                ->setPageSize(11)
+        );
+
+        $this->assertSame(99, $result['total']);
+        $this->assertCount(1, $result['items']);
+        $this->assertSame('nested.png', $result['items'][0]['name']);
+        $this->assertFalse($result['totalIsApproximate']);
+    }
+
+    public function testBuildCombinedBrowseMergesGenerisListWithFolderTree(): void
+    {
+        $subject = new MediaManagerAssetTreeBuilderWithSearchBuilder();
+        $this->disableIndexedBrowse($subject);
+
+        $searchBuilder = $this->createMock(AssetSearchBuilder::class);
+        $searchBuilder->method('search')->willReturn([
+            'items' => [
+                [
+                    'name' => 'from-search.png',
+                    'uri' => 'taomedia://mediamanager/from-search.png',
+                    'mime' => 'image/png',
+                ],
+            ],
+            'total' => 1,
+            'page' => 1,
+            'pageSize' => 15,
+        ]);
+        $subject->setAssetSearchBuilderForTest($searchBuilder);
+
+        $mediaSource = $this->createMediaSourceMock();
+        $mediaSource->method('getDirectories')->willReturnCallback(
+            static function (DirectorySearchQuery $query): array {
+                if ($query->getChildrenLimit() === MediaSource::CHILDREN_LIMIT_DIRECTORIES_ONLY) {
+                    return [
+                        'path' => 'taomedia://mediamanager/',
+                        'label' => 'Media',
+                        'children' => [
+                            ['path' => '/batch-001', 'label' => 'batch-001'],
+                        ],
+                    ];
+                }
+
+                return [
+                    'path' => 'taomedia://mediamanager/',
+                    'label' => 'Media',
+                    'children' => [],
+                ];
+            }
+        );
+
+        $mediaAsset = $this->createMock(MediaAsset::class);
+        $mediaAsset->method('getMediaSource')->willReturn($mediaSource);
+        $mediaAsset->method('getMediaIdentifier')->willReturn(MediaSource::SCHEME_NAME);
+
+        $result = $subject->build(new AssetSearchQuery($mediaAsset, 'item-uri', 'en-US'));
+
+        $folders = array_values(array_filter(
+            $result['children'],
+            static fn (array $child): bool => !isset($child['uri'])
+        ));
+        $files = array_values(array_filter(
+            $result['children'],
+            static fn (array $child): bool => isset($child['uri'])
+        ));
+
+        $this->assertCount(1, $folders);
+        $this->assertSame('batch-001', $folders[0]['label']);
+        $this->assertCount(1, $files);
+        $this->assertSame('from-search.png', $files[0]['name']);
+        $this->assertSame(1, $result['total']);
+    }
+}
+
+/**
+ * Allows injecting {@see AssetSearchBuilder} without bootstrapping the service container.
+ */
+final class MediaManagerAssetTreeBuilderWithSearchBuilder extends MediaManagerAssetTreeBuilder
+{
+    private ?AssetSearchBuilder $assetSearchBuilderForTest = null;
+
+    public function setAssetSearchBuilderForTest(?AssetSearchBuilder $builder): void
+    {
+        $this->assetSearchBuilderForTest = $builder;
+    }
+
+    protected function getAssetSearchBuilder(): ?AssetSearchBuilder
+    {
+        return $this->assetSearchBuilderForTest ?? parent::getAssetSearchBuilder();
     }
 }

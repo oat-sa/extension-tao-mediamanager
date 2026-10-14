@@ -123,14 +123,31 @@ class MediaSource extends Configurable implements
 
     /**
      * Ontology class URI for Resource Manager search scope ({@see searchDirectories()} parent link).
+     * Same rules as indexed asset search ({@see ResourceManagerAssetIndexedSearchGateway}).
      */
     public function resolveScopeClassUri(string $parentLink): string
     {
-        if ($parentLink === '') {
+        $parentLink = trim($parentLink);
+        if ($parentLink === '' || $parentLink === '/') {
             return $this->getRootClassUri();
         }
 
-        return tao_helpers_Uri::decode($parentLink);
+        if (strpos($parentLink, self::SCHEME_NAME) === 0) {
+            $classUri = tao_helpers_Uri::decode(substr($parentLink, strlen(self::SCHEME_NAME)));
+            if ($classUri === '' || $classUri === '/') {
+                return $this->getRootClassUri();
+            }
+
+            return $classUri;
+        }
+
+        if (preg_match('#^https?://#i', $parentLink)) {
+            return $parentLink;
+        }
+
+        $decoded = tao_helpers_Uri::decode($parentLink);
+
+        return $decoded !== '' && $decoded !== '/' ? $decoded : $this->getRootClassUri();
     }
 
     public function getDirectories(DirectorySearchQuery $params): array
@@ -479,7 +496,7 @@ class MediaSource extends Configurable implements
         ?DirectorySearchQuery $browseQuery = null
     ): array {
 
-        $class = $this->getClass($parentLink == '' ? $this->getRootClassUri() : tao_helpers_Uri::decode($parentLink));
+        $class = $this->getClass($this->resolveScopeClassUri($parentLink));
 
         $data = $this->getPermissionsMapper()->map(
             [

@@ -623,9 +623,12 @@ class MediaSource extends Configurable implements
                 : $class->countInstances($filter);
         } else {
             if ($parentLink !== '') {
-                $data['path'] = self::SCHEME_NAME . tao_helpers_Uri::encode($parentLink);
+                $classUri = $class->getUri();
+                $data['path'] = self::SCHEME_NAME . tao_helpers_Uri::encode($classUri);
+                $data['parent'] = $classUri;
+            } else {
+                $data['parent'] = $parentLink;
             }
-            $data['parent'] = $parentLink;
         }
 
         return $data;

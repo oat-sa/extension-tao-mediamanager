@@ -121,6 +121,18 @@ class MediaSource extends Configurable implements
         return $this->getMediaService()->deleteResource($this->getResource(tao_helpers_Uri::decode($link)));
     }
 
+    /**
+     * Ontology class URI for Resource Manager search scope ({@see searchDirectories()} parent link).
+     */
+    public function resolveScopeClassUri(string $parentLink): string
+    {
+        if ($parentLink === '') {
+            return $this->getRootClassUri();
+        }
+
+        return tao_helpers_Uri::decode($parentLink);
+    }
+
     public function getDirectories(DirectorySearchQuery $params): array
     {
         return $this->searchDirectories(

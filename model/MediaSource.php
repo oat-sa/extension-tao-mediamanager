@@ -187,10 +187,13 @@ class MediaSource extends Configurable implements
             ];
         }
 
-        return [
-            'rows' => $rows,
-            'total' => (int)$class->countInstances($filter, ['recursive' => true]),
-        ];
+        $result = ['rows' => $rows];
+        // ponytail: countInstances scans the whole class; only needed once per browse page (offset 0).
+        if ($offset === 0) {
+            $result['total'] = (int)$class->countInstances($filter, ['recursive' => true]);
+        }
+
+        return $result;
     }
 
     public function getDirectories(DirectorySearchQuery $params): array

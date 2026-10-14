@@ -40,11 +40,14 @@ use tao_helpers_Uri;
 use tao_models_classes_FileNotFoundException;
 use GuzzleHttp\Psr7\Utils;
 use oat\generis\model\OntologyRdfs;
+use oat\taoItems\model\media\AssetSearchQuery;
+use oat\taoItems\model\media\SharedMediaSearchSourceInterface;
 
 class MediaSource extends Configurable implements
     MediaManagement,
     ProcessedFileStreamAware,
-    AccessControlEnablerInterface
+    AccessControlEnablerInterface,
+    SharedMediaSearchSourceInterface
 {
     use LoggerAwareTrait;
     use OntologyAwareTrait;
@@ -119,6 +122,75 @@ class MediaSource extends Configurable implements
     public function delete($link)
     {
         return $this->getMediaService()->deleteResource($this->getResource(tao_helpers_Uri::decode($link)));
+    }
+
+    /**
+     * Ontology class URI for Resource Manager search scope ({@see searchDirectories()} parent link).
+     * Same rules as indexed asset search ({@see ResourceManagerAssetIndexedSearchGateway}).
+     */
+    public function resolveScopeClassUri(string $parentLink): string
+    {
+        $parentLink = trim($parentLink);
+        if ($parentLink === '' || $parentLink === '/') {
+            return $this->getRootClassUri();
+        }
+
+        if (strpos($parentLink, self::SCHEME_NAME) === 0) {
+            $classUri = tao_helpers_Uri::decode(substr($parentLink, strlen(self::SCHEME_NAME)));
+            if ($classUri === '' || $classUri === '/') {
+                return $this->getRootClassUri();
+            }
+
+            return $classUri;
+        }
+
+        if (preg_match('#^https?://#i', $parentLink)) {
+            return $parentLink;
+        }
+
+        $decoded = tao_helpers_Uri::decode($parentLink);
+
+        return $decoded !== '' && $decoded !== '/' ? $decoded : $this->getRootClassUri();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function searchScopedMediaInstances(
+        string $scopeClassUri,
+        array $mimeFilters,
+        int $offset,
+        int $limit,
+        string $sortBy,
+        string $sortDir
+    ): array {
+        $class = $this->getClass($scopeClassUri);
+        $filter = $mimeFilters === []
+            ? []
+            : [TaoMediaOntology::PROPERTY_MIME_TYPE => $mimeFilters];
+        $searchOptions = [
+            'recursive' => true,
+            'offset' => $offset,
+            'limit' => $limit,
+        ];
+
+        if ($sortBy === AssetSearchQuery::SORT_LABEL) {
+            $searchOptions['order'] = OntologyRdfs::RDFS_LABEL;
+            $searchOptions['orderdir'] = strtolower($sortDir) === 'desc' ? 'DESC' : 'ASC';
+        }
+
+        $rows = [];
+        foreach ($class->searchInstances($filter, $searchOptions) as $instance) {
+            $rows[] = [
+                'id' => $instance->getUri(),
+                'label' => $instance->getLabel(),
+            ];
+        }
+
+        return [
+            'rows' => $rows,
+            'total' => (int)$class->countInstances($filter, ['recursive' => true]),
+        ];
     }
 
     public function getDirectories(DirectorySearchQuery $params): array
@@ -467,7 +539,7 @@ class MediaSource extends Configurable implements
         ?DirectorySearchQuery $browseQuery = null
     ): array {
 
-        $class = $this->getClass($parentLink == '' ? $this->getRootClassUri() : tao_helpers_Uri::decode($parentLink));
+        $class = $this->getClass($this->resolveScopeClassUri($parentLink));
 
         $data = $this->getPermissionsMapper()->map(
             [
@@ -551,9 +623,12 @@ class MediaSource extends Configurable implements
                 : $class->countInstances($filter);
         } else {
             if ($parentLink !== '') {
-                $data['path'] = self::SCHEME_NAME . tao_helpers_Uri::encode($parentLink);
+                $classUri = $class->getUri();
+                $data['path'] = self::SCHEME_NAME . tao_helpers_Uri::encode($classUri);
+                $data['parent'] = $classUri;
+            } else {
+                $data['parent'] = $parentLink;
             }
-            $data['parent'] = $parentLink;
         }
 
         return $data;

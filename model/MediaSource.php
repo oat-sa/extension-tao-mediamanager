@@ -40,11 +40,14 @@ use tao_helpers_Uri;
 use tao_models_classes_FileNotFoundException;
 use GuzzleHttp\Psr7\Utils;
 use oat\generis\model\OntologyRdfs;
+use oat\taoItems\model\media\AssetSearchQuery;
+use oat\taoItems\model\media\SharedMediaSearchSourceInterface;
 
 class MediaSource extends Configurable implements
     MediaManagement,
     ProcessedFileStreamAware,
-    AccessControlEnablerInterface
+    AccessControlEnablerInterface,
+    SharedMediaSearchSourceInterface
 {
     use LoggerAwareTrait;
     use OntologyAwareTrait;
@@ -148,6 +151,46 @@ class MediaSource extends Configurable implements
         $decoded = tao_helpers_Uri::decode($parentLink);
 
         return $decoded !== '' && $decoded !== '/' ? $decoded : $this->getRootClassUri();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function searchScopedMediaInstances(
+        string $scopeClassUri,
+        array $mimeFilters,
+        int $offset,
+        int $limit,
+        string $sortBy,
+        string $sortDir
+    ): array {
+        $class = $this->getClass($scopeClassUri);
+        $filter = $mimeFilters === []
+            ? []
+            : [TaoMediaOntology::PROPERTY_MIME_TYPE => $mimeFilters];
+        $searchOptions = [
+            'recursive' => true,
+            'offset' => $offset,
+            'limit' => $limit,
+        ];
+
+        if ($sortBy === AssetSearchQuery::SORT_LABEL) {
+            $searchOptions['order'] = OntologyRdfs::RDFS_LABEL;
+            $searchOptions['orderdir'] = strtolower($sortDir) === 'desc' ? 'DESC' : 'ASC';
+        }
+
+        $rows = [];
+        foreach ($class->searchInstances($filter, $searchOptions) as $instance) {
+            $rows[] = [
+                'id' => $instance->getUri(),
+                'label' => $instance->getLabel(),
+            ];
+        }
+
+        return [
+            'rows' => $rows,
+            'total' => (int)$class->countInstances($filter, ['recursive' => true]),
+        ];
     }
 
     public function getDirectories(DirectorySearchQuery $params): array

@@ -7,6 +7,7 @@ Template::inc('form_context.tpl', 'tao');
         class="main-container flex-container-main-form"
         data-asset-uri="<?= htmlspecialchars((string) (get_data('assetUri') ?? ''), ENT_QUOTES, 'UTF-8') ?>"
         data-mentions-enabled="<?= get_data('itemCommentsMentionsEnabled') ? '1' : '0' ?>"
+        data-mime-type="<?= htmlspecialchars((string) (get_data('mimeType') ?? ''), ENT_QUOTES, 'UTF-8') ?>"
     >
         <header class="section-header flex-container-full">
             <h2><?=get_data('formTitle')?></h2>
@@ -15,12 +16,12 @@ Template::inc('form_context.tpl', 'tao');
             <?=get_data('myForm')?>
         </div>
     </div>
-    <div class="data-container-wrapper flex-container-remaining" style="display:<?php echo get_data('isPreviewEnabled') ? 'block' : 'none'; ?>">
+    <div class="data-container-wrapper flex-container-remaining" style="display:<?php echo get_data('displayPreview') ? 'block' : 'none'; ?>">
         <header class="section-header flex-container-full">
             <h2><?=__('Preview')?></h2>
         </header>
-        <?php if(has_data('fileurl')):?>
-        <div class="previewer" data-enabled="<?php echo get_data('isPreviewEnabled'); ?>" data-url="<?=get_data('fileurl')?>" data-type="<?=get_data('mimeType')?>" data-xml="<?=get_data('xml')?>"></div>
+        <?php if(has_data('fileurl') && get_data('displayPreview')):?>
+        <div class="previewer" data-enabled="<?php echo get_data('isPreviewEnabled'); ?>" data-has-preview-content="<?php echo get_data('hasPreviewContent') ? '1' : '0'; ?>" data-url="<?=get_data('fileurl')?>" data-type="<?=get_data('mimeType')?>" data-xml="<?=get_data('xml')?>"></div>
         <?php endif;?>
         <?php if(has_data('data')):?>
         <pre><?=get_data('data')?></pre>

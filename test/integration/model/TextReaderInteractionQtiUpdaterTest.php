@@ -1,21 +1,10 @@
 <?php
 
 /**
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; under version 2
- * of the License (non-upgradable).
+ * SPDX-FileCopyrightText: 2026 Open Assessment Technologies S.A.
+ * Copyright (C) 2026 (original work) Open Assessment Technologies S.A.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- *
- * Copyright (c) 2026 (original work) Open Assessment Technologies SA;
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-TAO-Commercial-License
  */
 
 declare(strict_types=1);
@@ -23,76 +12,102 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\test\integration\model;
 
 use core_kernel_classes_Resource;
-use oat\generis\persistence\PersistenceManager;
+use GuzzleHttp\Psr7\Utils;
 use oat\oatbox\service\ServiceManager;
-use oat\taoMediaManager\model\MediaService;
+use oat\tao\model\service\ApplicationService;
+use oat\tao\model\media\MediaService as TaoMediaService;
 use oat\taoMediaManager\model\MediaSource;
 use oat\taoMediaManager\model\relation\repository\MediaRelationRepositoryInterface;
 use oat\taoMediaManager\model\TextReaderReferencesExtractorAdapter;
 use oat\taoMediaManager\model\TextReaderInteractionQtiUpdater;
+use oat\taoQtiItem\model\qti\ResponseDeclaration;
 use oat\taoQtiItem\model\qti\event\UpdatedItemEventDispatcher;
 use oat\taoQtiItem\model\qti\interaction\PortableCustomInteraction;
 use oat\taoQtiItem\model\qti\Item;
 use oat\taoQtiItem\model\qti\parser\TextReaderReferencesExtractor;
 use oat\taoQtiItem\model\qti\Service as QtiService;
-use PHPUnit\Framework\TestCase;
-use oat\taoRevision\model\RepositoryService;
 use Psr\Log\NullLogger;
+use PHPUnit\Framework\TestCase;
 use tao_helpers_Uri;
-use taoItems_models_classes_ItemsService;
-
-// phpcs:disable PSR1.Files.SideEffects
-include_once dirname(__FILE__) . '/../../../includes/raw_start.php';
-// phpcs:enable PSR1.Files.SideEffects
 
 class TextReaderInteractionQtiUpdaterTest extends TestCase
 {
     private const LANGUAGE = 'en-US';
     private const ITEM_URI = 'http://example.com/ontologies/tao.rdf#textReaderItem';
     private const ITEM_IDENTIFIER = 'item-1';
-    private const MEDIA_LABEL = 'text-reader-image.png';
+    private const MEDIA_ID = 'http://example.com/ontologies/tao.rdf#media';
 
-    private \core_kernel_classes_Class $mediaClass;
-    private ?string $mediaId = null;
     private ?string $tempImagePath = null;
+    private ?ApplicationService $originalApplicationService = null;
+    private ?TaoMediaService $originalTaoMediaService = null;
 
     protected function setUp(): void
     {
-        $this->mediaClass = MediaService::singleton()->getRootClass()->createSubClass('Text Reader updater test class');
+        $this->cleanupTemporaryImageArtifacts();
 
-        $revisionService = $this->createMock(RepositoryService::class);
-        $revisionService->method('commit');
+        if (!defined('PRODUCT_NAME')) {
+            define('PRODUCT_NAME', 'TAO');
+        }
 
-        ServiceManager::getServiceManager()->overload(RepositoryService::SERVICE_ID, $revisionService);
+        $serviceManager = ServiceManager::getServiceManager();
+        if ($serviceManager->has(TaoMediaService::SERVICE_ID)) {
+            $this->originalTaoMediaService = $serviceManager->get(TaoMediaService::SERVICE_ID);
+        }
+
+        if ($serviceManager->has(ApplicationService::SERVICE_ID)) {
+            $this->originalApplicationService = $serviceManager->get(ApplicationService::SERVICE_ID);
+        } else {
+            $applicationService = $this->createMock(ApplicationService::class);
+            $applicationService->method('getPlatformVersion')
+                ->willReturn('test-version');
+            $serviceManager->overload(ApplicationService::SERVICE_ID, $applicationService);
+        }
     }
 
     protected function tearDown(): void
     {
-        if ($this->mediaId !== null) {
-            MediaService::singleton()->deleteResource(new core_kernel_classes_Resource($this->mediaId));
+        if ($this->originalTaoMediaService !== null) {
+            ServiceManager::getServiceManager()->overload(TaoMediaService::SERVICE_ID, $this->originalTaoMediaService);
         }
 
-        MediaService::singleton()->deleteClass($this->mediaClass);
+        if ($this->originalApplicationService !== null) {
+            ServiceManager::getServiceManager()->overload(
+                ApplicationService::SERVICE_ID,
+                $this->originalApplicationService
+            );
+        }
 
         if ($this->tempImagePath !== null && file_exists($this->tempImagePath)) {
             unlink($this->tempImagePath);
         }
+
+        $this->cleanupTemporaryImageArtifacts();
     }
 
     public function testRefreshByMediaIdUpdatesTextReaderContentAfterAssetReplacement(): void
     {
         $this->tempImagePath = $this->createTemporaryImage('Brazil.png');
-        $this->mediaId = MediaService::singleton()->createMediaInstance(
-            $this->tempImagePath,
-            $this->mediaClass->getUri(),
-            self::LANGUAGE,
-            self::MEDIA_LABEL
-        );
-
-        $mediaLink = MediaSource::SCHEME_NAME . tao_helpers_Uri::encode($this->mediaId);
+        $mediaLink = MediaSource::SCHEME_NAME . tao_helpers_Uri::encode(self::MEDIA_ID);
         $contentPropertyKey = 'content-' . $mediaLink;
         $item = $this->createTextReaderItem($mediaLink);
         $itemResource = new core_kernel_classes_Resource(self::ITEM_URI);
+        $mediaSource = $this->createMock(MediaSource::class);
+        $mediaSource->expects($this->exactly(2))
+            ->method('getFileInfo')
+            ->with(tao_helpers_Uri::encode(self::MEDIA_ID))
+            ->willReturn(['mime' => 'image/png']);
+        $mediaSource->expects($this->exactly(2))
+            ->method('getFileStream')
+            ->with(tao_helpers_Uri::encode(self::MEDIA_ID))
+            ->willReturnCallback(fn () => Utils::streamFor((string) file_get_contents($this->tempImagePath)));
+        $taoMediaService = new TaoMediaService([
+            TaoMediaService::OPTION_SOURCE => [
+                'mediamanager' => $mediaSource,
+            ],
+        ]);
+        $taoMediaService->setLogger(new NullLogger());
+        ServiceManager::getServiceManager()->propagate($taoMediaService);
+        ServiceManager::getServiceManager()->overload(TaoMediaService::SERVICE_ID, $taoMediaService);
         $resourceMatchesItemUri = fn (
             core_kernel_classes_Resource $resource
         ): bool => $resource->getUri() === self::ITEM_URI;
@@ -121,15 +136,13 @@ class TextReaderInteractionQtiUpdaterTest extends TestCase
             $this->createMock(MediaRelationRepositoryInterface::class),
             $qtiService,
             $eventDispatcher,
-            taoItems_models_classes_ItemsService::singleton(),
-            $this->createMock(PersistenceManager::class),
             new TextReaderReferencesExtractorAdapter(new TextReaderReferencesExtractor())
         );
         $subject->setLogger(new NullLogger());
         $method = new \ReflectionMethod(TextReaderInteractionQtiUpdater::class, 'refreshItemResource');
         $method->setAccessible(true);
 
-        $this->assertTrue($method->invoke($subject, $itemResource, $this->mediaId));
+        $this->assertTrue($method->invoke($subject, $itemResource, self::MEDIA_ID));
         $this->assertSame(
             $this->buildExpectedDataUrl($this->tempImagePath),
             $this->getTextReaderInteraction($item)->getProperties()[$contentPropertyKey]
@@ -137,9 +150,7 @@ class TextReaderInteractionQtiUpdaterTest extends TestCase
 
         $this->tempImagePath = $this->createTemporaryImage('Italy.png', $this->tempImagePath);
 
-        MediaService::singleton()->editMediaInstance($this->tempImagePath, $this->mediaId, self::LANGUAGE);
-
-        $this->assertTrue($method->invoke($subject, $itemResource, $this->mediaId));
+        $this->assertTrue($method->invoke($subject, $itemResource, self::MEDIA_ID));
         $this->assertSame(
             $this->buildExpectedDataUrl($this->tempImagePath),
             $this->getTextReaderInteraction($item)->getProperties()[$contentPropertyKey]
@@ -192,6 +203,10 @@ class TextReaderInteractionQtiUpdaterTest extends TestCase
             $interaction,
             sprintf('<div class="text-reader">%s</div>', $interaction->getPlaceholder())
         );
+        $responseDeclaration = new ResponseDeclaration();
+        $responseDeclaration->setIdentifier('RESPONSE_' . $interaction->getSerial());
+        $item->addResponse($responseDeclaration);
+        $interaction->setAttribute('responseIdentifier', $responseDeclaration->getIdentifier());
 
         return $item;
     }
@@ -210,5 +225,29 @@ class TextReaderInteractionQtiUpdaterTest extends TestCase
             'data:image/png;base64,%s',
             base64_encode((string) file_get_contents($path))
         );
+    }
+
+    private function cleanupTemporaryImageArtifacts(): void
+    {
+        foreach (glob(sys_get_temp_dir() . '/text-reader-image*') ?: [] as $path) {
+            if (is_file($path)) {
+                @unlink($path);
+            } elseif (is_dir($path)) {
+                $this->removeDirectory($path);
+            }
+        }
+    }
+
+    private function removeDirectory(string $path): void
+    {
+        foreach (glob($path . '/*') ?: [] as $entry) {
+            if (is_dir($entry)) {
+                $this->removeDirectory($entry);
+            } elseif (is_file($entry)) {
+                @unlink($entry);
+            }
+        }
+
+        @rmdir($path);
     }
 }

@@ -1,21 +1,10 @@
 <?php
 
 /**
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; under version 2
- * of the License (non-upgradable).
+ * SPDX-FileCopyrightText: 2014-2026 Open Assessment Technologies S.A.
+ * Copyright (C) 2026 (original work) Open Assessment Technologies S.A.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- *
- * Copyright (c) 2014-2020 (original work) Open Assessment Technologies SA;
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-TAO-Commercial-License
  */
 
 declare(strict_types=1);
@@ -30,10 +19,6 @@ use core_kernel_classes_Resource as RdfResource;
 use core_kernel_classes_Property as RdfProperty;
 use oat\taoMediaManager\model\TaoMediaOntology;
 use oat\taoRevision\model\RepositoryService;
-
-// phpcs:disable PSR1.Files.SideEffects
-include_once dirname(__FILE__) . '/../../../includes/raw_start.php';
-// phpcs:enable PSR1.Files.SideEffects
 
 class MediaServiceTest extends TestCase
 {
@@ -149,8 +134,8 @@ class MediaServiceTest extends TestCase
         $linkProperty = new RdfProperty(TaoMediaOntology::PROPERTY_LINK);
         $mimeTypeProperty = new RdfProperty(TaoMediaOntology::PROPERTY_MIME_TYPE);
 
-        $instanceUri = 'http://myFancyDomain.com/myGreatInstanceUri';
-        $instance = new RdfResource($instanceUri);
+        $instance = $this->testClass->createInstance('Italy.png');
+        $instanceUri = $instance->getUri();
 
         $this->clearPropertyValues($instance, $linkProperty);
         $this->clearPropertyValues($instance, $mimeTypeProperty);
@@ -169,7 +154,7 @@ class MediaServiceTest extends TestCase
             'The instance language is wrong'
         );
 
-        $this->assertTrue($instance->delete());
+        $this->assertTrue($instance->delete(true));
     }
 
     private function clearPropertyValues(RdfResource $instance, RdfProperty $property): void

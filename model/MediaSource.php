@@ -28,24 +28,37 @@ use oat\tao\model\accessControl\AccessControlEnablerInterface;
 use oat\tao\model\media\MediaManagement;
 use oat\tao\model\media\mediaSource\DirectorySearchQuery;
 use oat\tao\model\media\ProcessedFileStreamAware;
+use oat\tao\model\TaoOntology;
 use oat\taoMediaManager\model\export\service\MediaResourcePreparerInterface;
 use oat\taoMediaManager\model\mapper\MediaSourcePermissionsMapper;
 use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\taoMediaManager\model\fileManagement\FileSourceUnserializer;
 use Psr\Http\Message\StreamInterface;
+use core_kernel_classes_Literal;
+use core_kernel_classes_Resource;
 use tao_helpers_Uri;
 use tao_models_classes_FileNotFoundException;
 use GuzzleHttp\Psr7\Utils;
+use oat\generis\model\OntologyRdfs;
+use oat\taoItems\model\media\AssetSearchQuery;
+use oat\taoItems\model\media\SharedMediaSearchSourceInterface;
 
 class MediaSource extends Configurable implements
     MediaManagement,
     ProcessedFileStreamAware,
-    AccessControlEnablerInterface
+    AccessControlEnablerInterface,
+    SharedMediaSearchSourceInterface
 {
     use LoggerAwareTrait;
     use OntologyAwareTrait;
 
     public const SCHEME_NAME = 'taomedia://mediamanager/';
+
+    /**
+     * When passed as {@see getDirectories()} childrenLimit, subclasses are returned but
+     * media instances are not loaded (folder stubs only).
+     */
+    public const CHILDREN_LIMIT_DIRECTORIES_ONLY = -1;
 
     /** @var MediaService */
     protected $mediaService;
@@ -111,6 +124,75 @@ class MediaSource extends Configurable implements
         return $this->getMediaService()->deleteResource($this->getResource(tao_helpers_Uri::decode($link)));
     }
 
+    /**
+     * Ontology class URI for Resource Manager search scope ({@see searchDirectories()} parent link).
+     * Same rules as indexed asset search ({@see ResourceManagerAssetIndexedSearchGateway}).
+     */
+    public function resolveScopeClassUri(string $parentLink): string
+    {
+        $parentLink = trim($parentLink);
+        if ($parentLink === '' || $parentLink === '/') {
+            return $this->getRootClassUri();
+        }
+
+        if (strpos($parentLink, self::SCHEME_NAME) === 0) {
+            $classUri = tao_helpers_Uri::decode(substr($parentLink, strlen(self::SCHEME_NAME)));
+            if ($classUri === '' || $classUri === '/') {
+                return $this->getRootClassUri();
+            }
+
+            return $classUri;
+        }
+
+        if (preg_match('#^https?://#i', $parentLink)) {
+            return $parentLink;
+        }
+
+        $decoded = tao_helpers_Uri::decode($parentLink);
+
+        return $decoded !== '' && $decoded !== '/' ? $decoded : $this->getRootClassUri();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function searchScopedMediaInstances(
+        string $scopeClassUri,
+        array $mimeFilters,
+        int $offset,
+        int $limit,
+        string $sortBy,
+        string $sortDir
+    ): array {
+        $class = $this->getClass($scopeClassUri);
+        $filter = $mimeFilters === []
+            ? []
+            : [TaoMediaOntology::PROPERTY_MIME_TYPE => $mimeFilters];
+        $searchOptions = [
+            'recursive' => true,
+            'offset' => $offset,
+            'limit' => $limit,
+        ];
+
+        if ($sortBy === AssetSearchQuery::SORT_LABEL) {
+            $searchOptions['order'] = OntologyRdfs::RDFS_LABEL;
+            $searchOptions['orderdir'] = strtolower($sortDir) === 'desc' ? 'DESC' : 'ASC';
+        }
+
+        $rows = [];
+        foreach ($class->searchInstances($filter, $searchOptions) as $instance) {
+            $rows[] = [
+                'id' => $instance->getUri(),
+                'label' => $instance->getLabel(),
+            ];
+        }
+
+        return [
+            'rows' => $rows,
+            'total' => (int)$class->countInstances($filter, ['recursive' => true]),
+        ];
+    }
+
     public function getDirectories(DirectorySearchQuery $params): array
     {
         return $this->searchDirectories(
@@ -118,7 +200,8 @@ class MediaSource extends Configurable implements
             $params->getFilter(),
             $params->getDepth(),
             $params->getChildrenLimit(),
-            $params->getChildrenOffset()
+            $params->getChildrenOffset(),
+            $params
         );
     }
 
@@ -170,10 +253,78 @@ class MediaSource extends Configurable implements
                 'mime' => (string)$mime,
                 'size' => $this->getFileManagement()->getFileSize($fileLink),
                 'alt' => $alt,
-                'link' => $fileLink
+                'link' => $fileLink,
+                'updatedAt' => $this->formatResourceUpdatedAt($resource),
             ],
             $resource->getUri()
         );
+    }
+
+    /**
+     * ISO-8601 UTC timestamp for Resource Manager "Last modified" column.
+     */
+    private function formatResourceUpdatedAt(core_kernel_classes_Resource $resource): ?string
+    {
+        $raw = $resource->getOnePropertyValue($this->getProperty(TaoOntology::PROPERTY_UPDATED_AT));
+        $updatedAt = null;
+        if ($raw instanceof core_kernel_classes_Literal) {
+            $updatedAt = $raw->literal;
+        } elseif ($raw !== null && $raw !== '') {
+            $updatedAt = $raw;
+        }
+
+        if (is_string($updatedAt) && preg_match('/^\d+(\.\d+)?$/', $updatedAt) === 1) {
+            $timestamp = (int) floor((float) $updatedAt);
+        } elseif (is_int($updatedAt) || (is_string($updatedAt) && ctype_digit($updatedAt))) {
+            $timestamp = (int) $updatedAt;
+        } else {
+            return $this->formatFileUpdatedAtForResource($resource);
+        }
+
+        if ($timestamp <= 0) {
+            return $this->formatFileUpdatedAtForResource($resource);
+        }
+
+        return gmdate('Y-m-d\TH:i:s\Z', $timestamp);
+    }
+
+    private function formatFileUpdatedAtForResource(core_kernel_classes_Resource $resource): ?string
+    {
+        try {
+            $fileLinkRaw = $resource->getOnePropertyValue(
+                $this->getProperty(TaoMediaOntology::PROPERTY_LINK)
+            );
+            if ($fileLinkRaw === null || $fileLinkRaw === '') {
+                return null;
+            }
+
+            if ($fileLinkRaw instanceof core_kernel_classes_Literal) {
+                $fileLink = (string) $fileLinkRaw->literal;
+            } elseif ($fileLinkRaw instanceof core_kernel_classes_Resource) {
+                $fileLink = $fileLinkRaw->getUri();
+            } else {
+                $fileLink = (string) $fileLinkRaw;
+            }
+            $fileLink = $this->getFileSourceUnserializer()->unserialize($fileLink);
+            if ($fileLink === '') {
+                return null;
+            }
+
+            $fileManagement = $this->getFileManagement();
+            if ($fileManagement instanceof \oat\taoMediaManager\model\fileManagement\FlySystemManagement) {
+                $filesystem = $this->getServiceLocator()
+                    ->get(\oat\oatbox\filesystem\FileSystemService::SERVICE_ID)
+                    ->getFileSystem($fileManagement->getOption(
+                        \oat\taoMediaManager\model\fileManagement\FlySystemManagement::OPTION_FS
+                    ));
+
+                return gmdate('Y-m-d\TH:i:s\Z', $filesystem->lastModified($fileLink));
+            }
+        } catch (\Throwable $exception) {
+            $this->logWarning('Unable to resolve media file updatedAt: ' . $exception->getMessage());
+        }
+
+        return null;
     }
 
     /**
@@ -314,11 +465,17 @@ class MediaSource extends Configurable implements
         return ServiceManager::getServiceManager();
     }
 
-    protected function getRootClassUri()
+    protected function getRootClassUri(): string
     {
-        return $this->hasOption('rootClass')
-            ? $this->getOption('rootClass')
-            : MediaService::singleton()->getRootClass();
+        if ($this->hasOption('rootClass')) {
+            $rootClass = $this->getOption('rootClass');
+
+            return $rootClass instanceof \core_kernel_classes_Class
+                ? $rootClass->getUri()
+                : (string)$rootClass;
+        }
+
+        return TaoMediaOntology::CLASS_URI_MEDIA_ROOT;
     }
 
     protected function getLang()
@@ -378,21 +535,53 @@ class MediaSource extends Configurable implements
         array $acceptableMime = [],
         int $depth = 1,
         int $childrenLimit = 0,
-        int $childrenOffset = 0
+        int $childrenOffset = 0,
+        ?DirectorySearchQuery $browseQuery = null
     ): array {
 
-        $class = $this->getClass($parentLink == '' ? $this->getRootClassUri() : tao_helpers_Uri::decode($parentLink));
+        $class = $this->getClass($this->resolveScopeClassUri($parentLink));
 
         $data = $this->getPermissionsMapper()->map(
             [
                 'path' => self::SCHEME_NAME . tao_helpers_Uri::encode($class->getUri()),
                 'label' => $class->getLabel(),
+                'locationPath' => $this->buildLocationPathForClass($class),
                 'childrenLimit' => $childrenLimit,
             ],
             $class->getUri()
         );
 
+        $parentClasses = $class->getParentClasses();
+        if ($parentClasses !== []) {
+            $parentClass = reset($parentClasses);
+            if ($parentClass instanceof \core_kernel_classes_Class) {
+                $parentUri = $parentClass->getUri();
+                if ($parentUri !== '' && $parentUri !== $this->getRootClassUri()) {
+                    $data['parentFolderPath'] = self::SCHEME_NAME . tao_helpers_Uri::encode($parentUri);
+                }
+            }
+        }
+
         if ($depth > 0) {
+            if ($childrenLimit === self::CHILDREN_LIMIT_DIRECTORIES_ONLY && $depth === 1) {
+                $children = [];
+                foreach ($class->getSubClasses() as $subclass) {
+                    $children[] = $this->getPermissionsMapper()->map(
+                        [
+                            'path' => self::SCHEME_NAME . tao_helpers_Uri::encode($subclass->getUri()),
+                            'label' => $subclass->getLabel(),
+                            'locationPath' => $this->buildLocationPathForClass($subclass),
+                            'parent' => $class->getUri(),
+                        ],
+                        $subclass->getUri()
+                    );
+                }
+                $data['children'] = $children;
+                $data['total'] = 0;
+
+                return $data;
+            }
+
             $children = [];
             foreach ($class->getSubClasses() as $subclass) {
                 $children[] = $this->searchDirectories(
@@ -400,7 +589,8 @@ class MediaSource extends Configurable implements
                     $acceptableMime,
                     $depth - 1,
                     $childrenLimit,
-                    $childrenOffset
+                    $childrenOffset,
+                    null
                 );
             }
 
@@ -410,31 +600,68 @@ class MediaSource extends Configurable implements
                 $filter = array_merge($filter, [TaoMediaOntology::PROPERTY_MIME_TYPE => $acceptableMime]);
             }
 
-            $options = array_filter([
-                'limit' => $childrenLimit,
-                'offset' => $childrenOffset,
-            ]);
+            if ($childrenLimit !== self::CHILDREN_LIMIT_DIRECTORIES_ONLY) {
+                $options = $this->buildInstanceSearchOptions($childrenLimit, $childrenOffset, $browseQuery);
 
-            foreach ($class->searchInstances($filter, $options) as $instance) {
-                try {
-                    $children[] = $this->getFileInfo($instance->getUri());
-                } catch (tao_models_classes_FileNotFoundException $e) {
-                    $this->logEmergency(
-                        sprintf(
-                            'Encountered issues "%s" while fetching details for %s',
-                            $e->getMessage(),
-                            $instance->getUri()
-                        )
-                    );
+                foreach ($class->searchInstances($filter, $options) as $instance) {
+                    try {
+                        $children[] = $this->getFileInfo($instance->getUri());
+                    } catch (tao_models_classes_FileNotFoundException $e) {
+                        $this->logEmergency(
+                            sprintf(
+                                'Encountered issues "%s" while fetching details for %s',
+                                $e->getMessage(),
+                                $instance->getUri()
+                            )
+                        );
+                    }
                 }
             }
             $data['children'] = $children;
-            $data['total'] = $class->countInstances($filter);
+            $data['total'] = $childrenLimit === self::CHILDREN_LIMIT_DIRECTORIES_ONLY
+                ? 0
+                : $class->countInstances($filter);
         } else {
-            $data['parent'] = $parentLink;
+            if ($parentLink !== '') {
+                $classUri = $class->getUri();
+                $data['path'] = self::SCHEME_NAME . tao_helpers_Uri::encode($classUri);
+                $data['parent'] = $classUri;
+            } else {
+                $data['parent'] = $parentLink;
+            }
         }
 
         return $data;
+    }
+
+    /**
+     * @return array<string, int|string>
+     */
+    private function buildInstanceSearchOptions(
+        int $childrenLimit,
+        int $childrenOffset,
+        ?DirectorySearchQuery $browseQuery
+    ): array {
+        $options = [];
+        if ($childrenLimit > 0) {
+            $options['limit'] = $childrenLimit;
+        }
+        if ($childrenOffset > 0) {
+            $options['offset'] = $childrenOffset;
+        }
+
+        if ($browseQuery !== null && method_exists($browseQuery, 'getSortBy')) {
+            $sortBy = (string)$browseQuery->getSortBy();
+            if ($sortBy === DirectorySearchQuery::SORT_LABEL || $sortBy === 'label') {
+                $options['order'] = OntologyRdfs::RDFS_LABEL;
+                $sortDir = method_exists($browseQuery, 'getSortDir')
+                    ? strtolower((string)$browseQuery->getSortDir())
+                    : 'asc';
+                $options['orderdir'] = $sortDir === 'desc' ? 'DESC' : 'ASC';
+            }
+        }
+
+        return $options;
     }
 
     private function getPermissionsMapper(): MediaSourcePermissionsMapper
@@ -444,6 +671,36 @@ class MediaSource extends Configurable implements
         }
 
         return $this->permissionsMapper;
+    }
+
+    /**
+     * Folder path from media root to the given class (labels), for asset location columns.
+     */
+    private function buildLocationPathForClass(\core_kernel_classes_Class $class): string
+    {
+        $mediaRootUri = TaoMediaOntology::CLASS_URI_MEDIA_ROOT;
+        $segments = [];
+        $current = $class;
+
+        while ($current instanceof \core_kernel_classes_Class) {
+            $uri = $current->getUri();
+            $label = trim($current->getLabel());
+            if ($label !== '') {
+                array_unshift($segments, $label);
+            }
+            if ($uri === $mediaRootUri) {
+                break;
+            }
+
+            $parents = $current->getParentClasses();
+            if ($parents === []) {
+                break;
+            }
+            $parent = reset($parents);
+            $current = $parent instanceof \core_kernel_classes_Class ? $parent : null;
+        }
+
+        return implode('/', $segments);
     }
 
     public function __destruct()

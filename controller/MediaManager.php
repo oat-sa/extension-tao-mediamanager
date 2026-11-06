@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace oat\taoMediaManager\controller;
 
 use oat\tao\model\http\ContentDetector;
+use oat\tao\model\ClientLibConfigRegistry;
+use oat\tao\model\featureFlag\WProofreaderClientConfigHandler;
 use oat\tao\model\TaskOrchestrator\TaskOrchestratorEmailService;
 use oat\oatbox\user\User;
 use oat\oatbox\validator\ValidatorInterface;
@@ -23,6 +25,7 @@ use oat\taoMediaManager\model\fileManagement\FileManagement;
 use oat\tao\model\Lists\Business\Validation\DependsOnPropertyValidator;
 use oat\taoMediaManager\model\sharedStimulus\service\PreviewAvailabilityService;
 use core_kernel_classes_Resource;
+use oat\tao\model\TaoOntology;
 use oat\taoMediaManager\model\TaoMediaOntology;
 use oat\taoMediaManager\model\transcription\TranscriptionMimeTypesProvider;
 use tao_actions_form_Instance;
@@ -164,11 +167,43 @@ class MediaManager extends tao_actions_SaSModule
     }
 
     /**
+     * Loads the shared stimulus authoring shell; WProofreader config is merged for the authoring controller.
+     *
      * @requiresRight id WRITE
      */
-    public function authoring()
+    public function authoring(): void
     {
-        //This method is required to hide button on FE based on ACL
+        $this->defaultData();
+
+        $assetId = $this->getRequestParameter('id');
+        $language = null;
+
+        if (is_string($assetId) && $assetId !== '') {
+            $resource = new core_kernel_classes_Resource(tao_helpers_Uri::decode($assetId));
+            $languageProperty = $resource->getOnePropertyValue($this->getProperty(TaoOntology::PROPERTY_LANGUAGE));
+            if ($languageProperty instanceof core_kernel_classes_Resource) {
+                $language = tao_models_classes_LanguageService::singleton()->getCode($languageProperty);
+            }
+        }
+
+        $clientConfigs = ($this->getPsrContainer()->get(WProofreaderClientConfigHandler::class))(
+            $this->getPsrContainer()->get(ClientLibConfigRegistry::class)->getMap()
+        );
+
+        $requireConfig = [];
+        if (isset($clientConfigs['tao/ckeditor/wproofreaderBootstrap']['spellCheckConfig'])) {
+            $requireConfig['taoMediaManager/controller/authoring'] = [
+                'properties' => [
+                    'spellCheckConfig' => $clientConfigs['tao/ckeditor/wproofreaderBootstrap']['spellCheckConfig'],
+                    'lang' => $language !== null && $language !== ''
+                        ? $language
+                        : 'en-US',
+                ],
+            ];
+        }
+
+        $this->setData('wproofreaderRequireConfig', $requireConfig);
+        $this->setView('authoring.tpl', 'taoMediaManager');
     }
 
     protected function getClassService()

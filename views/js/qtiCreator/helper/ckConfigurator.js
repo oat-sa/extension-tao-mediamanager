@@ -18,7 +18,12 @@
 /**
  * @author Hanna Dzmitryieva <hanna@taotesting.com>
  */
-define(['lodash', 'ui/ckeditor/ckConfigurator', 'mathJax'], function(_, ckConfigurator, mathJax) {
+define([
+    'lodash',
+    'ui/ckeditor/ckConfigurator',
+    'mathJax',
+    'tao/ckeditor/wproofreaderBootstrap'
+], function (_, ckConfigurator, mathJax, wproofreaderBootstrap) {
     'use strict';
 
     const _defaults = {
@@ -31,6 +36,19 @@ define(['lodash', 'ui/ckeditor/ckConfigurator', 'mathJax'], function(_, ckConfig
         horizontalRule: true,
         furiganaPlugin: true
     };
+
+    _.assign(_defaults, wproofreaderBootstrap.getCkeditorConfig());
+
+    /**
+     * Apply the WProofreader dictionary matching the QTI item language.
+     * @param {String} itemLanguage
+     * @returns {void}
+     * @example setSpellcheckLanguage('fr-FR'); // WProofreader receives 'fr_FR'
+     */
+    function setSpellcheckLanguage(itemLanguage) {
+        const normalizedLanguage = _.trim(String(itemLanguage || '')).replace(/-/g, '_');
+        wproofreaderBootstrap.setLanguage(normalizedLanguage);
+    }
 
     /**
      * Generate a configuration object for CKEDITOR
@@ -46,15 +64,20 @@ define(['lodash', 'ui/ckeditor/ckConfigurator', 'mathJax'], function(_, ckConfig
      * @param {Boolean} [options.qtiInclude] - enables the qtiInclude plugin
      * @param {Boolean} [options.underline] - enables the underline plugin
      * @param {Boolean} [options.mathJax] - enables the mathJax plugin
-     * @returns {Function} - a function for get the config
+     * @param {String} [itemLanguage] - QTI item language
+     * @returns {Object} CKEDITOR config
      *
      * @see http://docs.ckeditor.com/#!/api/CKEDITOR.config
      */
-    const getConfig = function(editor, toolbarType = 'qtiInline', options) {
+    function getConfig(editor, toolbarType = 'qtiInline', options, itemLanguage) {
+        setSpellcheckLanguage(itemLanguage);
+        wproofreaderBootstrap.start();
         return ckConfigurator.getConfig(editor, toolbarType, _.defaults(options || {}, _defaults));
-    };
+    }
 
     return {
-        getConfig : getConfig
+        getConfig: getConfig,
+        getCkeditorConfig: wproofreaderBootstrap.getCkeditorConfig,
+        setSpellcheckLanguage: setSpellcheckLanguage
     };
 });

@@ -182,7 +182,7 @@ class MediaManager extends tao_actions_SaSModule
             $resource = new core_kernel_classes_Resource(tao_helpers_Uri::decode($assetId));
             $languageProperty = $resource->getOnePropertyValue($this->getProperty(TaoOntology::PROPERTY_LANGUAGE));
             if ($languageProperty instanceof core_kernel_classes_Resource) {
-                $language = tao_models_classes_LanguageService::singleton()->getCode($languageProperty);
+                $language = \tao_models_classes_LanguageService::singleton()->getCode($languageProperty);
             }
         }
 

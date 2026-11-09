@@ -45,6 +45,10 @@ module.exports = function (grunt) {
                                 'taoQtiItem/loader/taoQtiItem.min',
                                 'taoQtiTestPreviewer/loader/qtiPreviewer.min'
                             ],
+                            exclude: [
+                                'tao/ckeditor/wproofreaderBootstrap',
+                                'tao/ckeditor/wproofreaderExclude'
+                            ],
                             include: [
                                 'taoMediaManager/controller/**/*',
                                 'taoMediaManager/previewer/**/*',

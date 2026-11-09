@@ -23,13 +23,15 @@ define([
     'i18n',
     'lodash',
     'jquery',
+    'module',
     'uri',
+    'tao/ckeditor/wproofreaderBootstrap',
     'taoMediaManager/qtiCreator/component/sharedStimulusAuthoring',
     'ui/feedback',
     'util/url',
     'core/dataProvider/request',
     'core/logger'
-], function (__, _, $, uri, sharedStimulusAuthoringFactory, feedback, urlUtil, request, loggerFactory) {
+], function (__, _, $, module, uri, wproofreaderBootstrap, sharedStimulusAuthoringFactory, feedback, urlUtil, request, loggerFactory) {
     'use strict';
 
     const logger = loggerFactory('taoMediaManager/authoring');
@@ -42,6 +44,12 @@ define([
          */
         start() {
             const $panel = $('#panel-authoring');
+            const config = module.config();
+
+            if (config && config.properties && config.properties.spellCheckConfig) {
+                wproofreaderBootstrap.configure(config.properties.spellCheckConfig);
+            }
+
             const assetDataUrl = urlUtil.route('get', serviceController, serviceExtension);
             const assetDataStyles = urlUtil.route('getStylesheets', 'SharedStimulusStyling', serviceExtension);
             const assetId = uri.decode($panel.attr('data-id'));
@@ -53,6 +61,9 @@ define([
                         previewEnabled = true;
                     }
                 }).then(() => {
+                    const lang =
+                        (config && config.properties && config.properties.lang) || 'en-US';
+
                     sharedStimulusAuthoringFactory($panel, {
                         properties: {
                             uri: $panel.attr('data-uri'),
@@ -69,7 +80,7 @@ define([
                             baseUrl: urlUtil.route('getFile', 'MediaManager', 'taoMediaManager', { uri: '' }),
                             path: 'taomedia://mediamanager/',
                             root: 'mediamanager',
-                            lang: 'en-US',
+                            lang: lang,
                             previewEnabled: previewEnabled,
                             loadCssUrl: urlUtil.route('load', 'SharedStimulusStyling', 'taoMediaManager'),
                             saveCssUrl: urlUtil.route('save', 'SharedStimulusStyling', 'taoMediaManager'),

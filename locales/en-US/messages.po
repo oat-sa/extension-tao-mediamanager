@@ -256,7 +256,7 @@ msgstr ""
 msgid "Issue while modifying %s"
 msgstr ""
 
-msgid "Issue while processing \"%s"
+msgid "Issue while processing \"%s\""
 msgstr ""
 
 msgid "item(s)"

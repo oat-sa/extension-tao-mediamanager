@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2025-12-05 08:59\n"
+"PO-Revision-Date: 2026-11-18 10:18\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ar\n"
@@ -36,6 +36,14 @@ msgstr "نص بديل"
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Alternative Text"
 msgstr "نص بديل"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Transcription"
+msgstr "نسخه"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Transcription"
+msgstr "نسخه"
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#Language
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
@@ -76,6 +84,94 @@ msgstr "بند ذو صلة"
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "It describes Item where this media is used"
 msgstr "يصف البند الذي يتم فيه استخدام هذه الوسائط"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Role"
+msgstr "دور الأصل"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Role Class"
+msgstr "فئة دور الأصل"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Class Navigator"
+msgstr "مستكشف فئة الأصول"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Class Navigator Role"
+msgstr "دور متنقل فئة الأصول"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Class Editor"
+msgstr "محرر فئة الأصول"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Class Editor Role"
+msgstr "دور محرر فئة الأصول"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Viewer"
+msgstr "عارض الأصول"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Viewer Role"
+msgstr "دور عارض الأصول"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Previewer"
+msgstr "مشاهدة الأصول"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Previewer Role"
+msgstr "دور مستعرض الأصول"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Exporter"
+msgstr "Asset Exporter"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Exporter Role"
+msgstr "دور مصدر الأصول"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Properties Editor"
+msgstr "محرر خصائص الأصول"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Properties Editor Role"
+msgstr "دور محرر خصائص الأصول"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Content Creator"
+msgstr "منشئ محتوى الأصل"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Content Creator Role"
+msgstr "دور منشئ محتوى الأصل"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Resource Creator"
+msgstr "منشئ مصدر الأصل"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Resource Creator Role"
+msgstr "دور منشئ مصدر الأصل"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Importer"
+msgstr "Asset Importer"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Importer Role"
+msgstr "دور مستورد الأصول"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Deleter"
+msgstr "محذوف الأصول"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Deleter Role"
+msgstr "دور محذوف الأصول"
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#Media
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"

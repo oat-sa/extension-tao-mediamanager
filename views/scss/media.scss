@@ -153,6 +153,7 @@ div.item-editor-item {
 }
 
 section.content-container.asset-comments-layout {
+    --authoring-right-panel-width: 300px;
     position: relative;
     padding-right: var(--authoring-right-panel-width, 210px);
 

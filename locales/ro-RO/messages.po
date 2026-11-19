@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2026-07-03 14:01\n"
+"PO-Revision-Date: 2026-11-18 10:17\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ro\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../../\n"
-"X-Poedit-KeywordsList: __\n"
+"X-Poedit-KeywordsList: __,__p:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100>0 && n%100<20)) ? 1 : 2);\n"
 "X-Crowdin-Project: tao-open-source\n"
@@ -19,6 +19,12 @@ msgstr ""
 "X-Crowdin-File: /[oat-sa.extension-tao-mediamanager] develop/locales/en-US/messages.po\n"
 "X-Crowdin-File-ID: 603\n"
 "Language-Team: Romanian\n"
+
+msgid "%d shared stimulus media not exists"
+msgstr "%d stimulus media partajat nu există"
+
+msgid "%s errors while processing shared stimulus media"
+msgstr "Erori %s în timpul procesării stimulentelor partajate"
 
 msgid "%s media on this environment"
 msgstr "%s media pe acest mediu"
@@ -29,17 +35,32 @@ msgstr "%s media a fost modificat"
 msgid "%s media to modify"
 msgstr "%s media de modificat"
 
+msgid "%s shared stimulus media to modify"
+msgstr "%s a distribuit stimuli media pentru a modifica"
+
+msgid "A stylesheet named <b>%s</b> is already attached to the passage."
+msgstr "O foaie de stil numită <b>%s</b> este deja atașată la pasaj."
+
 msgid "Add a media file"
 msgstr "Adăugați un fișier media"
 
+msgid "Add Style Sheet"
+msgstr "Adaugă foaie de stil"
+
 msgid "An error has occurred. Please contact your administrator."
 msgstr "A apărut o eroare. Vă rugăm să contactaţi administratorul."
+
+msgid "Analyzing usage"
+msgstr "Analizând utilizarea"
 
 msgid "Are you sure you want to delete this"
 msgstr "Sunteţi sigur că doriţi să ştergeţi acest lucru"
 
 msgid "Are you sure you want to delete this class and all of its content?"
 msgstr "Sunteţi sigur că doriţi să ştergeţi această clasă şi tot conţinutul său?"
+
+msgid "Asset class \"%s\" is not empty"
+msgstr "Clasa de active \"%snu este goală"
 
 #, tao-public
 msgid "Assets"
@@ -52,11 +73,42 @@ msgstr "Autorizare"
 msgid "Back to Manage Assets"
 msgstr "Înapoi la gestionarea activelor"
 
+msgid "Background color"
+msgstr "Culoare fundal"
+
 msgid "Block"
 msgstr "Blochează"
 
+msgid "Border color"
+msgstr "Culoare chenar"
+
+msgid "Cannot export file \"%s\": no extension found"
+msgstr "Nu se poate exporta fișierul \"%s\": nici o extensie găsită"
+
 msgid "Center"
 msgstr "Centru"
+
+msgid "Cleaning classes"
+msgstr "Clase de curățenie"
+
+msgid "Comments"
+msgstr "Comentarii"
+
+msgid "Comments apply to this asset."
+msgstr "Comentariile se aplică acestui activ."
+
+#, tao-public
+msgid "Copy To"
+msgstr "Copiază în"
+
+msgid "Could not delete asset class \"%s\": %s"
+msgstr "Nu s-a putut șterge clasa de active \"%s\": %s"
+
+msgid "Current path: %s"
+msgstr "Cale curentă: %s"
+
+msgid "Default"
+msgstr "Implicit"
 
 msgid "Define item language."
 msgstr "Definiți limba elementului."
@@ -65,17 +117,74 @@ msgstr "Definiți limba elementului."
 msgid "Delete"
 msgstr "Ștergere"
 
+msgid "Delete limit: %d unused shared stimulus"
+msgstr "Limită de ștergere: %d stimulu partajat neutilizat"
+
+msgid "Deleted unused shared stimulus \"%s\" (%s)"
+msgstr "Stimul partajat neutilizat a șters \"%s\" (%s)"
+
+msgid "Deleted: %d"
+msgstr "Șters: %d"
+
 msgid "Deleting this class will break the items and the tests that are currently using them."
 msgstr "Ștergerea acestei clase va întrerupe elementele și testele care le folosesc în prezent."
 
+msgid "Deleting unused"
+msgstr "Ștergere neutilizată"
+
+msgid "Destination class uri \"%s\" not found!"
+msgstr "Clasa de destinaţie uri \"%snu a fost găsită!"
+
+msgid "Destination class: %s"
+msgstr "Clasa de destinație: %s"
+
+msgid "Disable this stylesheet temporarily"
+msgstr "Dezactivează temporar această foaie de stil"
+
+msgid "Download this stylesheet"
+msgstr "Descarcă această foaie de stil"
+
+msgid "Dry run classes"
+msgstr "Clase de rulare uscată"
+
+msgid "Dry run delete"
+msgstr "Ștergere execuție uscată"
+
+msgid "Dry run: scanning shared stimulus usage"
+msgstr "Rulare uscată: scanarea utilizării stimulentelor comune"
+
+msgid "e.g. 13"
+msgstr "ex. 13"
+
 msgid "Edit Instance"
 msgstr "Editează Instanța"
+
+msgid "Edit stylesheet label"
+msgstr "Edit stylesheet label"
 
 msgid "Edited %s"
 msgstr "Editat %s"
 
 msgid "Element Properties"
 msgstr "Proprietăți element"
+
+msgid "Empty asset class deletion errors: %d"
+msgstr "Eroare la ștergerea clasei de active goale: %d"
+
+msgid "Empty asset classes deleted: %d"
+msgstr "Clasele de active goale șterse: %d"
+
+msgid "Empty asset classes found: %d"
+msgstr "S-au găsit clase de active goale: %d"
+
+msgid "Enlarge font size"
+msgstr "Mărire dimensiune font"
+
+msgid "Error processing shared stimulus \"%s\": %s"
+msgstr "Eroare la procesarea stimulului partajat \"%s\": %s"
+
+msgid "Errors: %d"
+msgstr "Erori: %d"
 
 #, tao-public
 msgid "Export"
@@ -96,18 +205,36 @@ msgstr "Importarea media a eșuat"
 msgid "Fail to import Shared Stimulus"
 msgstr "Eșec la importarea stimulentului comun"
 
+msgid "Failed to delete asset class \"%s"
+msgstr "Eroare la ștergerea clasei de active \"%s"
+
+msgid "Failed to delete shared stimulus \"%s\" (%s)"
+msgstr "Ștergerea stimulului partajat \"%s\" (%s ) a eșuat"
+
 msgid "File"
 msgstr "Fişier"
 
 msgid "File name"
 msgstr "Nume fișier"
 
+msgid "Font family"
+msgstr "Familia de fonturi"
+
+msgid "Font size"
+msgstr "Font size"
+
 msgid "Forbidden action"
 msgstr "Acțiune interzisă"
+
+msgid "Further asset class deletion errors are logged only in tao.log"
+msgstr "Alte erori suplimentare de ștergere a clasei de active sunt înregistrate numai în tao.log"
 
 #, tao-public
 msgid "Import"
 msgstr "Importă"
+
+msgid "Import media files"
+msgstr "Importă fișiere media"
 
 msgid "Imported %s"
 msgstr "Importat %s"
@@ -115,11 +242,17 @@ msgstr "Importat %s"
 msgid "Imported new file"
 msgstr "Fișier nou importat"
 
+msgid "In use: %d"
+msgstr "În uz: %d"
+
 msgid "Initial import"
 msgstr "Import inițial"
 
 msgid "Inline Interactions"
 msgstr "Interacţiuni integrate"
+
+msgid "inline-interactions"
+msgstr "interacțiuni interne"
 
 msgid "Instance saved"
 msgstr "Instanță salvată"
@@ -130,6 +263,9 @@ msgstr "este folosit în prezent"
 msgid "Issue while modifying %s"
 msgstr "Problemă în timpul modificării %s"
 
+msgid "Issue while processing \"%s\""
+msgstr "Emite în timpul procesării \"%s\""
+
 msgid "item(s)"
 msgstr "articol(e)"
 
@@ -138,6 +274,9 @@ msgstr "Limba"
 
 msgid "Left"
 msgstr "Stânga"
+
+msgid "Listing media"
+msgstr "Listare fișiere media"
 
 #, tao-public
 msgid "Manage Assets"
@@ -171,6 +310,22 @@ msgstr "Media exportată cu succes."
 msgid "Move"
 msgstr "Mutare"
 
+msgid "Move item resource to different class, can be filtered by name pattern."
+msgstr "Mută resursele elementelor la diferite clase, pot fi filtrate după modelul numelui."
+
+msgid "Move resource script start."
+msgstr "Mută pornirea script-ului de resurse."
+
+#, tao-public
+msgid "Move To"
+msgstr "Mutare în"
+
+msgid "Moved %d resource/s."
+msgstr "Resursa/resursele %d mutate."
+
+msgid "Moved resource, id %s"
+msgstr "Resursă mutată, id %s"
+
 #, tao-public
 msgid "New class"
 msgstr "Clasa noua"
@@ -179,14 +334,26 @@ msgstr "Clasa noua"
 msgid "New passage"
 msgstr "Pasaj nou"
 
+msgid "New path %s"
+msgstr "Cale nouă %s"
+
 msgid "No file found for this media"
 msgstr "Nu s-a găsit niciun fișier pentru acest fișier media"
+
+msgid "No value set"
+msgstr "Nicio valoare setată"
 
 msgid "Passage Properties"
 msgstr "Proprietăți pasaj"
 
+msgid "Passage Style"
+msgstr "Passage Style"
+
 msgid "Please delete the subclasses before."
 msgstr "Vă rugăm să ştergeţi subclasele de dinainte."
+
+msgid "Preparing CSS, please wait…"
+msgstr "Pregătire CSS, te rugăm să aștepți…"
 
 msgid "Preview"
 msgstr "Previzualizare"
@@ -198,8 +365,41 @@ msgstr "Previzualizați elementul"
 msgid "Properties"
 msgstr "Proprietăți"
 
+msgid "Re-run without --dryRun to delete empty asset classes"
+msgstr "Rulează fără --dryRun pentru a șterge clasele de active goale"
+
+msgid "Re-run without --dryRun to perform deletion"
+msgstr "Rulează fără --dryRulează pentru a efectua ștergerea"
+
+msgid "Reduce font size"
+msgstr "Reduce dimensiunea fontului"
+
+msgid "Remove custom background color"
+msgstr "Elimină culoarea de fundal personalizată"
+
+msgid "Remove custom border color"
+msgstr "Elimină culoarea de contur personalizată"
+
+msgid "Remove custom font family"
+msgstr "Elimină familia de fonturi personalizate"
+
+msgid "Remove custom font size"
+msgstr "Elimină dimensiunea personalizată a fontului"
+
+msgid "Remove custom table headings color"
+msgstr "Eliminați culoarea rubricilor personalizate"
+
+msgid "Remove custom text color"
+msgstr "Elimină culoarea de text personalizată"
+
+msgid "Remove this stylesheet"
+msgstr "Elimină această foaie de stil"
+
 msgid "Replace Asset"
 msgstr "Replace Asset"
+
+msgid "Request should provide a media identifier as the id or instanceUri parameter"
+msgstr "Cererea ar trebui să furnizeze un identificator media ca parametru id sau instanceUri"
 
 msgid "Resource deleted"
 msgstr "Resursă ștearsă"
@@ -213,11 +413,29 @@ msgstr "Salvează"
 msgid "Save the asset"
 msgstr "Salvează activul"
 
+msgid "Scanning and deleting unused shared stimulus"
+msgstr "Scanarea și ștergerea stimulentelor partajate neutilizate"
+
+msgid "Scanning for empty asset classes under Media root"
+msgstr "Scanare după clase de active goale la root media"
+
 msgid "Set a CSS class name in order to customize the display style."
 msgstr "Setați un nume de clasă CSS pentru a personaliza stilul de afișare."
 
+msgid "Set the identifier of class where assets will be moved."
+msgstr "Setaţi identificatorul clasei unde activele vor fi mutate. (Automatic Translation)"
+
+msgid "Set the name pattern whom script will use to select resource to move."
+msgstr "Setați modelul de nume pe care scriptul îl va utiliza pentru a selecta resursa de mutat."
+
+msgid "Set the resource id to move."
+msgstr "Setați ID-ul resurselor de mutat."
+
 msgid "Shared Stimulus"
 msgstr "Stimulent partajat"
+
+msgid "Shared stimulus \"%s\" is in use: %s"
+msgstr "Stimul partajat \"%s\" este în uz: %s"
 
 msgid "Shared Stimulus edited successfully"
 msgstr "Stimulus partajat editat cu succes"
@@ -225,8 +443,26 @@ msgstr "Stimulus partajat editat cu succes"
 msgid "Shared Stimulus imported successfully"
 msgstr "Stimulări partajate importate cu succes"
 
+msgid "Shared stimulus on this environment: %d"
+msgstr "Stimulente partajate pentru acest mediu: %d"
+
+msgid "Skipped %d unused shared stimulus (over --limit %d)"
+msgstr "Stimul partajat neutilizat %d (peste --limita %d)"
+
 msgid "some text ..."
 msgstr "un text ..."
+
+msgid "Specify if you need only preview the supposed result"
+msgstr "Specificați dacă aveți nevoie doar de previzualizarea rezultatului presupus"
+
+msgid "Style Sheet <b>%s</b> removed<br> Click <i>Add Style Sheet</i> to re-apply."
+msgstr "Stilul <b>%s</b> a eliminat<br> Click <i>Add Style Sheet</i> pentru a fi reaplicat."
+
+msgid "Style Sheet Manager"
+msgstr "Manager placă de stil"
+
+msgid "Table headings"
+msgstr "Titlurile tabelului"
 
 msgid "Text Block"
 msgstr "Bloc text"
@@ -234,20 +470,50 @@ msgstr "Bloc text"
 msgid "Text Block CSS Class"
 msgstr "Clasa CSS pentru bloc text"
 
+msgid "Text Block Properties"
+msgstr "Proprietăți bloc text"
+
+msgid "Text Block Style"
+msgstr "Stil bloc text"
+
+msgid "Text color"
+msgstr "Culoare text"
+
 msgid "The class"
 msgstr "Clasa"
+
+msgid "The file \"%s\" is missing an extension."
+msgstr "Fişierului \"%s\" îi lipseşte o extensie."
+
+msgid "The file you tried to upload is not valid"
+msgstr "Fișierul pe care ai încercat să-l încarci nu este valid"
+
+msgid "There was a problem downloading your CSS, please try again."
+msgstr "A apărut o eroare la descărcarea CSS-ului, te rugăm să încerci din nou."
 
 msgid "This"
 msgstr "Asta"
 
+msgid "This \"%s\" is currently used in %d item(s)"
+msgstr "Acest \"%s\" este folosit în prezent în %d articol(e)"
+
+msgid "Total shared stimulus media: %s"
+msgstr "Media de stimulare partajată totală: %s"
+
 msgid "Unable to delete the selected resource"
 msgstr "Imposibil de șters resursa selectată"
+
+msgid "Unable to delete the selected resource because you do not have the required rights to delete part of its content."
+msgstr "Imposibil de șters resursa selectată, deoarece nu aveți drepturile necesare pentru a șterge o parte din conținutul său."
 
 msgid "Unable to extract the archive"
 msgstr "Imposibil de extras arhiva"
 
 msgid "Unable to import"
 msgstr "Imposibil de importat"
+
+msgid "Unused: %d"
+msgstr "Neutilizat: %d"
 
 msgid "Upload Media"
 msgstr "Încarcă media"
@@ -260,6 +526,15 @@ msgstr "Avertizare"
 
 msgid "which contains assets that are in use elsewhere."
 msgstr "care conține active care sunt utilizate în altă parte."
+
+msgid "Would delete %d unused shared stimulus"
+msgstr "Ar șterge stimulul partajat neutilizat %d"
+
+msgid "Would delete empty asset class \"%s\" (%s)"
+msgstr "Ar șterge o clasă de active goală \"%s\" (%s)"
+
+msgid "Would delete unused shared stimulus \"%s\" (%s)"
+msgstr "Ar şterge stimulul partajat neutilizat \"%s\" (%s)"
 
 msgid "You are about to delete the class"
 msgstr "Urmează să ştergeţi clasa"

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-12-05 09:23\n"
+"PO-Revision-Date: 2026-11-18 10:17\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: lt\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../../\n"
-"X-Poedit-KeywordsList: __\n"
+"X-Poedit-KeywordsList: __,__p:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && (n%100>19 || n%100<11) ? 0 : (n%10>=2 && n%10<=9) && (n%100>19 || n%100<11) ? 1 : n%1!=0 ? 2: 3);\n"
 "X-Crowdin-Project: tao-open-source\n"
@@ -19,6 +19,12 @@ msgstr ""
 "X-Crowdin-File: /[oat-sa.extension-tao-mediamanager] develop/locales/en-US/messages.po\n"
 "X-Crowdin-File-ID: 603\n"
 "Language-Team: Lithuanian\n"
+
+msgid "%d shared stimulus media not exists"
+msgstr ""
+
+msgid "%s errors while processing shared stimulus media"
+msgstr ""
 
 msgid "%s media on this environment"
 msgstr ""
@@ -29,16 +35,31 @@ msgstr ""
 msgid "%s media to modify"
 msgstr ""
 
+msgid "%s shared stimulus media to modify"
+msgstr ""
+
+msgid "A stylesheet named <b>%s</b> is already attached to the passage."
+msgstr ""
+
 msgid "Add a media file"
 msgstr "Pridėti medijos failą"
 
+msgid "Add Style Sheet"
+msgstr "Pridėti Stiliaus Lapą"
+
 msgid "An error has occurred. Please contact your administrator."
+msgstr ""
+
+msgid "Analyzing usage"
 msgstr ""
 
 msgid "Are you sure you want to delete this"
 msgstr ""
 
 msgid "Are you sure you want to delete this class and all of its content?"
+msgstr ""
+
+msgid "Asset class \"%s\" is not empty"
 msgstr ""
 
 #, tao-public
@@ -52,11 +73,42 @@ msgstr "Redagavimas"
 msgid "Back to Manage Assets"
 msgstr ""
 
+msgid "Background color"
+msgstr "Fono spalva"
+
 msgid "Block"
 msgstr "Blokas"
 
+msgid "Border color"
+msgstr "Kraštinės spalva"
+
+msgid "Cannot export file \"%s\": no extension found"
+msgstr ""
+
 msgid "Center"
 msgstr "Centras"
+
+msgid "Cleaning classes"
+msgstr ""
+
+msgid "Comments"
+msgstr ""
+
+msgid "Comments apply to this asset."
+msgstr ""
+
+#, tao-public
+msgid "Copy To"
+msgstr "Kopijuoti Į"
+
+msgid "Could not delete asset class \"%s\": %s"
+msgstr ""
+
+msgid "Current path: %s"
+msgstr ""
+
+msgid "Default"
+msgstr "Numatytas"
 
 msgid "Define item language."
 msgstr "Nustatyti elemento kalbą."
@@ -65,17 +117,74 @@ msgstr "Nustatyti elemento kalbą."
 msgid "Delete"
 msgstr "Ištrinti"
 
+msgid "Delete limit: %d unused shared stimulus"
+msgstr ""
+
+msgid "Deleted unused shared stimulus \"%s\" (%s)"
+msgstr ""
+
+msgid "Deleted: %d"
+msgstr ""
+
 msgid "Deleting this class will break the items and the tests that are currently using them."
 msgstr ""
 
+msgid "Deleting unused"
+msgstr ""
+
+msgid "Destination class uri \"%s\" not found!"
+msgstr ""
+
+msgid "Destination class: %s"
+msgstr ""
+
+msgid "Disable this stylesheet temporarily"
+msgstr "Išjungti šį stilių laikinam"
+
+msgid "Download this stylesheet"
+msgstr "Atsiųsti šį stilių"
+
+msgid "Dry run classes"
+msgstr ""
+
+msgid "Dry run delete"
+msgstr ""
+
+msgid "Dry run: scanning shared stimulus usage"
+msgstr ""
+
+msgid "e.g. 13"
+msgstr "pvz.: 13"
+
 msgid "Edit Instance"
 msgstr "Redaguoti Instanciją"
+
+msgid "Edit stylesheet label"
+msgstr "Keisti stiliaus failo pavadinimą"
 
 msgid "Edited %s"
 msgstr "Redaguota %s"
 
 msgid "Element Properties"
 msgstr "Elemento Savybės"
+
+msgid "Empty asset class deletion errors: %d"
+msgstr ""
+
+msgid "Empty asset classes deleted: %d"
+msgstr ""
+
+msgid "Empty asset classes found: %d"
+msgstr ""
+
+msgid "Enlarge font size"
+msgstr "Padidinti šriftą"
+
+msgid "Error processing shared stimulus \"%s\": %s"
+msgstr ""
+
+msgid "Errors: %d"
+msgstr ""
 
 #, tao-public
 msgid "Export"
@@ -96,18 +205,36 @@ msgstr "Nepavyko importuoti medijos"
 msgid "Fail to import Shared Stimulus"
 msgstr "Nepavyko importuoti Bendrinamo Stimulo"
 
+msgid "Failed to delete asset class \"%s"
+msgstr ""
+
+msgid "Failed to delete shared stimulus \"%s\" (%s)"
+msgstr ""
+
 msgid "File"
 msgstr "Failas"
 
 msgid "File name"
 msgstr "Failo pavadinimas"
 
+msgid "Font family"
+msgstr "Šrifto šeima"
+
+msgid "Font size"
+msgstr "Šrifto dydis"
+
 msgid "Forbidden action"
+msgstr ""
+
+msgid "Further asset class deletion errors are logged only in tao.log"
 msgstr ""
 
 #, tao-public
 msgid "Import"
 msgstr "Importuoti"
+
+msgid "Import media files"
+msgstr ""
 
 msgid "Imported %s"
 msgstr "Importuota %s"
@@ -115,10 +242,16 @@ msgstr "Importuota %s"
 msgid "Imported new file"
 msgstr "Importuotas naujas failas"
 
+msgid "In use: %d"
+msgstr ""
+
 msgid "Initial import"
 msgstr "Pradinis importavimas"
 
 msgid "Inline Interactions"
+msgstr ""
+
+msgid "inline-interactions"
 msgstr ""
 
 msgid "Instance saved"
@@ -130,6 +263,9 @@ msgstr ""
 msgid "Issue while modifying %s"
 msgstr ""
 
+msgid "Issue while processing \"%s\""
+msgstr ""
+
 msgid "item(s)"
 msgstr ""
 
@@ -138,6 +274,9 @@ msgstr "Kalba"
 
 msgid "Left"
 msgstr "Kairė"
+
+msgid "Listing media"
+msgstr ""
 
 #, tao-public
 msgid "Manage Assets"
@@ -171,6 +310,22 @@ msgstr "Medija sėkmingai eksportuota."
 msgid "Move"
 msgstr "Perkelti"
 
+msgid "Move item resource to different class, can be filtered by name pattern."
+msgstr ""
+
+msgid "Move resource script start."
+msgstr ""
+
+#, tao-public
+msgid "Move To"
+msgstr "Perkelti Į"
+
+msgid "Moved %d resource/s."
+msgstr ""
+
+msgid "Moved resource, id %s"
+msgstr ""
+
 #, tao-public
 msgid "New class"
 msgstr "Nauja klasė"
@@ -179,14 +334,26 @@ msgstr "Nauja klasė"
 msgid "New passage"
 msgstr ""
 
+msgid "New path %s"
+msgstr ""
+
 msgid "No file found for this media"
 msgstr "Nerasta failas šiai medijai"
+
+msgid "No value set"
+msgstr "Nenustatyta jokia reikšmė"
 
 msgid "Passage Properties"
 msgstr ""
 
+msgid "Passage Style"
+msgstr ""
+
 msgid "Please delete the subclasses before."
 msgstr ""
+
+msgid "Preparing CSS, please wait…"
+msgstr "Ruošiamas CSS, prašome palaukti…"
 
 msgid "Preview"
 msgstr "Peržiūra"
@@ -198,7 +365,40 @@ msgstr "Peržiūrėti elementą"
 msgid "Properties"
 msgstr ""
 
+msgid "Re-run without --dryRun to delete empty asset classes"
+msgstr ""
+
+msgid "Re-run without --dryRun to perform deletion"
+msgstr ""
+
+msgid "Reduce font size"
+msgstr "Sumažinti šrifto dydį"
+
+msgid "Remove custom background color"
+msgstr "Panaikinti pasirinktą fono spalvą"
+
+msgid "Remove custom border color"
+msgstr "Panaikinti pasirinktą kraštinės spalvą"
+
+msgid "Remove custom font family"
+msgstr "Panaikinti pasirinktą šrifto šeimą"
+
+msgid "Remove custom font size"
+msgstr "Panaikinti pasirinktą šrifto dydį"
+
+msgid "Remove custom table headings color"
+msgstr ""
+
+msgid "Remove custom text color"
+msgstr "Panaikinti pasirinktą teksto spalvą"
+
+msgid "Remove this stylesheet"
+msgstr "Pašalinti šitą stilių"
+
 msgid "Replace Asset"
+msgstr ""
+
+msgid "Request should provide a media identifier as the id or instanceUri parameter"
 msgstr ""
 
 msgid "Resource deleted"
@@ -213,11 +413,29 @@ msgstr "Išsaugoti"
 msgid "Save the asset"
 msgstr ""
 
+msgid "Scanning and deleting unused shared stimulus"
+msgstr ""
+
+msgid "Scanning for empty asset classes under Media root"
+msgstr ""
+
 msgid "Set a CSS class name in order to customize the display style."
 msgstr "Nustatyti CSS klasės pavadinimą norint pakeisti atvaizduojamą stilių."
 
+msgid "Set the identifier of class where assets will be moved."
+msgstr ""
+
+msgid "Set the name pattern whom script will use to select resource to move."
+msgstr ""
+
+msgid "Set the resource id to move."
+msgstr ""
+
 msgid "Shared Stimulus"
 msgstr "Bendrinamas Stimulas"
+
+msgid "Shared stimulus \"%s\" is in use: %s"
+msgstr ""
 
 msgid "Shared Stimulus edited successfully"
 msgstr "Bendrinamas Stimulas redaguotas sėkmingai"
@@ -225,8 +443,26 @@ msgstr "Bendrinamas Stimulas redaguotas sėkmingai"
 msgid "Shared Stimulus imported successfully"
 msgstr "Bendrinamas Stimulas importuotas sėkmingai"
 
+msgid "Shared stimulus on this environment: %d"
+msgstr ""
+
+msgid "Skipped %d unused shared stimulus (over --limit %d)"
+msgstr ""
+
 msgid "some text ..."
 msgstr "kažkoks tekstas..."
+
+msgid "Specify if you need only preview the supposed result"
+msgstr ""
+
+msgid "Style Sheet <b>%s</b> removed<br> Click <i>Add Style Sheet</i> to re-apply."
+msgstr "Stiliaus Šablonas <b>%s</b> pašalintas<br> Paspauskite <i>Pridėti Stiliaus Šabloną</i> - taikyti iš naujo."
+
+msgid "Style Sheet Manager"
+msgstr "Stiliaus Šablono Tvarkytojas"
+
+msgid "Table headings"
+msgstr "Lentelės antraštės"
 
 msgid "Text Block"
 msgstr "Teksto Blokas"
@@ -234,19 +470,49 @@ msgstr "Teksto Blokas"
 msgid "Text Block CSS Class"
 msgstr "Teksto Bloko CSS Klasė"
 
+msgid "Text Block Properties"
+msgstr "Teksto Bloko Savybės"
+
+msgid "Text Block Style"
+msgstr ""
+
+msgid "Text color"
+msgstr "Teksto spalva"
+
 msgid "The class"
 msgstr ""
+
+msgid "The file \"%s\" is missing an extension."
+msgstr ""
+
+msgid "The file you tried to upload is not valid"
+msgstr "Failas, kurį bandėte įkelti yra neteisingas"
+
+msgid "There was a problem downloading your CSS, please try again."
+msgstr "Įvyko problema atsiunčiant jūsų CSS, prašome bandyti dar kartą."
 
 msgid "This"
 msgstr ""
 
+msgid "This \"%s\" is currently used in %d item(s)"
+msgstr ""
+
+msgid "Total shared stimulus media: %s"
+msgstr ""
+
 msgid "Unable to delete the selected resource"
+msgstr ""
+
+msgid "Unable to delete the selected resource because you do not have the required rights to delete part of its content."
 msgstr ""
 
 msgid "Unable to extract the archive"
 msgstr "Nepavyko išarchyvuoti archyvo"
 
 msgid "Unable to import"
+msgstr ""
+
+msgid "Unused: %d"
 msgstr ""
 
 msgid "Upload Media"
@@ -259,6 +525,15 @@ msgid "Warning"
 msgstr ""
 
 msgid "which contains assets that are in use elsewhere."
+msgstr ""
+
+msgid "Would delete %d unused shared stimulus"
+msgstr ""
+
+msgid "Would delete empty asset class \"%s\" (%s)"
+msgstr ""
+
+msgid "Would delete unused shared stimulus \"%s\" (%s)"
 msgstr ""
 
 msgid "You are about to delete the class"

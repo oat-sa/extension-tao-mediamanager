@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2025-12-05 08:58\n"
+"PO-Revision-Date: 2026-11-18 10:18\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ar\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../../\n"
-"X-Poedit-KeywordsList: __\n"
+"X-Poedit-KeywordsList: __,__p:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 "Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
 "X-Crowdin-Project: tao-open-source\n"
@@ -19,6 +19,12 @@ msgstr ""
 "X-Crowdin-File: /[oat-sa.extension-tao-mediamanager] develop/locales/en-US/messages.po\n"
 "X-Crowdin-File-ID: 603\n"
 "Language-Team: Arabic\n"
+
+msgid "%d shared stimulus media not exists"
+msgstr "%d وسائل التحفيز المشتركة غير موجودة"
+
+msgid "%s errors while processing shared stimulus media"
+msgstr "خطأ %s أثناء معالجة وسائل التحفيز المشتركة"
 
 msgid "%s media on this environment"
 msgstr "%s وسائط في هذه البيئة"
@@ -29,17 +35,32 @@ msgstr "تم تعديل وسائط %s بنجاح"
 msgid "%s media to modify"
 msgstr "%s وسائط للتعديل"
 
+msgid "%s shared stimulus media to modify"
+msgstr "%s مشاركة وسائل التحفيز لتعديل"
+
+msgid "A stylesheet named <b>%s</b> is already attached to the passage."
+msgstr "تم بالفعل ربط ورقة أنماط تسمى <b>%s</b> بالمرور."
+
 msgid "Add a media file"
 msgstr "أضف ملف وسائط"
 
+msgid "Add Style Sheet"
+msgstr "أضف ورقة الأنماط"
+
 msgid "An error has occurred. Please contact your administrator."
 msgstr "حدث خطأ. يرجى الاتصال بالمسؤول الخاص بك."
+
+msgid "Analyzing usage"
+msgstr "تحليل الاستخدام"
 
 msgid "Are you sure you want to delete this"
 msgstr "هل أنت متأكد من أنك تريد حذف هذا"
 
 msgid "Are you sure you want to delete this class and all of its content?"
 msgstr "هل أنت متأكد من أنك تريد حذف هذا القسم وكل محتواه؟"
+
+msgid "Asset class \"%s\" is not empty"
+msgstr "فئة الأصول\"%s\" ليست فارغة"
 
 #, tao-public
 msgid "Assets"
@@ -52,11 +73,42 @@ msgstr "التحرير"
 msgid "Back to Manage Assets"
 msgstr "العودة إلى إدارة الأصول"
 
+msgid "Background color"
+msgstr "لون الخلفية"
+
 msgid "Block"
 msgstr "منع"
 
+msgid "Border color"
+msgstr "لون الحدود"
+
+msgid "Cannot export file \"%s\": no extension found"
+msgstr "لا يمكن تصدير الملف\"%s\": لا يوجد ملحق"
+
 msgid "Center"
 msgstr "مركز"
+
+msgid "Cleaning classes"
+msgstr "تنظيف الصفوف"
+
+msgid "Comments"
+msgstr "تعليقات"
+
+msgid "Comments apply to this asset."
+msgstr "وتنطبق التعليقات على هذا الأصل."
+
+#, tao-public
+msgid "Copy To"
+msgstr "نسخ الى"
+
+msgid "Could not delete asset class \"%s\": %s"
+msgstr "تعذر حذف فئة الأصول\"%s\": %s"
+
+msgid "Current path: %s"
+msgstr "المسار الحالي: %s"
+
+msgid "Default"
+msgstr "افتراضي"
 
 msgid "Define item language."
 msgstr "حدد لغة البند"
@@ -65,17 +117,74 @@ msgstr "حدد لغة البند"
 msgid "Delete"
 msgstr "حذف"
 
+msgid "Delete limit: %d unused shared stimulus"
+msgstr "حذف الحد الأقصى: %d غير مستخدم"
+
+msgid "Deleted unused shared stimulus \"%s\" (%s)"
+msgstr "حذف التحفيز المشترك غير المستخدم \"%s\" (%s)"
+
+msgid "Deleted: %d"
+msgstr "حذف: %d"
+
 msgid "Deleting this class will break the items and the tests that are currently using them."
 msgstr "سيؤدي حذف هذا القسم إلى كسر البنود والروائز التي تستخدمها حاليا."
 
+msgid "Deleting unused"
+msgstr "حذف غير مستخدم"
+
+msgid "Destination class uri \"%s\" not found!"
+msgstr ""
+
+msgid "Destination class: %s"
+msgstr "فئة الوجهة: %s"
+
+msgid "Disable this stylesheet temporarily"
+msgstr "قم بتعطيل ورقة الأنماط هذه مؤقتًا"
+
+msgid "Download this stylesheet"
+msgstr "قم بتنزيل ورقة الأنماط هذه"
+
+msgid "Dry run classes"
+msgstr "فصول تشغيل جافة"
+
+msgid "Dry run delete"
+msgstr "تشغيل الجاف حذف"
+
+msgid "Dry run: scanning shared stimulus usage"
+msgstr "تشغيل جاف: مسح استخدام التحفيز المشترك"
+
+msgid "e.g. 13"
+msgstr "على سبيل المثال 13"
+
 msgid "Edit Instance"
 msgstr "تحرير المثيل"
+
+msgid "Edit stylesheet label"
+msgstr "تحرير تسمية ورقة الأنماط"
 
 msgid "Edited %s"
 msgstr "تم تحرير %s"
 
 msgid "Element Properties"
 msgstr "خصائص العنصر"
+
+msgid "Empty asset class deletion errors: %d"
+msgstr "أخطاء فارغة في حذف فئة الأصول: %d"
+
+msgid "Empty asset classes deleted: %d"
+msgstr "تم حذف فئات الأصول الفارغة: %d"
+
+msgid "Empty asset classes found: %d"
+msgstr "تم العثور على أصناف أصول: %d"
+
+msgid "Enlarge font size"
+msgstr "تكبير حجم الخط"
+
+msgid "Error processing shared stimulus \"%s\": %s"
+msgstr "خطأ في معالجة التحفيز المشترك\"%s\": %s"
+
+msgid "Errors: %d"
+msgstr "خطأ: %d"
 
 #, tao-public
 msgid "Export"
@@ -96,18 +205,36 @@ msgstr "فشل في استيراد الوسائط"
 msgid "Fail to import Shared Stimulus"
 msgstr "فشل في استيراد التحفيز المشترك"
 
+msgid "Failed to delete asset class \"%s"
+msgstr "فشل في حذف فئة الأصول\"%s"
+
+msgid "Failed to delete shared stimulus \"%s\" (%s)"
+msgstr "فشل في حذف التحفيز المشترك\"%s\" (%s)"
+
 msgid "File"
 msgstr "ملف"
 
 msgid "File name"
 msgstr "اسم الملف"
 
+msgid "Font family"
+msgstr "خط العائلة"
+
+msgid "Font size"
+msgstr "حجم الخط"
+
 msgid "Forbidden action"
 msgstr "إجراء محظور"
+
+msgid "Further asset class deletion errors are logged only in tao.log"
+msgstr "المزيد من أخطاء حذف فئة الأصول يتم تسجيلها فقط في tao.log"
 
 #, tao-public
 msgid "Import"
 msgstr "استورد"
+
+msgid "Import media files"
+msgstr "استيراد ملفات الوسائط"
 
 msgid "Imported %s"
 msgstr "%s مستورد"
@@ -115,11 +242,17 @@ msgstr "%s مستورد"
 msgid "Imported new file"
 msgstr "ملف جديد مستورد"
 
+msgid "In use: %d"
+msgstr "قيد الاستخدام: %d"
+
 msgid "Initial import"
 msgstr "استيراد أولي"
 
 msgid "Inline Interactions"
 msgstr "التفاعلات المضمنة"
+
+msgid "inline-interactions"
+msgstr "التفاعلات الواردة"
 
 msgid "Instance saved"
 msgstr "تم حفظ المثال"
@@ -130,6 +263,9 @@ msgstr "يستخدم حاليا في"
 msgid "Issue while modifying %s"
 msgstr "مشكلة أثناء تعديل %s"
 
+msgid "Issue while processing \"%s\""
+msgstr "المشكلة أثناء معالجة \"%s\""
+
 msgid "item(s)"
 msgstr "بند (بنود)"
 
@@ -138,6 +274,9 @@ msgstr "لغة"
 
 msgid "Left"
 msgstr "يسار"
+
+msgid "Listing media"
+msgstr "قائمة الوسائط"
 
 #, tao-public
 msgid "Manage Assets"
@@ -171,6 +310,22 @@ msgstr "تم تصدير الوسائط بنجاح."
 msgid "Move"
 msgstr "حرك"
 
+msgid "Move item resource to different class, can be filtered by name pattern."
+msgstr "نقل مورد العنصر إلى صف مختلف، يمكن تصفيته حسب نمط الاسم."
+
+msgid "Move resource script start."
+msgstr "تحريك بدء البرنامج النصي للمورد."
+
+#, tao-public
+msgid "Move To"
+msgstr "حرك نحو"
+
+msgid "Moved %d resource/s."
+msgstr "نقل مورد/ثانية %d."
+
+msgid "Moved resource, id %s"
+msgstr "مصدر منقول، معرف %s"
+
 #, tao-public
 msgid "New class"
 msgstr "صنف جديد"
@@ -179,14 +334,26 @@ msgstr "صنف جديد"
 msgid "New passage"
 msgstr "نص جديد"
 
+msgid "New path %s"
+msgstr "مسار جديد %s"
+
 msgid "No file found for this media"
 msgstr "لم يتم العثور على ملف لهذه الوسائط"
+
+msgid "No value set"
+msgstr "لم يتم تعيين قيمة"
 
 msgid "Passage Properties"
 msgstr "خصائص النص"
 
+msgid "Passage Style"
+msgstr "Passage Style"
+
 msgid "Please delete the subclasses before."
 msgstr "يرجى حذف الفئات الفرعية قبلًا."
+
+msgid "Preparing CSS, please wait…"
+msgstr "جارٍ تحضير CSS ، الرجاء الانتظار ..."
 
 msgid "Preview"
 msgstr "معاينة"
@@ -198,8 +365,41 @@ msgstr "معاينة البند"
 msgid "Properties"
 msgstr "خصائص"
 
+msgid "Re-run without --dryRun to delete empty asset classes"
+msgstr "إعادة تشغيل بدون --dryRun لحذف فئات الأصول الفارغة"
+
+msgid "Re-run without --dryRun to perform deletion"
+msgstr "إعادة تشغيل بدون --جافيرون لتنفيذ الحذف"
+
+msgid "Reduce font size"
+msgstr "تصغير حجم الحروف"
+
+msgid "Remove custom background color"
+msgstr "قم بإزالة لون الخلفية المخصص"
+
+msgid "Remove custom border color"
+msgstr "قم بإزالة لون الحدود المخصص"
+
+msgid "Remove custom font family"
+msgstr "قم بإزالة عائلة الخطوط المخصصة"
+
+msgid "Remove custom font size"
+msgstr "إزالة حجم الخط المخصص"
+
+msgid "Remove custom table headings color"
+msgstr "إزالة لون عناوين الجدول المخصصة"
+
+msgid "Remove custom text color"
+msgstr "قم بإزالة لون النص المخصص"
+
+msgid "Remove this stylesheet"
+msgstr "قم بإزالة ورقة الأنماط هذه"
+
 msgid "Replace Asset"
 msgstr "استبدال الأصل"
+
+msgid "Request should provide a media identifier as the id or instanceUri parameter"
+msgstr "يجب أن يوفر الطلب معرف الوسائط كمعرف أو مثالي"
 
 msgid "Resource deleted"
 msgstr "تم حذف المورد"
@@ -213,11 +413,29 @@ msgstr "حفظ"
 msgid "Save the asset"
 msgstr "احفظ الأصل"
 
+msgid "Scanning and deleting unused shared stimulus"
+msgstr "مسح وحذف التحفيز المشترك غير المستخدم"
+
+msgid "Scanning for empty asset classes under Media root"
+msgstr "البحث عن فئات الأصول الفارغة تحت جذر الوسائط"
+
 msgid "Set a CSS class name in order to customize the display style."
 msgstr "قم بتعيين اسم فئة CSS لتخصيص نمط العرض."
 
+msgid "Set the identifier of class where assets will be moved."
+msgstr "تعيين معرف الفئة التي سيتم نقل الأصول. (Automatic Translation)"
+
+msgid "Set the name pattern whom script will use to select resource to move."
+msgstr "تعيين نمط الاسم الذي سيستخدمه البرنامج النصي لتحديد المصدر للتحريك."
+
+msgid "Set the resource id to move."
+msgstr "تعيين معرف المورد للتحرك."
+
 msgid "Shared Stimulus"
 msgstr "التحفيز المشترك"
+
+msgid "Shared stimulus \"%s\" is in use: %s"
+msgstr "التحفيز المشترك \"%s\" قيد الاستخدام: %s"
 
 msgid "Shared Stimulus edited successfully"
 msgstr "تم تحرير التحفيز المشترك بنجاح"
@@ -225,8 +443,26 @@ msgstr "تم تحرير التحفيز المشترك بنجاح"
 msgid "Shared Stimulus imported successfully"
 msgstr "تم استيراد التحفيز المشترك بنجاح"
 
+msgid "Shared stimulus on this environment: %d"
+msgstr "حافز مشترك على هذه البيئة: %d"
+
+msgid "Skipped %d unused shared stimulus (over --limit %d)"
+msgstr "تخطي %d الحافز المشترك غير المستخدم (فوق --الحد %d)"
+
 msgid "some text ..."
 msgstr "بعض النصوص ..."
+
+msgid "Specify if you need only preview the supposed result"
+msgstr "حدد إذا كنت بحاجة فقط إلى معاينة النتيجة المفترضة"
+
+msgid "Style Sheet <b>%s</b> removed<br> Click <i>Add Style Sheet</i> to re-apply."
+msgstr "تمت إزالة ورقة الأنماط <b>%s</b> <br> انقر فوق <i> إضافة ورقة أنماط </i> لإعادة التطبيق."
+
+msgid "Style Sheet Manager"
+msgstr "مدير ورقة الأنماط"
+
+msgid "Table headings"
+msgstr "عناوين الجدول"
 
 msgid "Text Block"
 msgstr "كتلة النص"
@@ -234,20 +470,50 @@ msgstr "كتلة النص"
 msgid "Text Block CSS Class"
 msgstr "فئة CSS نص كتلة  صفحات التنسيق النمطية"
 
+msgid "Text Block Properties"
+msgstr "خصائص كتلة النص"
+
+msgid "Text Block Style"
+msgstr "نمط كتلة النص"
+
+msgid "Text color"
+msgstr "لون النص"
+
 msgid "The class"
 msgstr "القسم"
+
+msgid "The file \"%s\" is missing an extension."
+msgstr "الملف \"%s\" مفقود ملحقًا."
+
+msgid "The file you tried to upload is not valid"
+msgstr "الملف الذي حاولت تحميله غير مضبوط"
+
+msgid "There was a problem downloading your CSS, please try again."
+msgstr "حدثت مشكلة أثناء تنزيل CSS ، يرجى المحاولة مرة أخرى."
 
 msgid "This"
 msgstr "هذا/هذه"
 
+msgid "This \"%s\" is currently used in %d item(s)"
+msgstr "هذا \"%s\" يستخدم حاليا في عنصر (عناصر) %d"
+
+msgid "Total shared stimulus media: %s"
+msgstr "إجمالي وسائل التحفيز المشتركة: %s"
+
 msgid "Unable to delete the selected resource"
 msgstr "غير قادر على حذف المورد المختار"
+
+msgid "Unable to delete the selected resource because you do not have the required rights to delete part of its content."
+msgstr "غير قادر على حذف المورد المحدد لأنه ليس لديك الحقوق المطلوبة لحذف جزء من محتوياته."
 
 msgid "Unable to extract the archive"
 msgstr "غير قادر على استخراج الأرشيف"
 
 msgid "Unable to import"
 msgstr "غير قادر على الاستيراد"
+
+msgid "Unused: %d"
+msgstr "غير مستخدم: %d"
 
 msgid "Upload Media"
 msgstr "تحميل الوسائط"
@@ -260,6 +526,15 @@ msgstr "تحذير"
 
 msgid "which contains assets that are in use elsewhere."
 msgstr "الذي يحتوي على أصول مستخدمة في مكان آخر."
+
+msgid "Would delete %d unused shared stimulus"
+msgstr "سيتم حذف المحفز المشترك %d غير المستخدم"
+
+msgid "Would delete empty asset class \"%s\" (%s)"
+msgstr "هل تريد حذف فئة الأصول الفارغة \"%s\" (%s)"
+
+msgid "Would delete unused shared stimulus \"%s\" (%s)"
+msgstr "هل تريد حذف التحفيز المشترك غير المستخدم \"%s\" (%s)"
 
 msgid "You are about to delete the class"
 msgstr "أنت على وشك حذف القسم"

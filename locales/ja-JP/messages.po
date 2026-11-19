@@ -66,7 +66,7 @@ msgid "Delete"
 msgstr "削除"
 
 msgid "Deleting this class will break the items and the tests that are currently using them."
-msgstr "このクラスを削除すると、現在使用している項目とテストが壊れます。"
+msgstr "このクラスを削除すると、現在使用しているアイテムとテストが壊れます。"
 
 msgid "Edit Instance"
 msgstr "インスタンス編集"
@@ -177,16 +177,16 @@ msgstr "新規クラス"
 
 #, tao-public
 msgid "New passage"
-msgstr "新しいパス"
+msgstr "新しいパッセージ"
 
 msgid "No file found for this media"
 msgstr "メディアファイルが見つかりません"
 
 msgid "Passage Properties"
-msgstr "パスのプロパティ"
+msgstr "パッセージのプロパティ"
 
 msgid "Please delete the subclasses before."
-msgstr "前にサブクラスを削除してください。"
+msgstr "先にサブクラスを削除してください。"
 
 msgid "Preview"
 msgstr "プレビュー"
@@ -244,7 +244,7 @@ msgid "Unable to delete the selected resource"
 msgstr "選択したリソースを削除できません"
 
 msgid "Unable to extract the archive"
-msgstr "アーカイブから抽出できません"
+msgstr "アーカイブを展開できませんでした"
 
 msgid "Unable to import"
 msgstr "インポートできません"
@@ -253,26 +253,305 @@ msgid "Upload Media"
 msgstr "メディアのアップロード"
 
 msgid "Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
-msgstr "Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
+msgstr "使用法: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
 
 msgid "Warning"
 msgstr "警告"
 
 msgid "which contains assets that are in use elsewhere."
-msgstr "他の場所で使用されている資産が含まれています"
+msgstr "他の場所で使用されているメディアが含まれています"
 
 msgid "You are about to delete the class"
 msgstr "このクラスを削除しようとしています"
 
 msgid "you are trying to delete is too large and contains too many subclasses."
-msgstr "削除しようとしているのは大きすぎてサブクラスが多すぎます"
+msgstr "削除対象のデータサイズが大きく、含まれるサブクラス数が上限を超えています。"
 
 msgid "You can\\'t upload a zip file as a media"
 msgstr "zipファイルはアップロードできません"
 
 msgid "Your passage is saved"
-msgstr "あなたの通路は保存されました"
+msgstr "パッセージは保存されました"
 
 msgid "Zip"
 msgstr "ZIP"
 
+msgid "%d shared stimulus media not exists"
+msgstr "%d件の共有スティミュラスメディアが存在しません"
+
+msgid "%s errors while processing shared stimulus media"
+msgstr "共有スティミュラスメディアの処理中に %s件のエラーが発生しました"
+
+msgid "%s shared stimulus media to modify"
+msgstr "変更対象の共有スティミュラスメディア: %s件"
+
+msgid "A stylesheet named <b>%s</b> is already attached to the passage."
+msgstr "<b>%s</b> という名前のスタイルシートはすでにパッセージに添付されています。"
+
+msgid "Add Style Sheet"
+msgstr "スタイルシート追加"
+
+msgid "Analyzing usage"
+msgstr "使用状況を分析中"
+
+msgid "Asset class \"%s\" is not empty"
+msgstr "アセットクラス \"%s\" は空ではありません"
+
+#, tao-public
+msgid "Background color"
+msgstr "背景色"
+
+msgid "Border color"
+msgstr "枠の色"
+
+msgid "Cannot export file \"%s\": no extension found"
+msgstr "ファイル\"%s\"をエクスポートできません：拡張子が見つかりません"
+
+msgid "Cleaning classes"
+msgstr "クラスをクリーンアップ中"
+
+msgid "Comments"
+msgstr "コメント"
+
+msgid "Comments apply to this asset."
+msgstr "コメントはこのアセット全体に適用されます。"
+
+#, tao-public
+msgid "Copy To"
+msgstr "指定コピー"
+
+msgid "Could not delete asset class \"%s\": %s"
+msgstr "アセットクラス \"%s\" を削除できませんでした: %s"
+
+msgid "Current path: %s"
+msgstr "現在のパス： %s"
+
+msgid "Default"
+msgstr "デフォルト"
+
+msgid "Delete limit: %d unused shared stimulus"
+msgstr "削除上限: 未使用の共有スティミュラス %d件"
+
+msgid "Deleted unused shared stimulus \"%s\" (%s)"
+msgstr "未使用の共有スティミュラス「%s」（%s）を削除しました"
+
+msgid "Deleted: %d"
+msgstr "削除済み: %d"
+
+msgid "Deleting unused"
+msgstr "未使用項目を削除中"
+
+msgid "Destination class uri \"%s\" not found!"
+msgstr "移動先クラス uri \"%s\" が見つかりません！"
+
+msgid "Destination class: %s"
+msgstr "移動先クラス: %s"
+
+msgid "Disable this stylesheet temporarily"
+msgstr "一時的にこのスタイルシートを無効にします"
+
+msgid "Download this stylesheet"
+msgstr "このスタイルシートをダウンロード"
+
+msgid "Dry run classes"
+msgstr "ドライラン クラス"
+
+msgid "Dry run delete"
+msgstr "削除シミュレーション（ドライラン）"
+
+msgid "Dry run: scanning shared stimulus usage"
+msgstr "ドライラン: 共有スティミュラスの使用状況をスキャン中"
+
+msgid "e.g. 13"
+msgstr "例えば13"
+
+msgid "Edit stylesheet label"
+msgstr "スタイルシートのラベル編集"
+
+msgid "Empty asset class deletion errors: %d"
+msgstr "空のアセットクラスの削除エラー数: %d件"
+
+msgid "Empty asset classes deleted: %d"
+msgstr "削除された空のアセットクラス数: %d件"
+
+msgid "Empty asset classes found: %d"
+msgstr "空のアセットクラスが見つかりました: %d"
+
+msgid "Enlarge font size"
+msgstr "フォントサイズを拡大"
+
+msgid "Error processing shared stimulus \"%s\": %s"
+msgstr "共有スティミュラス「%s」の処理中にエラーが発生しました: %s"
+
+msgid "Errors: %d"
+msgstr "エラー: %d"
+
+#, tao-public
+msgid "Failed to delete asset class \"%s"
+msgstr "アセットクラス「%s」の削除に失敗しました"
+
+msgid "Failed to delete shared stimulus \"%s\" (%s)"
+msgstr "共有スティミュラス「%s」（%s）の削除に失敗しました"
+
+msgid "Font family"
+msgstr "フォント"
+
+msgid "Font size"
+msgstr "フォントサイズ"
+
+msgid "Further asset class deletion errors are logged only in tao.log"
+msgstr "これ以降のアセットクラス削除エラーは tao.log にのみ記録されます"
+
+#, tao-public
+msgid "Import media files"
+msgstr "メディアファイルをインポート"
+
+msgid "In use: %d"
+msgstr "使用中: %d件"
+
+msgid "inline-interactions"
+msgstr "インライン インタラクション"
+
+msgid "Issue while processing \"%s\""
+msgstr "「%s」の処理中に問題が発生しました"
+
+msgid "Listing media"
+msgstr "メディア一覧を取得中"
+
+#, tao-public
+msgid "Move item resource to different class, can be filtered by name pattern."
+msgstr "アイテムリソースを別のクラスに移動します。名前パターンでフィルタリングできます。"
+
+msgid "Move resource script start."
+msgstr "リソース移動スクリプトを開始します。"
+
+#, tao-public
+msgid "Move To"
+msgstr "移動"
+
+msgid "Moved %d resource/s."
+msgstr "%d件のリソースを移動しました。"
+
+msgid "Moved resource, id %s"
+msgstr "リソースを移動しました（ID: %s）"
+
+#, tao-public
+msgid "New path %s"
+msgstr "新しいパス: %s"
+
+msgid "No value set"
+msgstr "何もセットされていません"
+
+msgid "Passage Style"
+msgstr "パッセージスタイル"
+
+msgid "Preparing CSS, please wait…"
+msgstr "CSS準備中、お待ちください..."
+
+msgid "Re-run without --dryRun to delete empty asset classes"
+msgstr "空のアセットクラスを実際に削除するには、--dryRun を外して再実行してください"
+
+msgid "Re-run without --dryRun to perform deletion"
+msgstr "削除を実際に実行するには、--dryRun を外して再実行してください"
+
+msgid "Reduce font size"
+msgstr "フォントサイズを小さく"
+
+msgid "Remove custom background color"
+msgstr "背景色を元に戻す"
+
+msgid "Remove custom border color"
+msgstr "枠の色を元に戻す"
+
+msgid "Remove custom font family"
+msgstr "フォントを元に戻す"
+
+msgid "Remove custom font size"
+msgstr "フォントサイズを元に戻す"
+
+msgid "Remove custom table headings color"
+msgstr "表見出しのカスタム色を削除"
+
+msgid "Remove custom text color"
+msgstr "文字色を元に戻す"
+
+msgid "Remove this stylesheet"
+msgstr "このスタイルシートを削除"
+
+msgid "Request should provide a media identifier as the id or instanceUri parameter"
+msgstr "リクエストでは、id または instanceUri パラメーターとしてメディア識別子を指定する必要があります"
+
+msgid "Scanning and deleting unused shared stimulus"
+msgstr "未使用の共有スティミュラスをスキャンして削除中"
+
+msgid "Scanning for empty asset classes under Media root"
+msgstr "Media root配下の空のアセットクラスをスキャン中"
+
+msgid "Set the identifier of class where assets will be moved."
+msgstr "アセットの移動先クラスの識別子を設定します。"
+
+msgid "Set the name pattern whom script will use to select resource to move."
+msgstr "スクリプトが移動対象リソースを選択する際に使用する名前パターンを設定します。"
+
+msgid "Set the resource id to move."
+msgstr "移動するリソースIDを設定します。"
+
+msgid "Shared stimulus \"%s\" is in use: %s"
+msgstr "共有スティミュラス「%s」は使用中です: %s"
+
+msgid "Shared stimulus on this environment: %d"
+msgstr "この環境内の共有スティミュラス数: %d件"
+
+msgid "Skipped %d unused shared stimulus (over --limit %d)"
+msgstr "未使用の共有スティミュラス %d件をスキップしました（--limit %d の上限超過）"
+
+msgid "Specify if you need only preview the supposed result"
+msgstr "想定される結果のプレビューのみを行う場合に指定します"
+
+msgid "Style Sheet <b>%s</b> removed<br> Click <i>Add Style Sheet</i> to re-apply."
+msgstr "スタイルシート<b>%s</b>は削除されました。<br>再度設定したい場合は、<i>Add Style Sheet</i>をクリックしてください"
+
+msgid "Style Sheet Manager"
+msgstr "スタイルシート管理"
+
+msgid "Table headings"
+msgstr "表の見出し"
+
+msgid "Text Block Properties"
+msgstr "文字ブロックプロパティ"
+
+msgid "Text Block Style"
+msgstr "テキストブロック スタイル"
+
+msgid "Text color"
+msgstr "文字色"
+
+msgid "The file \"%s\" is missing an extension."
+msgstr "ファイル \"%s\" に拡張子がありません。"
+
+msgid "The file you tried to upload is not valid"
+msgstr "アップロードしようとしたファイルは無効です。"
+
+msgid "There was a problem downloading your CSS, please try again."
+msgstr "CSSのダウンロード中に問題が発生しました。再実行してください。"
+
+msgid "This \"%s\" is currently used in %d item(s)"
+msgstr "この「%s」は現在 %d件のアイテムで使用されています"
+
+msgid "Total shared stimulus media: %s"
+msgstr "共有スティミュラスメディアの合計: %s件"
+
+msgid "Unable to delete the selected resource because you do not have the required rights to delete part of its content."
+msgstr "コンテンツの一部を削除するために必要な権限がないため、選択したリソースを削除できません。"
+
+msgid "Unused: %d"
+msgstr "未使用: %d件"
+
+msgid "Would delete %d unused shared stimulus"
+msgstr "未使用の共有スティミュラス %d件が削除対象です"
+
+msgid "Would delete empty asset class \"%s\" (%s)"
+msgstr "空のアセットクラス「%s」（%s）が削除対象です"
+
+msgid "Would delete unused shared stimulus \"%s\" (%s)"
+msgstr "未使用の共有スティミュラス「%s」（%s）が削除対象です"

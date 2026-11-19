@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2026-11-18 10:17\n"
+"PO-Revision-Date: 2026-11-19 08:34\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ja\n"
@@ -21,10 +21,10 @@ msgstr ""
 "Language-Team: Japanese\n"
 
 msgid "%d shared stimulus media not exists"
-msgstr "%d 共有刺激メディアが存在しません"
+msgstr "%d件の共有スティミュラスメディアが存在しません"
 
 msgid "%s errors while processing shared stimulus media"
-msgstr "共有刺激メディアの処理中に%s エラーが発生しました"
+msgstr "共有スティミュラスメディアの処理中に %s件のエラーが発生しました"
 
 msgid "%s media on this environment"
 msgstr "この環境の %s メディア"
@@ -36,10 +36,10 @@ msgid "%s media to modify"
 msgstr "メディアを変更します：%s "
 
 msgid "%s shared stimulus media to modify"
-msgstr "%s が刺激メディアを共有しました"
+msgstr "変更対象の共有スティミュラスメディア: %s件"
 
 msgid "A stylesheet named <b>%s</b> is already attached to the passage."
-msgstr "<b>%s</b> という名前のスタイルシートはすでに通路にアタッチされています。"
+msgstr "<b>%s</b> という名前のスタイルシートはすでにパッセージに添付されています。"
 
 msgid "Add a media file"
 msgstr "メディアファイル追加"
@@ -89,13 +89,13 @@ msgid "Center"
 msgstr "センター"
 
 msgid "Cleaning classes"
-msgstr "Cleaning classes"
+msgstr "クラスをクリーンアップ中"
 
 msgid "Comments"
 msgstr "コメント"
 
 msgid "Comments apply to this asset."
-msgstr "コメントはこのアセットに適用されます。"
+msgstr "コメントはこのアセット全体に適用されます。"
 
 #, tao-public
 msgid "Copy To"
@@ -118,25 +118,25 @@ msgid "Delete"
 msgstr "削除"
 
 msgid "Delete limit: %d unused shared stimulus"
-msgstr "制限を削除: %d 未使用の共有刺激量"
+msgstr "削除上限: 未使用の共有スティミュラス %d件"
 
 msgid "Deleted unused shared stimulus \"%s\" (%s)"
-msgstr "未使用の共有刺激を削除しました \"%s\" (%s)"
+msgstr "未使用の共有スティミュラス「%s」（%s）を削除しました"
 
 msgid "Deleted: %d"
 msgstr "削除済み: %d"
 
 msgid "Deleting this class will break the items and the tests that are currently using them."
-msgstr "このクラスを削除すると、現在使用している項目とテストが壊れます。"
+msgstr "このクラスを削除すると、現在使用しているアイテムとテストが壊れます。"
 
 msgid "Deleting unused"
-msgstr "未使用の削除中"
+msgstr "未使用項目を削除中"
 
 msgid "Destination class uri \"%s\" not found!"
-msgstr "宛先クラス uri \"%s\" が見つかりません！"
+msgstr "移動先クラス uri \"%s\" が見つかりません！"
 
 msgid "Destination class: %s"
-msgstr "宛先クラス: %s"
+msgstr "移動先クラス: %s"
 
 msgid "Disable this stylesheet temporarily"
 msgstr "一時的にこのスタイルシートを無効にします"
@@ -145,13 +145,13 @@ msgid "Download this stylesheet"
 msgstr "このスタイルシートをダウンロード"
 
 msgid "Dry run classes"
-msgstr "ドライランクラス"
+msgstr "ドライラン クラス"
 
 msgid "Dry run delete"
-msgstr "ドライラン削除"
+msgstr "削除シミュレーション（ドライラン）"
 
 msgid "Dry run: scanning shared stimulus usage"
-msgstr "ドライラン: 共有刺激使用量のスキャン"
+msgstr "ドライラン: 共有スティミュラスの使用状況をスキャン中"
 
 msgid "e.g. 13"
 msgstr "例えば13"
@@ -169,10 +169,10 @@ msgid "Element Properties"
 msgstr "エレメントのプロパティ"
 
 msgid "Empty asset class deletion errors: %d"
-msgstr "アセットクラスの削除エラーが空です: %d"
+msgstr "空のアセットクラスの削除エラー数: %d件"
 
 msgid "Empty asset classes deleted: %d"
-msgstr "空のアセットクラスを削除しました: %d"
+msgstr "削除された空のアセットクラス数: %d件"
 
 msgid "Empty asset classes found: %d"
 msgstr "空のアセットクラスが見つかりました: %d"
@@ -181,7 +181,7 @@ msgid "Enlarge font size"
 msgstr "フォントサイズを拡大"
 
 msgid "Error processing shared stimulus \"%s\": %s"
-msgstr "共有刺激\"%s\"の処理エラー： %s"
+msgstr "共有スティミュラス「%s」の処理中にエラーが発生しました: %s"
 
 msgid "Errors: %d"
 msgstr "エラー: %d"
@@ -209,7 +209,7 @@ msgid "Failed to delete asset class \"%s"
 msgstr "アセットクラス「%s」の削除に失敗しました"
 
 msgid "Failed to delete shared stimulus \"%s\" (%s)"
-msgstr "共有刺激\"%s\"(%s) の削除に失敗しました"
+msgstr "共有スティミュラス「%s」（%s）の削除に失敗しました"
 
 msgid "File"
 msgstr "ファイル"
@@ -227,7 +227,7 @@ msgid "Forbidden action"
 msgstr "禁止アクション"
 
 msgid "Further asset class deletion errors are logged only in tao.log"
-msgstr "さらにアセットクラスの削除エラーはtao.logにのみ記録されます"
+msgstr "これ以降のアセットクラス削除エラーは tao.log にのみ記録されます"
 
 #, tao-public
 msgid "Import"
@@ -243,7 +243,7 @@ msgid "Imported new file"
 msgstr "新しいファイルをインポートしました"
 
 msgid "In use: %d"
-msgstr "使用中: %d"
+msgstr "使用中: %d件"
 
 msgid "Initial import"
 msgstr "初期インポート"
@@ -252,7 +252,7 @@ msgid "Inline Interactions"
 msgstr "インライン"
 
 msgid "inline-interactions"
-msgstr "inline-interactions"
+msgstr "インライン インタラクション"
 
 msgid "Instance saved"
 msgstr "インスタンスが保存されました"
@@ -264,7 +264,7 @@ msgid "Issue while modifying %s"
 msgstr "%s の変更中に問題が発生しました"
 
 msgid "Issue while processing \"%s\""
-msgstr "\"%s\" の処理中に問題"
+msgstr "「%s」の処理中に問題が発生しました"
 
 msgid "item(s)"
 msgstr "商品"
@@ -276,7 +276,7 @@ msgid "Left"
 msgstr "左"
 
 msgid "Listing media"
-msgstr "メディアを一覧中"
+msgstr "メディア一覧を取得中"
 
 #, tao-public
 msgid "Manage Assets"
@@ -314,17 +314,17 @@ msgid "Move item resource to different class, can be filtered by name pattern."
 msgstr "アイテムリソースを別のクラスに移動します。名前パターンでフィルタリングできます。"
 
 msgid "Move resource script start."
-msgstr "リソーススクリプトの開始を移動します。"
+msgstr "リソース移動スクリプトを開始します。"
 
 #, tao-public
 msgid "Move To"
 msgstr "移動"
 
 msgid "Moved %d resource/s."
-msgstr "%d リソースを移動しました。"
+msgstr "%d件のリソースを移動しました。"
 
 msgid "Moved resource, id %s"
-msgstr "移動されたリソース、ID %s"
+msgstr "リソースを移動しました（ID: %s）"
 
 #, tao-public
 msgid "New class"
@@ -332,10 +332,10 @@ msgstr "新規クラス"
 
 #, tao-public
 msgid "New passage"
-msgstr "新しいパス"
+msgstr "新しいパッセージ"
 
 msgid "New path %s"
-msgstr "新しいパス %s"
+msgstr "新しいパス: %s"
 
 msgid "No file found for this media"
 msgstr "メディアファイルが見つかりません"
@@ -344,13 +344,13 @@ msgid "No value set"
 msgstr "何もセットされていません"
 
 msgid "Passage Properties"
-msgstr "パスのプロパティ"
+msgstr "パッセージのプロパティ"
 
 msgid "Passage Style"
-msgstr "Passage Style"
+msgstr "パッセージスタイル"
 
 msgid "Please delete the subclasses before."
-msgstr "前にサブクラスを削除してください。"
+msgstr "先にサブクラスを削除してください。"
 
 msgid "Preparing CSS, please wait…"
 msgstr "CSS準備中、お待ちください..."
@@ -366,10 +366,10 @@ msgid "Properties"
 msgstr "プロパティ"
 
 msgid "Re-run without --dryRun to delete empty asset classes"
-msgstr "空のアセットクラスを削除するには--dryRun を再実行してください"
+msgstr "空のアセットクラスを実際に削除するには、--dryRun を外して再実行してください"
 
 msgid "Re-run without --dryRun to perform deletion"
-msgstr "--dryRun なしで再実行して削除を実行"
+msgstr "削除を実際に実行するには、--dryRun を外して再実行してください"
 
 msgid "Reduce font size"
 msgstr "フォントサイズを小さく"
@@ -387,7 +387,7 @@ msgid "Remove custom font size"
 msgstr "フォントサイズを元に戻す"
 
 msgid "Remove custom table headings color"
-msgstr "カスタムテーブル見出しの色を削除"
+msgstr "表見出しのカスタム色を削除"
 
 msgid "Remove custom text color"
 msgstr "文字色を元に戻す"
@@ -399,7 +399,7 @@ msgid "Replace Asset"
 msgstr "アセット入替"
 
 msgid "Request should provide a media identifier as the id or instanceUri parameter"
-msgstr "リクエストは id または instanceUri パラメータとしてメディア識別子を提供する必要があります。"
+msgstr "リクエストでは、id または instanceUri パラメーターとしてメディア識別子を指定する必要があります"
 
 msgid "Resource deleted"
 msgstr "リソースが削除されました"
@@ -414,28 +414,28 @@ msgid "Save the asset"
 msgstr "アセットを保存"
 
 msgid "Scanning and deleting unused shared stimulus"
-msgstr "未使用の共有刺激のスキャンと削除"
+msgstr "未使用の共有スティミュラスをスキャンして削除中"
 
 msgid "Scanning for empty asset classes under Media root"
-msgstr "Media root 以下の空のアセットクラスをスキャン中"
+msgstr "Media root配下の空のアセットクラスをスキャン中"
 
 msgid "Set a CSS class name in order to customize the display style."
 msgstr "画面表示をカスタマイズするためのCSSクラス名を設定します"
 
 msgid "Set the identifier of class where assets will be moved."
-msgstr "アセットを移動するクラスの識別子を設定します。"
+msgstr "アセットの移動先クラスの識別子を設定します。"
 
 msgid "Set the name pattern whom script will use to select resource to move."
-msgstr "移動するリソースを選択するためにスクリプトを使用する名前パターンを設定します。"
+msgstr "スクリプトが移動対象リソースを選択する際に使用する名前パターンを設定します。"
 
 msgid "Set the resource id to move."
-msgstr "リソース ID を移動するように設定します。"
+msgstr "移動するリソースIDを設定します。"
 
 msgid "Shared Stimulus"
 msgstr "シェアードスティミュラス"
 
 msgid "Shared stimulus \"%s\" is in use: %s"
-msgstr "共有刺激「%s」は使用中： %s"
+msgstr "共有スティミュラス「%s」は使用中です: %s"
 
 msgid "Shared Stimulus edited successfully"
 msgstr "シェアードスティミュラスの編集が完了しました"
@@ -444,16 +444,16 @@ msgid "Shared Stimulus imported successfully"
 msgstr "シェアードスティミュラスのインポートが完了しました"
 
 msgid "Shared stimulus on this environment: %d"
-msgstr "この環境で共有された刺激: %d"
+msgstr "この環境内の共有スティミュラス数: %d件"
 
 msgid "Skipped %d unused shared stimulus (over --limit %d)"
-msgstr "%d 未使用の共有刺激をスキップしました (--limit %d)"
+msgstr "未使用の共有スティミュラス %d件をスキップしました（--limit %d の上限超過）"
 
 msgid "some text ..."
 msgstr "テキストを入力 ..."
 
 msgid "Specify if you need only preview the supposed result"
-msgstr "想定された結果をプレビューする必要がある場合に指定します"
+msgstr "想定される結果のプレビューのみを行う場合に指定します"
 
 msgid "Style Sheet <b>%s</b> removed<br> Click <i>Add Style Sheet</i> to re-apply."
 msgstr "スタイルシート<b>%s</b>は削除されました。<br>再度設定したい場合は、<i>Add Style Sheet</i>をクリックしてください"
@@ -474,7 +474,7 @@ msgid "Text Block Properties"
 msgstr "文字ブロックプロパティ"
 
 msgid "Text Block Style"
-msgstr "テキストブロックスタイル"
+msgstr "テキストブロック スタイル"
 
 msgid "Text color"
 msgstr "文字色"
@@ -495,10 +495,10 @@ msgid "This"
 msgstr "この"
 
 msgid "This \"%s\" is currently used in %d item(s)"
-msgstr "この「%s」は現在 %d アイテムで使用されています"
+msgstr "この「%s」は現在 %d件のアイテムで使用されています"
 
 msgid "Total shared stimulus media: %s"
-msgstr "総刺激媒体: %s"
+msgstr "共有スティミュラスメディアの合計: %s件"
 
 msgid "Unable to delete the selected resource"
 msgstr "選択したリソースを削除できません"
@@ -507,46 +507,46 @@ msgid "Unable to delete the selected resource because you do not have the requir
 msgstr "コンテンツの一部を削除するために必要な権限がないため、選択したリソースを削除できません。"
 
 msgid "Unable to extract the archive"
-msgstr "アーカイブから抽出できません"
+msgstr "アーカイブを展開できませんでした"
 
 msgid "Unable to import"
 msgstr "インポートできません"
 
 msgid "Unused: %d"
-msgstr "未使用: %d"
+msgstr "未使用: %d件"
 
 msgid "Upload Media"
 msgstr "メディアのアップロード"
 
 msgid "Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
-msgstr "Usage: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
+msgstr "使用法: ImportMedia MEDIA_FILE [DESTINATION_CLASS]"
 
 msgid "Warning"
 msgstr "警告"
 
 msgid "which contains assets that are in use elsewhere."
-msgstr "他の場所で使用されている資産が含まれています"
+msgstr "他の場所で使用されているメディアが含まれています"
 
 msgid "Would delete %d unused shared stimulus"
-msgstr "%d 未使用の共有刺激を削除します"
+msgstr "未使用の共有スティミュラス %d件が削除対象です"
 
 msgid "Would delete empty asset class \"%s\" (%s)"
-msgstr "空のアセットクラス \"%s\" (%s) を削除する"
+msgstr "空のアセットクラス「%s」（%s）が削除対象です"
 
 msgid "Would delete unused shared stimulus \"%s\" (%s)"
-msgstr "未使用の共有刺激「%s」を削除します（%s）"
+msgstr "未使用の共有スティミュラス「%s」（%s）が削除対象です"
 
 msgid "You are about to delete the class"
 msgstr "このクラスを削除しようとしています"
 
 msgid "you are trying to delete is too large and contains too many subclasses."
-msgstr "削除しようとしているのは大きすぎてサブクラスが多すぎます"
+msgstr "削除対象のデータサイズが大きく、含まれるサブクラス数が上限を超えています。"
 
 msgid "You can\\'t upload a zip file as a media"
 msgstr "zipファイルはアップロードできません"
 
 msgid "Your passage is saved"
-msgstr "あなたの通路は保存されました"
+msgstr "パッセージは保存されました"
 
 msgid "Zip"
 msgstr "ZIP"

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-12-04 16:06\n"
+"PO-Revision-Date: 2026-11-18 10:17\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: nb_NO\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../../\n"
-"X-Poedit-KeywordsList: __\n"
+"X-Poedit-KeywordsList: __,__p:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Crowdin-Project: tao-open-source\n"
@@ -19,6 +19,12 @@ msgstr ""
 "X-Crowdin-File: /[oat-sa.extension-tao-mediamanager] develop/locales/en-US/messages.po\n"
 "X-Crowdin-File-ID: 603\n"
 "Language-Team: Norwegian Bokmal\n"
+
+msgid "%d shared stimulus media not exists"
+msgstr "%d delt stimulus media finnes ikke"
+
+msgid "%s errors while processing shared stimulus media"
+msgstr "%s feil ved behandling av delte stimuleringsmedier"
 
 msgid "%s media on this environment"
 msgstr "%s media i dette miljøet"
@@ -29,17 +35,32 @@ msgstr "%s media er endret"
 msgid "%s media to modify"
 msgstr "%s media som skal endres"
 
+msgid "%s shared stimulus media to modify"
+msgstr "%s delte stimuleringsmedier for å endre"
+
+msgid "A stylesheet named <b>%s</b> is already attached to the passage."
+msgstr "En stilsett kalt <b>%s</b> er allerede koblet til passasjen."
+
 msgid "Add a media file"
 msgstr "Legg til en mediefil"
 
+msgid "Add Style Sheet"
+msgstr "Legg til stilark"
+
 msgid "An error has occurred. Please contact your administrator."
 msgstr "Det har oppstått en feil. Ta kontakt med din administrator."
+
+msgid "Analyzing usage"
+msgstr "Analyserer bruk"
 
 msgid "Are you sure you want to delete this"
 msgstr "Er du sikker på at du vil slette"
 
 msgid "Are you sure you want to delete this class and all of its content?"
 msgstr "Er du sikker på at du vil slette denne mappen og alt innholdet i den?"
+
+msgid "Asset class \"%s\" is not empty"
+msgstr "Aktivaklasse \"%s\" er ikke tom"
 
 #, tao-public
 msgid "Assets"
@@ -52,11 +73,42 @@ msgstr "Rediger"
 msgid "Back to Manage Assets"
 msgstr "Tilbake for å administrere mediebank"
 
+msgid "Background color"
+msgstr "Bakgrunnsfarge"
+
 msgid "Block"
 msgstr "Tekstboks"
 
+msgid "Border color"
+msgstr "Kantfarge"
+
+msgid "Cannot export file \"%s\": no extension found"
+msgstr "Kan ikke eksportere filen \"%s\": ingen utvidelse funnet"
+
 msgid "Center"
 msgstr "Senter"
+
+msgid "Cleaning classes"
+msgstr "Rengjøringsklasser"
+
+msgid "Comments"
+msgstr "Kommentarer"
+
+msgid "Comments apply to this asset."
+msgstr "Kommentarer gjelder for denne eiendelen."
+
+#, tao-public
+msgid "Copy To"
+msgstr "Kopier til"
+
+msgid "Could not delete asset class \"%s\": %s"
+msgstr "Kunne ikke slette aktivaklasse \"%s\": %s"
+
+msgid "Current path: %s"
+msgstr "Nåværende bane: %s"
+
+msgid "Default"
+msgstr "Standard"
 
 msgid "Define item language."
 msgstr "Definer oppgavespråk."
@@ -65,17 +117,74 @@ msgstr "Definer oppgavespråk."
 msgid "Delete"
 msgstr "Slett"
 
+msgid "Delete limit: %d unused shared stimulus"
+msgstr "Slette begrensning: %d ubrukt brukt stimulus"
+
+msgid "Deleted unused shared stimulus \"%s\" (%s)"
+msgstr "Slettet ubrukt delt stimulus \"%s\" (%s)"
+
+msgid "Deleted: %d"
+msgstr "Slettet: %d"
+
 msgid "Deleting this class will break the items and the tests that are currently using them."
 msgstr "Hvis du sletter denne mappen, blir prøvene som inneholder noen av disse oppgavene som finnes i denne mappen ødelagt."
 
+msgid "Deleting unused"
+msgstr "Sletter ubrukt"
+
+msgid "Destination class uri \"%s\" not found!"
+msgstr "Destinasjon klasse uri \"%s\" ble ikke funnet!"
+
+msgid "Destination class: %s"
+msgstr "Målklasse: %s"
+
+msgid "Disable this stylesheet temporarily"
+msgstr "Deaktiver dette stilarket midlertidig"
+
+msgid "Download this stylesheet"
+msgstr "Last ned dette stilarket"
+
+msgid "Dry run classes"
+msgstr "Tørr løpeklasser"
+
+msgid "Dry run delete"
+msgstr "Slett tørt løp"
+
+msgid "Dry run: scanning shared stimulus usage"
+msgstr "Tørr kjøring: skanning av delt stimuleringsbruk"
+
+msgid "e.g. 13"
+msgstr "f.eks. 13"
+
 msgid "Edit Instance"
 msgstr "Rediger egenskaper"
+
+msgid "Edit stylesheet label"
+msgstr "Rediger stilarktittel"
 
 msgid "Edited %s"
 msgstr "Redigert %s"
 
 msgid "Element Properties"
 msgstr "Elementegenskaper"
+
+msgid "Empty asset class deletion errors: %d"
+msgstr "Tom aktiva klasse slettingsfeil: %d"
+
+msgid "Empty asset classes deleted: %d"
+msgstr "Tomme aktivaklasser slettet: %d"
+
+msgid "Empty asset classes found: %d"
+msgstr "Tomme aktivaklasser funnet: %d"
+
+msgid "Enlarge font size"
+msgstr "Forstørr skriftstørrelse"
+
+msgid "Error processing shared stimulus \"%s\": %s"
+msgstr "Feil under behandling av delt stimulus \"%s\": %s"
+
+msgid "Errors: %d"
+msgstr "Feil: %d"
 
 #, tao-public
 msgid "Export"
@@ -96,18 +205,36 @@ msgstr "Kunne ikke importere medier"
 msgid "Fail to import Shared Stimulus"
 msgstr "Kunne ikke importere Delt Stimulus"
 
+msgid "Failed to delete asset class \"%s"
+msgstr "Kunne ikke slette aktivaklasse \"%s"
+
+msgid "Failed to delete shared stimulus \"%s\" (%s)"
+msgstr "Kunne ikke slette delt stimulus \"%s\" (%s)"
+
 msgid "File"
 msgstr "Fil"
 
 msgid "File name"
 msgstr "Filnavn"
 
+msgid "Font family"
+msgstr "Skrifttype"
+
+msgid "Font size"
+msgstr "Skriftstørrelse"
+
 msgid "Forbidden action"
 msgstr "Forbudt handling"
+
+msgid "Further asset class deletion errors are logged only in tao.log"
+msgstr "Ytterligere feil i klassen sletting av aktiva er bare logget under tao.log"
 
 #, tao-public
 msgid "Import"
 msgstr "Importer"
+
+msgid "Import media files"
+msgstr "Importer mediafiler"
 
 msgid "Imported %s"
 msgstr "Importert %s"
@@ -115,11 +242,17 @@ msgstr "Importert %s"
 msgid "Imported new file"
 msgstr "Importert ny fil"
 
+msgid "In use: %d"
+msgstr "I bruk: %d"
+
 msgid "Initial import"
 msgstr "Første import"
 
 msgid "Inline Interactions"
 msgstr "Tekstboks med oppgavetyper"
+
+msgid "inline-interactions"
+msgstr "inline-interaksjoner"
 
 msgid "Instance saved"
 msgstr "Forekomsten er lagret"
@@ -130,6 +263,9 @@ msgstr "brukes i"
 msgid "Issue while modifying %s"
 msgstr "Problem under endring av %s"
 
+msgid "Issue while processing \"%s\""
+msgstr "Problem under behandling \"%s\""
+
 msgid "item(s)"
 msgstr "oppgave(r)"
 
@@ -138,6 +274,9 @@ msgstr "Språk"
 
 msgid "Left"
 msgstr "Venstre"
+
+msgid "Listing media"
+msgstr "Viser media"
 
 #, tao-public
 msgid "Manage Assets"
@@ -171,6 +310,22 @@ msgstr "Media eksportert."
 msgid "Move"
 msgstr "Flytt"
 
+msgid "Move item resource to different class, can be filtered by name pattern."
+msgstr "Flytt gjenstandsressursen til en annen klasse, kan filtreres etter navnemønster."
+
+msgid "Move resource script start."
+msgstr "Flytt ressursskript startet."
+
+#, tao-public
+msgid "Move To"
+msgstr "Flytt til"
+
+msgid "Moved %d resource/s."
+msgstr "Flyttet %d ressurser/s."
+
+msgid "Moved resource, id %s"
+msgstr "Flyttet ressurs, id %s"
+
 #, tao-public
 msgid "New class"
 msgstr "Ny mappe"
@@ -179,14 +334,26 @@ msgstr "Ny mappe"
 msgid "New passage"
 msgstr "Nytt innhold"
 
+msgid "New path %s"
+msgstr ""
+
 msgid "No file found for this media"
 msgstr "Fant ingen fil for dette mediet"
+
+msgid "No value set"
+msgstr "Ingen verdi er angitt"
 
 msgid "Passage Properties"
 msgstr "Innholdsegenskaper"
 
+msgid "Passage Style"
+msgstr "Passage Style"
+
 msgid "Please delete the subclasses before."
 msgstr "Slett undermappene før."
+
+msgid "Preparing CSS, please wait…"
+msgstr "Forbereder CSS, vennligst vent..."
 
 msgid "Preview"
 msgstr "Forhåndsvis"
@@ -198,8 +365,41 @@ msgstr "Forhåndsvis oppgaven"
 msgid "Properties"
 msgstr ""
 
+msgid "Re-run without --dryRun to delete empty asset classes"
+msgstr "Kjør uten --dryRun for å slette tomme aktivaklasser"
+
+msgid "Re-run without --dryRun to perform deletion"
+msgstr "Kjør på nytt uten --dryRun for å utføre sletting"
+
+msgid "Reduce font size"
+msgstr "Reduser skriftstørrelsen"
+
+msgid "Remove custom background color"
+msgstr "Fjern tilpasset bakgrunnsfarge"
+
+msgid "Remove custom border color"
+msgstr "Fjern egendefinert kantfarge"
+
+msgid "Remove custom font family"
+msgstr "Fjern egendefinert skriftfamilie"
+
+msgid "Remove custom font size"
+msgstr "Fjern egendefinert skriftstørrelse"
+
+msgid "Remove custom table headings color"
+msgstr "Fjerne egendefinerte overskrifter farge for tabell"
+
+msgid "Remove custom text color"
+msgstr "Fjern egendefinert tekstfarge"
+
+msgid "Remove this stylesheet"
+msgstr "Fjern dette stilarket"
+
 msgid "Replace Asset"
 msgstr "Erstatt mediefil"
+
+msgid "Request should provide a media identifier as the id or instanceUri parameter"
+msgstr "Forespørsel bør angi en media-identifikator som id eller instanceUri parameter"
 
 msgid "Resource deleted"
 msgstr "Ressurs ble slettet"
@@ -213,11 +413,29 @@ msgstr "Lagre"
 msgid "Save the asset"
 msgstr "Lagre mediafil"
 
+msgid "Scanning and deleting unused shared stimulus"
+msgstr "Skanning og sletting av ubrukt delt stimulans"
+
+msgid "Scanning for empty asset classes under Media root"
+msgstr "Skanning for tomme aktivaklasser under Media root"
+
 msgid "Set a CSS class name in order to customize the display style."
 msgstr "Angi et CSS-mappenavn for å tilpasse visningsstilen."
 
+msgid "Set the identifier of class where assets will be moved."
+msgstr "Angi identifikatoren til klassen hvor ressurser vil bli flyttet. (Automatic Translation)"
+
+msgid "Set the name pattern whom script will use to select resource to move."
+msgstr "Angi navnemønster som skriptet vil bruke til å velge ressurs å flytte. (Automatic Translation)"
+
+msgid "Set the resource id to move."
+msgstr "Sett ressurs id for å flytte."
+
 msgid "Shared Stimulus"
 msgstr "Delt Innhold"
+
+msgid "Shared stimulus \"%s\" is in use: %s"
+msgstr "Delt stimulus \"%s\" er i bruk: %s"
 
 msgid "Shared Stimulus edited successfully"
 msgstr "Delt innhold ble redigert"
@@ -225,8 +443,26 @@ msgstr "Delt innhold ble redigert"
 msgid "Shared Stimulus imported successfully"
 msgstr "Delt innhold ble importert"
 
+msgid "Shared stimulus on this environment: %d"
+msgstr "Delt stimulus på dette miljøet: %d"
+
+msgid "Skipped %d unused shared stimulus (over --limit %d)"
+msgstr ""
+
 msgid "some text ..."
 msgstr "litt tekst ..."
+
+msgid "Specify if you need only preview the supposed result"
+msgstr "Angi om du bare trenger forhåndsvisning av det tiltenkte resultatet"
+
+msgid "Style Sheet <b>%s</b> removed<br> Click <i>Add Style Sheet</i> to re-apply."
+msgstr "Stilark <b>%s </b> fjernet <br> Klikk <i> Legg til stilark </i> for å søke på nytt."
+
+msgid "Style Sheet Manager"
+msgstr "Rediger stilark"
+
+msgid "Table headings"
+msgstr "Tabelloverskrifter"
 
 msgid "Text Block"
 msgstr "Tekstboks"
@@ -234,20 +470,50 @@ msgstr "Tekstboks"
 msgid "Text Block CSS Class"
 msgstr "Tekstboks CSS mappe"
 
+msgid "Text Block Properties"
+msgstr "Tekstboks egenskaper"
+
+msgid "Text Block Style"
+msgstr "Tekst blokk stil"
+
+msgid "Text color"
+msgstr "Tekstfarge"
+
 msgid "The class"
 msgstr "Mappen"
+
+msgid "The file \"%s\" is missing an extension."
+msgstr "Filen \"%s\" mangler en utvidelse."
+
+msgid "The file you tried to upload is not valid"
+msgstr "Filen du prøvde å laste opp er ikke gyldig"
+
+msgid "There was a problem downloading your CSS, please try again."
+msgstr "Det oppsto et problem ved nedlasting av CSS. Prøv igjen."
 
 msgid "This"
 msgstr "Denne"
 
+msgid "This \"%s\" is currently used in %d item(s)"
+msgstr "Denne \"%s\" brukes nå i %d element(er)"
+
+msgid "Total shared stimulus media: %s"
+msgstr "Totalt delt stimulus media: %s"
+
 msgid "Unable to delete the selected resource"
 msgstr "Kan ikke slette den valgte filen"
+
+msgid "Unable to delete the selected resource because you do not have the required rights to delete part of its content."
+msgstr ""
 
 msgid "Unable to extract the archive"
 msgstr "Kan ikke ta ut arkivet"
 
 msgid "Unable to import"
 msgstr "Kan ikke importere"
+
+msgid "Unused: %d"
+msgstr "Ubrukt: %d"
 
 msgid "Upload Media"
 msgstr "Last opp media"
@@ -260,6 +526,15 @@ msgstr "Advarsel"
 
 msgid "which contains assets that are in use elsewhere."
 msgstr "som inneholder mediefiler som er i bruk andre steder."
+
+msgid "Would delete %d unused shared stimulus"
+msgstr ""
+
+msgid "Would delete empty asset class \"%s\" (%s)"
+msgstr "Vil slette tom aktivaklasse \"%s\" (%s)"
+
+msgid "Would delete unused shared stimulus \"%s\" (%s)"
+msgstr "Vil slette ubrukt delt stimulus \"%s\" (%s)"
 
 msgid "You are about to delete the class"
 msgstr "Du er i ferd med å slette mappen"

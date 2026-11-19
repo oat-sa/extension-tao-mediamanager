@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2025-12-05 08:59\n"
+"PO-Revision-Date: 2026-11-18 10:17\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: hu\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../../\n"
-"X-Poedit-KeywordsList: __\n"
+"X-Poedit-KeywordsList: __,__p:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Crowdin-Project: tao-open-source\n"
@@ -19,6 +19,12 @@ msgstr ""
 "X-Crowdin-File: /[oat-sa.extension-tao-mediamanager] develop/locales/en-US/messages.po\n"
 "X-Crowdin-File-ID: 603\n"
 "Language-Team: Hungarian\n"
+
+msgid "%d shared stimulus media not exists"
+msgstr "%d a megosztott stimulus média nem létezik"
+
+msgid "%s errors while processing shared stimulus media"
+msgstr "%s hibák a megosztott stimulus média feldolgozása közben"
 
 msgid "%s media on this environment"
 msgstr "%s média ezen a környezetben"
@@ -29,17 +35,32 @@ msgstr "%s média sikeresen módosítva"
 msgid "%s media to modify"
 msgstr "%s módosítandó média"
 
+msgid "%s shared stimulus media to modify"
+msgstr "%s megosztott ingermédia a módosításhoz"
+
+msgid "A stylesheet named <b>%s</b> is already attached to the passage."
+msgstr "Egy <b>%s</b> nevű stíluslap már csatolva van a szövegrészhez."
+
 msgid "Add a media file"
 msgstr "Médiafájl hozzáadása"
 
+msgid "Add Style Sheet"
+msgstr "Stíluslap hozzáadása"
+
 msgid "An error has occurred. Please contact your administrator."
 msgstr "Hiba történt. Kérjük, vegye fel a kapcsolatot a rendszergazdával."
+
+msgid "Analyzing usage"
+msgstr "Használat elemzése"
 
 msgid "Are you sure you want to delete this"
 msgstr "Biztosan törölni szeretné ezt?"
 
 msgid "Are you sure you want to delete this class and all of its content?"
 msgstr "Biztosan törölni szeretné ezt a kurzust és az összes tartalmát?"
+
+msgid "Asset class \"%s\" is not empty"
+msgstr "A(z) „%s” eszközosztály nem üres"
 
 #, tao-public
 msgid "Assets"
@@ -52,11 +73,42 @@ msgstr "Szerzői munka"
 msgid "Back to Manage Assets"
 msgstr "Vissza az Eszközök kezeléséhez"
 
+msgid "Background color"
+msgstr "Háttérszín"
+
 msgid "Block"
 msgstr "Tömb"
 
+msgid "Border color"
+msgstr "Szegély színe"
+
+msgid "Cannot export file \"%s\": no extension found"
+msgstr "A(z) „%s” fájl exportálása sikertelen: nem található kiterjesztés"
+
 msgid "Center"
 msgstr "Központ"
+
+msgid "Cleaning classes"
+msgstr "Takarítási tanfolyamok"
+
+msgid "Comments"
+msgstr "Hozzászólások"
+
+msgid "Comments apply to this asset."
+msgstr "A megjegyzések erre az elemre vonatkoznak."
+
+#, tao-public
+msgid "Copy To"
+msgstr "Másolás ide"
+
+msgid "Could not delete asset class \"%s\": %s"
+msgstr "Nem sikerült törölni a(z) \"%s\" eszközosztályt: %s"
+
+msgid "Current path: %s"
+msgstr "Aktuális elérési út: %s"
+
+msgid "Default"
+msgstr "Alapértelmezett"
 
 msgid "Define item language."
 msgstr "Határozza meg az elem nyelvét."
@@ -65,17 +117,74 @@ msgstr "Határozza meg az elem nyelvét."
 msgid "Delete"
 msgstr "Töröl"
 
+msgid "Delete limit: %d unused shared stimulus"
+msgstr "Törlési korlát: %d fel nem használt megosztott inger"
+
+msgid "Deleted unused shared stimulus \"%s\" (%s)"
+msgstr "Törölt, nem használt megosztott inger \"%s\" (%s)"
+
+msgid "Deleted: %d"
+msgstr "Törölt: %d"
+
 msgid "Deleting this class will break the items and the tests that are currently using them."
 msgstr "A kurzus törlése tönkreteszi az elemeket és az azokat jelenleg használó teszteket."
 
+msgid "Deleting unused"
+msgstr "Nem használt törlése"
+
+msgid "Destination class uri \"%s\" not found!"
+msgstr "A(z) \"%s\" célosztály URI nem található!"
+
+msgid "Destination class: %s"
+msgstr "Célosztály: %s"
+
+msgid "Disable this stylesheet temporarily"
+msgstr "Stíluslap ideiglenes letiltása"
+
+msgid "Download this stylesheet"
+msgstr "Stíluslap letöltése"
+
+msgid "Dry run classes"
+msgstr "Szárazfutás órák"
+
+msgid "Dry run delete"
+msgstr "Száraz futtatás törlése"
+
+msgid "Dry run: scanning shared stimulus usage"
+msgstr "Gyakorlat: a megosztott ingerhasználat vizsgálata"
+
+msgid "e.g. 13"
+msgstr "pl. 13"
+
 msgid "Edit Instance"
 msgstr "Példány szerkesztése"
+
+msgid "Edit stylesheet label"
+msgstr "Stíluslap címkéjének szerkesztése"
 
 msgid "Edited %s"
 msgstr "Szerkesztve %s"
 
 msgid "Element Properties"
 msgstr "Elem tulajdonságai"
+
+msgid "Empty asset class deletion errors: %d"
+msgstr "Üres eszközosztály törlési hibái: %d"
+
+msgid "Empty asset classes deleted: %d"
+msgstr "Üres eszközosztályok törölve: %d"
+
+msgid "Empty asset classes found: %d"
+msgstr "Üres eszközosztályokat találtunk: %d"
+
+msgid "Enlarge font size"
+msgstr "Betűméret növelése"
+
+msgid "Error processing shared stimulus \"%s\": %s"
+msgstr "Hiba történt a megosztott inger feldolgozásában: \"%s\": %s"
+
+msgid "Errors: %d"
+msgstr "Hibák: %d"
 
 #, tao-public
 msgid "Export"
@@ -96,18 +205,36 @@ msgstr "Nem sikerült importálni a médiafájlt"
 msgid "Fail to import Shared Stimulus"
 msgstr "Nem sikerült importálni a megosztott ingert"
 
+msgid "Failed to delete asset class \"%s"
+msgstr "Nem sikerült törölni a(z) \"%s eszközosztályt"
+
+msgid "Failed to delete shared stimulus \"%s\" (%s)"
+msgstr "Nem sikerült törölni a megosztott stimulust: \"%s\" (%s)"
+
 msgid "File"
 msgstr "Fájl"
 
 msgid "File name"
 msgstr "Fájlnév"
 
+msgid "Font family"
+msgstr "Betűtípuscsalád"
+
+msgid "Font size"
+msgstr "Betűméret"
+
 msgid "Forbidden action"
 msgstr "Tiltott cselekvés"
+
+msgid "Further asset class deletion errors are logged only in tao.log"
+msgstr "További eszközosztály-törlési hibák csak a tao.log fájlban kerülnek naplózásra."
 
 #, tao-public
 msgid "Import"
 msgstr "Importálás"
+
+msgid "Import media files"
+msgstr "Médiafájlok importálása"
 
 msgid "Imported %s"
 msgstr "Importált %s"
@@ -115,11 +242,17 @@ msgstr "Importált %s"
 msgid "Imported new file"
 msgstr "Új fájl importálva"
 
+msgid "In use: %d"
+msgstr "Használatban: %d"
+
 msgid "Initial import"
 msgstr "Kezdeti importálás"
 
 msgid "Inline Interactions"
 msgstr "Beágyazott interakciók"
+
+msgid "inline-interactions"
+msgstr "beágyazott interakciók"
 
 msgid "Instance saved"
 msgstr "Példány mentve"
@@ -130,6 +263,9 @@ msgstr "jelenleg használatos"
 msgid "Issue while modifying %s"
 msgstr "Probléma a %smódosítása közben"
 
+msgid "Issue while processing \"%s\""
+msgstr "Probléma a(z) \"%s \" feldolgozása közben"
+
 msgid "item(s)"
 msgstr "tétel(ek)"
 
@@ -138,6 +274,9 @@ msgstr "Nyelv"
 
 msgid "Left"
 msgstr "Balra"
+
+msgid "Listing media"
+msgstr "Médiahirdetés"
 
 #, tao-public
 msgid "Manage Assets"
@@ -171,6 +310,22 @@ msgstr "A média exportálása sikeresen megtörtént."
 msgid "Move"
 msgstr "Mozog"
 
+msgid "Move item resource to different class, can be filtered by name pattern."
+msgstr "Az elem erőforrásának áthelyezése másik osztályba, névminta alapján szűrhető."
+
+msgid "Move resource script start."
+msgstr "Erőforrás áthelyezése szkript indítása."
+
+#, tao-public
+msgid "Move To"
+msgstr "Áthelyezés ide"
+
+msgid "Moved %d resource/s."
+msgstr "%d erőforrást áthelyezve."
+
+msgid "Moved resource, id %s"
+msgstr "Áthelyezett erőforrás, azonosító %s"
+
 #, tao-public
 msgid "New class"
 msgstr "Új osztály"
@@ -179,14 +334,26 @@ msgstr "Új osztály"
 msgid "New passage"
 msgstr "Új szövegrész"
 
+msgid "New path %s"
+msgstr "Új útvonal %s"
+
 msgid "No file found for this media"
 msgstr "Nem található fájl ehhez a médiához"
+
+msgid "No value set"
+msgstr "Nincs beállított érték"
 
 msgid "Passage Properties"
 msgstr "Átjáró tulajdonságai"
 
+msgid "Passage Style"
+msgstr "Átmeneti stílus"
+
 msgid "Please delete the subclasses before."
 msgstr "Kérlek, előtte töröld az alosztályokat."
+
+msgid "Preparing CSS, please wait…"
+msgstr "CSS előkészítése, kérem várjon…"
 
 msgid "Preview"
 msgstr "Előnézet"
@@ -198,8 +365,41 @@ msgstr "Az elem előnézete"
 msgid "Properties"
 msgstr "Tulajdonságok"
 
+msgid "Re-run without --dryRun to delete empty asset classes"
+msgstr "Újrafuttatás a --dryRun kapcsoló nélkül az üres eszközosztályok törléséhez"
+
+msgid "Re-run without --dryRun to perform deletion"
+msgstr "Futtassa újra a --dryRun kapcsoló nélkül a törlés végrehajtásához"
+
+msgid "Reduce font size"
+msgstr "Betűméret csökkentése"
+
+msgid "Remove custom background color"
+msgstr "Egyéni háttérszín eltávolítása"
+
+msgid "Remove custom border color"
+msgstr "Egyéni szegélyszín eltávolítása"
+
+msgid "Remove custom font family"
+msgstr "Egyéni betűtípuscsalád eltávolítása"
+
+msgid "Remove custom font size"
+msgstr "Egyéni betűméret eltávolítása"
+
+msgid "Remove custom table headings color"
+msgstr "Egyéni táblázatcímsorok színének eltávolítása"
+
+msgid "Remove custom text color"
+msgstr "Egyéni szövegszín eltávolítása"
+
+msgid "Remove this stylesheet"
+msgstr "Stíluslap eltávolítása"
+
 msgid "Replace Asset"
 msgstr "Eszköz cseréje"
+
+msgid "Request should provide a media identifier as the id or instanceUri parameter"
+msgstr "A kérésnek meg kell adnia egy médiaazonosítót id vagy instanceUri paraméterként."
 
 msgid "Resource deleted"
 msgstr "Erőforrás törölve"
@@ -213,11 +413,29 @@ msgstr "Megtakarítás"
 msgid "Save the asset"
 msgstr "Mentse el az eszközt"
 
+msgid "Scanning and deleting unused shared stimulus"
+msgstr "Nem használt megosztott ingerek beolvasása és törlése"
+
+msgid "Scanning for empty asset classes under Media root"
+msgstr "Üres eszközosztályok keresése a Média gyökér alatt"
+
 msgid "Set a CSS class name in order to customize the display style."
 msgstr "Állítson be egy CSS osztálynevet a megjelenítési stílus testreszabásához."
 
+msgid "Set the identifier of class where assets will be moved."
+msgstr "Állítsa be annak az osztálynak az azonosítóját, ahová az eszközök átkerülnek."
+
+msgid "Set the name pattern whom script will use to select resource to move."
+msgstr "Állítsa be a névmintát, amelyet a szkript az áthelyezni kívánt erőforrás kiválasztásához fog használni."
+
+msgid "Set the resource id to move."
+msgstr "Állítsa be az áthelyezni kívánt erőforrás-azonosítót."
+
 msgid "Shared Stimulus"
 msgstr "Megosztott inger"
+
+msgid "Shared stimulus \"%s\" is in use: %s"
+msgstr "A megosztott inger „%s” használatban van: %s"
 
 msgid "Shared Stimulus edited successfully"
 msgstr "A megosztott inger sikeresen szerkesztve"
@@ -225,8 +443,26 @@ msgstr "A megosztott inger sikeresen szerkesztve"
 msgid "Shared Stimulus imported successfully"
 msgstr "A megosztott inger importálása sikeresen megtörtént."
 
+msgid "Shared stimulus on this environment: %d"
+msgstr "Megosztott inger ezen a környezetben: %d"
+
+msgid "Skipped %d unused shared stimulus (over --limit %d)"
+msgstr "Kihagyott %d nem használt megosztott inger (túllépte a --limit %d értéket)"
+
 msgid "some text ..."
 msgstr "némi szöveg..."
+
+msgid "Specify if you need only preview the supposed result"
+msgstr "Adja meg, ha csak a feltételezett eredmény előnézetére van szüksége"
+
+msgid "Style Sheet <b>%s</b> removed<br> Click <i>Add Style Sheet</i> to re-apply."
+msgstr "Stíluslap <b>%s</b> eltávolítva<br> Kattints a <i>Stíluslap hozzáadása</i> gombra az újbóli alkalmazáshoz."
+
+msgid "Style Sheet Manager"
+msgstr "Stíluslap-kezelő"
+
+msgid "Table headings"
+msgstr "Táblázatcímek"
 
 msgid "Text Block"
 msgstr "Szövegblokk"
@@ -234,20 +470,50 @@ msgstr "Szövegblokk"
 msgid "Text Block CSS Class"
 msgstr "Szövegblokk CSS osztály"
 
+msgid "Text Block Properties"
+msgstr "Szövegblokk tulajdonságai"
+
+msgid "Text Block Style"
+msgstr "Szövegblokk stílus"
+
+msgid "Text color"
+msgstr "Szöveg színe"
+
 msgid "The class"
 msgstr "Az osztály"
+
+msgid "The file \"%s\" is missing an extension."
+msgstr "A(z) \"%s\" fájlnak hiányzik a kiterjesztése."
+
+msgid "The file you tried to upload is not valid"
+msgstr "A feltölteni kívánt fájl érvénytelen"
+
+msgid "There was a problem downloading your CSS, please try again."
+msgstr "Hiba történt a CSS letöltésekor, kérjük, próbálja újra."
 
 msgid "This"
 msgstr "Ez"
 
+msgid "This \"%s\" is currently used in %d item(s)"
+msgstr "Ez a \"%s\" jelenleg %d elem(ek)ben használatos"
+
+msgid "Total shared stimulus media: %s"
+msgstr "Megosztott ingermédia összesen: %s"
+
 msgid "Unable to delete the selected resource"
 msgstr "A kiválasztott erőforrás törlése sikertelen"
+
+msgid "Unable to delete the selected resource because you do not have the required rights to delete part of its content."
+msgstr "A kiválasztott erőforrás nem törölhető, mert nem rendelkezik a szükséges jogosultságokkal a tartalmának egy részének törléséhez."
 
 msgid "Unable to extract the archive"
 msgstr "Nem sikerült kibontani az archívumot"
 
 msgid "Unable to import"
 msgstr "Nem sikerült importálni"
+
+msgid "Unused: %d"
+msgstr "Nem használt: %d"
 
 msgid "Upload Media"
 msgstr "Média feltöltése"
@@ -260,6 +526,15 @@ msgstr "Figyelmeztetés"
 
 msgid "which contains assets that are in use elsewhere."
 msgstr "amely máshol használatban lévő eszközöket tartalmaz."
+
+msgid "Would delete %d unused shared stimulus"
+msgstr "Törölné a nem használt megosztott ingert: %d"
+
+msgid "Would delete empty asset class \"%s\" (%s)"
+msgstr "Törölné az üres eszközosztályt: \"%s\" (%s)"
+
+msgid "Would delete unused shared stimulus \"%s\" (%s)"
+msgstr "Törölné a nem használt megosztott ingert: \"%s\" (%s)"
 
 msgid "You are about to delete the class"
 msgstr "Arra készülsz, hogy töröld a kurzust"

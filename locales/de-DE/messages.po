@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-12-04 16:06\n"
+"PO-Revision-Date: 2026-11-18 10:17\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: de\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../../\n"
-"X-Poedit-KeywordsList: __\n"
+"X-Poedit-KeywordsList: __,__p:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Crowdin-Project: tao-open-source\n"
@@ -19,6 +19,12 @@ msgstr ""
 "X-Crowdin-File: /[oat-sa.extension-tao-mediamanager] develop/locales/en-US/messages.po\n"
 "X-Crowdin-File-ID: 603\n"
 "Language-Team: German\n"
+
+msgid "%d shared stimulus media not exists"
+msgstr "%d geteilte Stimulus-Medien existiert nicht"
+
+msgid "%s errors while processing shared stimulus media"
+msgstr "%s Fehler bei der Verarbeitung gemeinsamer Stimulus-Medien"
 
 msgid "%s media on this environment"
 msgstr "%s Medien in dieser Umgebung"
@@ -29,17 +35,32 @@ msgstr "%s Medien erfolgreich bearbeitet"
 msgid "%s media to modify"
 msgstr "%s Medien zu bearbeiten"
 
+msgid "%s shared stimulus media to modify"
+msgstr "%s geteilte Stimulus-Medien zum Ändern"
+
+msgid "A stylesheet named <b>%s</b> is already attached to the passage."
+msgstr "Ein Stylesheet mit dem Namen <b>%s</b> ist bereits an der Passage angehängt."
+
 msgid "Add a media file"
 msgstr "Eine Mediendatei hinzufügen"
 
+msgid "Add Style Sheet"
+msgstr "Stilvorlage hinzufügen"
+
 msgid "An error has occurred. Please contact your administrator."
 msgstr "Ein Fehler ist aufgetreten. Bitte kontaktieren Sie Ihren Administrator."
+
+msgid "Analyzing usage"
+msgstr "Analysiere Nutzung"
 
 msgid "Are you sure you want to delete this"
 msgstr "Sind Sie sicher, dass Sie dies löschen möchten?"
 
 msgid "Are you sure you want to delete this class and all of its content?"
 msgstr "Sind Sie sicher, dass Sie diese Klasse und all ihren Inhalt löschen möchten?"
+
+msgid "Asset class \"%s\" is not empty"
+msgstr "Asset-Klasse \"%s\" ist nicht leer"
 
 #, tao-public
 msgid "Assets"
@@ -52,11 +73,42 @@ msgstr "Verfassen"
 msgid "Back to Manage Assets"
 msgstr "Zurück zur Verwaltung von Assets"
 
+msgid "Background color"
+msgstr "Hintergrundfarbe"
+
 msgid "Block"
 msgstr "Block"
 
+msgid "Border color"
+msgstr "Rahmenfarbe"
+
+msgid "Cannot export file \"%s\": no extension found"
+msgstr "Datei \"%skann nicht exportiert werden: Keine Erweiterung gefunden"
+
 msgid "Center"
 msgstr "Zentrieren"
+
+msgid "Cleaning classes"
+msgstr "Reinigungsklassen"
+
+msgid "Comments"
+msgstr "Kommentare"
+
+msgid "Comments apply to this asset."
+msgstr "Kommentare gelten für dieses Asset."
+
+#, tao-public
+msgid "Copy To"
+msgstr "Kopieren nach"
+
+msgid "Could not delete asset class \"%s\": %s"
+msgstr "Assetklasse \"%s\" konnte nicht gelöscht werden: %s"
+
+msgid "Current path: %s"
+msgstr "Aktueller Pfad: %s"
+
+msgid "Default"
+msgstr "Standard"
 
 msgid "Define item language."
 msgstr "Sprache für das Element festlegen."
@@ -65,17 +117,74 @@ msgstr "Sprache für das Element festlegen."
 msgid "Delete"
 msgstr "Löschen"
 
+msgid "Delete limit: %d unused shared stimulus"
+msgstr "Limit löschen: %d unbenutzter gemeinsamer Stimulus"
+
+msgid "Deleted unused shared stimulus \"%s\" (%s)"
+msgstr "Unbenutzter gemeinsamer Stimulus \"%s\" (%s ) gelöscht"
+
+msgid "Deleted: %d"
+msgstr "Gelöscht: %d"
+
 msgid "Deleting this class will break the items and the tests that are currently using them."
 msgstr "Das Löschen dieser Klasse wird die Aufgaben und Tests, die sie derzeit verwenden, unterbrechen."
 
+msgid "Deleting unused"
+msgstr "Unbenutzte löschen"
+
+msgid "Destination class uri \"%s\" not found!"
+msgstr "Zielklasse uri \"%s\" nicht gefunden!"
+
+msgid "Destination class: %s"
+msgstr "Zielklasse: %s"
+
+msgid "Disable this stylesheet temporarily"
+msgstr "Dieses Stylesheet vorübergehend deaktivieren"
+
+msgid "Download this stylesheet"
+msgstr "Dieses Stylesheet herunterladen"
+
+msgid "Dry run classes"
+msgstr "Trockenlauf Klassen"
+
+msgid "Dry run delete"
+msgstr "Trockenlauf löschen"
+
+msgid "Dry run: scanning shared stimulus usage"
+msgstr "Trockenlauf: Scannen der gemeinsamen Stimulusnutzung"
+
+msgid "e.g. 13"
+msgstr "z.B. 13"
+
 msgid "Edit Instance"
 msgstr "Instanz bearbeiten"
+
+msgid "Edit stylesheet label"
+msgstr "Stylesheet Label bearbeiten"
 
 msgid "Edited %s"
 msgstr " %s bearbeitet"
 
 msgid "Element Properties"
 msgstr "Elementeigenschaften"
+
+msgid "Empty asset class deletion errors: %d"
+msgstr "Fehler der Löschung der Asset-Klasse: %d"
+
+msgid "Empty asset classes deleted: %d"
+msgstr "Leere Asset-Klassen gelöscht: %d"
+
+msgid "Empty asset classes found: %d"
+msgstr "Leere Asset-Klassen gefunden: %d"
+
+msgid "Enlarge font size"
+msgstr "Schriftgröße erhöhen"
+
+msgid "Error processing shared stimulus \"%s\": %s"
+msgstr "Fehler beim Verarbeiten des gemeinsamen Stimulus \"%s\": %s"
+
+msgid "Errors: %d"
+msgstr "Fehler: %d"
 
 #, tao-public
 msgid "Export"
@@ -96,18 +205,36 @@ msgstr "Medien konnten nicht importiert werden"
 msgid "Fail to import Shared Stimulus"
 msgstr "Geteilter Stimulus konnte nicht importiert werden"
 
+msgid "Failed to delete asset class \"%s"
+msgstr "Assetklasse \"%s konnte nicht gelöscht werden"
+
+msgid "Failed to delete shared stimulus \"%s\" (%s)"
+msgstr "Fehler beim Löschen des gemeinsamen Stimulus \"%s\" (%s)"
+
 msgid "File"
 msgstr "Datei"
 
 msgid "File name"
 msgstr "Dateiname"
 
+msgid "Font family"
+msgstr "Schriftartfamilie"
+
+msgid "Font size"
+msgstr "Schriftgröße"
+
 msgid "Forbidden action"
 msgstr "Verbotene Aktion"
+
+msgid "Further asset class deletion errors are logged only in tao.log"
+msgstr "Weitere Löschfehler der Asset-Klasse werden nur in tao.log protokolliert"
 
 #, tao-public
 msgid "Import"
 msgstr "Importieren"
+
+msgid "Import media files"
+msgstr "Mediendateien importieren"
 
 msgid "Imported %s"
 msgstr "%s ist importiert worden"
@@ -115,11 +242,17 @@ msgstr "%s ist importiert worden"
 msgid "Imported new file"
 msgstr "Neue Datei importiert"
 
+msgid "In use: %d"
+msgstr "In Verwendung: %d"
+
 msgid "Initial import"
 msgstr "Erstimport"
 
 msgid "Inline Interactions"
 msgstr "Inline-Interaktionen"
+
+msgid "inline-interactions"
+msgstr "inline-Interaktionen"
 
 msgid "Instance saved"
 msgstr "Instanz gespeichert"
@@ -130,6 +263,9 @@ msgstr "wird derzeit verwendet in"
 msgid "Issue while modifying %s"
 msgstr "Problem beim Ändern von %s"
 
+msgid "Issue while processing \"%s\""
+msgstr "Fehler bei der Verarbeitung von \"%s\""
+
 msgid "item(s)"
 msgstr "Element(e)"
 
@@ -138,6 +274,9 @@ msgstr "Sprache"
 
 msgid "Left"
 msgstr "Links"
+
+msgid "Listing media"
+msgstr "Medien auflisten"
 
 #, tao-public
 msgid "Manage Assets"
@@ -171,6 +310,22 @@ msgstr "Medien erfolgreich exportiert."
 msgid "Move"
 msgstr "Verschieben"
 
+msgid "Move item resource to different class, can be filtered by name pattern."
+msgstr "Bewege die Ressource in eine andere Klasse, kann nach Namensmuster gefiltert werden."
+
+msgid "Move resource script start."
+msgstr "Ressourcenskript verschieben."
+
+#, tao-public
+msgid "Move To"
+msgstr "Bewegen nach"
+
+msgid "Moved %d resource/s."
+msgstr ""
+
+msgid "Moved resource, id %s"
+msgstr "Ressourcen verschoben, id %s"
+
 #, tao-public
 msgid "New class"
 msgstr "Neue Klasse"
@@ -179,14 +334,26 @@ msgstr "Neue Klasse"
 msgid "New passage"
 msgstr "Neuer Abschnitt"
 
+msgid "New path %s"
+msgstr "Neuer Pfad %s"
+
 msgid "No file found for this media"
 msgstr "Für dieses Medium wurde keine Datei gefunden"
+
+msgid "No value set"
+msgstr "Keinen Wert zugewiesen"
 
 msgid "Passage Properties"
 msgstr "Eigenschaften für diesen Abschnitt"
 
+msgid "Passage Style"
+msgstr "Passage Style"
+
 msgid "Please delete the subclasses before."
 msgstr "Bitte löschen Sie vorher die Unterklassen."
+
+msgid "Preparing CSS, please wait…"
+msgstr "CSS wird vorbereitet, Bitte warten..."
 
 msgid "Preview"
 msgstr "Vorschau"
@@ -198,8 +365,41 @@ msgstr "Vorschau des Elements"
 msgid "Properties"
 msgstr "Eigenschaften"
 
+msgid "Re-run without --dryRun to delete empty asset classes"
+msgstr "Ohne --dryRun erneut ausführen, um leere Assetklassen zu löschen"
+
+msgid "Re-run without --dryRun to perform deletion"
+msgstr "Ohne --dryRun erneut starten um das Löschen durchzuführen"
+
+msgid "Reduce font size"
+msgstr "Schriftgröße verringern"
+
+msgid "Remove custom background color"
+msgstr "Benutzerdefinierte Hintergrundfarbe entfernen"
+
+msgid "Remove custom border color"
+msgstr "Benutzerdefinierte Randfarbe entfernen"
+
+msgid "Remove custom font family"
+msgstr "Benutzerdefinierte Schriftart entfernen"
+
+msgid "Remove custom font size"
+msgstr "Benutzerdefinierte Schriftgröße entfernen"
+
+msgid "Remove custom table headings color"
+msgstr "Farbe der benutzerdefinierten Tabellenüberschriften entfernen"
+
+msgid "Remove custom text color"
+msgstr "Benutzerdefinierte Textfarbe entfernen"
+
+msgid "Remove this stylesheet"
+msgstr "Dieses Stylesheet entfernen"
+
 msgid "Replace Asset"
 msgstr "Asset ersetzen"
+
+msgid "Request should provide a media identifier as the id or instanceUri parameter"
+msgstr "Anfrage sollte einen Medienbezeichner als Id oder InstanceUri Parameter angeben"
 
 msgid "Resource deleted"
 msgstr "Ressource gelöscht"
@@ -213,11 +413,29 @@ msgstr "Speichern"
 msgid "Save the asset"
 msgstr "Speichern Sie das Asset"
 
+msgid "Scanning and deleting unused shared stimulus"
+msgstr "Unbenutzter gemeinsamer Stimulus wird gescannt und gelöscht"
+
+msgid "Scanning for empty asset classes under Media root"
+msgstr "Suche nach leeren Asset-Klassen unter Media Root"
+
 msgid "Set a CSS class name in order to customize the display style."
 msgstr "Setze einen CSS-Klassennamen, um den Anzeigestil anzupassen."
 
+msgid "Set the identifier of class where assets will be moved."
+msgstr "Legen Sie den Bezeichner der Klasse fest, in der Assets verschoben werden."
+
+msgid "Set the name pattern whom script will use to select resource to move."
+msgstr "Legen Sie das Namensmuster fest, mit dem das Skript die Ressource verschieben soll."
+
+msgid "Set the resource id to move."
+msgstr "Setze die Ressourcen-Id auf zu bewegen."
+
 msgid "Shared Stimulus"
 msgstr "Gemeinsamer Stimulus"
+
+msgid "Shared stimulus \"%s\" is in use: %s"
+msgstr "Geteilter Stimulus \"%s\" wird verwendet: %s"
 
 msgid "Shared Stimulus edited successfully"
 msgstr "Geteilter Stimulus erfolgreich bearbeitet"
@@ -225,8 +443,26 @@ msgstr "Geteilter Stimulus erfolgreich bearbeitet"
 msgid "Shared Stimulus imported successfully"
 msgstr "Geteilter Stimulus erfolgreich importiert"
 
+msgid "Shared stimulus on this environment: %d"
+msgstr "Geteilter Stimulus in dieser Umgebung: %d"
+
+msgid "Skipped %d unused shared stimulus (over --limit %d)"
+msgstr "%d ungenutzter gemeinsamer Stimulus übersprungen (über --limit %d)"
+
 msgid "some text ..."
 msgstr "Beispieltext ..."
+
+msgid "Specify if you need only preview the supposed result"
+msgstr "Geben Sie an, ob Sie nur eine Vorschau des vermeintlichen Ergebnisses benötigen"
+
+msgid "Style Sheet <b>%s</b> removed<br> Click <i>Add Style Sheet</i> to re-apply."
+msgstr "Style Sheet <b>%s</b> wurde entfernt. <br> <i>Style Sheet hinzufügen</i> klicken, um es erneut anzuwenden."
+
+msgid "Style Sheet Manager"
+msgstr "Style Sheet Manager"
+
+msgid "Table headings"
+msgstr "Tabellenüberschriften"
 
 msgid "Text Block"
 msgstr "Textblock"
@@ -234,20 +470,50 @@ msgstr "Textblock"
 msgid "Text Block CSS Class"
 msgstr "Textblock-CSS-Klasse"
 
+msgid "Text Block Properties"
+msgstr "Textblock-Eigenschaften"
+
+msgid "Text Block Style"
+msgstr "Text-Block-Stil"
+
+msgid "Text color"
+msgstr "Textfarbe"
+
 msgid "The class"
 msgstr "Die Klasse"
+
+msgid "The file \"%s\" is missing an extension."
+msgstr "Die Datei \"%s\" fehlt eine Erweiterung."
+
+msgid "The file you tried to upload is not valid"
+msgstr "Die hochgeladene Datei ist ungültig"
+
+msgid "There was a problem downloading your CSS, please try again."
+msgstr "Es gab ein Problem beim Download des CSS, bitte erneut versuchen."
 
 msgid "This"
 msgstr "Dies"
 
+msgid "This \"%s\" is currently used in %d item(s)"
+msgstr "Dieses \"%s\" wird derzeit in %d Item(s) verwendet"
+
+msgid "Total shared stimulus media: %s"
+msgstr "Gesamte geteilte Stimulus-Medien: %s"
+
 msgid "Unable to delete the selected resource"
 msgstr "Die ausgewählte Ressource kann nicht gelöscht werden"
+
+msgid "Unable to delete the selected resource because you do not have the required rights to delete part of its content."
+msgstr "Die ausgewählte Ressource konnte nicht gelöscht werden, da Sie nicht über die erforderlichen Rechte zum Löschen eines Teils ihres Inhalts verfügen."
 
 msgid "Unable to extract the archive"
 msgstr "Das Archiv konnte nicht extrahiert werden"
 
 msgid "Unable to import"
 msgstr "Import nicht möglich"
+
+msgid "Unused: %d"
+msgstr "Unbenutzt: %d"
 
 msgid "Upload Media"
 msgstr "Medien hochladen"
@@ -260,6 +526,15 @@ msgstr "Warnung"
 
 msgid "which contains assets that are in use elsewhere."
 msgstr "die Assets enthält, die anderweitig verwendet werden."
+
+msgid "Would delete %d unused shared stimulus"
+msgstr "%d unbenutzter gemeinsamer Stimulus löschen"
+
+msgid "Would delete empty asset class \"%s\" (%s)"
+msgstr "Lösche leere Asset-Klasse \"%s\" (%s)"
+
+msgid "Would delete unused shared stimulus \"%s\" (%s)"
+msgstr "Unbenutzter gemeinsamer Stimulus \"%s\" (%s ) löschen"
 
 msgid "You are about to delete the class"
 msgstr "Sie sind dabei, die Klasse zu löschen"

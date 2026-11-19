@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-12-04 16:06\n"
+"PO-Revision-Date: 2026-11-18 10:18\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: it\n"
@@ -36,6 +36,14 @@ msgstr ""
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Alternative Text"
 msgstr ""
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Transcription"
+msgstr "Traslitterazione"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Transcription"
+msgstr "Traslitterazione"
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#Language
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
@@ -76,6 +84,94 @@ msgstr ""
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "It describes Item where this media is used"
 msgstr ""
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Role"
+msgstr "Ruolo Asset"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Role Class"
+msgstr "Classe Ruolo Asset"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Class Navigator"
+msgstr "Navigatore Classe Asset"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Class Navigator Role"
+msgstr "Ruolo Navigatore Classe Asset"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Class Editor"
+msgstr "Editor Classe Asset"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Class Editor Role"
+msgstr "Ruolo Editor Classe Asset"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Viewer"
+msgstr "Visualizzatore Risorse"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Viewer Role"
+msgstr "Ruolo Visualizzatore Risorse"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Previewer"
+msgstr "Anteprima Risorse"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Previewer Role"
+msgstr "Ruolo Di Anteprima Risorse"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Exporter"
+msgstr "Asset Exporter"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Exporter Role"
+msgstr "Ruolo Esportatore Risorse"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Properties Editor"
+msgstr "Editor Proprietà Risorse"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Properties Editor Role"
+msgstr "Ruolo Editor Proprietà Risorse"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Content Creator"
+msgstr "Creatore Di Contenuti Risorse"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Content Creator Role"
+msgstr "Ruolo Creatore Contenuto Risorse"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Resource Creator"
+msgstr "Creatore Risorse Risorse"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Resource Creator Role"
+msgstr "Ruolo Creatore Risorse Risorse"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Importer"
+msgstr "Asset Importer"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Importer Role"
+msgstr "Ruolo Importatore Risorse"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Deleter"
+msgstr "Eliminatore Risorse"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Deleter Role"
+msgstr "Ruolo Deleter Risorse"
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#Media
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"

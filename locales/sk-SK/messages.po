@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2026-08-20 08:22\n"
+"PO-Revision-Date: 2026-11-18 10:17\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: sk\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../../\n"
-"X-Poedit-KeywordsList: __\n"
+"X-Poedit-KeywordsList: __,__p:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 "Plural-Forms: nplurals=4; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 3;\n"
 "X-Crowdin-Project: tao-open-source\n"
@@ -19,6 +19,12 @@ msgstr ""
 "X-Crowdin-File: /[oat-sa.extension-tao-mediamanager] develop/locales/en-US/messages.po\n"
 "X-Crowdin-File-ID: 603\n"
 "Language-Team: Slovak\n"
+
+msgid "%d shared stimulus media not exists"
+msgstr "%d zdieľané stimulačné médium neexistuje"
+
+msgid "%s errors while processing shared stimulus media"
+msgstr "%s chyby pri spracovaní zdieľaných stimulačných médií"
 
 msgid "%s media on this environment"
 msgstr "%s multimediálne súbory v tomto prostredí"
@@ -29,17 +35,32 @@ msgstr "%s multimédia úspešne upravené"
 msgid "%s media to modify"
 msgstr "%s multimédiá na úpravu"
 
+msgid "%s shared stimulus media to modify"
+msgstr "%s zdieľané stimulačné médiá na úpravu"
+
+msgid "A stylesheet named <b>%s</b> is already attached to the passage."
+msgstr "K pasáži je už pripojený štýlový hárok s názvom <b>%s</b>."
+
 msgid "Add a media file"
 msgstr "Pridať multimediálny súbor"
 
+msgid "Add Style Sheet"
+msgstr "Pridať šablónu štýlu (CSS)"
+
 msgid "An error has occurred. Please contact your administrator."
 msgstr "Vyskytla sa chyba. Kontaktujte, prosím, svojho administrátora."
+
+msgid "Analyzing usage"
+msgstr "Analýza používania"
 
 msgid "Are you sure you want to delete this"
 msgstr "Naozaj chcete toto odstrániť?"
 
 msgid "Are you sure you want to delete this class and all of its content?"
 msgstr "Naozaj chcete odstrániť tento priečinok a všetok jeho obsah?"
+
+msgid "Asset class \"%s\" is not empty"
+msgstr "Trieda aktív „%s“ nie je prázdna"
 
 #, tao-public
 msgid "Assets"
@@ -52,11 +73,42 @@ msgstr "Tvorba"
 msgid "Back to Manage Assets"
 msgstr "Späť na Správu zdrojov"
 
+msgid "Background color"
+msgstr "Farba pozadia"
+
 msgid "Block"
 msgstr "Blok"
 
+msgid "Border color"
+msgstr "Farba orámovania"
+
+msgid "Cannot export file \"%s\": no extension found"
+msgstr "Nedá sa exportovať súbor „%s“: nenašla sa žiadna prípona"
+
 msgid "Center"
 msgstr "Vycentrovať"
+
+msgid "Cleaning classes"
+msgstr "Kurzy upratovania"
+
+msgid "Comments"
+msgstr "Komentáre"
+
+msgid "Comments apply to this asset."
+msgstr "Komentáre sa vzťahujú na tento prvok."
+
+#, tao-public
+msgid "Copy To"
+msgstr "Kopírovať do"
+
+msgid "Could not delete asset class \"%s\": %s"
+msgstr "Nepodarilo sa odstrániť triedu aktív „%s“: %s"
+
+msgid "Current path: %s"
+msgstr "Aktuálna cesta: %s"
+
+msgid "Default"
+msgstr "Predvolené"
 
 msgid "Define item language."
 msgstr "Nastavte jazyk položky."
@@ -65,17 +117,74 @@ msgstr "Nastavte jazyk položky."
 msgid "Delete"
 msgstr "Odstrániť"
 
+msgid "Delete limit: %d unused shared stimulus"
+msgstr "Limit odstránenia: %d nepoužitý zdieľaný stimul"
+
+msgid "Deleted unused shared stimulus \"%s\" (%s)"
+msgstr "Odstránený nepoužívaný zdieľaný stimul „%s“ (%s)"
+
+msgid "Deleted: %d"
+msgstr "Odstránené: %d"
+
 msgid "Deleting this class will break the items and the tests that are currently using them."
 msgstr "Vymazaním tohto priečinka sa poškodia položky a testy, ktoré ich momentálne používajú."
 
+msgid "Deleting unused"
+msgstr "Odstránenie nepoužívaných"
+
+msgid "Destination class uri \"%s\" not found!"
+msgstr "URI cieľovej triedy „%s“ sa nenašiel!"
+
+msgid "Destination class: %s"
+msgstr "Cieľová trieda: %s"
+
+msgid "Disable this stylesheet temporarily"
+msgstr "Dočasne zakázať túto šablónu štýlov"
+
+msgid "Download this stylesheet"
+msgstr "Stiahnite si šablónu štýlov"
+
+msgid "Dry run classes"
+msgstr "Kurzy na suchý beh"
+
+msgid "Dry run delete"
+msgstr "Vymazanie naušľachtilej prevádzky"
+
+msgid "Dry run: scanning shared stimulus usage"
+msgstr "Náš test: skenovanie zdieľaného použitia stimulov"
+
+msgid "e.g. 13"
+msgstr "napr. 13"
+
 msgid "Edit Instance"
 msgstr "Upraviť inštanciu"
+
+msgid "Edit stylesheet label"
+msgstr "Upraviť názov šablóny štýlov"
 
 msgid "Edited %s"
 msgstr "Upravené %s"
 
 msgid "Element Properties"
 msgstr "Vlastnosti prvku"
+
+msgid "Empty asset class deletion errors: %d"
+msgstr "Chyby odstránenia prázdnej triedy aktív: %d"
+
+msgid "Empty asset classes deleted: %d"
+msgstr "Prázdne triedy aktív boli odstránené: %d"
+
+msgid "Empty asset classes found: %d"
+msgstr "Nájdené prázdne triedy aktív: %d"
+
+msgid "Enlarge font size"
+msgstr "Zväčšiť veľkosť písma"
+
+msgid "Error processing shared stimulus \"%s\": %s"
+msgstr "Chyba pri spracovaní zdieľaného podnetu „%s“: %s"
+
+msgid "Errors: %d"
+msgstr "Chyby: %d"
 
 #, tao-public
 msgid "Export"
@@ -96,18 +205,36 @@ msgstr "Import multimédií zlyhal"
 msgid "Fail to import Shared Stimulus"
 msgstr "Nepodarilo sa importovať Zdieľaný stimul"
 
+msgid "Failed to delete asset class \"%s"
+msgstr "Nepodarilo sa odstrániť triedu aktív „%s"
+
+msgid "Failed to delete shared stimulus \"%s\" (%s)"
+msgstr "Nepodarilo sa odstrániť zdieľaný podnet „%s“ (%s)"
+
 msgid "File"
 msgstr "Súbor"
 
 msgid "File name"
 msgstr "Názov súboru"
 
+msgid "Font family"
+msgstr "Typ písma"
+
+msgid "Font size"
+msgstr "Veľkosť písma"
+
 msgid "Forbidden action"
 msgstr "Zakázaná akcia"
+
+msgid "Further asset class deletion errors are logged only in tao.log"
+msgstr "Ďalšie chyby pri vymazaní triedy aktív sa zaznamenávajú iba v súbore tao.log."
 
 #, tao-public
 msgid "Import"
 msgstr "Importovať"
+
+msgid "Import media files"
+msgstr "Importovať mediálne súbory"
 
 msgid "Imported %s"
 msgstr "Importované %s"
@@ -115,11 +242,17 @@ msgstr "Importované %s"
 msgid "Imported new file"
 msgstr "Nový súbor importovaný"
 
+msgid "In use: %d"
+msgstr "Používa sa: %d"
+
 msgid "Initial import"
 msgstr "Počiatočný import"
 
 msgid "Inline Interactions"
 msgstr "Vložené interakcie"
+
+msgid "inline-interactions"
+msgstr "vložené interakcie"
 
 msgid "Instance saved"
 msgstr "Inštancia uložená"
@@ -130,6 +263,9 @@ msgstr "sa v súčasnosti používa v"
 msgid "Issue while modifying %s"
 msgstr "Problém pri úprave %s"
 
+msgid "Issue while processing \"%s\""
+msgstr "Problém pri spracovaní „%s“"
+
 msgid "item(s)"
 msgstr "položka(y)"
 
@@ -138,6 +274,9 @@ msgstr "Jazyk"
 
 msgid "Left"
 msgstr "Vľavo"
+
+msgid "Listing media"
+msgstr "Zoznam médií"
 
 #, tao-public
 msgid "Manage Assets"
@@ -171,6 +310,22 @@ msgstr "Multimédiá boli úspešne exportované."
 msgid "Move"
 msgstr "Presunúť"
 
+msgid "Move item resource to different class, can be filtered by name pattern."
+msgstr "Presunúť zdroj položky do inej triedy, je možné filtrovať podľa vzoru názvu."
+
+msgid "Move resource script start."
+msgstr "Presunúť začiatok skriptu zdroja."
+
+#, tao-public
+msgid "Move To"
+msgstr "Presunúť do"
+
+msgid "Moved %d resource/s."
+msgstr "Presunuté zdroje ( %d)."
+
+msgid "Moved resource, id %s"
+msgstr "Presunutý zdroj, ID %s"
+
 #, tao-public
 msgid "New class"
 msgstr "Nový priečinok"
@@ -179,14 +334,26 @@ msgstr "Nový priečinok"
 msgid "New passage"
 msgstr "Nová pasáž"
 
+msgid "New path %s"
+msgstr "Nová cesta %s"
+
 msgid "No file found for this media"
 msgstr "Pre toto multimédium sa nenašiel žiadny súbor"
+
+msgid "No value set"
+msgstr "Žiadna hodnota nie je nastavená"
 
 msgid "Passage Properties"
 msgstr "Vlastnosti pasáže"
 
+msgid "Passage Style"
+msgstr "Štýl pasáže"
+
 msgid "Please delete the subclasses before."
 msgstr "Najprv prosím vymažte podpriečinky."
+
+msgid "Preparing CSS, please wait…"
+msgstr "Pripravuje sa CSS, čakajte prosím…"
 
 msgid "Preview"
 msgstr "Náhľad"
@@ -198,8 +365,41 @@ msgstr "Zobraziť náhľad položky"
 msgid "Properties"
 msgstr "Vlastnosti"
 
+msgid "Re-run without --dryRun to delete empty asset classes"
+msgstr "Znovu spustite bez --dryRun na odstránenie prázdnych tried aktív"
+
+msgid "Re-run without --dryRun to perform deletion"
+msgstr "Znovu spustite bez --dryRun na vykonanie vymazania"
+
+msgid "Reduce font size"
+msgstr "Zmenšiť veľkosť písma"
+
+msgid "Remove custom background color"
+msgstr "Odstrániť vlastnú farbu pozadia"
+
+msgid "Remove custom border color"
+msgstr "Odstrániť vlastnú farbu orámovania"
+
+msgid "Remove custom font family"
+msgstr "Odstrániť vlastnú rodinu písiem"
+
+msgid "Remove custom font size"
+msgstr "Odstrániť vlastnú veľkosť písma"
+
+msgid "Remove custom table headings color"
+msgstr "Odstrániť farbu vlastných nadpisov tabuľky"
+
+msgid "Remove custom text color"
+msgstr "Odstrániť vlastnú farbu textu"
+
+msgid "Remove this stylesheet"
+msgstr "Odstrániť šablónu štýlov"
+
 msgid "Replace Asset"
 msgstr "Nahradiť zdroj"
+
+msgid "Request should provide a media identifier as the id or instanceUri parameter"
+msgstr "Žiadosť by mala poskytnúť identifikátor média ako parameter id alebo instanceUri."
 
 msgid "Resource deleted"
 msgstr "Zdroj bol odstránený"
@@ -213,11 +413,29 @@ msgstr "Uložiť"
 msgid "Save the asset"
 msgstr "Uložte si zdroj"
 
+msgid "Scanning and deleting unused shared stimulus"
+msgstr "Skenovanie a odstraňovanie nepoužívaných zdieľaných podnetov"
+
+msgid "Scanning for empty asset classes under Media root"
+msgstr "Vyhľadávanie prázdnych tried aktív v koreňovom adresári médií"
+
 msgid "Set a CSS class name in order to customize the display style."
 msgstr "Zadajte názov triedy CSS, aby ste mohli prispôsobiť štýl zobrazenia."
 
+msgid "Set the identifier of class where assets will be moved."
+msgstr "Nastavte identifikátor triedy, kam sa budú presúvať aktíva."
+
+msgid "Set the name pattern whom script will use to select resource to move."
+msgstr "Nastavte vzor mena, ktorý bude skript používať na výber zdroja na presun."
+
+msgid "Set the resource id to move."
+msgstr "Nastavte ID zdroja na presun."
+
 msgid "Shared Stimulus"
 msgstr "Zdieľaný stimul"
+
+msgid "Shared stimulus \"%s\" is in use: %s"
+msgstr "Zdieľaný stimul „%s“ sa používa: %s"
 
 msgid "Shared Stimulus edited successfully"
 msgstr "Zdieľaný stimul bol úspešne upravený"
@@ -225,8 +443,26 @@ msgstr "Zdieľaný stimul bol úspešne upravený"
 msgid "Shared Stimulus imported successfully"
 msgstr "Zdieľaný stimul bol úspešne importovaný"
 
+msgid "Shared stimulus on this environment: %d"
+msgstr "Zdieľaný podnet v tomto prostredí: %d"
+
+msgid "Skipped %d unused shared stimulus (over --limit %d)"
+msgstr "Preskočený %d nepoužitý zdieľaný stimul (nad --limit %d)"
+
 msgid "some text ..."
 msgstr "nejaký text..."
+
+msgid "Specify if you need only preview the supposed result"
+msgstr "Zadajte, či potrebujete iba zobraziť ukážku predpokladaného výsledku"
+
+msgid "Style Sheet <b>%s</b> removed<br> Click <i>Add Style Sheet</i> to re-apply."
+msgstr "Šablóna štýlov <b>%s</b> odstránená<br> Kliknite na <i>Pridať šablónu štýlov</i> pre opätovné použitie."
+
+msgid "Style Sheet Manager"
+msgstr "Správca štýlov"
+
+msgid "Table headings"
+msgstr "Nadpisy tabuliek"
 
 msgid "Text Block"
 msgstr "Textový blok"
@@ -234,20 +470,50 @@ msgstr "Textový blok"
 msgid "Text Block CSS Class"
 msgstr "Trieda CSS textového bloku"
 
+msgid "Text Block Properties"
+msgstr "Vlastnosti textového bloku"
+
+msgid "Text Block Style"
+msgstr "Štýl textového bloku"
+
+msgid "Text color"
+msgstr "Farba textu"
+
 msgid "The class"
 msgstr "Priečinok"
+
+msgid "The file \"%s\" is missing an extension."
+msgstr "Súboru „%s“ chýba prípona."
+
+msgid "The file you tried to upload is not valid"
+msgstr "Súbor, ktorý ste sa pokúsili nahrať, nie je platný"
+
+msgid "There was a problem downloading your CSS, please try again."
+msgstr "Pri sťahovaní vášho CSS sa vyskytol problém, skúste to znova."
 
 msgid "This"
 msgstr "Toto"
 
+msgid "This \"%s\" is currently used in %d item(s)"
+msgstr "Toto „%s“ sa momentálne používa v %d položke(ách)"
+
+msgid "Total shared stimulus media: %s"
+msgstr "Celkový počet zdieľaných stimulačných médií: %s"
+
 msgid "Unable to delete the selected resource"
 msgstr "Vybraný zdroj sa nepodarilo odstrániť"
+
+msgid "Unable to delete the selected resource because you do not have the required rights to delete part of its content."
+msgstr "Vybraný zdroj sa nedá odstrániť, pretože nemáte potrebné práva na odstránenie časti jeho obsahu."
 
 msgid "Unable to extract the archive"
 msgstr "Nepodarilo sa extrahovať archív"
 
 msgid "Unable to import"
 msgstr "Nepodarilo sa importovať"
+
+msgid "Unused: %d"
+msgstr "Nepoužité: %d"
 
 msgid "Upload Media"
 msgstr "Nahrať multimédiá"
@@ -260,6 +526,15 @@ msgstr "POZOR"
 
 msgid "which contains assets that are in use elsewhere."
 msgstr "ktorý obsahuje zdroje, ktoré sa používajú inde."
+
+msgid "Would delete %d unused shared stimulus"
+msgstr "Vymazal by sa %d nepoužívaný zdieľaný podnet"
+
+msgid "Would delete empty asset class \"%s\" (%s)"
+msgstr "Odstránila by sa prázdna trieda aktív „%s“ (%s)"
+
+msgid "Would delete unused shared stimulus \"%s\" (%s)"
+msgstr "Odstránil by sa nepoužívaný zdieľaný podnet „%s“ (%s)"
 
 msgid "You are about to delete the class"
 msgstr "Chystáte sa odstrániť priečinok"

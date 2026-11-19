@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2025-12-05 08:59\n"
+"PO-Revision-Date: 2026-11-18 10:18\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: hu\n"
@@ -36,6 +36,14 @@ msgstr "Alternatív szöveg"
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "Alternative Text"
 msgstr "Alternatív szöveg"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Transcription"
+msgstr "Átírás"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Transcription"
+msgstr "Átírás"
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#Language
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
@@ -76,6 +84,94 @@ msgstr "Kapcsolódó elem"
 msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
 msgid "It describes Item where this media is used"
 msgstr "Leírja azt az elemet, ahol ezt a médiát használják."
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Role"
+msgstr "Eszköz szerepe"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Role Class"
+msgstr "Eszköz szerepkör osztály"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Class Navigator"
+msgstr "Eszközosztály-navigátor"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Class Navigator Role"
+msgstr "Eszközosztály-navigátor szerepkör"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Class Editor"
+msgstr "Eszközosztály-szerkesztő"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Class Editor Role"
+msgstr "Eszközosztály-szerkesztő szerepkör"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Viewer"
+msgstr "Eszközmegjelenítő"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Viewer Role"
+msgstr "Eszközmegtekintő szerepkör"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Previewer"
+msgstr "Eszközelőnézet"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Previewer Role"
+msgstr "Eszköz-előnézeti szerepkör"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Exporter"
+msgstr "Eszközexportőr"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Exporter Role"
+msgstr "Eszközexportőr szerepkör"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Properties Editor"
+msgstr "Eszköztulajdonság-szerkesztő"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Properties Editor Role"
+msgstr "Eszköztulajdonságok szerkesztőjének szerepköre"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Content Creator"
+msgstr "Eszköztartalom-készítő"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Content Creator Role"
+msgstr "Eszköztartalom-készítő szerepkör"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Resource Creator"
+msgstr "Eszközerőforrás-készítő"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Resource Creator Role"
+msgstr "Eszközerőforrás-létrehozó szerepkör"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Importer"
+msgstr "Eszközimportáló"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Importer Role"
+msgstr "Eszközimportáló szerepkör"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#label"
+msgid "Asset Deleter"
+msgstr "Eszköztörlő"
+
+msgctxt "http://www.w3.org/2000/01/rdf-schema#comment"
+msgid "Asset Deleter Role"
+msgstr "Eszköztörlési szerepkör"
 
 # http://www.tao.lu/Ontologies/TAOMedia.rdf#Media
 msgctxt "http://www.w3.org/2000/01/rdf-schema#label"

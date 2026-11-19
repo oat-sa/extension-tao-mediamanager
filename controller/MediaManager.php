@@ -99,8 +99,8 @@ class MediaManager extends tao_actions_SaSModule
         $this->setData('mimeType', $mimeType ?? null);
         $this->setData('assetUri', $uri);
         $clientConfig = $this->getPsrContainer()->get(ClientLibConfigRegistry::class)->getMap();
-        $mentionsEnabled = $clientConfig['taoQtiItem/controller/creator/index']['properties']['itemCommentsMentionsEnabled']
-            ?? false;
+        $creatorProperties = $clientConfig['taoQtiItem/controller/creator/index']['properties'] ?? [];
+        $mentionsEnabled = $creatorProperties['itemCommentsMentionsEnabled'] ?? false;
         $this->setData('itemCommentsMentionsEnabled', $mentionsEnabled === true);
         $this->setView('form.tpl');
     }

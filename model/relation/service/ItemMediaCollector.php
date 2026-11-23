@@ -43,7 +43,8 @@ class ItemMediaCollector
     {
         $mediaUris = [];
         $itemResource = $this->ontology->getResource($itemUri);
-        $itemBody = $this->itemsService->getDataItemByRdfItem($itemResource)->getBody();
+        $item = $this->itemsService->getDataItemByRdfItem($itemResource);
+        $itemBody = $item->getBody();
 
         foreach ($this->getImgElements($itemBody) as $element) {
             $mediaUris[] = tao_helpers_Uri::decode(str_replace(
@@ -58,6 +59,20 @@ class ItemMediaCollector
                 'taomedia://mediamanager/',
                 '',
                 $element->getAttributeValue('href')
+            ));
+        }
+
+        foreach ((array) $item->getStylesheets() as $stylesheet) {
+            $href = $stylesheet->getAttributeValue('href');
+
+            if (strpos((string) $href, 'taomedia://mediamanager/') !== 0) {
+                continue;
+            }
+
+            $mediaUris[] = tao_helpers_Uri::decode(str_replace(
+                'taomedia://mediamanager/',
+                '',
+                $href
             ));
         }
 

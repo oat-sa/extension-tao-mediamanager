@@ -55,7 +55,8 @@ class ItemUpdatedEventProcessor extends ConfigurableService implements EventProc
 
     private function mustUpdateItemRelation(array $data): bool
     {
-        // The stylesheet key only participates in the aggregation: a stylesheet-only payload does not prove a complete relation set.
+        // The stylesheet key only participates in the aggregation: a stylesheet-only payload
+        // does not prove a complete relation set.
         return array_key_exists(self::INCLUDE_ELEMENT_REFERENCES_KEY, $data)
             || array_key_exists(self::OBJECT_ELEMENT_REFERENCES_KEY, $data)
             || array_key_exists(self::IMG_ELEMENT_REFERENCES_KEY, $data)

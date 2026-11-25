@@ -106,6 +106,115 @@ class MediaManager extends tao_actions_SaSModule
         $this->setView('form.tpl');
     }
 
+    public function renameAsset(): void
+    {
+        try {
+            // jQuery $.ajax sends this header by default; a cross-site form POST cannot set it.
+            if (!$this->getPsrRequest()->hasHeader('X-Requested-With')) {
+                $this->returnJson([
+                    'success' => false,
+                    'message' => __('Unable to process your request.'),
+                ]);
+
+                return;
+            }
+
+            $uri = $this->getRequestedMediaUri();
+            $name = trim((string) $this->getRequestParameter('label'));
+
+            if ($name === '') {
+                $this->returnJson([
+                    'success' => false,
+                    'message' => __('The name cannot be empty.'),
+                ]);
+
+                return;
+            }
+
+            if (mb_strlen($name) > 255) {
+                $this->returnJson([
+                    'success' => false,
+                    'message' => __('The name cannot be longer than 255 characters.'),
+                ]);
+
+                return;
+            }
+
+            if (strpbrk($name, '/\\') !== false) {
+                $this->returnJson([
+                    'success' => false,
+                    'message' => __('The name cannot contain a slash: the folder is not part of the name.'),
+                ]);
+
+                return;
+            }
+
+            $resource = new core_kernel_classes_Resource(tao_helpers_Uri::decode($uri));
+
+            if (!$resource->exists()) {
+                $this->returnJson([
+                    'success' => false,
+                    'message' => __('The stylesheet could not be found.'),
+                ]);
+
+                return;
+            }
+
+            $isMediaAsset = false;
+            foreach ($resource->getTypes() as $type) {
+                if ($type->getUri() === TaoMediaOntology::CLASS_URI_MEDIA_ROOT) {
+                    $isMediaAsset = true;
+                    break;
+                }
+
+                foreach ($type->getParentClasses(true) as $parentClass) {
+                    if ($parentClass->getUri() === TaoMediaOntology::CLASS_URI_MEDIA_ROOT) {
+                        $isMediaAsset = true;
+                        break 2;
+                    }
+                }
+            }
+
+            if (!$isMediaAsset) {
+                $this->returnJson([
+                    'success' => false,
+                    'message' => __('The stylesheet could not be found.'),
+                ]);
+
+                return;
+            }
+
+            if (!$this->getPermissionService()->isAllowedToEditResource($resource, $this->getSession()->getUser())) {
+                $this->returnJson([
+                    'success' => false,
+                    'message' => __('You are not allowed to edit this resource.'),
+                ]);
+
+                return;
+            }
+
+            $resource->setLabel($name);
+
+            $this->returnJson([
+                'success' => true,
+                'label' => $resource->getLabel(),
+            ]);
+        } catch (\Throwable $e) {
+            \common_Logger::e(
+                $e->getMessage(),
+                [
+                    \common_Logger::CONTEXT_ERROR_FILE => $e->getFile(),
+                    \common_Logger::CONTEXT_ERROR_LINE => $e->getLine(),
+                ]
+            );
+
+            $this->returnJson([
+                'success' => false,
+                'message' => __('The name could not be changed, please try again.'),
+            ]);
+        }
+    }
+
     /**
      * Get the file stream associated to given uri GET parameter
      *

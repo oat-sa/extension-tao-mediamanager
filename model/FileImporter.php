@@ -131,15 +131,18 @@ class FileImporter implements
                             ['uriResource' => $mediaResourceUri]
                         ));
 
-                        $misdetectedMime = $this->getMisdetectedStylesheetMime($uploadedFile, (string) $fileInfo['name']);
+                        $misdetectedMime = $this->getMisdetectedStylesheetMime(
+                            $uploadedFile,
+                            (string) $fileInfo['name']
+                        );
 
                         if ($misdetectedMime !== null) {
                             $report->add(new Report(
                                 Report::TYPE_WARNING,
                                 __(
                                     'The stylesheet "%s" is stored as text/css, but its content was detected as "%s". '
-                                    . 'Content sniffing is unreliable for CSS: remove markup such as <style> or <title> '
-                                    . 'from the file, otherwise other tools may treat it as HTML.',
+                                    . 'Content sniffing is unreliable for CSS: remove markup such as <style> '
+                                    . 'or <title> from the file, otherwise other tools may treat it as HTML.',
                                     $fileInfo['name'],
                                     $misdetectedMime
                                 )

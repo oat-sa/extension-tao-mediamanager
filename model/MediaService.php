@@ -129,9 +129,7 @@ class MediaService extends ConfigurableService
         $content = $fileSource instanceof File ? $fileSource->read() : file_get_contents($fileSource);
 
         if (is_null($mimeType)) {
-            $mimeType = $fileSource instanceof File ? $fileSource->getMimeType() : tao_helpers_File::getMimeType(
-                $fileSource
-            );
+            $mimeType = $this->resolveMimeType($fileSource, $label);
         }
 
         $properties = [
@@ -149,6 +147,40 @@ class MediaService extends ConfigurableService
         $this->dispatchMediaSavedEvent('Initial import', $instance, $link, $mimeType, $userId, $content);
 
         return $id;
+    }
+
+    /**
+     * Content based detection misclassifies stylesheets (libmagic reports CSS as text/html),
+     * and an asset without the text/css type never reaches the stylesheet filters of the item creator.
+     *
+     * @param string|File $fileSource
+     */
+    private function resolveMimeType($fileSource, ?string $label): string
+    {
+        $mimeType = $fileSource instanceof File
+            ? (string) $fileSource->getMimeType()
+            : (string) tao_helpers_File::getMimeType($fileSource);
+
+        $fileName = $label ?? ($fileSource instanceof File
+            ? $fileSource->getBasename()
+            : basename((string) $fileSource));
+
+        if (strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION)) === 'css') {
+            if ($mimeType !== 'text/css') {
+                $this->logWarning(
+                    sprintf(
+                        'Stylesheet "%s" was detected as "%s" and is stored as text/css: content based MIME detection '
+                        . 'is unreliable for CSS and would hide the asset from the stylesheet filters.',
+                        (string) $fileName,
+                        $mimeType === '' ? 'empty' : $mimeType
+                    )
+                );
+            }
+
+            return 'text/css';
+        }
+
+        return $mimeType;
     }
 
     public function createSharedStimulusInstance(

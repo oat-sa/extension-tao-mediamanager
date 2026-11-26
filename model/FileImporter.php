@@ -130,6 +130,21 @@ class FileImporter implements
                             // 'uriResource' key is needed by javascript in tao/views/templates/form/import.tpl
                             ['uriResource' => $mediaResourceUri]
                         ));
+
+                        $misdetectedMime = $this->getMisdetectedStylesheetMime($uploadedFile, (string) $fileInfo['name']);
+
+                        if ($misdetectedMime !== null) {
+                            $report->add(new Report(
+                                Report::TYPE_WARNING,
+                                __(
+                                    'The stylesheet "%s" is stored as text/css, but its content was detected as "%s". '
+                                    . 'Content sniffing is unreliable for CSS: remove markup such as <style> or <title> '
+                                    . 'from the file, otherwise other tools may treat it as HTML.',
+                                    $fileInfo['name'],
+                                    $misdetectedMime
+                                )
+                            ));
+                        }
                     }
                 } else {
                     $report = $this->getZipImporter()->import($class, $form, $userId);
@@ -228,5 +243,24 @@ class FileImporter implements
     private function getQueueDispatcher(): QueueDispatcherInterface
     {
         return $this->getServiceLocator()->get(QueueDispatcherInterface::SERVICE_ID);
+    }
+
+    /**
+     * Content based MIME detection reports stylesheets as text/html when their text mentions an HTML tag,
+     * so the importer has to tell the user when that happens.
+     *
+     * @param string|\oat\oatbox\filesystem\File $uploadedFile
+     */
+    private function getMisdetectedStylesheetMime($uploadedFile, string $fileName): ?string
+    {
+        if (strtolower(pathinfo($fileName, PATHINFO_EXTENSION)) !== 'css') {
+            return null;
+        }
+
+        $mimeType = $uploadedFile instanceof \oat\oatbox\filesystem\File
+            ? (string) $uploadedFile->getMimeType()
+            : (string) \tao_helpers_File::getMimeType($uploadedFile);
+
+        return $mimeType === 'text/css' ? null : ($mimeType === '' ? 'unknown' : $mimeType);
     }
 }

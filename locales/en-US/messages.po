@@ -499,7 +499,7 @@ msgstr ""
 msgid "The name could not be changed, please try again."
 msgstr ""
 
-msgid "The stylesheet \"%s\" is stored as text/css, but its content was detected as \"%s\". Content sniffing is unreliable for CSS: remove markup such as <style> or <title> from the file, otherwise other tools may treat it as HTML."
+msgid "The stylesheet \"%s\" is stored as text/css, but its content was detected as \"%s\". Content sniffing is unreliable for CSS: remove the style and title tags from the file, otherwise other tools may treat it as HTML."
 msgstr ""
 
 msgid "The stylesheet could not be found."
@@ -573,4 +573,3 @@ msgstr ""
 
 msgid "Zip"
 msgstr ""
-

@@ -119,7 +119,8 @@ class MediaManager extends tao_actions_SaSModule
                 return;
             }
 
-            $uri = trim((string) $this->getRequestParameter('uri'));
+            $uri = $this->getRequestParameter('uri');
+            $uri = is_string($uri) ? trim($uri) : '';
 
             if ($uri === '') {
                 $this->returnJsonWithStatus([
@@ -130,7 +131,8 @@ class MediaManager extends tao_actions_SaSModule
                 return;
             }
 
-            $name = trim((string) $this->getRequestParameter('label'));
+            $label = $this->getRequestParameter('label');
+            $name = is_string($label) ? trim($label) : '';
 
             if ($name === '') {
                 $this->returnJsonWithStatus([

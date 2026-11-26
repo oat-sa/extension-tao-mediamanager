@@ -106,6 +106,127 @@ class MediaManager extends tao_actions_SaSModule
         $this->setView('form.tpl');
     }
 
+    public function renameAsset(): void
+    {
+        try {
+            // jQuery $.ajax sends this header by default; a cross-site form POST cannot set it.
+            if (!$this->getPsrRequest()->hasHeader('X-Requested-With')) {
+                $this->returnJsonWithStatus([
+                    'success' => false,
+                    'message' => __('Unable to process your request.'),
+                ], 400);
+
+                return;
+            }
+
+            $uri = $this->getRequestParameter('uri');
+            $uri = is_string($uri) ? trim($uri) : '';
+
+            if ($uri === '') {
+                $this->returnJsonWithStatus([
+                    'success' => false,
+                    'message' => __('The media asset is missing.'),
+                ], 400);
+
+                return;
+            }
+
+            $label = $this->getRequestParameter('label');
+            $name = is_string($label) ? trim($label) : '';
+
+            if ($name === '') {
+                $this->returnJsonWithStatus([
+                    'success' => false,
+                    'message' => __('The name cannot be empty.'),
+                ], 400);
+
+                return;
+            }
+
+            if (mb_strlen($name) > 255) {
+                $this->returnJsonWithStatus([
+                    'success' => false,
+                    'message' => __('The name cannot be longer than 255 characters.'),
+                ], 400);
+
+                return;
+            }
+
+            if (strpbrk($name, '/\\') !== false) {
+                $this->returnJsonWithStatus([
+                    'success' => false,
+                    'message' => __('The name cannot contain a slash: the folder is not part of the name.'),
+                ], 400);
+
+                return;
+            }
+
+            $resource = new core_kernel_classes_Resource(tao_helpers_Uri::decode($uri));
+
+            if (!$resource->exists()) {
+                $this->returnJsonWithStatus([
+                    'success' => false,
+                    'message' => __('The stylesheet could not be found.'),
+                ], 404);
+
+                return;
+            }
+
+            $isMediaAsset = false;
+            foreach ($resource->getTypes() as $type) {
+                if ($type->getUri() === TaoMediaOntology::CLASS_URI_MEDIA_ROOT) {
+                    $isMediaAsset = true;
+                    break;
+                }
+
+                foreach ($type->getParentClasses(true) as $parentClass) {
+                    if ($parentClass->getUri() === TaoMediaOntology::CLASS_URI_MEDIA_ROOT) {
+                        $isMediaAsset = true;
+                        break 2;
+                    }
+                }
+            }
+
+            if (!$isMediaAsset) {
+                $this->returnJsonWithStatus([
+                    'success' => false,
+                    'message' => __('The stylesheet could not be found.'),
+                ], 404);
+
+                return;
+            }
+
+            if (!$this->getPermissionService()->isAllowedToEditResource($resource, $this->getSession()->getUser())) {
+                $this->returnJsonWithStatus([
+                    'success' => false,
+                    'message' => __('You are not allowed to edit this resource.'),
+                ], 403);
+
+                return;
+            }
+
+            $resource->setLabel($name);
+
+            $this->returnJson([
+                'success' => true,
+                'label' => $resource->getLabel(),
+            ]);
+        } catch (\Throwable $e) {
+            \common_Logger::e(
+                $e->getMessage(),
+                [
+                    \common_Logger::CONTEXT_ERROR_FILE => $e->getFile(),
+                    \common_Logger::CONTEXT_ERROR_LINE => $e->getLine(),
+                ]
+            );
+
+            $this->returnJsonWithStatus([
+                'success' => false,
+                'message' => __('The name could not be changed, please try again.'),
+            ], 500);
+        }
+    }
+
     /**
      * Get the file stream associated to given uri GET parameter
      *
@@ -218,6 +339,13 @@ class MediaManager extends tao_actions_SaSModule
         }
 
         return $this->getRequest()->getParameter('uri');
+    }
+
+    private function returnJsonWithStatus(array $data, int $status): void
+    {
+        $this->returnJson($data);
+
+        $this->response = $this->response->withStatus($status);
     }
 
     private function getFormInstance(

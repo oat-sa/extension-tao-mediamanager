@@ -29,6 +29,7 @@ use oat\taoQtiItem\model\qti\container\ContainerItemBody;
 use oat\taoQtiItem\model\qti\Element;
 use oat\taoQtiItem\model\qti\Item;
 use oat\taoQtiItem\model\qti\Service as ItemsService;
+use oat\taoQtiItem\model\qti\Stylesheet;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -80,6 +81,88 @@ class ItemMediaCollectorTest extends TestCase
 
         $this->assertEquals(
             ['http_some_decoded_uri', 'http_some_decoded_uri'],
+            $this->subject->getItemMediaResources('itemUri')
+        );
+    }
+
+    public function testGetItemMediaResourcesIncludesStylesheetReferences(): void
+    {
+        $encodedAssetUri = 'https_2_example_0_com_1_assets_1_pci-manager_0_css';
+
+        $resourceMock = $this->createMock(Resource::class);
+        $itemMock = $this->createMock(Item::class);
+        $bodyMock = $this->createMock(ContainerItemBody::class);
+        $stylesheetMock = $this->createMock(Stylesheet::class);
+
+        $this->ontologyMock->expects($this->once())
+            ->method('getResource')
+            ->with('itemUri')
+            ->willReturn($resourceMock);
+
+        $this->itemsServiceMock->expects($this->once())
+            ->method('getDataItemByRdfItem')
+            ->with($resourceMock)
+            ->willReturn($itemMock);
+
+        $itemMock->expects($this->once())
+            ->method('getBody')
+            ->willReturn($bodyMock);
+
+        $itemMock->expects($this->once())
+            ->method('getStylesheets')
+            ->willReturn([$stylesheetMock]);
+
+        $bodyMock->expects($this->exactly(2))
+            ->method('getComposingElements')
+            ->willReturn([]);
+
+        $stylesheetMock->expects($this->once())
+            ->method('getAttributeValue')
+            ->with('href')
+            ->willReturn('taomedia://mediamanager/' . $encodedAssetUri);
+
+        $this->assertSame(
+            ['https://example.com/assets/pci-manager.css'],
+            $this->subject->getItemMediaResources('itemUri')
+        );
+    }
+
+    public function testGetItemMediaResourcesIgnoresRelativeStylesheetReferences(): void
+    {
+        $resourceMock = $this->createMock(Resource::class);
+        $itemMock = $this->createMock(Item::class);
+        $bodyMock = $this->createMock(ContainerItemBody::class);
+        $stylesheetMock = $this->createMock(Stylesheet::class);
+
+        $this->ontologyMock->expects($this->once())
+            ->method('getResource')
+            ->with('itemUri')
+            ->willReturn($resourceMock);
+
+        $this->itemsServiceMock->expects($this->once())
+            ->method('getDataItemByRdfItem')
+            ->with($resourceMock)
+            ->willReturn($itemMock);
+
+        $itemMock->expects($this->once())
+            ->method('getBody')
+            ->willReturn($bodyMock);
+
+        $itemMock->expects($this->once())
+            ->method('getStylesheets')
+            ->willReturn([$stylesheetMock]);
+
+        $bodyMock->expects($this->exactly(2))
+            ->method('getComposingElements')
+            ->willReturn([]);
+
+        $stylesheetMock->expects($this->once())
+            ->method('getAttributeValue')
+            ->with('href')
+            ->willReturn('pci-manager.css');
+
+        $this->assertSame(
+            [],
             $this->subject->getItemMediaResources('itemUri')
         );
     }

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TAO 2026.12\n"
-"PO-Revision-Date: 2026-11-17T09:27:01\n"
+"PO-Revision-Date: 2026-11-26T14:58:28\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: en-US\n"
@@ -256,6 +256,9 @@ msgstr ""
 msgid "Issue while modifying %s"
 msgstr ""
 
+msgid "Issue while processing \"%s"
+msgstr ""
+
 msgid "Issue while processing \"%s\""
 msgstr ""
 
@@ -481,6 +484,27 @@ msgstr ""
 msgid "The file you tried to upload is not valid"
 msgstr ""
 
+msgid "The media asset is missing."
+msgstr ""
+
+msgid "The name cannot be empty."
+msgstr ""
+
+msgid "The name cannot be longer than 255 characters."
+msgstr ""
+
+msgid "The name cannot contain a slash: the folder is not part of the name."
+msgstr ""
+
+msgid "The name could not be changed, please try again."
+msgstr ""
+
+msgid "The stylesheet \"%s\" is stored as text/css, but its content was detected as \"%s\". Content sniffing is unreliable for CSS: remove markup such as <style> or <title> from the file, otherwise other tools may treat it as HTML."
+msgstr ""
+
+msgid "The stylesheet could not be found."
+msgstr ""
+
 msgid "There was a problem downloading your CSS, please try again."
 msgstr ""
 
@@ -503,6 +527,9 @@ msgid "Unable to extract the archive"
 msgstr ""
 
 msgid "Unable to import"
+msgstr ""
+
+msgid "Unable to process your request."
 msgstr ""
 
 msgid "Unused: %d"
@@ -530,6 +557,9 @@ msgid "Would delete unused shared stimulus \"%s\" (%s)"
 msgstr ""
 
 msgid "You are about to delete the class"
+msgstr ""
+
+msgid "You are not allowed to edit this resource."
 msgstr ""
 
 msgid "you are trying to delete is too large and contains too many subclasses."
